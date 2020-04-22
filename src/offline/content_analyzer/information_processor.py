@@ -35,10 +35,10 @@ class NLP(TextProcessor, ABC):
                  stemming: bool = False,
                  lemmatization: bool = False,
                  named_entity_recognition: bool = False,
-                 double_space_removal: bool = False):
+                 strip_multiple_whitespaces: bool = True):
         super().__init__()
         self.__stopwords_removal = stopwords_removal
         self.__stemming = stemming
         self.__lemmatization = lemmatization
         self.__named_entity_recognition = named_entity_recognition
-        self.__double_space_removal = double_space_removal
+        self.__strip_multiple_whitespaces = strip_multiple_whitespaces
