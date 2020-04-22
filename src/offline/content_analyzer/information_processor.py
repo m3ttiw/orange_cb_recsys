@@ -1,9 +1,13 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class InformationProcessor(ABC):
     def __init__(self):
         pass
+
+    @abstractmethod
+    def process(self, field_data):
+        pass        # return str
 
 
 class ImageProcessor(InformationProcessor):
@@ -13,6 +17,10 @@ class ImageProcessor(InformationProcessor):
     def __init__(self):
         super().__init__()
 
+    @abstractmethod
+    def process(self, field_data):
+        pass  # return str
+
 
 class AudioProcessor(InformationProcessor):
     """
@@ -21,16 +29,21 @@ class AudioProcessor(InformationProcessor):
     def __init__(self):
         super().__init__()
 
+    @abstractmethod
+    def process(self, field_data):
+        pass  # return str
+
 
 class TextProcessor(InformationProcessor):
     def __init__(self):
         super().__init__()
 
-    def deserialize(self):
-        pass
+    @abstractmethod
+    def process(self, field_data):
+        pass  # return str
 
 
-class NLP(TextProcessor, ABC):
+class NLP(TextProcessor):
     def __init__(self, stopwords_removal: bool = False,
                  stemming: bool = False,
                  lemmatization: bool = False,
@@ -42,3 +55,7 @@ class NLP(TextProcessor, ABC):
         self.__lemmatization = lemmatization
         self.__named_entity_recognition = named_entity_recognition
         self.__strip_multiple_whitespaces = strip_multiple_whitespaces
+
+    @abstractmethod
+    def process(self, field_data):
+        pass  # return str
