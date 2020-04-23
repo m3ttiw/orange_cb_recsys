@@ -7,7 +7,7 @@ class InformationProcessor(ABC):
 
     @abstractmethod
     def process(self, field_data):
-        pass        # return str
+        pass
 
 
 class ImageProcessor(InformationProcessor):
@@ -19,7 +19,7 @@ class ImageProcessor(InformationProcessor):
 
     @abstractmethod
     def process(self, field_data):
-        pass  # return str
+        pass
 
 
 class AudioProcessor(InformationProcessor):
@@ -31,7 +31,7 @@ class AudioProcessor(InformationProcessor):
 
     @abstractmethod
     def process(self, field_data):
-        pass  # return str
+        pass
 
 
 class TextProcessor(InformationProcessor):
@@ -40,7 +40,7 @@ class TextProcessor(InformationProcessor):
 
     @abstractmethod
     def process(self, field_data):
-        pass  # return str
+        pass
 
 
 class NLP(TextProcessor):
@@ -50,12 +50,12 @@ class NLP(TextProcessor):
                  named_entity_recognition: bool = False,
                  strip_multiple_whitespaces: bool = True):
         super().__init__()
-        self.__stopwords_removal = stopwords_removal
-        self.__stemming = stemming
-        self.__lemmatization = lemmatization
-        self.__named_entity_recognition = named_entity_recognition
-        self.__strip_multiple_whitespaces = strip_multiple_whitespaces
+        self.__stopwords_removal: bool = stopwords_removal
+        self.__stemming: bool = stemming
+        self.__lemmatization: bool = lemmatization
+        self.__named_entity_recognition: bool = named_entity_recognition
+        self.__strip_multiple_whitespaces: bool = strip_multiple_whitespaces
 
     @abstractmethod
     def process(self, field_data):
-        pass  # return str
+        pass

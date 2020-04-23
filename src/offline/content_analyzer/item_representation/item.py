@@ -2,9 +2,9 @@ from src.offline.content_analyzer.item_representation.item_field import ItemFiel
 
 
 class RepresentedItems:
-    def __init__(self, items, length):
-        self.__items = items
-        self.__length = length
+    def __init__(self, items: list, length: int):
+        self.__items: list = items
+        self.__length: int = length
 
     def serialize(self):
         pass                # forse non necessario (?)
@@ -14,8 +14,8 @@ class Item:
     def __init__(self, item_id: str, fields: list = None):
         if fields is None:
             fields = []         # list o dict
-        self.__id = item_id
-        self.__fields = fields
+        self.__id: str = item_id
+        self.__fields: list = fields
 
     def append(self, field: ItemField):
         self.__fields.append(field)

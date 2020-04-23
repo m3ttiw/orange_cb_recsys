@@ -35,17 +35,6 @@ class Granularity(Enum):
     DOC = 3
 
 
-class EmbeddingTechnique(FieldContentProductionTechnique):
-    def __init__(self, combining_technique, embedding_source, granularity: Granularity):
-        super().__init__()
-        self.__combining_technique = combining_technique
-        self.__embedding_source = embedding_source
-        self.__granularity = granularity
-
-    def produce_content(self, field_data):
-        pass
-
-
 class CombiningTechnique(ABC):
     def __init__(self):
         pass
@@ -61,4 +50,17 @@ class EmbeddingSource(ABC):
 
     @abstractmethod
     def load(self):
+        pass
+
+
+class EmbeddingTechnique(FieldContentProductionTechnique):
+    def __init__(self, combining_technique: CombiningTechnique,
+                 embedding_source: EmbeddingSource,
+                 granularity: Granularity):
+        super().__init__()
+        self.__combining_technique: CombiningTechnique = combining_technique
+        self.__embedding_source: EmbeddingSource = embedding_source
+        self.__granularity: Granularity = granularity
+
+    def produce_content(self, field_data):
         pass

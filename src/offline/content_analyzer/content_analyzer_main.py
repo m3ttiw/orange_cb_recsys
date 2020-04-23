@@ -1,57 +1,71 @@
 from src.offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
+from src.offline.content_analyzer.information_loader import InformationLoader
+from src.offline.content_analyzer.information_processor import InformationProcessor
 from src.offline.content_analyzer.item_representation.item import Item
 from src.offline.content_analyzer.item_representation.item_field import ItemField
 
 
+class FieldContentPipeline:
+    def __init__(self, loader: InformationLoader,
+                 content_technique: FieldContentProductionTechnique,
+                 preprocessor: InformationProcessor = None):
+        self.__loader: InformationLoader = loader
+        self.__preprocessor: InformationProcessor = preprocessor
+        self.__content_technique: FieldContentProductionTechnique = content_technique
+
+    def set_loader(self, loader: InformationLoader):
+        self.__loader = loader
+
+    def set_preprocessor(self, preprocessor: InformationProcessor):
+        self.__preprocessor = preprocessor
+
+    def set_content_technique(self, content_technique: FieldContentProductionTechnique):
+        self.__content_technique = content_technique
+
+    def get_laoder(self):
+        return self.__loader
+
+    def get_preprocessor(self):
+        return self.__preprocessor
+
+    def get_content_technique(self):
+        return self.__content_technique
+
+
 class Config:
-    def __init__(self, fields_content_technique: dict = None,
-                 fields_preprocessing: dict = None,
-                 fields_loader: dict = None):
-        if fields_content_technique is None:
-            fields_content_technique = {}
-        if fields_preprocessing is None:
-            fields_preprocessing = {}
-        if fields_loader is None:
-            fields_loader = {}
-        self.__fields_content_technique = fields_content_technique
-        self.__fields_preprocessing = fields_preprocessing
-        self.__fields_loader = fields_loader
+    def __init__(self, field_content_pipeline: dict = None):
+        if field_content_pipeline is None:
+            field_content_pipeline = {}
 
-    def add_content_technique(self, field_name: str, technique):
-        self.__fields_content_technique[field_name].append(technique)       # lista di tecniche
+        self.__field_content_pipeline: dict = field_content_pipeline
 
-    def add_preprocessing_technique(self, field_name: str, technique):
-        pass
+    def add_pipeline(self, field_name: str, pipeline: FieldContentPipeline):
+        self.__field_content_pipeline[field_name].append(pipeline)
 
-    def add_loader(self, field_name: str, loader):
-        pass
+    def get_pipeline_list(self, field_name: str):
+        return self.__field_content_pipeline[field_name]
 
     def get_field_names(self):
-        return self.__fields_content_technique.keys()
-
-    def get_content_technique(self, field_name):
-        return self.__fields_content_technique[field_name]
-
-    def get_preprocessing(self, field_name):
-        return self.__fields_preprocessing[field_name]
-
-    def get_loader(self, field_name):
-        return self.__fields_loader[field_name]
+        return self.__field_content_pipeline.keys()
 
 
 class ContentAnalyzer:
     def __init__(self, item_id_list: list,
                  config: Config):
-        self.__item_id_list = item_id_list
-        self.__config = config
+        self.__item_id_list: list = item_id_list
+        self.__config: Config = config
 
     def set_config(self, config: Config):
         self.__config = config
 
     def start(self):
         items_producer = ItemsProducer.get_instance().set_config(self.__config)
+        items = []
+        field_name_list = self.__config.get_field_names()
         for item_id in self.__item_id_list:
-            item = items_producer.create_item(item_id)
+            items.append(items_producer.create_item(item_id, field_name_list))
+
+        return items
 
 
 class ItemsProducer:
@@ -65,7 +79,7 @@ class ItemsProducer:
         return ItemsProducer.__instance
 
     def __init__(self):
-        self.__config = None
+        self.__config: Config = None
         """ Virtually private constructor. """
         if ItemsProducer.__instance is not None:
             raise Exception("This class is a singleton!")
@@ -75,25 +89,23 @@ class ItemsProducer:
     def set_config(self, config: Config):
         self.__config = config
 
-    def create_item(self, item_id: str):
+    def create_item(self, item_id: str, field_name_list: list):
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
         else:
-            field_name_list = self.__config.get_field_names()
             item = Item(item_id)
             for field_name in field_name_list:
-                loader = self.__config.get_loader(field_name)
-                field_data = loader.load(item_id, field_name)
-                # possono esserci più preprocessor per field
-                preprocessor = self.__config.get_preprocessor(field_name)
-                if preprocessor is not None:
-                    field_data = preprocessor.process(field_data)
-                content_techniques = self.__config.get_content_technique(field_name)
+                pipeline_list = self.__config.get_pipeline_list(field_name)
                 field = ItemField(field_name)
-                for content_technique in content_techniques:
+                for pipeline in pipeline_list:
+                    loader = pipeline.get_loader()
+                    field_data = loader.load(item_id, field_name)
+                    preprocessor = pipeline.get_preprocessor()
+                    if preprocessor is not None:
+                        field_data = preprocessor.process(field_data)
+
+                    content_technique = pipeline.get_content_technique()
                     field.append(content_technique.produce_content(field_data))
                 item.append(field)
 
-
-
-
+            return item
