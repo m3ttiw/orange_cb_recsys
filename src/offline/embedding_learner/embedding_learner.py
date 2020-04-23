@@ -8,7 +8,7 @@ class EmbeddingLearner(ABC):
     """
     Abstract Class for the different kind of embedding.
 
-    Attributes:
+    Args:
         loader (InformationLoader): Object of the class InformationLoader.
         preprocessor (InformationProcessor): Object of the class InformationProcessor.
     """
