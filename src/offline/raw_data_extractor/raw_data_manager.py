@@ -5,6 +5,7 @@ from src.offline.raw_data_extractor.raw_information_source import RawInformation
 class RawFieldPipeline: # passaggi per estrarre e serializzare contenuto di un field
     """
     The pipeline for extracting and serializing a field of an item
+
     Args:
         field_source (RawInformationSource):
         field_serializer (InformationSerializer):

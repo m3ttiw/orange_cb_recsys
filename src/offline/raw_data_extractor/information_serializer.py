@@ -3,47 +3,64 @@ from abc import ABC, abstractmethod
 
 class InformationSerializer(ABC):
     """
-    Abstract class which deals
+    Abstract class which deals the serialization of a field (of an item) based on the type of element extracted
+
+    Args:
+        directory (str): directory where store the information
     """
     def __init__(self, directory: str):
-        """
-
-        :param directory:
-        """
         self.__directory: str = directory
 
     @abstractmethod
     def serialize(self, field_data):
         """
-        abstract method
-        :param field_data:
-        :return:
+        Serialize the raw data of a field
+        Args:
+            field_data: data extracted
         """
         pass
 
 
 class TextSerializer(InformationSerializer):
-    def __init__(self):
-        super().__init__()
+    """
+    Abstract class that generalize the serialization of a text type data extracted from a source
+    """
+    def __init__(self, directory: str):
+        super().__init__(directory)
 
     @abstractmethod
     def serialize(self, field_data):
+        """
+        Abstract method
+        """
         pass
 
 
 class ImageSerializer(InformationSerializer):
-    def __init__(self):
-        super().__init__()
+    """
+    Future feature
+    """
+    def __init__(self, directory: str):
+        super().__init__(directory)
 
     @abstractmethod
     def serialize(self, field_data):
+        """
+        Abstract method
+        """
         pass
 
 
 class SoundSerializer(InformationSerializer):
-    def __init__(self):
-        super().__init__()
+    """
+    Future feature
+    """
+    def __init__(self, directory: str):
+        super().__init__(directory)
 
     @abstractmethod
     def serialize(self, field_data):
+        """
+        Abstract method
+        """
         pass
