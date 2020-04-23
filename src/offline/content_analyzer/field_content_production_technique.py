@@ -3,21 +3,30 @@ from enum import Enum
 
 
 class FieldContentProductionTechnique(ABC):
-    def __init__(self, primitive_content):
-        self.__primitive_content = primitive_content
+    def __init__(self):
+        pass
 
-    def produce_description(self):
+    @abstractmethod
+    def produce_content(self, field_data):
         pass
 
 
-class FieldToGraph(FieldContentProductionTechnique, ABC):
+class FieldToGraph(FieldContentProductionTechnique):
     def __init__(self):
         super().__init__()
 
+    @abstractmethod
+    def produce_content(self, field_data):
+        pass
 
-class EntityLinking(FieldContentProductionTechnique, ABC):
+
+class EntityLinking(FieldContentProductionTechnique):
     def __init__(self):
         super().__init__()
+
+    @abstractmethod
+    def produce_content(self, field_data):
+        pass
 
 
 class Granularity(Enum):
@@ -32,6 +41,9 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         self.__combining_technique = combining_technique
         self.__embedding_source = embedding_source
         self.__granularity = granularity
+
+    def produce_content(self, field_data):
+        pass
 
 
 class CombiningTechnique(ABC):

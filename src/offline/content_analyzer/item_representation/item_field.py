@@ -46,7 +46,7 @@ class ItemField:
     def __eq__(self, other):
         return self.__field_name == other.__field_name
 
-    def add(self, representation: FieldContent):
+    def append(self, representation: FieldContent):
         self.__representations_list.append(representation)
 
     def name(self):

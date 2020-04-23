@@ -17,7 +17,7 @@ class Item:
         self.__id = item_id
         self.__fields = fields
 
-    def add(self, field: ItemField):
+    def append(self, field: ItemField):
         self.__fields.append(field)
 
     def remove(self, field_name: str):
