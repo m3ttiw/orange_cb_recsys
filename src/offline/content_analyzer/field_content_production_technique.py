@@ -3,6 +3,10 @@ from enum import Enum
 
 
 class FieldContentProductionTechnique(ABC):
+    """
+    Abstract class that manages to generalize the technique to use for producing the semantic description
+    of an item's field's content
+    """
     def __init__(self):
         pass
 
@@ -12,6 +16,9 @@ class FieldContentProductionTechnique(ABC):
 
 
 class FieldToGraph(FieldContentProductionTechnique):
+    """
+    Class that uses ontologies or LOD for producing the semantic description
+    """
     def __init__(self):
         super().__init__()
 
@@ -21,6 +28,9 @@ class FieldToGraph(FieldContentProductionTechnique):
 
 
 class EntityLinking(FieldContentProductionTechnique):
+    """
+    Class that uses entity linking techniques for producing the semantic description
+    """
     def __init__(self):
         super().__init__()
 
@@ -30,12 +40,19 @@ class EntityLinking(FieldContentProductionTechnique):
 
 
 class Granularity(Enum):
+    """
+    Enumeration class whose elements are the possible units to combine for generating an embedding.
+    """
     WORD = 1
     SENTENCE = 2
     DOC = 3
 
 
 class CombiningTechnique(ABC):
+    """
+    Class that generalizes the modality in which previously learned embeddings will be
+    combined to produce a semantic description.
+    """
     def __init__(self):
         pass
 
@@ -45,6 +62,9 @@ class CombiningTechnique(ABC):
 
 
 class EmbeddingSource(ABC):
+    """
+    General class whose purpose is to load the previously learned embeddings to combine.
+    """
     def __init__(self):
         pass
 
@@ -54,6 +74,17 @@ class EmbeddingSource(ABC):
 
 
 class EmbeddingTechnique(FieldContentProductionTechnique):
+    """
+    Class that can be used to combine different embeddings coming to various sources
+    in order to produce the semantic description.
+
+    Attributes:
+        combining_technique (CombiningTechnique): The technique that will be used
+        for combining the embeddings.
+        embedding_source (EmbeddingSource): Source from which to get the embeddings.
+        granularity (Granularity): It can assume three values, depending on whether you want
+        to combine words, phrases or documents.
+    """
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
                  granularity: Granularity):
@@ -63,4 +94,13 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         self.__granularity: Granularity = granularity
 
     def produce_content(self, field_data):
+        """
+        Method that builds the semantic content starting from the embeddings contained in
+        field_data.
+        Args:
+            field_data: The embeddings to combine. This attribute can be of different kinds.
+
+        Returns:
+
+        """
         pass
