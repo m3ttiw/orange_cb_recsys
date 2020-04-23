@@ -31,7 +31,7 @@ class EmbeddingField(FieldContent):
             pass
 
 
-class GraphField(FeaturesBagField):
+class GraphField(FieldContent):
     def __init__(self):
         super().__init__()
 

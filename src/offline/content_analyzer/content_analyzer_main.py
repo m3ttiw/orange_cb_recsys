@@ -32,7 +32,7 @@ class FieldContentPipeline:
         return self.__content_technique
 
 
-class Config:
+class ContentAnalyzerConfig:
     def __init__(self, field_content_pipeline: dict = None):
         if field_content_pipeline is None:
             field_content_pipeline = {}
@@ -54,11 +54,11 @@ class Config:
 
 class ContentAnalyzer:
     def __init__(self, item_id_list: list,
-                 config: Config):
+                 config: ContentAnalyzerConfig):
         self.__item_id_list: list = item_id_list
-        self.__config: Config = config
+        self.__config: ContentAnalyzerConfig = config
 
-    def set_config(self, config: Config):
+    def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
     def start(self):
@@ -82,17 +82,29 @@ class ItemsProducer:
         return ItemsProducer.__instance
 
     def __init__(self):
-        self.__config: Config = None
+        self.__config: ContentAnalyzerConfig = None
         """ Virtually private constructor. """
         if ItemsProducer.__instance is not None:
             raise Exception("This class is a singleton!")
         else:
             ItemsProducer.__instance = self
 
-    def set_config(self, config: Config):
+    def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
     def create_item(self, item_id: str, field_name_list: list):
+        """
+
+        Args:
+            item_id:
+            field_name_list:
+
+        Returns:
+
+        Raises:
+
+
+        """
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
         else:
