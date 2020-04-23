@@ -22,7 +22,7 @@ class FieldContentPipeline:
     def set_content_technique(self, content_technique: FieldContentProductionTechnique):
         self.__content_technique = content_technique
 
-    def get_laoder(self):
+    def get_loader(self):
         return self.__loader
 
     def get_preprocessor(self):
@@ -40,7 +40,10 @@ class Config:
         self.__field_content_pipeline: dict = field_content_pipeline
 
     def add_pipeline(self, field_name: str, pipeline: FieldContentPipeline):
-        self.__field_content_pipeline[field_name].append(pipeline)
+        if field_name in self.__field_content_pipeline.keys():
+            self.__field_content_pipeline[field_name].append(pipeline)
+        else:
+            self.__field_content_pipeline[field_name] = [pipeline]
 
     def get_pipeline_list(self, field_name: str):
         return self.__field_content_pipeline[field_name]
