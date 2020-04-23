@@ -6,6 +6,13 @@ from src.offline.content_analyzer.item_representation.item_field import ItemFiel
 
 
 class FieldContentPipeline:
+    """
+    The pipeline which specifies the loader, the content_technique and, if necessary, the preprocessor for a field.
+    Args:
+        loader (InformationLoader):
+        content_technique (FieldContentProductionTechnique):
+        preprocessor (InformationProcessor):
+    """
     def __init__(self, loader: InformationLoader,
                  content_technique: FieldContentProductionTechnique,
                  preprocessor: InformationProcessor = None):
@@ -14,54 +21,128 @@ class FieldContentPipeline:
         self.__content_technique: FieldContentProductionTechnique = content_technique
 
     def set_loader(self, loader: InformationLoader):
+        """
+        Set the loader
+        Args:
+            loader (InformationLoader): the loader
+        """
         self.__loader = loader
 
     def set_preprocessor(self, preprocessor: InformationProcessor):
+        """
+        Set the preprocessor
+        Args:
+            preprocessor (InformationProcessor): the preprocessor
+        """
         self.__preprocessor = preprocessor
 
     def set_content_technique(self, content_technique: FieldContentProductionTechnique):
+        """
+        Set the field semantic content production technique
+        Args:
+            content_technique (FieldContentProductionTechnique): the field semantic content production technique
+        """
         self.__content_technique = content_technique
 
     def get_loader(self):
+        """
+        Get the loader
+        Returns:
+            a InformationLoader object
+        """
         return self.__loader
 
     def get_preprocessor(self):
+        """
+        Get the preprocessor
+        Returns:
+            a InformationProcessor object
+        """
         return self.__preprocessor
 
     def get_content_technique(self):
+        """
+        Get the field semantic content production technique
+        Returns:
+            a FieldContentProductionTechnique object
+        """
         return self.__content_technique
 
 
 class ContentAnalyzerConfig:
+    """
+    Configuration for the Content analyzer that allow different pipelines to be applied to a specific field.
+    Args:
+        field_content_pipeline: <field_name, list of pipeline>
+    """
     def __init__(self, field_content_pipeline: dict = None):
         if field_content_pipeline is None:
             field_content_pipeline = {}
-
         self.__field_content_pipeline: dict = field_content_pipeline
 
     def add_pipeline(self, field_name: str, pipeline: FieldContentPipeline):
+        """
+        Add a pipeline for processing a field
+        Args:
+            field_name (str): name of the field
+            pipeline (FieldContentPipeline): pipeline for processing the field
+        """
         if field_name in self.__field_content_pipeline.keys():
             self.__field_content_pipeline[field_name].append(pipeline)
         else:
             self.__field_content_pipeline[field_name] = [pipeline]
 
     def get_pipeline_list(self, field_name: str):
+        """
+        Get the list of the pipelines for a field
+        Args:
+            field_name (str): name of the field
+
+        Returns:
+            a list of pipelines for a field
+        """
         return self.__field_content_pipeline[field_name]
 
     def get_field_names(self):
+        """
+        Get the list of the field names
+        Returns:
+            a list of str
+        """
         return self.__field_content_pipeline.keys()
 
 
 class ContentAnalyzer:
+    """
+    Class with which the user of the framework interacts, to whom the control of the content analysis phase
+    is delegated, providing the appropriate parameters with the possibility of customization on input data
+    and technique with which to obtain semantic descriptions from them.
+
+    Args:
+        item_id_list (list): list of item id
+        config (ContentAnalyzerConfig): configuration for processing the item fields
+    """
     def __init__(self, item_id_list: list,
                  config: ContentAnalyzerConfig):
         self.__item_id_list: list = item_id_list
         self.__config: ContentAnalyzerConfig = config
 
     def set_config(self, config: ContentAnalyzerConfig):
+        """
+        Set a configuration for the content analyzer
+
+        Args:
+            config (ContentAnalyzerConfig): configuration of ContentAnalyzer
+        """
         self.__config = config
 
     def start(self):
+        """
+        Begins to process the creation of the items
+
+        Returns:
+            list of Item objects
+        """
         items_producer = ItemsProducer.get_instance().set_config(self.__config)
         items = []
         field_name_list = self.__config.get_field_names()
@@ -72,10 +153,19 @@ class ContentAnalyzer:
 
 
 class ItemsProducer:
+    """
+    Singleton class which encapsulates the creation process of the items.
+    The creation process is the config of ContentAnalyzer and it is supposed to be the same for all items.
+    """
     __instance = None
 
     @staticmethod
     def get_instance():
+        """
+        returns the singleton instance
+        Returns:
+            ItemProducer object
+        """
         """ Static access method. """
         if ItemsProducer.__instance is None:
             ItemsProducer()
@@ -90,20 +180,27 @@ class ItemsProducer:
             ItemsProducer.__instance = self
 
     def set_config(self, config: ContentAnalyzerConfig):
+        """
+        Set the config of ContentAnalyzer which specifies how to process a item
+
+        Args:
+            config (ContentAnalyzerConfig): configuration of ContentAnalyzer
+        """
         self.__config = config
 
     def create_item(self, item_id: str, field_name_list: list):
         """
+        Create an item processing every field in the specified way
 
         Args:
-            item_id:
-            field_name_list:
+            item_id (str): id of the item
+            field_name_list (str): name list of fields in the item
 
         Returns:
+            Item object
 
         Raises:
-
-
+            general Exception
         """
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
