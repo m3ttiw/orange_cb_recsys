@@ -7,7 +7,7 @@ class BinaryFile(EmbeddingSource):
     This class loads the embeddings from a binary file.
 
     Attributes:
-        file_path (str): Path for the binary file containing the embeddings.
+        file_path (str): Path for the binary file containing the embeddings
     """
     def __init__(self, file_path: str):
         super().__init__()
@@ -18,7 +18,7 @@ class BinaryFile(EmbeddingSource):
         Function that loads the embeddings from the file.
 
         Returns:
-            The loaded embedding.
+            The loaded embedding
         """
         pass
 

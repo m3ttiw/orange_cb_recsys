@@ -34,14 +34,14 @@ class RawDataConfig:
     Args:
         fields_pipeline (dict): specifies the source and how to serialize data for the given field.
     """
-    def __init__(self, fields_pipeline: dict = None):
+    def __init__(self, fields_pipeline: dict[str, RawFieldPipeline] = None):
         if fields_pipeline is None:
             fields_pipeline = {}
         self.__fields_pipeline: dict = fields_pipeline
 
     def add_pipeline(self, field_name: str, field_pipeline: RawFieldPipeline):
         """
-        associate a pipeline process for a field by his field_name
+        Associate a pipeline process to the field specified by field_name
 
         Args:
             field_name (str): name of the field
@@ -81,7 +81,7 @@ class RawDataManager:
         item_id_list (list): list of items id
         config (RawDataConfig): manager configuration
     """
-    def __init__(self, item_id_list: list,
+    def __init__(self, item_id_list: list[str],
                  config: RawDataConfig):
         self.__item_id_list: list = item_id_list
         self.__config: RawDataConfig = config
