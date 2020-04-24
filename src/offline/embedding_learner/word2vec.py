@@ -1,6 +1,7 @@
 class GensimWord2Vec:
     """"
-    Implementation of the Abstract Class Word2Vec using the Gensim library.
+    Class that implements the Abstract Class Word2Vec.
+    Implementation of Word2Vec using the Gensim library.
     """
     def __init__(self):
         super().__init__()

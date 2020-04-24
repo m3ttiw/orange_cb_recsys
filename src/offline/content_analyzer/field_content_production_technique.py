@@ -4,20 +4,28 @@ from enum import Enum
 
 class FieldContentProductionTechnique(ABC):
     """
-    Abstract class that manages to generalize the technique to use for producing the semantic description
-    of an item's field's content
+    Abstract Class that manages to generalize the technique to use for producing one of the semantic description
+    of an item's field's content.
     """
     def __init__(self):
         pass
 
     @abstractmethod
     def produce_content(self, field_data):
+        """
+        Abstract Method that produce content representation.
+        Args:
+            field_data: raw data, eventually preprocessed, from which obtain content representation
+
+        Returns: instance of FieldContent
+
+        """
         pass
 
 
 class FieldToGraph(FieldContentProductionTechnique):
     """
-    Class that uses ontologies or LOD for producing the semantic description
+    Abstract Class for techniques that use ontologies or LOD for producing the content representation.
     """
     def __init__(self):
         super().__init__()
@@ -29,7 +37,7 @@ class FieldToGraph(FieldContentProductionTechnique):
 
 class EntityLinking(FieldContentProductionTechnique):
     """
-    Class that uses entity linking techniques for producing the semantic description
+    Abstract Class for implementations of entity linking techniques for producing the content representation.
     """
     def __init__(self):
         super().__init__()
@@ -41,7 +49,7 @@ class EntityLinking(FieldContentProductionTechnique):
 
 class Granularity(Enum):
     """
-    Enumeration class whose elements are the possible units to combine for generating an embedding.
+    Enumeration class whose elements are the possible units respect to which combine words for generating an embedding.
     """
     WORD = 1
     SENTENCE = 2
@@ -50,8 +58,8 @@ class Granularity(Enum):
 
 class CombiningTechnique(ABC):
     """
-    Class that generalizes the modality in which previously learned embeddings will be
-    combined to produce a semantic description.
+    Abstract Class that generalizes the modality in which imported embeddings will be
+    combined to produce a content representation.
     """
     def __init__(self):
         pass
@@ -80,10 +88,10 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
     Attributes:
         combining_technique (CombiningTechnique): The technique that will be used
-        for combining the embeddings.
-        embedding_source (EmbeddingSource): Source from which to get the embeddings.
+        for combining the embeddings
+        embedding_source (EmbeddingSource): Source from which to get the embeddings
         granularity (Granularity): It can assume three values, depending on whether you want
-        to combine words, phrases or documents.
+        to combine words relatively to words, phrases or documents
     """
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
@@ -98,7 +106,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
         Args:
-            field_data: The embeddings to combine. This attribute can be of different kinds.
+            field_data: The embeddings to combine. This attribute can be of different kinds
 
         Returns:
 

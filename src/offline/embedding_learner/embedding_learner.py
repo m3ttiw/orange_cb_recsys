@@ -6,11 +6,11 @@ from src.offline.content_analyzer.information_processor import InformationProces
 
 class EmbeddingLearner(ABC):
     """
-    Abstract Class for the different kind of embedding.
+    Abstract Class for the different kinds of embedding.
 
     Args:
-        loader (InformationLoader): Object of the class InformationLoader.
-        preprocessor (InformationProcessor): Object of the class InformationProcessor.
+        loader (InformationLoader): instance of the class InformationLoader
+        preprocessor (InformationProcessor): instance of the class InformationProcessor
     """
     def __init__(self, loader: InformationLoader, preprocessor: InformationProcessor):
         self.__loader: InformationLoader = loader
@@ -19,66 +19,54 @@ class EmbeddingLearner(ABC):
     @abstractmethod
     def start_learning(self):
         """"
-        Abstract method, implemented in the different kind of embedding to start learning.
+        Abstract method implemented in the different kinds of embedding to start learning.
         """
         pass
 
 
 class Word2Vec(EmbeddingLearner):
     """"
-    Abstract Class for the different kind of Word2Vec.
+    Abstract Class for the different implementations of Word2Vec.
     """
     def __init__(self):
         super().__init__()
 
     @abstractmethod
     def start_learning(self):
-        """"
-        Abstract Method
-        """
         pass
 
 
 class LatentSemanticAnalysis(EmbeddingLearner):
     """"
-    Abstract Class for the different kind of Latent Semantic Analysis.
+    Abstract Class for the different implementations of Latent Semantic Analysis.
     """
     def __init__(self):
         super().__init__()
 
     @abstractmethod
     def start_learning(self):
-        """"
-        Abstract Method
-        """
         pass
 
 
 class RandomIndexing(EmbeddingLearner):
     """"
-    Abstract Class for the different kind of Random Indexing.
+    Abstract Class for the different implementations of Random Indexing.
     """
     def __init__(self):
         super().__init__()
 
     @abstractmethod
     def start_learning(self):
-        """"
-        Abstract Method
-        """
         pass
 
 
 class ExplicitSemanticAnalysis(EmbeddingLearner):
     """"
-    Abstract Class for the different kind of Explicit Semantic Analysis.
+    Abstract Class for the different implementations of Explicit Semantic Analysis.
     """
     def __init__(self):
         super().__init__()
 
     @abstractmethod
     def start_learning(self):
-        """"
-        Abstract Method
-        """
         pass

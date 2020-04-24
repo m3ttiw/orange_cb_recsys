@@ -54,11 +54,11 @@ class NLP(TextProcessor):
     Class for processing a text via Natural Language Processing.
 
     Attributes:
-        stopwords_removal (bool): Whether you want to remove stop words.
-        stemming (bool): Whether you want to execute stemming.
+        stopwords_removal (bool): Whether you want to remove stop words
+        stemming (bool): Whether you want to execute stemming
         lemmatization (bool):  Whether you want to execute lemmatization
         named_entity_recognition (bool): Whether you want to execute named entity recognition
-        strip_multiple_whitespaces (bool): Whether you want to remove multiple whitespaces.
+        strip_multiple_whitespaces (bool): Whether you want to remove multiple whitespaces
     """
     def __init__(self, stopwords_removal: bool = False,
                  stemming: bool = False,

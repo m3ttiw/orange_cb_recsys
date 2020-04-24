@@ -57,7 +57,7 @@ class EmbeddingField(FieldContent):
     def __init__(self, shape: tuple):
         super().__init__()
         self.__shape: tuple = shape
-        self.__embedding_array: np.ndarray = np.ndarray(shape=self.__shape)
+        self.__embedding_array = np.ndarray(shape=self.__shape)
 
     def add_value(self, value: float, coords: tuple):
         """

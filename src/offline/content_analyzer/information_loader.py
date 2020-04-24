@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class InformationLoader(ABC):
     """
-    General class for loading raw information about an item's field
+    Abstract Class for loading raw information about an item's field.
     """
     def __init__(self):
         pass
@@ -15,7 +15,7 @@ class InformationLoader(ABC):
 
 class ImageLoader(InformationLoader):
     """
-    Abstract class to use when the field information is in image format
+    Abstract class to use when the field information is in image format.
     """
     def __init__(self):
         super().__init__()
@@ -27,7 +27,7 @@ class ImageLoader(InformationLoader):
 
 class AudioLoader(InformationLoader):
     """
-    Abstract class to use when the field information is in audio format
+    Abstract class to use when the field information is in audio format.
     """
     def __init__(self):
         super().__init__()
@@ -39,7 +39,7 @@ class AudioLoader(InformationLoader):
 
 class TextLoader(InformationLoader):
     """
-    Abstract class to use when the field information is textual
+    Abstract class to use when the field information is textual.
     """
     def __init__(self):
         super().__init__()
