@@ -41,7 +41,7 @@ class RawDataConfig:
 
     def add_pipeline(self, field_name: str, field_pipeline: RawFieldPipeline):
         """
-        associate a pipeline process for a field by his field_name
+        Associate a pipeline process to the field specified by field_name
 
         Args:
             field_name (str): name of the field

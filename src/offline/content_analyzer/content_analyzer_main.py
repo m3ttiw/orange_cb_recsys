@@ -22,57 +22,28 @@ class FieldContentPipeline:
         self.__content_technique: FieldContentProductionTechnique = content_technique
 
     def set_loader(self, loader: InformationLoader):
-        """
-        Set the loader
-        Args:
-            loader (InformationLoader): the loader
-        """
         self.__loader = loader
 
     def set_preprocessor(self, preprocessor: InformationProcessor):
-        """
-        Set the preprocessor
-        Args:
-            preprocessor (InformationProcessor): the preprocessor
-        """
         self.__preprocessor = preprocessor
 
     def set_content_technique(self, content_technique: FieldContentProductionTechnique):
-        """
-        Set the field semantic content production technique
-        Args:
-            content_technique (FieldContentProductionTechnique): the field semantic content production technique
-        """
         self.__content_technique = content_technique
 
     def get_loader(self):
-        """
-        Get the loader
-        Returns:
-            a InformationLoader object
-        """
         return self.__loader
 
     def get_preprocessor(self):
-        """
-        Get the preprocessor
-        Returns:
-            a InformationProcessor object
-        """
         return self.__preprocessor
 
     def get_content_technique(self):
-        """
-        Get the field semantic content production technique
-        Returns:
-            a FieldContentProductionTechnique object
-        """
         return self.__content_technique
 
 
 class ContentAnalyzerConfig:
     """
-    Configuration for the Content analyzer that allow different pipelines to be applied to a specific field.
+    Configuration for the Content analyzer that allows different pipelines to be applied to a specific field, in
+    order to represent the field semantic content in different ways.
     Args:
         field_content_pipeline: <field_name, list of pipeline>
     """
@@ -129,12 +100,6 @@ class ContentAnalyzer:
         self.__config: ContentAnalyzerConfig = config
 
     def set_config(self, config: ContentAnalyzerConfig):
-        """
-        Set a configuration for the content analyzer
-
-        Args:
-            config (ContentAnalyzerConfig): configuration of ContentAnalyzer
-        """
         self.__config = config
 
     def start(self):
@@ -156,7 +121,8 @@ class ContentAnalyzer:
 class ItemsProducer:
     """
     Singleton class which encapsulates the creation process of the items.
-    The creation process is the config of ContentAnalyzer and it is supposed to be the same for all items.
+    The creation process is specified in config of ContentAnalyzer and it is supposed to be the same for each
+    item.
     """
     __instance = None
 
