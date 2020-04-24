@@ -3,7 +3,7 @@ from src.offline.content_analyzer.item_representation.item_field import ItemFiel
 
 class RepresentedItems:
     def __init__(self, items: list, length: int):
-        self.__items: list = items
+        self.__items: list[Item] = []
         self.__length: int = length
 
     def serialize(self):
@@ -25,3 +25,4 @@ class Item:
 
     def serialize(self):
         pass
+

@@ -3,8 +3,8 @@ from src.offline.content_analyzer.field_content_production_technique import Comb
 
 class Centroid(CombiningTechnique):
     """"
-    Class that implements the Abstract Class Combining Technique.
-    This Class calculate the centroid given the list of weights.
+    Class that implements the Abstract Class CombiningTechnique.
+    This class calculate the centroid given the list of weights.
 
     Args:
         weights (list): list of weights, used to calculate the centroid.

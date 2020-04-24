@@ -7,7 +7,8 @@ from src.offline.content_analyzer.item_representation.item_field import ItemFiel
 
 class FieldContentPipeline:
     """
-    The pipeline which specifies the loader, the content_technique and, if necessary, the preprocessor for a field.
+    The pipeline which specifies the loader, the content_technique and, if necessary, the preprocessor for one
+    of the content representations of a field.
     Args:
         loader (InformationLoader):
         content_technique (FieldContentProductionTechnique):

@@ -3,7 +3,8 @@ from src.offline.content_analyzer.field_content_production_technique import Embe
 
 class BinaryFile(EmbeddingSource):
     """
-    Class that loads the embeddings from a binary file.
+    Class that implements the abstract class EmbeddingSource.
+    This class loads the embeddings from a binary file.
 
     Attributes:
         file_path (str): Path for the binary file containing the embeddings.

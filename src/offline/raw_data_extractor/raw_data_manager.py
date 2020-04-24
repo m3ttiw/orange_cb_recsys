@@ -7,8 +7,8 @@ class RawFieldPipeline: # passaggi per estrarre e serializzare contenuto di un f
     The pipeline for extracting and serializing a field of an item
 
     Args:
-        field_source (RawInformationSource):
-        field_serializer (InformationSerializer):
+        field_source (RawInformationSource): data source for the associated field
+        field_serializer (InformationSerializer): instance to use for serializing the field data
     """
     def __init__(self, field_source: RawInformationSource,
                  field_serializer: InformationSerializer):
@@ -16,39 +16,15 @@ class RawFieldPipeline: # passaggi per estrarre e serializzare contenuto di un f
         self.__field_serializer: InformationSerializer = field_serializer
 
     def get_field_source(self):
-        """
-        Get the source
-
-        Returns:
-            source (RawInformationSource)
-        """
         return self.__field_source
 
     def get_field_serializer(self):
-        """
-        Get the serializer
-
-        Returns:
-            serializer (InformationSerializer)
-        """
         return self.__field_serializer
 
     def set_field_source(self, field_source: RawInformationSource):
-        """
-        Set a source for the pipeline
-
-        Args:
-            field_source (RawInformationSource): source
-        """
         self.__field_source = field_source
 
     def set_field_serializer(self, field_serializer: InformationSerializer):
-        """
-        Set a serializer for the pipeline
-
-        Args:
-            field_serializer (InformationSerializer): serializer
-        """
         self.__field_serializer = field_serializer
 
 
@@ -56,7 +32,7 @@ class RawDataConfig:
     """
     Configuration of RawDataManager
     Args:
-        fields_pipeline (dict): <field_name, pipeline>
+        fields_pipeline (dict): specifies the source and how to serialize data for the given field.
     """
     def __init__(self, fields_pipeline: dict = None):
         if fields_pipeline is None:
@@ -112,7 +88,7 @@ class RawDataManager:
 
     def start(self):
         """
-        Begins to extract data from the source and load it into the framework
+        Begins to extract data from the source and serializing them according to ways specified in the config
         """
         field_names = self.__config.get_field_names()
 

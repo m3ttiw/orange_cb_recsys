@@ -19,7 +19,7 @@ class RawInformationSource(ABC):
             field_name (str): name of the field
 
         Returns:
-            data of a field
+            data of the given field
         """
         pass
 
@@ -39,9 +39,6 @@ class CSVFile(RawInformationSource):
     @abstractmethod
     def extract_field_data(self, item_id: str,
                            field_name: str):
-        """
-        Abstract method
-        """
         pass
 
 
@@ -58,9 +55,6 @@ class TextFile(RawInformationSource):
     @abstractmethod
     def extract_field_data(self, item_id: str,
                            field_name: str):
-        """
-        Abstract method
-        """
         pass
 
 
@@ -72,7 +66,7 @@ class SQLDatabase(RawInformationSource):
             username (str): username for the access
             password (str): password for the access
             database_name (str): name of database
-            table_name (str):
+            table_name (str): name of the database table where data is stored
     """
     def __init__(self, host: str,
                  username: str,
@@ -89,7 +83,4 @@ class SQLDatabase(RawInformationSource):
     @abstractmethod
     def extract_field_data(self, item_id: str,
                            field_name: str):
-        """
-        Abstract method
-        """
         pass
