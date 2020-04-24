@@ -47,7 +47,7 @@ class ContentAnalyzerConfig:
     Args:
         field_content_pipeline: <field_name, list of pipeline>
     """
-    def __init__(self, field_content_pipeline: dict = None):
+    def __init__(self, field_content_pipeline: dict[str, [FieldContentPipeline]] = None):
         if field_content_pipeline is None:
             field_content_pipeline = {}
         self.__field_content_pipeline: dict = field_content_pipeline
@@ -94,9 +94,9 @@ class ContentAnalyzer:
         item_id_list (list): list of item id
         config (ContentAnalyzerConfig): configuration for processing the item fields
     """
-    def __init__(self, item_id_list: list,
+    def __init__(self, item_id_list: list[str],
                  config: ContentAnalyzerConfig):
-        self.__item_id_list: list = item_id_list
+        self.__item_id_list: list[str] = item_id_list
         self.__config: ContentAnalyzerConfig = config
 
     def set_config(self, config: ContentAnalyzerConfig):
@@ -155,7 +155,7 @@ class ItemsProducer:
         """
         self.__config = config
 
-    def create_item(self, item_id: str, field_name_list: list):
+    def create_item(self, item_id: str, field_name_list: list[str]):
         """
         Create an item processing every field in the specified way
 
