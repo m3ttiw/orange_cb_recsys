@@ -98,7 +98,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
         Args:
-            field_data: The embeddings to combine. This attribute can be of different kinds.
+            field_data: The embeddings to combine.
 
         Returns:
 

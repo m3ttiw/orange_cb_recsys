@@ -1,6 +1,8 @@
 from abc import ABC
 import numpy as np
 
+from typing import List, Dict, Tuple
+
 
 class FieldContent(ABC):
     """
@@ -20,11 +22,11 @@ class FeaturesBagField(FieldContent):
     Args:
         features (dict): <str, object> the dictionary where feature are indexed
     """
-    def __init__(self, features: dict[str, object] = None):
+    def __init__(self, features: Dict[str, object] = None):
         super().__init__()
         if features is None:
             features = {}
-        self.__features: dict = features
+        self.__features: Dict[str, object] = features
 
     def add_feature(self, feature_key: str, feature_value):
         """
@@ -54,9 +56,9 @@ class EmbeddingField(FieldContent):
     Args:
         shape (tuple): is the shape of the array
     """
-    def __init__(self, shape: tuple):
+    def __init__(self, shape: Tuple):
         super().__init__()
-        self.__shape: tuple = shape
+        self.__shape: Tuple = shape
         self.__embedding_array = np.ndarray(shape=self.__shape)
 
     def add_value(self, value: float, coords: tuple):
@@ -91,11 +93,11 @@ class ItemField:
         field_name (str): the name of the field
         representations_list (list<FieldContent>): the list of the representations.
     """
-    def __init__(self, field_name: str, representations_list: list[FieldContent] = None):
+    def __init__(self, field_name: str, representations_list: List[FieldContent] = None):
         if representations_list is None:
             representations_list = []
         self.__field_name: str = field_name
-        self.__representations_list: list = representations_list
+        self.__representations_list: List[FieldContent] = representations_list
 
     def __eq__(self, other):
         """

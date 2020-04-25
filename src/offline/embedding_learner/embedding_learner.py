@@ -6,7 +6,7 @@ from src.offline.content_analyzer.information_processor import InformationProces
 
 class EmbeddingLearner(ABC):
     """
-    Abstract Class for the different kind of embedding.
+    Abstract Class for the different kinds of embedding.
 
     Args:
         loader (InformationLoader): Instance of the class InformationLoader.
@@ -38,7 +38,7 @@ class Word2Vec(EmbeddingLearner):
 
 class LatentSemanticAnalysis(EmbeddingLearner):
     """"
-    Abstract Class for the different kind of Latent Semantic Analysis.
+    Abstract Class for the different kinds of Latent Semantic Analysis.
     """
     def __init__(self):
         super().__init__()

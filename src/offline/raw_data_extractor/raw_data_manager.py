@@ -1,3 +1,5 @@
+from typing import Dict, List
+
 from src.offline.raw_data_extractor.information_serializer import InformationSerializer
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
@@ -34,10 +36,10 @@ class RawDataConfig:
     Args:
         fields_pipeline (dict): specifies the source and how to serialize data for the given field.
     """
-    def __init__(self, fields_pipeline: dict[str, RawFieldPipeline] = None):
+    def __init__(self, fields_pipeline: Dict[str, RawFieldPipeline] = None):
         if fields_pipeline is None:
             fields_pipeline = {}
-        self.__fields_pipeline: dict = fields_pipeline
+        self.__fields_pipeline: Dict[str, RawFieldPipeline] = fields_pipeline
 
     def add_pipeline(self, field_name: str, field_pipeline: RawFieldPipeline):
         """
@@ -81,9 +83,9 @@ class RawDataManager:
         item_id_list (list): list of items id
         config (RawDataConfig): manager configuration
     """
-    def __init__(self, item_id_list: list[str],
+    def __init__(self, item_id_list: List[str],
                  config: RawDataConfig):
-        self.__item_id_list: list = item_id_list
+        self.__item_id_list: List[str] = item_id_list
         self.__config: RawDataConfig = config
 
     def start(self):

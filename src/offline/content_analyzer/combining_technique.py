@@ -1,5 +1,7 @@
 from src.offline.content_analyzer.field_content_production_technique import CombiningTechnique
 
+from typing import List
+
 
 class Centroid(CombiningTechnique):
     """"
@@ -9,9 +11,9 @@ class Centroid(CombiningTechnique):
     Args:
         weights (list): list of weights, used to calculate the centroid.
     """
-    def __init__(self, weights: list = None):
+    def __init__(self, weights: List[float] = None):
         super().__init__()
-        self.__weights: list = weights
+        self.__weights: List[float] = weights
 
     def combine(self):
         """"

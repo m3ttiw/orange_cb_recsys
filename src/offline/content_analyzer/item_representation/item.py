@@ -1,5 +1,7 @@
 from src.offline.content_analyzer.item_representation.item_field import ItemField
 
+from typing import List
+
 
 class Item:
     """
@@ -8,11 +10,11 @@ class Item:
         item_id (str): identifier
         fields (list[ItemField]): list of the fields of an item
     """
-    def __init__(self, item_id: str, fields: list[ItemField] = None):
+    def __init__(self, item_id: str, fields: List[ItemField] = None):
         if fields is None:
             fields = []         # list o dict
         self.__id: str = item_id
-        self.__fields: list = fields
+        self.__fields: List[ItemField] = fields
 
     def append(self, field: ItemField):
         """
@@ -42,11 +44,16 @@ class RepresentedItems:
     Class that collect the Items created and serialize the entire collection.
     Args:
         items (list<Item>): list of Items
-        length:
+        length: number of items
     """
-    def __init__(self, items: list[Item], length: int):
-        self.__items: list[Item] = []
+    def __init__(self, length: int = 0, items: List[Item] = None,):
+        if items is None:
+            items = []
+        self.__items: List[Item] = items
         self.__length: int = length
+
+    def append(self, item: Item):
+        self.__items.append(item)
 
     def serialize(self):
         """
