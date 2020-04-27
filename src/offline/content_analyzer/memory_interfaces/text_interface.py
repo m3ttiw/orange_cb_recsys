@@ -3,7 +3,7 @@ from offline.content_analyzer.memory_interfaces.memory_interfaces import TextInt
 
 class IndexInterface(TextInterface):
     """
-    Abstract class that serialize text in a index structure
+    Abstract class that serialize and load text in a index structure
     """
     def __init__(self, directory: str):
         super().__init__(directory)

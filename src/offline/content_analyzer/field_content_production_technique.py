@@ -54,7 +54,7 @@ class EntityLinking(FieldContentProductionTechnique):
 
 class Granularity(Enum):
     """
-    Enumeration class whose elements are the possible units to combine for generating an embedding.
+    Enumeration class whose elements are the possible units respect to which combine for generating an embedding.
     """
     WORD = 1
     SENTENCE = 2
@@ -96,7 +96,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         for combining the embeddings.
         embedding_source (EmbeddingSource): Source from which to get the embeddings.
         granularity (Granularity): It can assume three values, depending on whether you want
-        to combine words, phrases or documents.
+        to combine relatively to words, phrases or documents.
     """
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
@@ -116,4 +116,5 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         Returns:
 
         """
+
         print("Creating matrix")

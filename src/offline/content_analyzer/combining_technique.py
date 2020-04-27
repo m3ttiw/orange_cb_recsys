@@ -21,4 +21,5 @@ class Centroid(CombiningTechnique):
         """
         pass
 
+
 # your combining technique
