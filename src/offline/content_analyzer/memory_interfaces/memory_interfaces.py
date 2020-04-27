@@ -3,7 +3,8 @@ from abc import ABC, abstractmethod
 
 class InformationInterface(ABC):
     """
-    Abstract class which deals the serialization and deserialization of a field (of an item) based on the type of element extracted.
+    Abstract class that deals with the serialization and deserialization of a field (of an item) content
+    basing on the type of element extracted.
 
     Args:
         directory (str): directory where to store the serialized content and where to access for deserialization
@@ -20,7 +21,7 @@ class InformationInterface(ABC):
         """
         Serialize the raw data of a field
         Args:
-            field_data: data extracted
+            field_data: data to serialize
         """
         pass
 
