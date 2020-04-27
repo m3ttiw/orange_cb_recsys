@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from src.offline.raw_data_extractor.information_serializer import InformationSerializer
+from offline.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
 
@@ -10,24 +10,24 @@ class RawFieldPipeline: # passaggi per estrarre e serializzare contenuto di un f
 
     Args:
         field_source (RawInformationSource): data source for the associated field
-        field_serializer (InformationSerializer): instance to use for serializing the field data
+        memory_interface (InformationSerializer): instance to use for serializing the field data
     """
     def __init__(self, field_source: RawInformationSource,
-                 field_serializer: InformationSerializer):
+                 memory_interface: InformationInterface):
         self.__field_source: RawInformationSource = field_source
-        self.__field_serializer: InformationSerializer = field_serializer
+        self.__memory_interface: InformationInterface = memory_interface
 
     def get_field_source(self):
         return self.__field_source
 
-    def get_field_serializer(self):
-        return self.__field_serializer
+    def get_memory_interface(self):
+        return self.__memory_interface
 
     def set_field_source(self, field_source: RawInformationSource):
         self.__field_source = field_source
 
-    def set_field_serializer(self, field_serializer: InformationSerializer):
-        self.__field_serializer = field_serializer
+    def set_memory_interface(self, field_serializer: InformationInterface):
+        self.__memory_interface = field_serializer
 
 
 class RawDataConfig:
@@ -95,9 +95,12 @@ class RawDataManager:
         field_names = self.__config.get_field_names()
 
         for item_id in self.__item_id_list:
+            print("Item " + str(item_id))
             for field_name in field_names:
+                print("Field " + field_name)
                 field_source = self.__config.get_pipeline(field_name).get_field_source()
                 field_data = field_source.extract_field_data(item_id, field_name)
-                field_serializer = self.__config.get_pipeline(field_name).get_field_serializer()
-                field_serializer.serialize(field_data)
+                memory_interface = self.__config.get_pipeline(field_name).get_memory_interface()
+                memory_interface.serialize(field_data)
+            print("\n")
 

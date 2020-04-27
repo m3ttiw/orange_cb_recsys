@@ -20,6 +20,6 @@ class BinaryFile(EmbeddingSource):
         Returns:
             The loaded embedding
         """
-        pass
+        print("loading pre-trained embedding store in this binary file")
 
 # your embedding source

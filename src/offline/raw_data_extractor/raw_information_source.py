@@ -24,6 +24,23 @@ class RawInformationSource(ABC):
         pass
 
 
+class JSONFile(RawInformationSource):
+    """
+    Abstract class for the data acquisition from a json file
+    """
+    def __init__(self, file_path: str):
+        """
+        Args:
+            file_path (str): path of the file
+        """
+        super().__init__()
+        self.__file_path: str = file_path
+
+    def extract_field_data(self, item_id: str,
+                           field_name: str):
+        print("raw data loading")
+
+
 class CSVFile(RawInformationSource):
     """
     Abstract class for the data acquisition from a csv file
@@ -36,7 +53,6 @@ class CSVFile(RawInformationSource):
         super().__init__()
         self.__file_path: str = file_path
 
-    @abstractmethod
     def extract_field_data(self, item_id: str,
                            field_name: str):
         pass
@@ -52,7 +68,6 @@ class TextFile(RawInformationSource):
         super().__init__()
         self.__file_path: str = file_path
 
-    @abstractmethod
     def extract_field_data(self, item_id: str,
                            field_name: str):
         pass
@@ -80,7 +95,6 @@ class SQLDatabase(RawInformationSource):
         self.__database_name: str = database_name
         self.__table_name: str = table_name
 
-    @abstractmethod
     def extract_field_data(self, item_id: str,
                            field_name: str):
         pass

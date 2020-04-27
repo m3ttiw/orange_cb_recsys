@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from enum import Enum
+from typing import List
+
+from offline.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 
 
 class FieldContentProductionTechnique(ABC):
@@ -25,6 +28,16 @@ class FieldToGraph(FieldContentProductionTechnique):
     @abstractmethod
     def produce_content(self, field_data):
         pass
+
+
+class TfIdfTechnique(FieldContentProductionTechnique):
+    def __init__(self, memory_interface: InformationInterface, item_id_list: List[str]):
+        self.__memory_interface = memory_interface
+        self.__item_id_list = item_id_list
+        super().__init__()
+
+    def produce_content(self, field_data):
+        print("Creating bag of words")
 
 
 class EntityLinking(FieldContentProductionTechnique):
@@ -103,4 +116,4 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         Returns:
 
         """
-        pass
+        print("Creating matrix")

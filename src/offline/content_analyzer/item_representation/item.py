@@ -46,7 +46,7 @@ class RepresentedItems:
         items (list<Item>): list of Items
         length: number of items
     """
-    def __init__(self, length: int = 0, items: List[Item] = None,):
+    def __init__(self, length: int = 0, items: List[Item] = None):
         if items is None:
             items = []
         self.__items: List[Item] = items

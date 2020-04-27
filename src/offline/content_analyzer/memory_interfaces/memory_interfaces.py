@@ -1,15 +1,19 @@
 from abc import ABC, abstractmethod
 
 
-class InformationSerializer(ABC):
+class InformationInterface(ABC):
     """
-    Abstract class which deals the serialization of a field (of an item) based on the type of element extracted.
+    Abstract class which deals the serialization and deserialization of a field (of an item) based on the type of element extracted.
 
     Args:
-        directory (str): directory where to store the serialized content
+        directory (str): directory where to store the serialized content and where to access for deserialization
     """
     def __init__(self, directory: str):
         self.__directory: str = directory
+
+    @abstractmethod
+    def load(self, item_id: str, field_name: str):
+        pass
 
     @abstractmethod
     def serialize(self, field_data):
@@ -21,12 +25,17 @@ class InformationSerializer(ABC):
         pass
 
 
-class TextSerializer(InformationSerializer):
+class ImageInterface(InformationInterface):
     """
-    Abstract class that generalizes the serialization of a text type data extracted from a source
+    Future feature
+    Abstract class to use when the field information is in image format.
     """
     def __init__(self, directory: str):
         super().__init__(directory)
+
+    @abstractmethod
+    def load(self, item_id: str, field_name: str):
+        pass
 
     @abstractmethod
     def serialize(self, field_data):
@@ -36,12 +45,17 @@ class TextSerializer(InformationSerializer):
         pass
 
 
-class ImageSerializer(InformationSerializer):
+class AudioInterface(InformationInterface):
     """
     Future feature
+    Abstract class to use when the field information is in audio format.
     """
     def __init__(self, directory: str):
         super().__init__(directory)
+
+    @abstractmethod
+    def load(self, item_id: str, field_name: str):
+        pass
 
     @abstractmethod
     def serialize(self, field_data):
@@ -51,12 +65,16 @@ class ImageSerializer(InformationSerializer):
         pass
 
 
-class SoundSerializer(InformationSerializer):
+class TextInterface(InformationInterface):
     """
-    Future feature
+    Abstract class to use when the field information is textual.
     """
     def __init__(self, directory: str):
         super().__init__(directory)
+
+    @abstractmethod
+    def load(self, item_id: str, field_name: str):
+        pass
 
     @abstractmethod
     def serialize(self, field_data):

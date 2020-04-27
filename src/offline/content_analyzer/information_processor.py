@@ -5,6 +5,7 @@ class InformationProcessor(ABC):
     """
     General class for data processing.
     """
+
     def __init__(self):
         pass
 
@@ -17,6 +18,7 @@ class ImageProcessor(InformationProcessor):
     """
     Abstract class for image processing.
     """
+
     def __init__(self):
         super().__init__()
 
@@ -29,6 +31,7 @@ class AudioProcessor(InformationProcessor):
     """
     Abstract class for audio processing.
     """
+
     def __init__(self):
         super().__init__()
 
@@ -41,6 +44,7 @@ class TextProcessor(InformationProcessor):
     """
     Abstract class for raw text processing.
     """
+
     def __init__(self):
         super().__init__()
 
@@ -60,17 +64,20 @@ class NLP(TextProcessor):
         named_entity_recognition (bool): Whether you want to execute named entity recognition
         strip_multiple_whitespaces (bool): Whether you want to remove multiple whitespaces
     """
+
     def __init__(self, stopwords_removal: bool = False,
                  stemming: bool = False,
                  lemmatization: bool = False,
                  named_entity_recognition: bool = False,
-                 strip_multiple_whitespaces: bool = True):
+                 strip_multiple_whitespaces: bool = True,
+                 url_tagging: bool = False):
         super().__init__()
         self.__stopwords_removal: bool = stopwords_removal
         self.__stemming: bool = stemming
         self.__lemmatization: bool = lemmatization
         self.__named_entity_recognition: bool = named_entity_recognition
         self.__strip_multiple_whitespaces: bool = strip_multiple_whitespaces
+        self.__url_tagging: bool = url_tagging
 
     @abstractmethod
     def process(self, field_data):
