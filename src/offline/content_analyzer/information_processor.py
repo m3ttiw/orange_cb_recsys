@@ -57,12 +57,13 @@ class NLP(TextProcessor):
     """
     Class for processing a text via Natural Language Processing.
 
-    Attributes:
+    Args:
         stopwords_removal (bool): Whether you want to remove stop words
         stemming (bool): Whether you want to execute stemming
         lemmatization (bool):  Whether you want to execute lemmatization
         named_entity_recognition (bool): Whether you want to execute named entity recognition
         strip_multiple_whitespaces (bool): Whether you want to remove multiple whitespaces
+        url_tagging (bool): Whether you want to tag the urls in the text and to replace with "<URL>"
     """
 
     def __init__(self, stopwords_removal: bool = False,

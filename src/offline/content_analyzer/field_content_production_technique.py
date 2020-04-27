@@ -31,6 +31,12 @@ class FieldToGraph(FieldContentProductionTechnique):
 
 
 class TfIdfTechnique(FieldContentProductionTechnique):
+    """
+    Class that produce a Bag of word with tf-idf metric
+    Args:
+        memory_interface (InformationInterface): the memory interface for managing the data stored
+        item_id_list (List[str]): list of item id
+    """
     def __init__(self, memory_interface: InformationInterface, item_id_list: List[str]):
         self.__memory_interface = memory_interface
         self.__item_id_list = item_id_list
