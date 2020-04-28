@@ -11,8 +11,8 @@ class GensimWord2Vec(Word2Vec):
     def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
         super().__init__(loader, preprocessor)
 
-    def start_training(self):
+    def start_learning(self):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Word2vec.
         """
-        print("training")
+        print("learning")
