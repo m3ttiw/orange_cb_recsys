@@ -2,7 +2,7 @@ from offline.content_analyzer.content_analyzer_main import ContentAnalyzerConfig
 from offline.content_analyzer.embedding_source import BinaryFile
 from offline.content_analyzer.entity_linking import BabelPyEntityLinking
 from offline.content_analyzer.field_content_production_technique import TfIdfTechnique, EmbeddingTechnique, Granularity
-from offline.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from offline.memory_interfaces.text_interface import IndexInterface
 from offline.content_analyzer.nlp import OpenNLP
 from offline.raw_data_extractor.raw_data_manager import RawFieldPipeline, RawDataConfig, RawDataManager
 from offline.raw_data_extractor.raw_information_source import JSONFile
