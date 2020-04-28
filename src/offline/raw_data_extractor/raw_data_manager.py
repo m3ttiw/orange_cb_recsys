@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from offline.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
+from offline.memory_interfaces.memory_interfaces import InformationInterface
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
 

@@ -1,4 +1,4 @@
-from offline.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
+from offline.memory_interfaces.memory_interfaces import InformationInterface
 from src.offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
 from src.offline.content_analyzer.information_processor import InformationProcessor
 from src.offline.content_analyzer.item_representation.item import Item, RepresentedItems

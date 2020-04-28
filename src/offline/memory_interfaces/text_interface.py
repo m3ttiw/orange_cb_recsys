@@ -1,4 +1,4 @@
-from offline.content_analyzer.memory_interfaces.memory_interfaces import TextInterface
+from offline.memory_interfaces.memory_interfaces import TextInterface
 
 
 class IndexInterface(TextInterface):
