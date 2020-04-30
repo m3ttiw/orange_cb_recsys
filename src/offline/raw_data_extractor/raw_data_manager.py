@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from offline.memory_interfaces.memory_interfaces import InformationInterface
-from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
+from offline.raw_data_extractor.raw_information_source import RawInformationSource
 
 
 class RawFieldPipeline: # passaggi per estrarre e serializzare contenuto di un field

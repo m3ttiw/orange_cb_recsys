@@ -1,8 +1,8 @@
 from offline.memory_interfaces.memory_interfaces import InformationInterface
-from src.offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
-from src.offline.content_analyzer.information_processor import InformationProcessor
-from src.offline.content_analyzer.item_representation.item import Item, RepresentedItems
-from src.offline.content_analyzer.item_representation.item_field import ItemField
+from offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
+from offline.content_analyzer.information_processor import InformationProcessor
+from offline.content_analyzer.item_representation.item import Item, RepresentedItems
+from offline.content_analyzer.item_representation.item_field import ItemField
 
 from typing import List, Dict
 

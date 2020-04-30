@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from src.offline.memory_interfaces.memory_interfaces import InformationInterface
-from src.offline.content_analyzer.information_processor import InformationProcessor
+from offline.memory_interfaces.memory_interfaces import InformationInterface
+from offline.content_analyzer.information_processor import InformationProcessor
 
 
 class EmbeddingLearner(ABC):

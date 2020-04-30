@@ -1,4 +1,4 @@
-from src.offline.content_analyzer.item_representation.item_field import ItemField
+from offline.content_analyzer.item_representation.item_field import ItemField
 
 from typing import List
 
@@ -61,4 +61,4 @@ class RepresentedItems:
         Returns:
 
         """
-        pass                # forse non necessario (?)
+        pass                
