@@ -13,9 +13,9 @@ items_id_list = extract_ids("D:\\Users\\robb\\Desktop\\ml-1m\\movies.dat", 0, ":
 print("FASE 1")
 print("##################################################")
 
-title_raw_data_pipeline = RawFieldPipeline(JSONFile("example_path"), IndexInterface("example_output_directory"))
+title_raw_data_pipeline = RawFieldPipeline(JSONFile(), IndexInterface("example_output_directory"))
 config_dict = {"title": title_raw_data_pipeline}
-plot_raw_data_pipeline = RawFieldPipeline(JSONFile("example_path"), IndexInterface("example_output_directory"))
+plot_raw_data_pipeline = RawFieldPipeline(JSONFile(), IndexInterface("example_output_directory"))
 config_dict["plot"] = plot_raw_data_pipeline
 raw_data_config = RawDataConfig(config_dict)
 raw_data_manager = RawDataManager(items_id_list, raw_data_config).fit()
