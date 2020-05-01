@@ -88,7 +88,7 @@ class RawDataManager:
         self.__item_id_list: List[str] = item_id_list
         self.__config: RawDataConfig = config
 
-    def start(self):
+    def fit(self):
         """
         Begins to extract data from the source and serializing them according to ways specified in the config
         """

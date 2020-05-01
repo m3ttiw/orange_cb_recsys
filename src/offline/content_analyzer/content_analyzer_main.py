@@ -107,7 +107,7 @@ class ContentAnalyzer:
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
-    def start(self):
+    def fit(self):
         """
         Begins to process the creation of the items
 

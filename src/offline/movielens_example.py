@@ -18,7 +18,7 @@ config_dict = {"title": title_raw_data_pipeline}
 plot_raw_data_pipeline = RawFieldPipeline(JSONFile("example_path"), IndexInterface("example_output_directory"))
 config_dict["plot"] = plot_raw_data_pipeline
 raw_data_config = RawDataConfig(config_dict)
-raw_data_manager = RawDataManager(items_id_list, raw_data_config).start()
+raw_data_manager = RawDataManager(items_id_list, raw_data_config).fit()
 
 print("FASE 2")
 print("##################################################")
@@ -46,4 +46,4 @@ plot_content_pipeline_embedding = FieldContentPipeline(raw_data_config.get_pipel
 
 content_analyzer_config.add_pipeline("plot", plot_content_pipeline_embedding)
 content_analyzer = ContentAnalyzer(items_id_list, content_analyzer_config)
-represented_items = content_analyzer.start()
+represented_items = content_analyzer.fit()
