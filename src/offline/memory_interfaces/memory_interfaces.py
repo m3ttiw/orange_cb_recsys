@@ -13,16 +13,25 @@ class InformationInterface(ABC):
         self.__directory: str = directory
 
     @abstractmethod
-    def load(self, item_id: str, field_name: str):
+    def new_item(self):
         pass
 
     @abstractmethod
-    def serialize(self, field_data):
+    def __iter__(self):
+        pass
+
+    @abstractmethod
+    def serialize(self, field_name: str, field_data):
         """
         Serialize the raw data of a field
         Args:
             field_data: data to serialize
+            :param field_name:
         """
+        pass
+
+    @abstractmethod
+    def close_item(self):
         pass
 
 
@@ -35,11 +44,15 @@ class ImageInterface(InformationInterface):
         super().__init__(directory)
 
     @abstractmethod
-    def load(self, item_id: str, field_name: str):
+    def new_item(self):
         pass
 
     @abstractmethod
-    def serialize(self, field_data):
+    def __iter__(self):
+        pass
+
+    @abstractmethod
+    def serialize(self, field_name: str, field_data):
         """
         Abstract method
         """
@@ -55,11 +68,15 @@ class AudioInterface(InformationInterface):
         super().__init__(directory)
 
     @abstractmethod
-    def load(self, item_id: str, field_name: str):
+    def new_item(self):
         pass
 
     @abstractmethod
-    def serialize(self, field_data):
+    def __iter__(self):
+        pass
+
+    @abstractmethod
+    def serialize(self, field_name: str, field_data):
         """
         Abstract method
         """
@@ -74,11 +91,15 @@ class TextInterface(InformationInterface):
         super().__init__(directory)
 
     @abstractmethod
-    def load(self, item_id: str, field_name: str):
+    def new_item(self):
         pass
 
     @abstractmethod
-    def serialize(self, field_data):
+    def __iter__(self):
+        pass
+
+    @abstractmethod
+    def serialize(self, field_name: str, field_data):
         """
         Abstract method
         """

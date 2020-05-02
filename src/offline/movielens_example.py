@@ -8,18 +8,15 @@ from offline.raw_data_extractor.raw_data_manager import RawFieldPipeline, RawDat
 from offline.raw_data_extractor.raw_information_source import JSONFile
 from offline.utils.id_utils import extract_ids
 
-items_id_list = extract_ids("D:\\Users\\robb\\Desktop\\ml-1m\\movies.dat", 0, "::", 10, 20)
 
 print("FASE 1")
 print("##################################################")
 
-title_raw_data_pipeline = RawFieldPipeline(JSONFile(), IndexInterface("example_output_directory"))
-config_dict = {"title": title_raw_data_pipeline}
-plot_raw_data_pipeline = RawFieldPipeline(JSONFile(), IndexInterface("example_output_directory"))
-config_dict["plot"] = plot_raw_data_pipeline
-raw_data_config = RawDataConfig(config_dict)
-raw_data_manager = RawDataManager(items_id_list, raw_data_config).fit()
+config_dict = {"plot": IndexInterface("./test-index-plot")}
+raw_data_config = RawDataConfig(JSONFile("movies_info.json"), "imdbID", config_dict)
+raw_data_manager = RawDataManager(raw_data_config).fit()
 
+"""
 print("FASE 2")
 print("##################################################")
 
@@ -47,3 +44,4 @@ plot_content_pipeline_embedding = FieldContentPipeline(raw_data_config.get_pipel
 content_analyzer_config.add_pipeline("plot", plot_content_pipeline_embedding)
 content_analyzer = ContentAnalyzer(items_id_list, content_analyzer_config)
 represented_items = content_analyzer.fit()
+"""

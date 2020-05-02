@@ -1,8 +1,8 @@
 from offline.memory_interfaces.memory_interfaces import InformationInterface
 from offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
 from offline.content_analyzer.information_processor import InformationProcessor
-from offline.content_analyzer.item_representation.item import Item, RepresentedItems
-from offline.content_analyzer.item_representation.item_field import ItemField
+from offline.content_analyzer.item_representation.content import Content, RepresentedItems
+from offline.content_analyzer.item_representation.content_field import ContentField
 
 from typing import List, Dict
 
@@ -180,11 +180,11 @@ class ItemsProducer:
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
         else:
-            item = Item(item_id)
+            item = Content(item_id)
             for field_name in field_name_list:
                 print("Creating field:", field_name)
                 pipeline_list = self.__config.get_pipeline_list(field_name)
-                field = ItemField(field_name)
+                field = ContentField(field_name)
                 i = 1
                 for pipeline in pipeline_list:
                     print("Representation", str(i), " for field", field_name)

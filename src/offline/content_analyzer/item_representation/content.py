@@ -1,26 +1,26 @@
-from offline.content_analyzer.item_representation.item_field import ItemField
+from offline.content_analyzer.item_representation.content_field import ContentField
 
 from typing import List
 
 
-class Item:
+class Content:
     """
     A Item is a list of his fields, identified by a string id
     Args:
         item_id (str): identifier
-        fields (list[ItemField]): list of the fields of an item
+        fields (list[ContentField]): list of the fields of an item
     """
-    def __init__(self, item_id: str, fields: List[ItemField] = None):
+    def __init__(self, item_id: str, fields: List[ContentField] = None):
         if fields is None:
             fields = []         # list o dict
         self.__id: str = item_id
-        self.__fields: List[ItemField] = fields
+        self.__fields: List[ContentField] = fields
 
-    def append(self, field: ItemField):
+    def append(self, field: ContentField):
         """
         append a field to the fields list
         Args:
-            field (ItemField): the field to append
+            field (ContentField): the field to append
         """
         self.__fields.append(field)
 
@@ -30,7 +30,7 @@ class Item:
         Args:
             field_name (str): the name of the field to remove
         """
-        self.__fields.pop(self.__fields.index(ItemField(field_name)))
+        self.__fields.pop(self.__fields.index(ContentField(field_name)))
 
     def serialize(self):
         """
@@ -46,13 +46,13 @@ class RepresentedItems:
         items (list<Item>): list of Items
         length: number of items
     """
-    def __init__(self, length: int = 0, items: List[Item] = None):
+    def __init__(self, length: int = 0, items: List[Content] = None):
         if items is None:
             items = []
-        self.__items: List[Item] = items
+        self.__items: List[Content] = items
         self.__length: int = length
 
-    def append(self, item: Item):
+    def append(self, item: Content):
         self.__items.append(item)
 
     def serialize(self):

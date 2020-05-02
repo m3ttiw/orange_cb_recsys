@@ -10,23 +10,22 @@ class RawDataConfig:
     """
     Configuration of RawDataManager
     Args:
-        fields_pipeline (dict): specifies the source and how to serialize data for the given field.
+
     """
-    def __init__(self, json_path: str = None,
+    def __init__(self, source: RawInformationSource = None,
                  id_field_name: str = None,
                  fields_interface: Dict[str, InformationInterface] = None):
-        # dobbiamo specificare come serializzare
         if fields_interface is None:
             fields_interface = {}
         self.__fields_interface: Dict[str, InformationInterface] = fields_interface
         self.__id_field_name = id_field_name
-        self.__json_path = json_path
+        self.__source = source
 
-    def set_json_path(self, json_path: str):
-        self.__json_path = json_path
+    def set_source(self, source: str):
+        self.__source = source
 
-    def get_json_path(self):
-        return self.__json_path
+    def get_source(self):
+        return self.__source
 
     def set_id_field_name(self, id_field_name: str):
         self.__id_field_name = id_field_name
@@ -66,6 +65,15 @@ class RawDataConfig:
         """
         return self.__fields_interface.keys()
 
+    def get_interfaces(self):
+        """
+        get the list of field interfaces
+
+        Returns:
+            a list of str
+        """
+        return set(self.__fields_interface.values())
+
 
 class RawDataManager:
     """
@@ -73,45 +81,29 @@ class RawDataManager:
     then data extraction and data serialization.
 
     Args:
-        item_id_list (list): list of items id
         config (RawDataConfig): manager configuration
     """
-    def __init__(self, item_id_list: List[str],
-                 config: RawDataConfig):
-        self.__item_id_list: List[str] = item_id_list
+    def __init__(self, config: RawDataConfig):
         self.__config: RawDataConfig = config
 
     def fit(self):
         """
         Begins to extract data from the source and serializing them according to ways specified in the config
         """
+
+        CONTENT_ID = "content_id"
         field_names = self.__config.get_field_names()
+        interfaces = self.__config.get_interfaces()
+        for item in self.__config.get_source():
+            for interface in interfaces:
+                interface.new_item()
+                interface.serialize(CONTENT_ID, item[self.__config.get_id_field_name()])
 
-        id_interface = self.__config.get_interface(self.__config.get_id_field_name())
-        with open(self.__config.get_json_path()) as j:
-            for line in j:
-                data = json.loads(line)
-                item_id = data[self.__config.get_id_field_name()]
-                id_interface.serialize(item_id)
-                for field_name in field_names:
-                    print("Field " + field_name)
-                    field_source = self.__config.get_pipeline(field_name).get_field_source()
-                    field_data = field_source.extract_field_data(field_name)
-                    memory_interface = self.__config.get_pipeline(field_name).get_memory_interface()
-                    memory_interface.serialize(field_data, item_id)
-                print("\n")
-
-
-        for item_id in self.__item_id_list:
-            #estraiamo sempre l'id
-            print("Item " + str(item_id))
             for field_name in field_names:
                 print("Field " + field_name)
-                field_source = self.__config.get_pipeline(field_name).get_field_source()
-                field_data = field_source.extract_field_data(field_name)
-                memory_interface = self.__config.get_pipeline(field_name).get_memory_interface()
-                memory_interface.serialize(field_data)
+                field_data = item[field_name]
+                memory_interface = self.__config.get_interface(field_name)
+                memory_interface.serialize(field_name, field_data)
+            for interface in interfaces:
+                interface.close_item()
             print("\n")
-
-
-
