@@ -1,5 +1,4 @@
 from abc import ABC
-import numpy as np
 
 from typing import List, Dict, Tuple
 
@@ -62,7 +61,7 @@ class EmbeddingField(FieldRepresentation):
     def __init__(self, name: str, shape: Tuple):
         super().__init__(name)
         self.__shape: Tuple = shape
-        self.__embedding_array = np.ndarray(shape=self.__shape)
+        self.__embedding_array = None
 
     def add_value(self, value: float, coords: tuple):
         """

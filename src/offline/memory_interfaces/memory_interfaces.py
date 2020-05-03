@@ -17,11 +17,7 @@ class InformationInterface(ABC):
         pass
 
     @abstractmethod
-    def __iter__(self):
-        pass
-
-    @abstractmethod
-    def serialize(self, field_name: str, field_data):
+    def new_field(self, field_name: str, field_data):
         """
         Serialize the raw data of a field
         Args:
@@ -31,8 +27,19 @@ class InformationInterface(ABC):
         pass
 
     @abstractmethod
-    def close_item(self):
+    def serialize_item(self):
         pass
+
+    @abstractmethod
+    def init_writing(self):
+        pass
+
+    @abstractmethod
+    def stop_writing(self):
+        pass
+
+    def get_directory(self):
+        return self.__directory
 
 
 class ImageInterface(InformationInterface):
@@ -48,14 +55,22 @@ class ImageInterface(InformationInterface):
         pass
 
     @abstractmethod
-    def __iter__(self):
-        pass
-
-    @abstractmethod
-    def serialize(self, field_name: str, field_data):
+    def new_field(self, field_name: str, field_data):
         """
         Abstract method
         """
+        pass
+
+    @abstractmethod
+    def serialize_item(self):
+        pass
+
+    @abstractmethod
+    def init_writing(self):
+        pass
+
+    @abstractmethod
+    def stop_writing(self):
         pass
 
 
@@ -72,14 +87,22 @@ class AudioInterface(InformationInterface):
         pass
 
     @abstractmethod
-    def __iter__(self):
-        pass
-
-    @abstractmethod
-    def serialize(self, field_name: str, field_data):
+    def new_field(self, field_name: str, field_data):
         """
         Abstract method
         """
+        pass
+
+    @abstractmethod
+    def serialize_item(self):
+        pass
+
+    @abstractmethod
+    def init_writing(self):
+        pass
+
+    @abstractmethod
+    def stop_writing(self):
         pass
 
 
@@ -95,12 +118,20 @@ class TextInterface(InformationInterface):
         pass
 
     @abstractmethod
-    def __iter__(self):
-        pass
-
-    @abstractmethod
-    def serialize(self, field_name: str, field_data):
+    def new_field(self, field_name: str, field_data):
         """
         Abstract method
         """
+        pass
+
+    @abstractmethod
+    def serialize_item(self):
+        pass
+
+    @abstractmethod
+    def init_writing(self):
+        pass
+
+    @abstractmethod
+    def stop_writing(self):
         pass

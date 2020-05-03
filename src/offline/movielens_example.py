@@ -1,47 +1,39 @@
-from offline.content_analyzer.content_analyzer_main import ContentAnalyzerConfig, ContentAnalyzer, FieldContentPipeline
+from offline.content_analyzer.content_analyzer_main import ContentAnalyzerConfig, ContentAnalyzer, \
+    FieldRepresentationPipeline, FieldConfig
 from offline.content_analyzer.embedding_source import BinaryFile
 from offline.content_analyzer.entity_linking import BabelPyEntityLinking
 from offline.content_analyzer.field_content_production_technique import TfIdfTechnique, EmbeddingTechnique, Granularity
 from offline.memory_interfaces.text_interface import IndexInterface
 from offline.content_analyzer.nlp import OpenNLP
-from offline.raw_data_extractor.raw_data_manager import RawFieldPipeline, RawDataConfig, RawDataManager
+from offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
 from offline.raw_data_extractor.raw_information_source import JSONFile
-from offline.utils.id_utils import extract_ids
 
 
 print("FASE 1")
 print("##################################################")
 
-config_dict = {"plot": IndexInterface("./test-index-plot")}
+config_dict = {"Plot": IndexInterface('./test-index-plot')}
 raw_data_config = RawDataConfig(JSONFile("movies_info.json"), "imdbID", config_dict)
 raw_data_manager = RawDataManager(raw_data_config).fit()
 
-"""
 print("FASE 2")
 print("##################################################")
 
-content_analyzer_config = ContentAnalyzerConfig()
+field_config = FieldConfig()
+content_analyzer_config = ContentAnalyzerConfig(JSONFile("movies_info.json"), "imdbID")
 
-title_content_pipeline_EL = FieldContentPipeline(raw_data_config.get_pipeline("title").get_memory_interface(),
-                                                 BabelPyEntityLinking(),
-                                                 None)
+title_content_pipeline_EL = FieldRepresentationPipeline(BabelPyEntityLinking(), None)
 
-content_analyzer_config.add_pipeline("title", title_content_pipeline_EL)
+field_config.add_pipeline(title_content_pipeline_EL)
 
-plot_content_pipeline_tf_idf = FieldContentPipeline(raw_data_config.get_pipeline("plot").get_memory_interface(),
-                                                    TfIdfTechnique(
-                                                        raw_data_config.get_pipeline("plot").get_memory_interface(),
-                                                        items_id_list),
-                                                    [OpenNLP(stopwords_removal=True, lemmatization=True)])
+plot_content_pipeline_tf_idf = FieldRepresentationPipeline(TfIdfTechnique(raw_data_config.get_interface("plot"),),
+                                                           [OpenNLP(stopwords_removal=True, lemmatization=True)])
 
-content_analyzer_config.add_pipeline("plot", plot_content_pipeline_tf_idf)
+field_config.add_pipeline(plot_content_pipeline_tf_idf)
 
-plot_content_pipeline_embedding = FieldContentPipeline(raw_data_config.get_pipeline("plot").get_memory_interface(),
-                                                       EmbeddingTechnique(None, BinaryFile("example_name"),
-                                                                          Granularity.WORD),
-                                                       [OpenNLP(url_tagging=True, strip_multiple_whitespaces=False)])
+plot_content_pipeline_embedding = FieldRepresentationPipeline(EmbeddingTechnique(None, BinaryFile("example_name"), Granularity.WORD),
+                                                              [OpenNLP(url_tagging=True, strip_multiple_whitespaces=False)])
 
-content_analyzer_config.add_pipeline("plot", plot_content_pipeline_embedding)
-content_analyzer = ContentAnalyzer(items_id_list, content_analyzer_config)
-represented_items = content_analyzer.fit()
-"""
+content_analyzer_config.append_field_config("plot", field_config)
+content_analyzer = ContentAnalyzer(content_analyzer_config)
+represented_contents = content_analyzer.fit()

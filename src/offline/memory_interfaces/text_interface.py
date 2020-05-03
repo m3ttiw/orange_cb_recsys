@@ -17,29 +17,24 @@ class IndexInterface(TextInterface):
     """
     def __init__(self, directory: str):
         self.__doc = None
+        self.__writer = None
         super().__init__(directory)
 
         lucene.initVM(vmargs=['-Djava.awt.headless=true'])
-        fs_directory = SimpleFSDirectory(Paths.get(self.__directory))
+
+    def init_writing(self):
+        fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
         self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
 
     def new_item(self):
         self.__doc = Document()
 
-    def serialize(self, field_name: str, field_data):
+    def new_field(self, field_name: str, field_data):
         self.__doc.add(Field(field_name, field_data, StringField.TYPE_STORED))
 
-    def close_item(self):
+    def serialize_item(self):
         self.__writer.addDocument(self.__doc)
 
-    def __iter__(self):
-        fs_dir = SimpleFSDirectory(Paths.get(self.__directory))
-        searcher = IndexSearcher(DirectoryReader.open(fs_dir))
-
-        for i in range(0, searcher.maxDoc()):
-            doc = searcher.doc(i)
-            item = {}
-            for field in doc.iterator():
-                item[field.name()] = field.stringValue()
-
-            yield item
+    def stop_writing(self):
+        self.__writer.commit()
+        self.__writer.stop_writing()

@@ -33,7 +33,7 @@ class RawDataConfig:
     def get_id_field_name(self):
         return self.__id_field_name
 
-    def add_interface(self, field_name: str, field_interface: InformationInterface):
+    def set_interface(self, field_name: str, field_interface: InformationInterface):
         """
         Associate a pipeline process to the field specified by field_name
 
@@ -96,14 +96,18 @@ class RawDataManager:
         interfaces = self.__config.get_interfaces()
         for item in self.__config.get_source():
             for interface in interfaces:
+                interface.init_writing()
                 interface.new_item()
-                interface.serialize(CONTENT_ID, item[self.__config.get_id_field_name()])
+                interface.new_field(CONTENT_ID, item[self.__config.get_id_field_name()])
 
             for field_name in field_names:
                 print("Field " + field_name)
                 field_data = item[field_name]
                 memory_interface = self.__config.get_interface(field_name)
-                memory_interface.serialize(field_name, field_data)
+                memory_interface.new_field(field_name, field_data)
             for interface in interfaces:
-                interface.close_item()
+                interface.serialize_item()
             print("\n")
+
+        for interface in interfaces:
+            interface.stop_writing()
