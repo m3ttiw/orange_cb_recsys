@@ -1,0 +1,53 @@
+{
+  "content_type": "ITEM",
+  "raw_source_path": "raw_source\\file\\path",
+  "id_field_name": "imdb_ID",
+  "fields": [
+    {
+      "field_name": "Title",
+      "memory_interface": "index",
+      "pipeline_list": [{
+        "field_content_production": {"class": "BabelPyEntityLinking"},
+        "preprocessing_list": []
+      }
+      ]
+    },
+    {
+      "field_name": "Plot",
+      "memory_interface": "index",
+      "pipeline_list": [
+        {
+        "field_content_production": {"class": "TfIdf"},
+        "preprocessing_list": [
+          {"class": "OpenNLP", "stopwords_removal":"True", "lemmatization": "True"}
+          ]
+        },
+        {
+        "field_content_production": {"class": "EmbeddingTechnique", "combine": "None", "source_path": "embedding\\source\\path", "granularity": "word"},
+        "preprocessing_list": [
+          {"class": "OpenNLP", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
+          ]
+        }
+      ]
+    }
+  ]
+}
+{
+  "content_type": "USER",
+  "raw_source_path": "raw_source\\file\\path",
+  "id_field_name": "user_ID",
+  "fields": [
+
+  ]
+}
+{
+  "content_type": "RATINGS",
+  "raw_source_path": "raw_source\\file\\path",
+  "id_field_name": ["user_ID", "item_id"],
+  "fields": [
+
+  ]
+}
+
+
+
