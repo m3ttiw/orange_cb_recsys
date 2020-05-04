@@ -61,6 +61,7 @@ class GensimDownloader(EmbeddingSource):
         for i, word in enumerate(words):
             embedding_matrix[i, :] = self.__model[word]
 
+
         return embedding_matrix
 
 # your embedding source

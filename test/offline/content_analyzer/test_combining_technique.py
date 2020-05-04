@@ -18,4 +18,4 @@ class TestCentroid(TestCase):
         expected = np.ndarray(shape=(3, ))
         expected[:] = [2, 2, 2]
 
-        self.assertTrue(np.array_equal(result, expected))
+        self.assertTrue((result == expected).all())
