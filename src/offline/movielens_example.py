@@ -13,29 +13,31 @@ print("FASE 1")
 print("##################################################")
 
 config_dict = {"Plot": IndexInterface('./test-index-plot')}
-raw_data_config = RawDataConfig(JSONFile("movies_info.json"), "imdbID", config_dict)
-raw_data_manager = RawDataManager(raw_data_config).fit()
+raw_data_config = RawDataConfig(JSONFile("../../datasets/movies_info.json"), "imdbID", config_dict)
+#raw_data_manager = RawDataManager(raw_data_config).fit()
 
 print("FASE 2")
 print("##################################################")
 
-field_config = FieldConfig()
-content_analyzer_config = ContentAnalyzerConfig(JSONFile("movies_info.json"), "imdbID")
 
+content_analyzer_config = ContentAnalyzerConfig(JSONFile("../../datasets/movies_info.json"), "imdbID")
+
+title_field_config = FieldConfig()
 title_content_pipeline_EL = FieldRepresentationPipeline(BabelPyEntityLinking(), None)
+title_field_config.add_pipeline(title_content_pipeline_EL)
+content_analyzer_config.append_field_config("Title", title_field_config)
 
-field_config.add_pipeline(title_content_pipeline_EL)
-
-plot_content_pipeline_tf_idf = FieldRepresentationPipeline(TfIdfTechnique(raw_data_config.get_interface("plot"),),
+plot_content_pipeline_tf_idf = FieldRepresentationPipeline(TfIdfTechnique(raw_data_config.get_interface("Plot"),),
                                                            [OpenNLP(stopwords_removal=True, lemmatization=True)])
-
-field_config.add_pipeline(plot_content_pipeline_tf_idf)
+plot_field_config = FieldConfig()
+plot_field_config.add_pipeline(plot_content_pipeline_tf_idf)
 
 plot_content_pipeline_embedding = FieldRepresentationPipeline(EmbeddingTechnique(None, BinaryFile("example_name"),
                                                               Granularity.WORD),
                                                               [OpenNLP(url_tagging=True,
                                                                        strip_multiple_whitespaces=False)])
+plot_field_config.add_pipeline(plot_content_pipeline_embedding)
 
-content_analyzer_config.append_field_config("plot", field_config)
+content_analyzer_config.append_field_config("Plot", plot_field_config)
 content_analyzer = ContentAnalyzer(content_analyzer_config)
 represented_contents = content_analyzer.fit()

@@ -94,9 +94,11 @@ class RawDataManager:
         CONTENT_ID = "content_id"
         field_names = self.__config.get_field_names()
         interfaces = self.__config.get_interfaces()
+        for interface in interfaces:
+            interface.init_writing()
         for item in self.__config.get_source():
+            print(interfaces)
             for interface in interfaces:
-                interface.init_writing()
                 interface.new_item()
                 interface.new_field(CONTENT_ID, item[self.__config.get_id_field_name()])
 

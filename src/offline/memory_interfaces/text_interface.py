@@ -20,9 +20,8 @@ class IndexInterface(TextInterface):
         self.__writer = None
         super().__init__(directory)
 
-        lucene.initVM(vmargs=['-Djava.awt.headless=true'])
-
     def init_writing(self):
+        lucene.initVM(vmargs=['-Djava.awt.headless=true'])
         fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
         self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
 
@@ -37,4 +36,4 @@ class IndexInterface(TextInterface):
 
     def stop_writing(self):
         self.__writer.commit()
-        self.__writer.stop_writing()
+        self.__writer.close()
