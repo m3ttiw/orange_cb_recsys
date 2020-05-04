@@ -9,6 +9,7 @@
     {
       "field_name": "Title",
       "memory_interface": "None",
+      "memory_interface_path": "./test-index-plot",
       "pipeline_list": [{
         "field_content_production": {"class": "babelpy"},
         "preprocessing_list": []
@@ -18,6 +19,7 @@
     {
       "field_name": "Plot",
       "memory_interface": "index",
+      "memory_interface_path": "./test-index-plot",
       "pipeline_list": [
         {
         "field_content_production": {"class": "tf-idf"},

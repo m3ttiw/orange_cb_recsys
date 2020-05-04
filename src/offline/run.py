@@ -30,7 +30,8 @@ def config_run(config_path: str = ".\config.json"):
         for field_dict in content_config['fields']:
             if field_dict['memory_interface'] != "None":
                 config_dict = {
-                    field_dict['field_name']: runnable_instances[field_dict['memory_interface']]('./test-index-plot')}
+                    field_dict['field_name']: runnable_instances[field_dict['memory_interface']](
+                        field_dict['memory_interface_path'])}
                 raw_data_config = RawDataConfig(
                     runnable_instances[content_config['source_type']](content_config['raw_source_path']),
                     content_config['id_field_name'], config_dict)
@@ -46,7 +47,7 @@ def config_run(config_path: str = ".\config.json"):
                 preprocessing_list = list()
                 for preprocessing in pipeline_dict['preprocesing_list']:
                     class_name = preprocessing.pop('class')
-                    preprocessing_list.append(runnable_instances['class_name'](**preprocessing))
+                    preprocessing_list.append(runnable_instances[class_name](**preprocessing))
                 class_name = pipeline_dict['field_content_production'].pop('class')
                 field_config.add_pipeline(FieldRepresentationPipeline(runnable_instances[class_name](**pipeline_dict),
                                                                       preprocessing_list))
@@ -55,5 +56,6 @@ def config_run(config_path: str = ".\config.json"):
         representend_content_list.append(content_analyzer.fit())
 
     return representend_content_list
+
 
 config_run()
