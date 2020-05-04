@@ -1,0 +1,22 @@
+{
+  "content_type": "ITEM",
+  "raw_source_path": "raw_source\\file\\path",
+  "id_field_name": "imdb_ID",
+  "fields": [
+    {
+      "field_name": "Title",
+      "memory_interface": "index",
+      "pipeline_list": [{
+        "field_content_production": "BabelPyEntityLinking",
+        ""
+        "preprocessing_list": [{
+          "preprocessor": "OpenNLP",
+          "to_do_list": ["stopwords_removal", "lemmatization"]
+        }],
+
+      }]
+    }
+  ],
+
+  }
+}
