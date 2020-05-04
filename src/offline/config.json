@@ -3,6 +3,8 @@
   "raw_source_path": "raw_source\\file\\path",
   "source_type": "json",
   "id_field_name": "imdbID",
+  "start_from": "0",
+  "end_up_at": "all",
   "fields": [
     {
       "field_name": "Title",
