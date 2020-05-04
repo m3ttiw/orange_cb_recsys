@@ -1,6 +1,4 @@
-from abc import ABC
-
-from offline.content_analyzer.information_processor import NLP
+from src.offline.content_analyzer.information_processor import NLP
 
 
 class OpenNLP(NLP):

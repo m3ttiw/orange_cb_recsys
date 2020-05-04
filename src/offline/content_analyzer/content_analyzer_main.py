@@ -1,11 +1,10 @@
-from offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
-from offline.content_analyzer.information_processor import InformationProcessor
-from offline.content_analyzer.content_representation.content import Content, RepresentedContents
-from offline.content_analyzer.content_representation.content_field import ContentField
-
 from typing import List, Dict, Tuple
 
-from offline.raw_data_extractor.raw_information_source import RawInformationSource
+from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
+from src.offline.content_analyzer.content_representation.content_field import ContentField
+from src.offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
+from src.offline.content_analyzer.information_processor import InformationProcessor
+from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
 
 class FieldRepresentationPipeline:
@@ -98,7 +97,7 @@ class ContentAnalyzerConfig:
         return self.__fields_config.keys()
 
     def append_field_config(self, field_name: str, field_config: FieldConfig):
-        self.__fields_config[field_name] = FieldConfig
+        self.__fields_config[field_name] = field_config
 
 
 class ContentAnalyzer:
@@ -108,12 +107,9 @@ class ContentAnalyzer:
     and technique with which to obtain semantic descriptions from them.
 
     Args:
-        item_id_list (list): list of item id
         config (ContentAnalyzerConfig): configuration for processing the item fields
     """
-    def __init__(self, item_id_list: List[str],
-                 config: ContentAnalyzerConfig):
-        self.__item_id_list: List[str] = item_id_list
+    def __init__(self, config: ContentAnalyzerConfig):
         self.__config: ContentAnalyzerConfig = config
 
     def set_config(self, config: ContentAnalyzerConfig):
