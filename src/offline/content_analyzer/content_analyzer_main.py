@@ -1,11 +1,10 @@
-from offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
-from offline.content_analyzer.information_processor import InformationProcessor
-from offline.content_analyzer.content_representation.content import Content, RepresentedContents
-from offline.content_analyzer.content_representation.content_field import ContentField
-
 from typing import List, Dict, Tuple
 
-from offline.raw_data_extractor.raw_information_source import RawInformationSource
+from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
+from src.offline.content_analyzer.content_representation.content_field import ContentField
+from src.offline.content_analyzer.field_content_production_technique import FieldContentProductionTechnique
+from src.offline.content_analyzer.information_processor import InformationProcessor
+from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
 
 class FieldRepresentationPipeline:

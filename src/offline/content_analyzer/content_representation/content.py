@@ -1,6 +1,5 @@
-from offline.content_analyzer.content_representation.content_field import ContentField
-
 from typing import List
+from src.offline.content_analyzer.content_representation.content_field import ContentField
 
 
 class Content:

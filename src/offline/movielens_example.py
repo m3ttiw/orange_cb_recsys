@@ -1,13 +1,13 @@
-from offline.content_analyzer.content_analyzer_main import ContentAnalyzerConfig, ContentAnalyzer, \
-    FieldRepresentationPipeline, FieldConfig
-from offline.content_analyzer.embedding_source import BinaryFile
-from offline.content_analyzer.entity_linking import BabelPyEntityLinking
-from offline.content_analyzer.field_content_production_technique import TfIdfTechnique, EmbeddingTechnique, Granularity
-from offline.memory_interfaces.text_interface import IndexInterface
-from offline.content_analyzer.nlp import OpenNLP
-from offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
-from offline.raw_data_extractor.raw_information_source import JSONFile
-
+from src.offline.content_analyzer.content_analyzer_main import FieldConfig, ContentAnalyzerConfig, \
+    FieldRepresentationPipeline, ContentAnalyzer
+from src.offline.content_analyzer.embedding_source import BinaryFile
+from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
+from src.offline.content_analyzer.field_content_production_technique import TfIdfTechnique, EmbeddingTechnique, \
+    Granularity
+from src.offline.content_analyzer.nlp import OpenNLP
+from src.offline.memory_interfaces.text_interface import IndexInterface
+from src.offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
+from src.offline.raw_data_extractor.raw_information_source import JSONFile
 
 print("FASE 1")
 print("##################################################")
@@ -31,8 +31,10 @@ plot_content_pipeline_tf_idf = FieldRepresentationPipeline(TfIdfTechnique(raw_da
 
 field_config.add_pipeline(plot_content_pipeline_tf_idf)
 
-plot_content_pipeline_embedding = FieldRepresentationPipeline(EmbeddingTechnique(None, BinaryFile("example_name"), Granularity.WORD),
-                                                              [OpenNLP(url_tagging=True, strip_multiple_whitespaces=False)])
+plot_content_pipeline_embedding = FieldRepresentationPipeline(EmbeddingTechnique(None, BinaryFile("example_name"),
+                                                              Granularity.WORD),
+                                                              [OpenNLP(url_tagging=True,
+                                                                       strip_multiple_whitespaces=False)])
 
 content_analyzer_config.append_field_config("plot", field_config)
 content_analyzer = ContentAnalyzer(content_analyzer_config)

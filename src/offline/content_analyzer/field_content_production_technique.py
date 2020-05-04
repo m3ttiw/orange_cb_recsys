@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List
 
-from offline.memory_interfaces.memory_interfaces import InformationInterface
+from src.offline.memory_interfaces.memory_interfaces import InformationInterface
 
 
 class FieldContentProductionTechnique(ABC):
