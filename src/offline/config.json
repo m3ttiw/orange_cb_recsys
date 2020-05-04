@@ -1,13 +1,14 @@
-{
+[{
   "content_type": "ITEM",
   "raw_source_path": "raw_source\\file\\path",
-  "id_field_name": "imdb_ID",
+  "source_type": "json",
+  "id_field_name": "imdbID",
   "fields": [
     {
       "field_name": "Title",
-      "memory_interface": "index",
+      "memory_interface": "None",
       "pipeline_list": [{
-        "field_content_production": {"class": "BabelPyEntityLinking"},
+        "field_content_production": {"class": "babelpy"},
         "preprocessing_list": []
       }
       ]
@@ -17,21 +18,21 @@
       "memory_interface": "index",
       "pipeline_list": [
         {
-        "field_content_production": {"class": "TfIdf"},
+        "field_content_production": {"class": "tf-idf"},
         "preprocessing_list": [
-          {"class": "OpenNLP", "stopwords_removal":"True", "lemmatization": "True"}
+          {"class": "open_nlp", "stopwords_removal":"True", "lemmatization": "True"}
           ]
         },
         {
-        "field_content_production": {"class": "EmbeddingTechnique", "combine": "None", "source_path": "embedding\\source\\path", "granularity": "word"},
+        "field_content_production": {"class": "embedding", "combining_technique": "None", "embedding_source": "embedding\\source\\path", "granularity": "WORD"},
         "preprocessing_list": [
-          {"class": "OpenNLP", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
+          {"class": "open_nlp", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
           ]
         }
       ]
     }
   ]
-}
+},
 {
   "content_type": "USER",
   "raw_source_path": "raw_source\\file\\path",
@@ -39,15 +40,15 @@
   "fields": [
 
   ]
-}
+},
 {
-  "content_type": "RATINGS",
+  "content_type": "RATING",
   "raw_source_path": "raw_source\\file\\path",
   "id_field_name": ["user_ID", "item_id"],
   "fields": [
 
   ]
-}
+}]
 
 
 
