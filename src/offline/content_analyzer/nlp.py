@@ -1,3 +1,4 @@
+issue6_issue7
 from abc import ABC
 
 from offline.content_analyzer.information_processor import NLP
@@ -6,6 +7,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
+master
 
 class NLTK(NLP):
     """

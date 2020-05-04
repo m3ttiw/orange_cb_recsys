@@ -1,5 +1,4 @@
-from offline.content_analyzer.field_content_production_technique import EmbeddingSource
-
+from src.offline.content_analyzer.field_content_production_technique import EmbeddingSource
 
 class BinaryFile(EmbeddingSource):
     """

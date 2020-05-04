@@ -1,6 +1,5 @@
-from offline.content_analyzer.field_content_production_technique import CombiningTechnique
-
 from typing import List
+from src.offline.content_analyzer.field_content_production_technique import CombiningTechnique
 
 
 class Centroid(CombiningTechnique):
