@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-
+import numpy as np
+from offline.content_analyzer.content_representation.content_field import EmbeddingField
 from src.offline.memory_interfaces.memory_interfaces import InformationInterface
 
 
@@ -73,7 +74,7 @@ class CombiningTechnique(ABC):
         pass
 
     @abstractmethod
-    def combine(self):
+    def combine(self, embedding_matrix: np.ndarray):
         pass
 
 
@@ -85,7 +86,7 @@ class EmbeddingSource(ABC):
         pass
 
     @abstractmethod
-    def load(self):
+    def load(self, text: str):
         pass
 
 
@@ -120,4 +121,11 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
         """
 
-        print("Creating matrix")
+        embedding_matrix = self.__embedding_source.load(field_data)
+
+        if self.__granularity == Granularity.WORD:
+            return EmbeddingField("Embedding", embedding_matrix)
+        elif self.__granularity == Granularity.SENTENCE:
+            pass
+        elif self.__granularity == Granularity.DOC:
+            return self.__combining_technique.combine(embedding_matrix)
