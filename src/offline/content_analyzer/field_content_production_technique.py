@@ -2,6 +2,9 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List
 
+import numpy as np
+
+from offline.content_analyzer.content_representation.content_field import EmbeddingField
 from offline.memory_interfaces.memory_interfaces import InformationInterface
 
 
@@ -10,6 +13,7 @@ class FieldContentProductionTechnique(ABC):
     Abstract class that manages to generalize the technique to use for producing the semantic description
     of an item's field's content
     """
+
     def __init__(self):
         pass
 
@@ -22,6 +26,7 @@ class FieldToGraph(FieldContentProductionTechnique):
     """
     Class that uses ontologies or LOD for producing the semantic description
     """
+
     def __init__(self):
         super().__init__()
 
@@ -36,6 +41,7 @@ class TfIdfTechnique(FieldContentProductionTechnique):
     Args:
         memory_interface (InformationInterface): the memory interface for managing the data stored
     """
+
     def __init__(self, memory_interface: InformationInterface):
         self.__memory_interface = memory_interface
         super().__init__()
@@ -48,6 +54,7 @@ class EntityLinking(FieldContentProductionTechnique):
     """
     Class that uses entity linking techniques for producing the semantic description
     """
+
     def __init__(self):
         super().__init__()
 
@@ -70,11 +77,12 @@ class CombiningTechnique(ABC):
     Class that generalizes the modality in which previously learned embeddings will be
     combined to produce a semantic description.
     """
+
     def __init__(self):
         pass
 
     @abstractmethod
-    def combine(self):
+    def combine(self, matrix: np.ndarray):
         pass
 
 
@@ -82,11 +90,12 @@ class EmbeddingSource(ABC):
     """
     General class whose purpose is to load the previously learned embeddings to combine.
     """
+
     def __init__(self):
         pass
 
     @abstractmethod
-    def load(self):
+    def load(self, text: str):
         pass
 
 
@@ -102,6 +111,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         granularity (Granularity): It can assume three values, depending on whether you want
         to combine relatively to words, phrases or documents.
     """
+
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
                  granularity: Granularity):
@@ -121,4 +131,11 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
         """
 
-        print("Creating matrix")
+        embedding_matrix = self.__embedding_source.load(field_data)
+
+        if self.__granularity == Granularity.WORD:
+            return EmbeddingField("Embedding", embedding_matrix.shape)
+        elif self.__granularity == Granularity.DOC:
+            return self.__combining_technique.combine(embedding_matrix)
+        elif self.__granularity == Granularity.SENTENCE:
+            pass

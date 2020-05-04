@@ -1,4 +1,5 @@
 from offline.content_analyzer.field_content_production_technique import CombiningTechnique
+import numpy as np
 
 from typing import List
 
@@ -15,11 +16,13 @@ class Centroid(CombiningTechnique):
         super().__init__()
         self.__weights: List[float] = weights
 
-    def combine(self):
+    def combine(self, matrix: np.ndarray):
         """"
         Implements the Abstract Method combine in Combining Technique.
+        The result is the centroid vector of the matrix
         """
-        pass
+
+        return np.average(matrix, axis=0, weights=self.__weights)
 
 
 # your combining technique
