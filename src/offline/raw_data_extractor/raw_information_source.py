@@ -1,4 +1,5 @@
 import json
+import mysql.connector
 from _csv import reader
 from abc import ABC, abstractmethod
 
@@ -72,5 +73,53 @@ class SQLDatabase(RawInformationSource):
         self.__database_name: str = database_name
         self.__table_name: str = table_name
 
+        conn = mysql.connector.connect(host=self.__host, user=self.__username, password=self.__password)
+        cursor = conn.cursor()
+        query = """USE """ + self.__database_name + """;"""
+        cursor.execute(query)
+        conn.commit()
+        self.__conn = conn
+
+    def get_host(self):
+        return self.__host
+
+    def get_username(self):
+        return self.__username
+
+    def get_password(self):
+        return self.__password
+
+    def get_database_name(self):
+        return self.__database_name
+
+    def get_table_name(self):
+        return self.__table_name
+
+    def get_conn(self):
+        return self.__conn
+
+    def set_host(self, host):
+        self.__host = host
+
+    def set_username(self, username):
+        self.__username = username
+
+    def set_password(self, password):
+        self.__password = password
+
+    def set_database_name(self, database_name):
+        self.__database_name = database_name
+
+    def set_table_name(self, table_name):
+        self.__table_name = table_name
+
+    def set_conn(self, conn):
+        self.__conn = conn
+
     def __iter__(self):
-        pass
+        cursor = self.get_conn().cursor(dictionary=True)
+        query = """SELECT * FROM """ + self.get_table_name() + """;"""
+        cursor.execute(query)
+        results = cursor.fetchall()     #array di dizionari
+        for result in results:
+            yield result
