@@ -30,38 +30,49 @@ def config_run(config_path: str = ".\config.json"):
     representend_content_list = list()
     for content_config in config_list:
 
-        # fase 1
+        # phase 1 : memorize the selected fields with some high powered memory interface
+        config_dict = {}
         for field_dict in content_config['fields']:
-            if field_dict['memory_interface'] != "None":
-                config_dict = {
-                    field_dict['field_name']: runnable_instances[field_dict['memory_interface']](
-                        field_dict['memory_interface_path'])}
-                raw_data_config = RawDataConfig(
-                    runnable_instances[content_config['source_type']](content_config['raw_source_path']),
-                    content_config['id_field_name'], config_dict)
-                RawDataManager(raw_data_config).fit()
 
-        # fase 2
+            # verify that the memory interface is set
+            if field_dict['memory_interface'] != "None":
+                # setting the config dict for each
+                config_dict[field_dict['field_name']] = runnable_instances[field_dict['memory_interface']](
+                    field_dict['memory_interface_path'])
+
+        # setting the phase 1 configuration
+        raw_data_config = RawDataConfig(
+            runnable_instances[content_config['source_type']](content_config['raw_source_path']),
+            content_config['id_field_name'], config_dict)
+        RawDataManager(raw_data_config).fit()
+
+        # phase 2 : content production
+        field_config = FieldConfig()
         for field_dict in content_config['fields']:
-            field_config = FieldConfig()
+            # setting the content analyzer config
             content_analyzer_config = ContentAnalyzerConfig(
                 runnable_instances[content_config['source_type']](content_config['raw_source_path']),
                 content_config['id_field_name'])
             for pipeline_dict in field_dict['pipeline_list']:
                 preprocessing_list = list()
                 for preprocessing in pipeline_dict['preprocesing_list']:
-                    class_name = preprocessing.pop('class')
-                    preprocessing_list.append(runnable_instances[class_name](**preprocessing))
-                class_name = pipeline_dict['field_content_production'].pop('class')
+                    # each preprocessing settings
+                    class_name = preprocessing.pop('class')  # extract the class acronyms
+                    preprocessing_list.append(runnable_instances[class_name](**preprocessing))  # params for the class
+                # content production settings
+                class_name = pipeline_dict['field_content_production'].pop('class')  # extract the class acronyms
                 if class_name in need_interface:
                     pipeline_dict['memory_interface'] = content_config['memory_interface']
+                # append each field representation pipeline to the field config
                 field_config.add_pipeline(FieldRepresentationPipeline(runnable_instances[class_name](**pipeline_dict),
                                                                       preprocessing_list))
 
-        content_analyzer = ContentAnalyzer(content_analyzer_config)
+        # fitting the data for each
+        content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
         representend_content_list.append(content_analyzer.fit())
 
     return representend_content_list
 
 
+# need a check for the available runnable_instances
 config_run()
