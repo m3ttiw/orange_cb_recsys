@@ -12,6 +12,7 @@ class BinaryFile(EmbeddingSource):
     Attributes:
         file_path (str): Path for the binary file containing the embeddings
     """
+
     def __init__(self, file_path: str):
         super().__init__()
         self.__file_path: str = file_path
@@ -26,7 +27,6 @@ class BinaryFile(EmbeddingSource):
         """
         words = text.split(" ")
         embedding_matrix = np.ndarray(shape=(len(words), self.__model[words[0]].shape[0]))
-        print(embedding_matrix.shape)
 
         for i, word in enumerate(words):
             embedding_matrix[i, :] = self.__model[word]
@@ -42,6 +42,7 @@ class GensimDownloader(EmbeddingSource):
     Attributes:
         name (str): Path for the binary file containing the embeddings
     """
+
     def __init__(self, name: str):
         super().__init__()
         self.__name: str = name
@@ -60,7 +61,6 @@ class GensimDownloader(EmbeddingSource):
 
         for i, word in enumerate(words):
             embedding_matrix[i, :] = self.__model[word]
-
 
         return embedding_matrix
 
