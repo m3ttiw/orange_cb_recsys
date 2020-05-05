@@ -13,14 +13,3 @@ def id_merger(id_list):
         return id_merged
     else:
         raise TypeError("id must be an integer, a string or a list of strings and/or integer")
-
-
-print(id_merger(['i1', 'i2']))
-print(id_merger('i1'))
-
-print(id_merger(123))
-print(id_merger([123,124]))
-
-print(id_merger([123, "aaa", 333]))
-
-print(id_merger({1: 1, 2: 2}))
