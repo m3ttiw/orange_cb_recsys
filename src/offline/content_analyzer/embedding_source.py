@@ -1,7 +1,15 @@
+from enum import Enum
+
 from src.offline.content_analyzer.field_content_production_technique import EmbeddingSource
 import gensim.downloader as downloader
-from gensim.models import KeyedVectors
+from gensim.models import KeyedVectors, Doc2Vec, fasttext
 import numpy as np
+
+
+class EmbeddingType(Enum):
+    WORD2VEC = 1
+    DOC2VEC = 2
+    FASTTEXT = 3
 
 
 class BinaryFile(EmbeddingSource):
@@ -13,10 +21,15 @@ class BinaryFile(EmbeddingSource):
         file_path (str): Path for the binary file containing the embeddings
     """
 
-    def __init__(self, file_path: str):
+    def __init__(self, file_path: str, embedding_type: EmbeddingType):
         super().__init__()
         self.__file_path: str = file_path
-        self.__model = KeyedVectors.load_word2vec_format(self.__file_path, binary=True)
+        if embedding_type == EmbeddingType.WORD2VEC:
+            self.__model = KeyedVectors.load_word2vec_format(self.__file_path, binary=True)
+        elif embedding_type == EmbeddingType.DOC2VEC:
+            self.__model = Doc2Vec.load(self.__file_path)
+        else:
+            self.__model = fasttext.load_facebook_vectors(self.__file_path)
 
     def load(self, text: str):
         """

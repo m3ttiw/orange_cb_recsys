@@ -1,7 +1,7 @@
 from unittest import TestCase
 import numpy as np
 
-from offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
+from offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile, EmbeddingType
 
 
 class TestGensimDownloader(TestCase):
@@ -34,7 +34,7 @@ class TestGensimDownloader(TestCase):
 
 class TestBinaryFile(TestCase):
     def test_load(self):
-        source = BinaryFile('../../../datasets/word2vec/google_news.bin')
+        source = BinaryFile('../../../datasets/word2vec/google_news.bin', EmbeddingType.WORD2VEC)
         result = source.load("text news")
         expected = np.ndarray(shape=(2, 300))
         expected[0, :] = [0.27929688, -0.08447266, -0.04150391, 0.12011719, -0.01794434,
