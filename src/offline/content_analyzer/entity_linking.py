@@ -19,6 +19,7 @@ class BabelPyEntityLinking(EntityLinking):
     def produce_content(self, field_data: str):
         self.__babel_client.babelfy(field_data)
         feature_bag = FeaturesBagField('repr_field_name')
-        for entity in self.__babel_client.entities:
-            feature_bag.add_feature(entity['babelSynsetID'], entity['globalScore'])
+        if self.__babel_client.entities is not None:
+            for entity in self.__babel_client.entities:
+                feature_bag.add_feature(entity['babelSynsetID'], entity['globalScore'])
         return feature_bag
