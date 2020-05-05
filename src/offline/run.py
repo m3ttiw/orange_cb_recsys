@@ -20,6 +20,10 @@ runnable_instances = {
 
 }
 
+need_interface = [
+    "tf-idf",
+]
+
 
 def config_run(config_path: str = ".\config.json"):
     config_list = json.load(open(config_path))
@@ -49,6 +53,8 @@ def config_run(config_path: str = ".\config.json"):
                     class_name = preprocessing.pop('class')
                     preprocessing_list.append(runnable_instances[class_name](**preprocessing))
                 class_name = pipeline_dict['field_content_production'].pop('class')
+                if class_name in need_interface:
+                    pipeline_dict['memory_interface'] = content_config['memory_interface']
                 field_config.add_pipeline(FieldRepresentationPipeline(runnable_instances[class_name](**pipeline_dict),
                                                                       preprocessing_list))
 
