@@ -41,7 +41,8 @@ class FeaturesBagField(FieldRepresentation):
         Returns:
 
         """
-        pass
+        self.__features[feature_key] = feature_value
+
 
 
 class EmbeddingField(FieldRepresentation):
