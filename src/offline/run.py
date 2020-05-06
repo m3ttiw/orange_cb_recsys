@@ -1,5 +1,6 @@
 import json
 import sys
+from typing import List, Dict
 
 from src.offline.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
     FieldRepresentationPipeline
@@ -9,6 +10,8 @@ from src.offline.content_analyzer.nlp import OpenNLP
 from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
 from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVFile, SQLDatabase
+
+DEFAULT_CONFIG_PATH = ".\config.json"
 
 implemented_preprocessing = [
     "open_nlp",
@@ -35,28 +38,30 @@ need_interface = [
 ]
 
 
-def check_for_available(config_path: str = ".\config.json"):
+def check_for_available(config_list: List[Dict]):
     # check if need_interface is respected
-    # check keys_to_check in runnable_instances
+    # check runnable_instances
     check_pass = True
-    config_list = json.load(open(config_path))
     for content_config in config_list:
         if content_config['source_type'] not in ['json', 'csv', 'sql']:
             check_pass = False
+            break
         for field_dict in content_config['fields']:
             if field_dict['memory_interface'] not in ['index', 'None']:
                 check_pass = False
+                break
             for pipeline_dict in field_dict['pipeline_list']:
                 if pipeline_dict['field_content_production']['class'] not in implemented_content_prod:
                     check_pass = False
+                    break
                 for preprocessing in pipeline_dict['preprocesing_list']:
                     if preprocessing['class'] not in implemented_preprocessing:
                         check_pass = False
+                        break
     return check_pass
 
 
-def config_run(config_path: str = ".\config.json"):
-    config_list = json.load(open(config_path))
+def config_run(config_list: List[Dict]):
     representend_content_list = list()
     for content_config in config_list:
 
@@ -105,7 +110,11 @@ def config_run(config_path: str = ".\config.json"):
 
 
 if __name__ == "__main__":
-    if check_for_available(sys.argv[0]):
-        config_run(sys.argv[0])
+    config_path = sys.argv[0]
+    if config_path is not None:
+        config_path = DEFAULT_CONFIG_PATH
+    config_list_dict = json.load(open(config_path))
+    if check_for_available(config_list_dict):
+        config_run(config_list_dict)
     else:
         raise Exception("Check for available instances failed.")

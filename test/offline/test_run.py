@@ -2,6 +2,8 @@ import json
 from typing import Dict, List
 from unittest import TestCase
 
+from src.offline.run import check_for_available
+
 
 class Test(TestCase):
 
@@ -14,8 +16,9 @@ class Test(TestCase):
             self.assertIn(key, test_dict.keys(), msg.format(key, context))
 
     def test_config(self):
+        # test only if the key in the config.json are valid
         config_list = json.load(open("src\offline\config.json"))
-        with self.assertRaises(FileNotFoundError) as cm:
+        with self.assertRaises(FileNotFoundError):
             self.assert_(True, "Try to use double back_slashes '\\' instead of a single slash")
         self.assertEqual(type(config_list), type(list()), "the config must contain a list of dict")
         for content_config in config_list:
@@ -39,3 +42,18 @@ class Test(TestCase):
 
     def test_run(self):
         self.skipTest("test in the submodules.")
+
+    def test_check_for_available(self):
+        in_dict = [{"source_type": "text"}]
+        self.assertFalse(check_for_available(in_dict))
+        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "not-index"}]}]
+        self.assertFalse(check_for_available(in_dict))
+        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
+                        "field_content_production": {"class": "no-class"}}]}]}]
+        self.assertFalse(check_for_available(in_dict))
+        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
+            "field_content_production": {"class": "babelpy"}, "preprocessing_list": [{"class": "no-class"}]}]}]}]
+        self.assertFalse(check_for_available(in_dict))
+        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
+            "field_content_production": {"class": "babelpy"}, "preprocessing_list": [{"class": "open_nlp"}]}]}]}]
+        self.assertTrue(check_for_available(in_dict))
