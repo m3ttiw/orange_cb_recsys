@@ -80,6 +80,42 @@ class NLP(TextProcessor):
         self.__strip_multiple_whitespaces: bool = strip_multiple_whitespaces
         self.__url_tagging: bool = url_tagging
 
+    def get_stopwords_removal(self):
+        return self.__stopwords_removal
+
+    def get_stemming(self):
+        return self.__stemming
+
+    def get_lemmatization(self):
+        return self.__lemmatization
+
+    def get_named_entity_recognition(self):
+        return self.__named_entity_recognition
+
+    def get_strip_multiple_whitespaces(self):
+        return self.__strip_multiple_whitespaces
+
+    def get_url_tagging(self):
+        return self.__url_tagging
+
+    def set_stopwords_removal(self, stopwords_removal):
+        self.__stopwords_removal = stopwords_removal
+
+    def set_stemming(self, stemming):
+        self.__stemming = stemming
+
+    def set_lemmatization(self, lemmatization):
+        self.__lemmatization = lemmatization
+
+    def set_named_entity_recognition(self, named_entity_recognition):
+        self.__named_entity_recognition = named_entity_recognition
+
+    def set_strip_multiple_whitespaces(self, strip_multiple_whitespaces):
+        self.__strip_multiple_whitespaces = strip_multiple_whitespaces
+
+    def set_url_tagging(self, url_tagging):
+        self.__url_tagging = url_tagging
+
     @abstractmethod
     def process(self, field_data):
         pass
