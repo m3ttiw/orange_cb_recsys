@@ -90,6 +90,15 @@ class EmbeddingSource(ABC):
         pass
 
 
+class SentenceDetectionTechnique(ABC):
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def detect_sentences(self, text: str):
+        pass
+
+
 class EmbeddingTechnique(FieldContentProductionTechnique):
     """
     Class that can be used to combine different embeddings coming to various sources
