@@ -9,16 +9,17 @@ class Content:
     A content is identified by a string id and is composed of different fields
     Args:
         content_id (str): identifier
-        fields (list[ContentField]): list of the fields instances of a content
+        field_list (list[ContentField]): list of the fields instances of a content
     """
-    def __init__(self, content_id: str, fields: List[ContentField] = None):
-        if fields is None:
-            fields = []         # list o dict
+    def __init__(self, content_id: str,
+                 field_list: List[ContentField] = None):
+        if field_list is None:
+            field_list = []         # list o dict
         self.__content_id: str = content_id
-        self.__fields: List[ContentField] = fields
+        self.__field_list: List[ContentField] = field_list
 
     def append(self, field: ContentField):
-        self.__fields.append(field)
+        self.__field_list.append(field)
 
     def remove(self, field_name: str):
         """
@@ -26,7 +27,7 @@ class Content:
         Args:
             field_name (str): the name of the field to remove
         """
-        self.__fields.pop(self.__fields.index(ContentField(field_name)))
+        self.__field_list.pop(self.__field_list.index(ContentField(field_name)))
 
     def serialize(self):
         """
@@ -39,17 +40,18 @@ class RepresentedContents:
     Class that collects the Contents instance created,
     the whole collection can be serialized.
     Args:
-        contents (list<Item>): list of content's instances
+        content_list (list<Item>): list of content's instances
         length: number of contents
     """
-    def __init__(self, length: int = 0, contents: List[Content] = None):
-        if contents is None:
-            contents = []
-        self.__contents: List[Content] = contents
+    def __init__(self, length: int = 0,
+                 content_list: List[Content] = None):
+        if content_list is None:
+            content_list = []
+        self.__content_list: List[Content] = content_list
         self.__length: int = length
 
     def append(self, content: Content):
-        self.__contents.append(content)
+        self.__content_list.append(content)
 
     def serialize(self):
         """
