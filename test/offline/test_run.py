@@ -35,7 +35,7 @@ class Test(TestCase):
                             self.test_dict_key(field["field_content_production"],
                                                ["class"], context="field_content_production config")
                             for preprocessing in pipeline["preprocessing_list"]:
-                                pass
+                                self.test_dict_key(preprocessing, ["class"], context="preprocessing config")
 
     def test_run(self):
         self.skipTest("test in the submodules.")
