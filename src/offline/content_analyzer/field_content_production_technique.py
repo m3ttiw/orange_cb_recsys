@@ -83,11 +83,28 @@ class EmbeddingSource(ABC):
     General class whose purpose is to load the previously learned embeddings to combine.
     """
     def __init__(self):
-        pass
+        self.__model = None
 
-    @abstractmethod
     def load(self, text: str):
-        pass
+        """
+        Function that loads the embeddings from the file.
+
+        Returns:
+            The loaded embedding matrix
+        """
+        words = text.split(" ")
+        embedding_matrix = np.ndarray(shape=(len(words), self.get_vector_size()))
+
+        for i, word in enumerate(words):
+            embedding_matrix[i, :] = self.__model[word]
+
+        return embedding_matrix
+
+    def set_model(self, model):
+        self.__model = model
+
+    def get_vector_size(self):
+        return self.__model.vector_size
 
 
 class SentenceDetectionTechnique(ABC):
@@ -113,10 +130,12 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
     """
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
+                 sentence_detection: SentenceDetectionTechnique,
                  granularity: Granularity):
         super().__init__()
         self.__combining_technique: CombiningTechnique = combining_technique
         self.__embedding_source: EmbeddingSource = embedding_source
+        self.__sentence_detection: SentenceDetectionTechnique = sentence_detection
         self.__granularity: Granularity = granularity
 
     def produce_content(self, field_data):
@@ -130,11 +149,17 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
         """
 
-        embedding_matrix = self.__embedding_source.load(field_data)
-
         if self.__granularity == Granularity.WORD:
-            return EmbeddingField("Embedding", embedding_matrix)
+            doc_matrix = self.__embedding_source.load(field_data)
+            return EmbeddingField("Embedding", doc_matrix)
         elif self.__granularity == Granularity.SENTENCE:
-            pass
+            sentences = self.__sentence_detection.detect_sentences(field_data)
+            sentences_embeddings = np.ndarray(shape=(len(sentences), self.__embedding_source.get_vector_size()))
+            for i, sentence in enumerate(sentences):
+                sentence_matrix = self.__embedding_source.load(sentence)
+                sentences_embeddings[i, :] = self.__combining_technique.combine(sentence_matrix)
+
+            return sentences_embeddings
         elif self.__granularity == Granularity.DOC:
-            return self.__combining_technique.combine(embedding_matrix)
+            doc_matrix = self.__embedding_source.load(field_data)
+            return self.__combining_technique.combine(doc_matrix)

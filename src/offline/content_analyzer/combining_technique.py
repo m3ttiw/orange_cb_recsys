@@ -11,14 +11,13 @@ class Centroid(CombiningTechnique):
     Args:
         weights (list): list of weights, used to calculate the centroid.
     """
-    def __init__(self, weights: List[float] = None):
+    def __init__(self):
         super().__init__()
-        self.__weights: List[float] = weights
 
     def combine(self, embedding_matrix: np.ndarray):
         """"
         Implements the Abstract Method combine in Combining Technique.
         """
-        return np.average(embedding_matrix, axis=0, weights=self.__weights)
+        return np.average(embedding_matrix, axis=0)
 
 # your combining technique
