@@ -1,16 +1,18 @@
-import json
-from typing import Dict, List
+from typing import Dict
 
-from offline.memory_interfaces.memory_interfaces import InformationInterface
-from offline.memory_interfaces.text_interface import IndexInterface
-from offline.raw_data_extractor.raw_information_source import RawInformationSource
+from src.offline.memory_interfaces.memory_interfaces import InformationInterface
+from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
 
 class RawDataConfig:
     """
-    Configuration of RawDataManager
+    Configuration of RawDataManager.
     Args:
-
+        source (RawInformationSource): raw data source from which extract the content
+        id_field_name (str): name of the field that represents the item id
+        fields_interface (InformationInterface):
+            specifies for each field
+            which interface use to serialize field data
     """
     def __init__(self, source: RawInformationSource = None,
                  id_field_name: str = None,
@@ -18,42 +20,25 @@ class RawDataConfig:
         if fields_interface is None:
             fields_interface = {}
         self.__fields_interface: Dict[str, InformationInterface] = fields_interface
-        self.__id_field_name = id_field_name
-        self.__source = source
+        self.__id_field_name: str = id_field_name
+        self.__source: RawInformationSource = source
 
     def set_source(self, source: str):
         self.__source = source
 
-    def get_source(self):
+    def get_source(self) -> RawInformationSource:
         return self.__source
 
     def set_id_field_name(self, id_field_name: str):
         self.__id_field_name = id_field_name
 
-    def get_id_field_name(self):
+    def get_id_field_name(self) -> str:
         return self.__id_field_name
 
     def set_interface(self, field_name: str, field_interface: InformationInterface):
-        """
-        Associate a pipeline process to the field specified by field_name
-
-        Args:
-            field_interface:
-            field_name (str): name of the field
-
-        """
         self.__fields_interface[field_name] = field_interface
 
-    def get_interface(self, field_name: str):
-        """
-        get the pipeline process of the field identified by field_name
-
-        Args:
-            field_name (str): name of the field
-
-        Returns:
-            a pipeline process (RawFieldPipeline) of field_name
-        """
+    def get_interface(self, field_name: str) -> InformationInterface:
         return self.__fields_interface[field_name]
 
     def get_field_names(self):
@@ -61,7 +46,7 @@ class RawDataConfig:
         get the list of field names
 
         Returns:
-            a list of str
+            List<str>: list of config dict keys
         """
         return self.__fields_interface.keys()
 
@@ -70,15 +55,15 @@ class RawDataConfig:
         get the list of field interfaces
 
         Returns:
-            a list of str
+            List<InformationInterface>: list of config dict values
         """
         return set(self.__fields_interface.values())
 
 
 class RawDataManager:
     """
-    Class with which the user of the framework interacts to carry out the steps of this phase,
-    then data extraction and data serialization.
+    Class to carry out the steps of this phase,
+    then data extraction and data serialization according to the config.
 
     Args:
         config (RawDataConfig): manager configuration
@@ -88,7 +73,8 @@ class RawDataManager:
 
     def fit(self):
         """
-        Begins to extract data from the source and serializing them according to ways specified in the config
+        Begins to extract data from the source
+        and serializing them according to ways specified in the config
         """
 
         CONTENT_ID = "content_id"
@@ -99,7 +85,7 @@ class RawDataManager:
         for item in self.__config.get_source():
             print(interfaces)
             for interface in interfaces:
-                interface.new_item()
+                interface.new_content()
                 interface.new_field(CONTENT_ID, item[self.__config.get_id_field_name()])
 
             for field_name in field_names:

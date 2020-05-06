@@ -28,7 +28,8 @@ class BinaryFile(EmbeddingSource):
             technique used to learn the embedding that is being loaded
     """
 
-    def __init__(self, file_path: str, embedding_type: EmbeddingType):
+    def __init__(self, file_path: str,
+                 embedding_type: EmbeddingType):
         super().__init__()
         self.__file_path: str = file_path
         if embedding_type == EmbeddingType.WORD2VEC:

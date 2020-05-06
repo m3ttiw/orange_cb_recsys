@@ -3,12 +3,8 @@ from abc import ABC, abstractmethod
 
 class InformationProcessor(ABC):
     """
-    General class for data processing.
+    Abstract class that generalize the data processing.
     """
-
-    def __init__(self):
-        pass
-
     @abstractmethod
     def process(self, field_data):
         pass
@@ -18,10 +14,6 @@ class ImageProcessor(InformationProcessor):
     """
     Abstract class for image processing.
     """
-
-    def __init__(self):
-        super().__init__()
-
     @abstractmethod
     def process(self, field_data):
         pass
@@ -31,10 +23,6 @@ class AudioProcessor(InformationProcessor):
     """
     Abstract class for audio processing.
     """
-
-    def __init__(self):
-        super().__init__()
-
     @abstractmethod
     def process(self, field_data):
         pass
@@ -44,10 +32,6 @@ class TextProcessor(InformationProcessor):
     """
     Abstract class for raw text processing.
     """
-
-    def __init__(self):
-        super().__init__()
-
     @abstractmethod
     def process(self, field_data):
         pass
@@ -117,5 +101,13 @@ class NLP(TextProcessor):
         self.__url_tagging = url_tagging
 
     @abstractmethod
-    def process(self, field_data):
+    def process(self, field_data) -> str:
+        """
+        Apply on original text operations with True value
+        Args:
+            field_data: text on which NLP with specified phases will be applied
+
+        Returns:
+            str: text processed with the specified NLP pipeline
+        """
         pass
