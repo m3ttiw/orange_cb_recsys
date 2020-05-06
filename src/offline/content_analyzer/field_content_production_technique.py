@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-
+import numpy as np
+from offline.content_analyzer.content_representation.content_field import EmbeddingField
 from src.offline.memory_interfaces.memory_interfaces import InformationInterface
 
 
@@ -73,7 +74,7 @@ class CombiningTechnique(ABC):
         pass
 
     @abstractmethod
-    def combine(self):
+    def combine(self, embedding_matrix: np.ndarray):
         pass
 
 
@@ -82,10 +83,36 @@ class EmbeddingSource(ABC):
     General class whose purpose is to load the previously learned embeddings to combine.
     """
     def __init__(self):
+        self.__model = None
+
+    def load(self, text: str):
+        """
+        Function that loads the embeddings from the file.
+
+        Returns:
+            The loaded embedding matrix
+        """
+        words = text.split(" ")
+        embedding_matrix = np.ndarray(shape=(len(words), self.get_vector_size()))
+
+        for i, word in enumerate(words):
+            embedding_matrix[i, :] = self.__model[word]
+
+        return embedding_matrix
+
+    def set_model(self, model):
+        self.__model = model
+
+    def get_vector_size(self):
+        return self.__model.vector_size
+
+
+class SentenceDetectionTechnique(ABC):
+    def __init__(self):
         pass
 
     @abstractmethod
-    def load(self):
+    def detect_sentences(self, text: str):
         pass
 
 
@@ -103,10 +130,12 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
     """
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
+                 sentence_detection: SentenceDetectionTechnique,
                  granularity: Granularity):
         super().__init__()
         self.__combining_technique: CombiningTechnique = combining_technique
         self.__embedding_source: EmbeddingSource = embedding_source
+        self.__sentence_detection: SentenceDetectionTechnique = sentence_detection
         self.__granularity: Granularity = granularity
 
     def produce_content(self, field_data):
@@ -120,4 +149,17 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
         """
 
-        print("Creating matrix")
+        if self.__granularity == Granularity.WORD:
+            doc_matrix = self.__embedding_source.load(field_data)
+            return EmbeddingField("Embedding", doc_matrix)
+        elif self.__granularity == Granularity.SENTENCE:
+            sentences = self.__sentence_detection.detect_sentences(field_data)
+            sentences_embeddings = np.ndarray(shape=(len(sentences), self.__embedding_source.get_vector_size()))
+            for i, sentence in enumerate(sentences):
+                sentence_matrix = self.__embedding_source.load(sentence)
+                sentences_embeddings[i, :] = self.__combining_technique.combine(sentence_matrix)
+
+            return sentences_embeddings
+        elif self.__granularity == Granularity.DOC:
+            doc_matrix = self.__embedding_source.load(field_data)
+            return self.__combining_technique.combine(doc_matrix)
