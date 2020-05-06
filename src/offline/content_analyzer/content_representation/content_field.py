@@ -55,7 +55,7 @@ class FeaturesBagField(FieldRepresentation):
         """
         return self.__features[feature_key]
 
-    def get_features(self):
+    def get_feature_dict(self):
         """
         Get the features dict
 
