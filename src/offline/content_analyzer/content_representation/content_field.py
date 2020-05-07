@@ -1,39 +1,42 @@
 from abc import ABC
 
-from typing import List, Dict, Tuple
+from typing import List, Dict
 import numpy as np
 
 
 class FieldRepresentation(ABC):
     """
-    Abstract class that generalize the concept of "field representation".
-    A field representation is a semantic way to represent a field of an item.
+    Abstract class that generalize the concept of "field representation",
+    a field representation is a semantic way to represent a field of an item.
+
+    Args:
+        name (str): name of the representation's instance
     """
 
     def __init__(self, name: str):
         self.__name = name
 
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__name
 
 
 class FeaturesBagField(FieldRepresentation):
     """
-    Class for represent a baf of feature.
-    This class can represent a bag of word if the key value of the dict "features" is a keyword
-    instead of a url for represent a bag of feature.
+    Class for field representation using a bag of features,
+    this class can be also used to represent a bag of words: <keyword, score>;
+    this representation is produced by the EntityLinking and tf-idf techniques
 
     Args:
-        features (dict): <str, object> the dictionary where feature are indexed
+        features (dict<str, object>): the dictionary where features are stored
     """
-
+    
     def __init__(self, name: str, features: Dict[str, object] = None):
         super().__init__(name)
         if features is None:
             features = {}
         self.__features: Dict[str, object] = features
 
-    def add_feature(self, feature_key: str, feature_value):
+    def append_feature(self, feature_key: str, feature_value):
         """
         Add a feature (feature_key, feature_value) to the dict
 
@@ -68,9 +71,8 @@ class FeaturesBagField(FieldRepresentation):
 
 class EmbeddingField(FieldRepresentation):
     """
-    Class for represent a embedding.
-    A embedding is a dense numeric vector.
-    The shape of the array can be set for a n dimensional array, with n > 1
+    Class for field representation using embeddings(dense numeric vectors)
+    this representation is produced by the EmbeddingTechnique.
 
     Examples:
         shape (4) = [x,x,x,x]
@@ -78,57 +80,51 @@ class EmbeddingField(FieldRepresentation):
                        [x,x]]
 
     Args:
-        embedding_array:
+        embedding_array (np.ndarray): embeddings array,
+            it can be of different shapes according to the granularity of the technique
     """
-    
-    def __init__(self, name: str, embedding_array: np.ndarray):
+    def __init__(self, name: str,
+                 embedding_array: np.ndarray):
         super().__init__(name)
-        self.__embedding_array = embedding_array
+        self.__embedding_array: np.ndarray = embedding_array
 
 
 class GraphField(FieldRepresentation):
     """
-    Class for represent a graph-field.
+    Class for field representation using a graph.
     """
-
-    def __init__(self, name):
-        super().__init__(name)
 
 
 class ContentField:
     """
-    A field of an item can be represented in different ways, indexed in representation_list.
+    Class that represents a field,
+    a field can have different representation of itself
     Args:
         field_name (str): the name of the field
-        representations_list (list<FieldContent>): the list of the representations.
+        representation_list (list<FieldRepresentation>): the list of the representations.
     """
 
-    def __init__(self, field_name: str, representations_list: List[FieldRepresentation] = None):
-        if representations_list is None:
-            representations_list = []
+    def __init__(self, field_name: str,
+                 representation_list: List[FieldRepresentation] = None):
+        if representation_list is None:
+            representation_list = []
         self.__field_name: str = field_name
-        self.__representations_list: List[FieldRepresentation] = representations_list
+        self.__representation_list: List[FieldRepresentation] = representation_list
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """
-        override of the method __eq__ of object.
+        override of the method __eq__ of object class,
 
         Args:
-            other (ContentField): another field
+            other (ContentField): the field to check if is equal to self
 
         Returns:
-            True if the names are the same
+            bool: True if the names are equals
         """
-        return self.__field_name == other.__field_name
+        return self.__field_name == other.get_name()
 
     def append(self, representation: FieldRepresentation):
-        """
-        Append a new representation to the representation_list
+        self.__representation_list.append(representation)
 
-        Args:
-            representation (FieldRepresentation): a representation
-        """
-        self.__representations_list.append(representation)
-
-    def get_name(self):
+    def get_name(self) -> str:
         return self.__field_name

@@ -31,7 +31,13 @@ class IndexInterface(TextInterface):
         fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
         self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
 
-    def new_item(self):
+    def new_content(self):
+        """
+        In the lucene index case the new content
+        is a new document in the index
+        Returns:
+
+        """
         self.__doc = Document()
 
     def new_field(self, field_name: str, field_data):

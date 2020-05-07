@@ -24,19 +24,19 @@ content_analyzer_config = ContentAnalyzerConfig(JSONFile("../../datasets/movies_
 
 title_field_config = FieldConfig()
 title_content_pipeline_EL = FieldRepresentationPipeline(BabelPyEntityLinking(), None)
-title_field_config.add_pipeline(title_content_pipeline_EL)
+title_field_config.append_pipeline(title_content_pipeline_EL)
 content_analyzer_config.append_field_config("Title", title_field_config)
 
 plot_content_pipeline_tf_idf = FieldRepresentationPipeline(TfIdfTechnique(raw_data_config.get_interface("Plot"),),
                                                            [OpenNLP(stopwords_removal=True, lemmatization=True)])
 plot_field_config = FieldConfig()
-plot_field_config.add_pipeline(plot_content_pipeline_tf_idf)
+plot_field_config.append_pipeline(plot_content_pipeline_tf_idf)
 
 plot_content_pipeline_embedding = FieldRepresentationPipeline(EmbeddingTechnique(None, BinaryFile("example_name"),
                                                               Granularity.WORD),
                                                               [OpenNLP(url_tagging=True,
                                                                        strip_multiple_whitespaces=False)])
-plot_field_config.add_pipeline(plot_content_pipeline_embedding)
+plot_field_config.append_pipeline(plot_content_pipeline_embedding)
 
 content_analyzer_config.append_field_config("Plot", plot_field_config)
 content_analyzer = ContentAnalyzer(content_analyzer_config)
