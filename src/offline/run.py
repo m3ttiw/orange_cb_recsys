@@ -2,8 +2,8 @@ import json
 import sys
 from typing import List, Dict
 
-from offline.content_analyzer.combining_technique import Centroid
-from offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
+from src.offline.content_analyzer.combining_technique import Centroid
+from src.offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
 from src.offline.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
     FieldRepresentationPipeline
 from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
