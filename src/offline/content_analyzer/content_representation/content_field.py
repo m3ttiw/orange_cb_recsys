@@ -12,6 +12,7 @@ class FieldRepresentation(ABC):
     Args:
         name (str): name of the representation's instance
     """
+
     def __init__(self, name: str):
         self.__name = name
 
@@ -28,15 +29,44 @@ class FeaturesBagField(FieldRepresentation):
     Args:
         features (dict<str, object>): the dictionary where features are stored
     """
-    def __init__(self, name: str,
-                 features: Dict[str, object] = None):
+    
+    def __init__(self, name: str, features: Dict[str, object] = None):
         super().__init__(name)
         if features is None:
             features = {}
         self.__features: Dict[str, object] = features
 
     def append_feature(self, feature_key: str, feature_value):
-        pass
+        """
+        Add a feature (feature_key, feature_value) to the dict
+
+        Args:
+            feature_key (str): key, can be a url or a keyword
+            feature_value: the value of the field
+
+        """
+        self.__features[feature_key] = feature_value
+
+    def get_feature(self, feature_key):
+        """
+        Get the feature_value from the dict[feature_key]
+
+        Args:
+            feature_key (str): key, can be a url or a keyword
+
+        Returns:
+            feature_value: the value of the field
+        """
+        return self.__features[feature_key]
+
+    def get_feature_dict(self):
+        """
+        Get the features dict
+
+        Returns:
+            features: the features dict
+        """
+        return self.__features
 
 
 class EmbeddingField(FieldRepresentation):
@@ -63,8 +93,6 @@ class GraphField(FieldRepresentation):
     """
     Class for field representation using a graph.
     """
-    def __init__(self, name: str):
-        super().__init__(name)
 
 
 class ContentField:
@@ -75,6 +103,7 @@ class ContentField:
         field_name (str): the name of the field
         representation_list (list<FieldRepresentation>): the list of the representations.
     """
+
     def __init__(self, field_name: str,
                  representation_list: List[FieldRepresentation] = None):
         if representation_list is None:

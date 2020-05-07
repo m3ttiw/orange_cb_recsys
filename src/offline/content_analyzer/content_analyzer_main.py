@@ -1,5 +1,7 @@
 from typing import List, Dict
+import time
 
+from offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
 from src.offline.content_analyzer.field_content_production_technique \
@@ -21,9 +23,8 @@ class FieldRepresentationPipeline:
             list of information processors that will be applied on original text,
             in a pipeline way
     """
-    def __init__(self, representation_name: str,
-                 content_technique: FieldContentProductionTechnique,
-                 preprocessor_list: List[InformationProcessor] = None, ):
+    def __init__(self, content_technique: FieldContentProductionTechnique,
+                 preprocessor_list: List[InformationProcessor] = None):
         if preprocessor_list is None:
             preprocessor_list = []
         self.__representation_name = representation_name
@@ -77,6 +78,7 @@ class ContentAnalyzerConfig:
         field_config_dict (Dict<str, FieldConfig>):
             store the config for each field_name
     """
+
     def __init__(self, source: RawInformationSource,
                  id_field_name: str,
                  field_config_dict: Dict[str, FieldConfig] = None):
@@ -125,6 +127,7 @@ class ContentAnalyzer:
     Args:
         config (ContentAnalyzerConfig): configuration for processing the item fields
     """
+
     def __init__(self, config: ContentAnalyzerConfig):
         self.__config: ContentAnalyzerConfig = config
 
@@ -191,24 +194,39 @@ class ContentsProducer:
         """
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
+        else:
+            if "timestamp" in raw_content.keys():
+                timestamp = raw_content["timestamp"]
+            else:
+                timestamp = time.time()
 
-        content = Content(raw_content[self.__config.get_id_field_name()])
-        field_name_list = self.__config.get_field_names()
-        for field_name in field_name_list:
-            print("Creating field:", field_name)
-            pipeline_list = self.__config.get_pipeline_list(field_name)
-            field = ContentField(field_name)
-            for i, pipeline in enumerate(pipeline_list):
-                print("Representation", str(i), " for field", field_name)
-                field_data = raw_content[field_name]
-                preprocessor_list = pipeline.get_preprocessor_list()
-                for preprocessor in preprocessor_list:
-                    field_data = preprocessor.process(field_data)
+            item_id = raw_content[id_merger(self.__config.get_id_field_name())]
+            content = Content(item_id)
+            field_name_list = self.__config.get_field_names()
+            for field_name in field_name_list:
+                print("Creating field:", field_name)
+                pipeline_list = self.__config.get_pipeline_list(field_name)
+                if type(raw_content[field_name]) == list:
+                    timestamp = raw_content[field_name][1]
+                    field_data = raw_content[field_name][0]
+                else:
+                    field_data = raw_content[field_name]
+                field = ContentField(field_name, timestamp)
+                i = 1
+                for pipeline in pipeline_list:
+                    print("Representation", str(i), " for field", field_name)
+                    preprocessor_list = pipeline.get_preprocessor_list()
+                    processed_field_data = field_data
+                    for preprocessor in preprocessor_list:
+                        processed_field_data = preprocessor.process(processed_field_data)
 
-                content_technique = pipeline.get_content_technique()
-                field.append(content_technique.produce_content(field_data))
-                print("---------------------------------")
-            content.append(field)
-            print("\n")
+                    content_technique = pipeline.get_content_technique()
+                    field.append(content_technique.produce_content(str(i), processed_field_data,
+                                                                   field_name=field_name,
+                                                                   item_id=item_id))
+                    i += 1
+                    print("---------------------------------")
+                content.append(field)
+                print("\n")
 
-        return content
+            return content

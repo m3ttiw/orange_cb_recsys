@@ -17,7 +17,7 @@ class FieldContentProductionTechnique(ABC):
         pass
 
     @abstractmethod
-    def produce_content(self, field_data) -> FieldRepresentation:
+    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FieldRepresentation:
         """
 
         Args:
@@ -27,7 +27,6 @@ class FieldContentProductionTechnique(ABC):
             FieldRepresentation: an instance of FieldRepresentation,
                  the particular type of representation depends from the technique
         """
-        pass
 
 
 class FieldToGraph(FieldContentProductionTechnique):
@@ -36,7 +35,7 @@ class FieldToGraph(FieldContentProductionTechnique):
     that uses ontologies or LOD for producing the semantic description
     """
     @abstractmethod
-    def produce_content(self, field_data) -> GraphField:
+    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> GraphField:
         pass
 
 
@@ -48,12 +47,12 @@ class TfIdfTechnique(FieldContentProductionTechnique):
             the memory interface where all of the collection's terms are stored,
             useful for frequency calc
     """
-    def __init__(self, memory_interface: InformationInterface):
+    def __init__(self, memory_interface: TextInterface):
         super().__init__()
         self.__memory_interface = memory_interface
 
-    def produce_content(self, field_data) -> FeaturesBagField:
-        print("Creating bag of words")
+    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FeaturesBagField:
+        return FeaturesBagField(self.__memory_interface.get_tf_idf(field_data, kwargs["field_name"], kwargs["item_id"]))
 
 
 class EntityLinking(FieldContentProductionTechnique):
@@ -62,7 +61,7 @@ class EntityLinking(FieldContentProductionTechnique):
     that uses entity linking for producing the semantic description
     """
     @abstractmethod
-    def produce_content(self, field_data) -> FeaturesBagField:
+    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FeaturesBagField:
         pass
 
 
@@ -87,7 +86,7 @@ class CombiningTechnique(ABC):
     @abstractmethod
     def combine(self, embedding_matrix: np.ndarray):
         """
-        Combine ,in a way specified in the implementations,
+        Combine, in a way specified in the implementations,
         the row of the input matrix
 
         Args:
@@ -186,11 +185,12 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         self.__sentence_detection: SentenceDetectionTechnique = sentence_detection
         self.__granularity: Granularity = granularity
 
-    def produce_content(self, field_data) -> np.ndarray:
+    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> np.ndarray:
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
         Args:
+            field_representation_name:
             field_data: The terms whose embeddings will be combined.
 
         Returns:

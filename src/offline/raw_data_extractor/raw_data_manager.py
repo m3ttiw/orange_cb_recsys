@@ -1,8 +1,9 @@
 from typing import Dict
 
 from src.offline.memory_interfaces.memory_interfaces import InformationInterface
+from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
-
+from src.offline.utils.id_merger import id_merger
 
 class RawDataConfig:
     """
@@ -83,11 +84,10 @@ class RawDataManager:
         for interface in interfaces:
             interface.init_writing()
         for item in self.__config.get_source():
-            print(interfaces)
+            item_id = item[id_merger(self.__config.get_id_field_name())]
             for interface in interfaces:
-                interface.new_content()
-                interface.new_field(CONTENT_ID, item[self.__config.get_id_field_name()])
-
+                interface.new_item()
+                interface.new_field(CONTENT_ID, item_id)
             for field_name in field_names:
                 print("Field " + field_name)
                 field_data = item[field_name]
