@@ -40,7 +40,11 @@ class NLTK(NLP):
         try:
             nltk.data.find('corpora/stopwords')
         except LookupError:
-            nltk.download()
+            nltk.download('stopwords')
+        try:
+            nltk.data.find('punkt')
+        except LookupError:
+            nltk.download('punkt')
 
     def get_lan(self) -> str:
         return self.__lan

@@ -32,9 +32,9 @@ class BinaryFile(EmbeddingSource):
                  embedding_type: EmbeddingType):
         super().__init__()
         self.__file_path: str = file_path
-        if embedding_type == EmbeddingType.WORD2VEC:
+        if embedding_type == 1:
             self.set_model(KeyedVectors.load_word2vec_format(self.__file_path, binary=True))
-        elif embedding_type == EmbeddingType.DOC2VEC:
+        elif embedding_type == 2:
             self.set_model(Doc2Vec.load(self.__file_path))
         else:
             self.set_model(fasttext.load_facebook_vectors(self.__file_path))

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
 import json
+from typing import Dict
+
 import mysql.connector
 from _csv import reader
 
@@ -14,7 +16,7 @@ class RawInformationSource(ABC):
         pass
 
     @abstractmethod
-    def __iter__(self) -> dict:
+    def __iter__(self) -> Dict:
         """
         Iter on contents in the source,
         each iteration return a dict representing the raw content
@@ -32,7 +34,7 @@ class JSONFile(RawInformationSource):
         super().__init__()
         self.__file_path: str = file_path
 
-    def __iter__(self) -> dict:
+    def __iter__(self) -> Dict:
         with open(self.__file_path) as j:
             for line in j:
                 line_dict = json.loads(line)
@@ -49,7 +51,7 @@ class CSVFile(RawInformationSource):
         super().__init__()
         self.__file_path: str = file_path
 
-    def __iter__(self) -> dict:
+    def __iter__(self) -> Dict:
         with open(self.__file_path) as j:
             csv_reader = reader(j)
             for line in csv_reader:
@@ -123,7 +125,7 @@ class SQLDatabase(RawInformationSource):
     def set_conn(self, conn):
         self.__conn = conn
 
-    def __iter__(self) -> dict:
+    def __iter__(self) -> Dict:
         cursor = self.get_conn().cursor(dictionary=True)
         query = """SELECT * FROM """ + self.get_table_name() + """;"""
         cursor.execute(query)

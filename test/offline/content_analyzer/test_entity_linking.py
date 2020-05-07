@@ -10,10 +10,10 @@ class TestBabelPyEntityLinking(TestCase):
     def test_produce_content(self):
         str_ = "text to be babelfyed"
         babelfy_dict = {"sysnetID": "global score"}  # TO DO
-        content = BabelPyEntityLinking('EN').produce_content(str_)
+        content = BabelPyEntityLinking('EN').produce_content("provaEL", str_)
         if content is not None:
             self.skipTest("Get non yet implemented")
-            features = content.get_features()
+            features = content.get_feature_dict()
             for key in features:
                 if key in babelfy_dict.keys():
                     self.assertEqual(features[key], babelfy_dict[key], "different global score")

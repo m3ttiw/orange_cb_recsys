@@ -10,16 +10,16 @@ class BabelPyEntityLinking(EntityLinking):
     Interface for the Babelpy library that wrap some feature of Babelfy entity Linking.
     """
 
-    def __init__(self, lang: str):
+    def __init__(self, lang: str = "EN"):
         super().__init__()
         params = dict()
         params['lang'] = lang
         self.__babel_client = BabelfyClient(API_KEY, params)
 
-    def produce_content(self, field_data: str):
+    def produce_content(self, field_representation_name: str, field_data: str, **kwargs) -> FeaturesBagField:
         self.__babel_client.babelfy(field_data)
         feature_bag = FeaturesBagField('repr_field_name')
         if self.__babel_client.entities is not None:
             for entity in self.__babel_client.entities:
-                feature_bag.add_feature(entity['babelSynsetID'], entity['globalScore'])
+                feature_bag.append_feature(entity['babelSynsetID'], entity['globalScore'])
         return feature_bag

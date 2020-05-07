@@ -77,25 +77,29 @@ class RawDataManager:
         Begins to extract data from the source
         and serializing them according to ways specified in the config
         """
-
+        print("####################### FASE 1 #########################")
         CONTENT_ID = "content_id"
         field_names = self.__config.get_field_names()
         interfaces = self.__config.get_interfaces()
         for interface in interfaces:
             interface.init_writing()
-        for item in self.__config.get_source():
-            item_id = item[id_merger(self.__config.get_id_field_name())]
+        i = 0
+        for content in self.__config.get_source():
+            # print("Item:", i)
+            content_id = content[id_merger(self.__config.get_id_field_name())]
             for interface in interfaces:
-                interface.new_item()
-                interface.new_field(CONTENT_ID, item_id)
+                interface.new_content()
+                interface.new_field(CONTENT_ID, content_id)
             for field_name in field_names:
                 print("Field " + field_name)
-                field_data = item[field_name]
+                field_data = content[field_name]
                 memory_interface = self.__config.get_interface(field_name)
                 memory_interface.new_field(field_name, field_data)
             for interface in interfaces:
                 interface.serialize_item()
+            i += 1
             print("\n")
+            break ############# TOGLI  ###################
 
         for interface in interfaces:
             interface.stop_writing()

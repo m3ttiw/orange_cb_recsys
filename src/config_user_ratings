@@ -1,0 +1,18 @@
+,
+{
+  "content_type": "USER",
+  "raw_source_path": "raw_source\\file\\path",
+  "id_field_name": "user_ID",
+  "fields": [
+
+  ]
+},
+{
+  "content_type": "RATING",
+  "raw_source_path": "raw_source\\file\\path",
+  "id_field_name": ["user_ID", "item_id"],
+  "fields": [
+
+  ]
+}
+

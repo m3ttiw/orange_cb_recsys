@@ -16,7 +16,6 @@ class FieldRepresentationPipeline:
      a list of pre-processing techniques(optional) and a content production techniques
     to specify how to produce one of the representations of a field.
     Args:
-        representation_name (str): name that will be assigned to the produced representation
         content_technique (FieldContentProductionTechnique):
             used to produce complex representation of the field given pre-processed information
         preprocessor_list (InformationProcessor):
@@ -27,7 +26,6 @@ class FieldRepresentationPipeline:
                  preprocessor_list: List[InformationProcessor] = None):
         if preprocessor_list is None:
             preprocessor_list = []
-        self.__representation_name = representation_name
         self.__preprocessor_list: List[InformationProcessor] = preprocessor_list
         self.__content_technique: FieldContentProductionTechnique = content_technique
 
@@ -42,9 +40,6 @@ class FieldRepresentationPipeline:
 
     def get_content_technique(self) -> FieldContentProductionTechnique:
         return self.__content_technique
-
-    def get_representation_name(self) -> str:
-        return self.__representation_name
 
 
 class FieldConfig:
@@ -145,8 +140,12 @@ class ContentAnalyzer:
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
         contents = RepresentedContents()
+        print("####################### FASE 2 #########################")
+        i = 0
         for raw_content in self.__config.get_source():
-            contents.append(contents_producer.create_content(raw_content))
+            print("Content:", i)
+            print(contents_producer.create_content(raw_content))
+            i += 1
 
         return contents
 
@@ -192,6 +191,7 @@ class ContentsProducer:
         Raises:
             general Exception
         """
+
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
         else:
@@ -200,8 +200,8 @@ class ContentsProducer:
             else:
                 timestamp = time.time()
 
-            item_id = raw_content[id_merger(self.__config.get_id_field_name())]
-            content = Content(item_id)
+            content_id = raw_content[id_merger(self.__config.get_id_field_name())]
+            content = Content(content_id)
             field_name_list = self.__config.get_field_names()
             for field_name in field_name_list:
                 print("Creating field:", field_name)
@@ -212,8 +212,7 @@ class ContentsProducer:
                 else:
                     field_data = raw_content[field_name]
                 field = ContentField(field_name, timestamp)
-                i = 1
-                for pipeline in pipeline_list:
+                for i, pipeline in enumerate(pipeline_list):
                     print("Representation", str(i), " for field", field_name)
                     preprocessor_list = pipeline.get_preprocessor_list()
                     processed_field_data = field_data
@@ -223,8 +222,7 @@ class ContentsProducer:
                     content_technique = pipeline.get_content_technique()
                     field.append(content_technique.produce_content(str(i), processed_field_data,
                                                                    field_name=field_name,
-                                                                   item_id=item_id))
-                    i += 1
+                                                                   item_id=content_id))
                     print("---------------------------------")
                 content.append(field)
                 print("\n")

@@ -2,19 +2,21 @@ import json
 import sys
 from typing import List, Dict
 
+from offline.content_analyzer.combining_technique import Centroid
+from offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
 from src.offline.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
     FieldRepresentationPipeline
 from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
-from src.offline.content_analyzer.field_content_production_technique import TfIdfTechnique
-from src.offline.content_analyzer.nlp import OpenNLP
+from src.offline.content_analyzer.field_content_production_technique import TfIdfTechnique, EmbeddingTechnique
+from src.offline.content_analyzer.nlp import NLTK
 from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
 from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVFile, SQLDatabase
 
-DEFAULT_CONFIG_PATH = ".\config.json"
+DEFAULT_CONFIG_PATH = "config.json"
 
 implemented_preprocessing = [
-    "open_nlp",
+    "nltk",
 ]
 
 implemented_content_prod = [
@@ -29,8 +31,12 @@ runnable_instances = {
     "sql": SQLDatabase,
     "index": IndexInterface,
     "babelpy": BabelPyEntityLinking,
-    "open_nlp": OpenNLP,
+    "nltk": NLTK,
     "tf-idf": TfIdfTechnique,
+    "binary_file": BinaryFile,
+    "gensim_downloader": GensimDownloader,
+    "centroid": Centroid,
+    "embedding": EmbeddingTechnique,
 }
 
 need_interface = [
@@ -54,15 +60,25 @@ def check_for_available(config_list: List[Dict]):
                 if pipeline_dict['field_content_production']['class'] not in implemented_content_prod:
                     check_pass = False
                     break
-                for preprocessing in pipeline_dict['preprocesing_list']:
+                for preprocessing in pipeline_dict['preprocessing_list']:
                     if preprocessing['class'] not in implemented_preprocessing:
                         check_pass = False
                         break
     return check_pass
 
 
+def dict_detector(technique_dict):
+    for key in technique_dict.keys():
+        value = technique_dict[key]
+        if type(value) == dict:
+            parameter_class_name = value.pop('class')
+            technique_dict[key] = runnable_instances[parameter_class_name](**value)
+
+    return technique_dict
+
+
 def config_run(config_list: List[Dict]):
-    representend_content_list = list()
+    represented_content_list = list()
     for content_config in config_list:
 
         # phase 1 : memorize the selected fields with some high powered memory interface
@@ -82,15 +98,15 @@ def config_run(config_list: List[Dict]):
         RawDataManager(raw_data_config).fit()
 
         # phase 2 : content production
-        field_config = FieldConfig()
+        content_analyzer_config = ContentAnalyzerConfig(
+            runnable_instances[content_config['source_type']](content_config['raw_source_path']),
+            content_config['id_field_name'])
         for field_dict in content_config['fields']:
+            field_config = FieldConfig()
             # setting the content analyzer config
-            content_analyzer_config = ContentAnalyzerConfig(
-                runnable_instances[content_config['source_type']](content_config['raw_source_path']),
-                content_config['id_field_name'])
             for pipeline_dict in field_dict['pipeline_list']:
                 preprocessing_list = list()
-                for preprocessing in pipeline_dict['preprocesing_list']:
+                for preprocessing in pipeline_dict['preprocessing_list']:
                     # each preprocessing settings
                     class_name = preprocessing.pop('class')  # extract the class acronyms
                     preprocessing_list.append(runnable_instances[class_name](**preprocessing))  # params for the class
@@ -99,14 +115,18 @@ def config_run(config_list: List[Dict]):
                 if class_name in need_interface:
                     pipeline_dict['memory_interface'] = content_config['memory_interface']
                 # append each field representation pipeline to the field config
-                field_config.add_pipeline(FieldRepresentationPipeline(runnable_instances[class_name](**pipeline_dict),
-                                                                      preprocessing_list))
+                technique_dict = pipeline_dict["field_content_production"]
+                technique_dict = dict_detector(technique_dict)
+                field_config.append_pipeline(
+                    FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict), preprocessing_list))
+
+            content_analyzer_config.append_field_config(field_dict["field_name"], field_config)
 
         # fitting the data for each
         content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
-        representend_content_list.append(content_analyzer.fit())
+        represented_content_list.append(content_analyzer.fit())
 
-    return representend_content_list
+    return represented_content_list
 
 
 if __name__ == "__main__":

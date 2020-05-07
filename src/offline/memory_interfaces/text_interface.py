@@ -14,9 +14,14 @@ class IndexInterface(TextInterface):
     """
     Abstract class that takes care of serializing and deserializing text in an indexed structure
     """
+
+    vm_flag = False
+
     def __init__(self, directory: str):
         super().__init__(directory)
-        lucene.initVM(vmargs=['-Djava.awt.headless=true']) # controllare che non venga rieseguita
+        if IndexInterface.vm_flag is False:
+            lucene.initVM(vmargs=['-Djava.awt.headless=true']) # controllare che non venga rieseguita
+            IndexInterface.vm_flag = True
         self.__doc = None
         self.__writer = None
         self.__field_type = None

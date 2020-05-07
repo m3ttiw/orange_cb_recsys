@@ -19,6 +19,9 @@ class FieldRepresentation(ABC):
     def get_name(self) -> str:
         return self.__name
 
+    def __str__(self):
+        pass
+
 
 class FeaturesBagField(FieldRepresentation):
     """
@@ -88,6 +91,9 @@ class EmbeddingField(FieldRepresentation):
         super().__init__(name)
         self.__embedding_array: np.ndarray = embedding_array
 
+    def __str__(self):
+        return str(self.__embedding_array.shape)
+
 
 class GraphField(FieldRepresentation):
     """
@@ -105,9 +111,11 @@ class ContentField:
     """
 
     def __init__(self, field_name: str,
+                 timestamp: str,
                  representation_list: List[FieldRepresentation] = None):
         if representation_list is None:
             representation_list = []
+        self.__timestamp = timestamp
         self.__field_name: str = field_name
         self.__representation_list: List[FieldRepresentation] = representation_list
 
@@ -122,6 +130,14 @@ class ContentField:
             bool: True if the names are equals
         """
         return self.__field_name == other.get_name()
+
+    def __str__(self):
+        field_string = "Field:" + self.__field_name
+        rep_string = ""
+        for rep in self.__representation_list:
+            rep_string += str(rep) + ',\n'
+
+        return field_string + '\n\n' + rep_string
 
     def append(self, representation: FieldRepresentation):
         self.__representation_list.append(representation)

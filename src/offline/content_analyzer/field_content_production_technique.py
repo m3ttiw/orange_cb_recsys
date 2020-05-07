@@ -3,9 +3,10 @@ from enum import Enum
 from typing import List
 
 import numpy as np
+import re
 from src.offline.content_analyzer.content_representation.content_field \
     import EmbeddingField, FeaturesBagField, FieldRepresentation, GraphField
-from src.offline.memory_interfaces.memory_interfaces import InformationInterface
+from src.offline.memory_interfaces.memory_interfaces import InformationInterface, TextInterface
 
 
 class FieldContentProductionTechnique(ABC):
@@ -13,6 +14,7 @@ class FieldContentProductionTechnique(ABC):
     Abstract class that generalize the technique to use for producing the semantic description
     of a content's field's representation
     """
+
     def __init__(self):
         pass
 
@@ -34,6 +36,7 @@ class FieldToGraph(FieldContentProductionTechnique):
     Abstract class that generalize techniques
     that uses ontologies or LOD for producing the semantic description
     """
+
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data, **kwargs) -> GraphField:
         pass
@@ -47,6 +50,7 @@ class TfIdfTechnique(FieldContentProductionTechnique):
             the memory interface where all of the collection's terms are stored,
             useful for frequency calc
     """
+
     def __init__(self, memory_interface: TextInterface):
         super().__init__()
         self.__memory_interface = memory_interface
@@ -60,6 +64,7 @@ class EntityLinking(FieldContentProductionTechnique):
     Abstract class that generalize implementations
     that uses entity linking for producing the semantic description
     """
+
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FeaturesBagField:
         pass
@@ -80,6 +85,7 @@ class CombiningTechnique(ABC):
     Class that generalizes the modality in which previously learned embeddings will be
     combined to produce a semantic description.
     """
+
     def __init__(self):
         pass
 
@@ -107,6 +113,7 @@ class EmbeddingSource(ABC):
     Args:
         self.__model: embeddings model loaded from source
     """
+
     def __init__(self):
         self.__model = None
 
@@ -122,12 +129,20 @@ class EmbeddingSource(ABC):
             np.ndarray: bi-dimensional numpy vector,
                 each row is a term vector
         """
+        alphabet = "abcdefghijklmnopqrstuvwxyz"
+        for letter in alphabet:
+            text = text.replace("'" + letter, '')
+        text = re.sub(r'[^\w\s]', ' ', text)
+        text = text.replace('"', ' ')
         words = text.split(" ")
         embedding_matrix = np.ndarray(shape=(len(words), self.get_vector_size()))
 
         for i, word in enumerate(words):
-            embedding_matrix[i, :] = self.__model[word]
-
+            word = word.lower()
+            try:
+                embedding_matrix[i, :] = self.__model[word]
+            except:
+                pass
         return embedding_matrix
 
     def set_model(self, model):
@@ -142,6 +157,7 @@ class SentenceDetectionTechnique(ABC):
     Abstract class that generalizes implementation of
     techniques used to divide a text in sentences
     """
+
     def __init__(self):
         pass
 
@@ -175,15 +191,18 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
             depending on whether framework user want
             to combine relatively to words, phrases or documents.
     """
+
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
-                 sentence_detection: SentenceDetectionTechnique,
-                 granularity: Granularity):
+                 **kwargs):
         super().__init__()
         self.__combining_technique: CombiningTechnique = combining_technique
         self.__embedding_source: EmbeddingSource = embedding_source
-        self.__sentence_detection: SentenceDetectionTechnique = sentence_detection
-        self.__granularity: Granularity = granularity
+
+        if "sentence_detection" in kwargs.keys():
+            self.__sentence_detection: SentenceDetectionTechnique = kwargs["sentence_detection"]
+        if "granularity" in kwargs.keys():
+            self.__granularity: Granularity = kwargs["granularity"]
 
     def produce_content(self, field_representation_name: str, field_data, **kwargs) -> np.ndarray:
         """
@@ -199,10 +218,10 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
                 bi-dimensional array for SENTENCE and WORD embedding
         """
 
-        if self.__granularity == Granularity.WORD:
+        if self.__granularity == 1:
             doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField("Embedding", doc_matrix)
-        if self.__granularity == Granularity.SENTENCE:
+        if self.__granularity == 2:
             sentences = self.__sentence_detection.detect_sentences(field_data)
             sentences_embeddings = np.ndarray(shape=(len(sentences),
                                                      self.__embedding_source.get_vector_size()))
@@ -211,6 +230,6 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
                 sentences_embeddings[i, :] = self.__combining_technique.combine(sentence_matrix)
 
             return sentences_embeddings
-        if self.__granularity == Granularity.DOC:
+        if self.__granularity == 3:
             doc_matrix = self.__embedding_source.load(field_data)
             return self.__combining_technique.combine(doc_matrix)

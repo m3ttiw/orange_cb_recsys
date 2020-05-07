@@ -1,57 +1,33 @@
 [{
   "content_type": "ITEM",
-  "raw_source_path": "raw_source\\file\\path",
+  "raw_source_path": "movies_info.json",
   "source_type": "json",
   "id_field_name": "imdbID",
   "start_from": "0",
   "end_up_at": "all",
   "fields": [
     {
-      "field_name": "Title",
-      "memory_interface": "None",
-      "pipeline_list": [{
-        "field_content_production": {"class": "babelpy"},
-        "preprocessing_list": []
-      }
-      ]
-    },
-    {
       "field_name": "Plot",
-      "memory_interface": "index",
+      "memory_interface": "None",
       "memory_interface_path": "./test-index-plot",
       "pipeline_list": [
         {
-        "field_content_production": {"class": "tf-idf"},
+        "field_content_production": {"class": "embedding",
+          "combining_technique": {"class":  "centroid"},
+          "embedding_source": {"class": "binary_file", "file_path": "./doc2vec/doc2vec.bin", "embedding_type":  2},
+          "granularity": 1},
         "preprocessing_list": [
-          {"class": "open_nlp", "stopwords_removal":"True", "lemmatization": "True"}
-          ]
-        },
-        {
-        "field_content_production": {"class": "embedding", "combining_technique": "None", "embedding_source": "embedding\\source\\path", "granularity": "WORD"},
-        "preprocessing_list": [
-          {"class": "open_nlp", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
+          {"class": "nltk", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
           ]
         }
       ]
     }
   ]
-},
-{
-  "content_type": "USER",
-  "raw_source_path": "raw_source\\file\\path",
-  "id_field_name": "user_ID",
-  "fields": [
-
-  ]
-},
-{
-  "content_type": "RATING",
-  "raw_source_path": "raw_source\\file\\path",
-  "id_field_name": ["user_ID", "item_id"],
-  "fields": [
-
-  ]
 }]
+
+
+
+
 
 
 
