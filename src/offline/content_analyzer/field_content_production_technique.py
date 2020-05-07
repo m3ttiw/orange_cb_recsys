@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 import numpy as np
-from offline.content_analyzer.content_representation.content_field import EmbeddingField
-from src.offline.memory_interfaces.memory_interfaces import InformationInterface
+from offline.content_analyzer.content_representation.content_field import EmbeddingField, FeaturesBagField
+from src.offline.memory_interfaces.memory_interfaces import InformationInterface, TextInterface
 
 
 class FieldContentProductionTechnique(ABC):
@@ -14,7 +14,7 @@ class FieldContentProductionTechnique(ABC):
         pass
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data):
+    def produce_content(self, field_representation_name: str, field_data, **kwargs):
         pass
 
 
@@ -26,7 +26,7 @@ class FieldToGraph(FieldContentProductionTechnique):
         super().__init__()
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data):
+    def produce_content(self, field_representation_name: str, field_data, **kwargs):
         pass
 
 
@@ -36,12 +36,12 @@ class TfIdfTechnique(FieldContentProductionTechnique):
     Args:
         memory_interface (InformationInterface): the memory interface for managing the data stored
     """
-    def __init__(self, memory_interface: InformationInterface):
+    def __init__(self, memory_interface: TextInterface):
         self.__memory_interface = memory_interface
         super().__init__()
 
-    def produce_content(self, field_representation_name: str, field_data):
-        print("Creating bag of words")
+    def produce_content(self, field_representation_name: str, field_data, **kwargs):
+        return FeaturesBagField(self.__memory_interface.get_tf_idf(field_data, kwargs["field_name"], kwargs["item_id"]))
 
 
 class EntityLinking(FieldContentProductionTechnique):
@@ -52,7 +52,7 @@ class EntityLinking(FieldContentProductionTechnique):
         super().__init__()
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data):
+    def produce_content(self, field_representation_name: str, field_data, **kwargs):
         pass
 
 
@@ -138,7 +138,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         self.__sentence_detection: SentenceDetectionTechnique = sentence_detection
         self.__granularity: Granularity = granularity
 
-    def produce_content(self, field_representation_name: str, field_data):
+    def produce_content(self, field_representation_name: str, field_data, **kwargs):
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.

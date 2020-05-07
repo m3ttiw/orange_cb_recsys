@@ -15,6 +15,7 @@ class FieldRepresentationPipeline:
         content_technique (FieldContentProductionTechnique):
         preprocessor_list (InformationProcessor):
     """
+
     def __init__(self, content_technique: FieldContentProductionTechnique,
                  preprocessor_list: List[InformationProcessor] = None):
         if preprocessor_list is None:
@@ -62,6 +63,7 @@ class ContentAnalyzerConfig:
     Args:
         fields_config: <field_name, list of pipeline>
     """
+
     def __init__(self, source: RawInformationSource,
                  id_field_name: str,
                  fields_config: Dict[str, FieldConfig] = None):
@@ -109,6 +111,7 @@ class ContentAnalyzer:
     Args:
         config (ContentAnalyzerConfig): configuration for processing the item fields
     """
+
     def __init__(self, config: ContentAnalyzerConfig):
         self.__config: ContentAnalyzerConfig = config
 
@@ -196,7 +199,9 @@ class ContentsProducer:
                         field_data = preprocessor.process(field_data)
 
                     content_technique = pipeline.get_content_technique()
-                    field.append(content_technique.produce_content(str(i), field_data))
+                    field.append(content_technique.produce_content(str(i), field_data,
+                                                                   field_name=field_name,
+                                                                   item_id=raw_content[self.__config.get_id_field_name()]))
                     i += 1
                     print("---------------------------------")
                 content.append(field)

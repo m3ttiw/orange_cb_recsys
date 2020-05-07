@@ -135,3 +135,8 @@ class TextInterface(InformationInterface):
     @abstractmethod
     def stop_writing(self):
         pass
+
+    @abstractmethod
+    def get_tf_idf(self, field_data, field_name: str, item_id: str):
+        pass
+
