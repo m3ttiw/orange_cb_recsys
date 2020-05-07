@@ -13,7 +13,7 @@ from src.offline.raw_data_extractor.raw_information_source import RawInformation
 class FieldRepresentationPipeline:
     """
     Pipeline which specifies:
-     a list of pre-processing techniques(optional) and a content production techniques
+     a list of pre-processing techniques(optional) and a content production technique
     to specify how to produce one of the representations of a field.
     Args:
         content_technique (FieldContentProductionTechnique):
