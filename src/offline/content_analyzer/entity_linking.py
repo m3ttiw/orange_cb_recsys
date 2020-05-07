@@ -23,3 +23,14 @@ class BabelPyEntityLinking(EntityLinking):
             for entity in self.__babel_client.entities:
                 feature_bag.append_feature(entity['babelSynsetID'], entity['globalScore'])
         return feature_bag
+
+
+class OpenCalaisEntityLinking(EntityLinking):
+    """
+
+    """
+    def __init__(self):
+        super().__init__()
+
+    def produce_content(self, field_representation_name: str, field_data: str, **kwargs) -> FeaturesBagField:
+        pass
