@@ -196,7 +196,7 @@ class ContentsProducer:
                         field_data = preprocessor.process(field_data)
 
                     content_technique = pipeline.get_content_technique()
-                    field.append(content_technique.produce_content(field_data))
+                    field.append(content_technique.produce_content(str(i), field_data))
                     i += 1
                     print("---------------------------------")
                 content.append(field)

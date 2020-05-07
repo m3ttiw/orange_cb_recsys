@@ -14,7 +14,7 @@ class FieldContentProductionTechnique(ABC):
         pass
 
     @abstractmethod
-    def produce_content(self, field_data):
+    def produce_content(self, field_representation_name: str, field_data):
         pass
 
 
@@ -26,7 +26,7 @@ class FieldToGraph(FieldContentProductionTechnique):
         super().__init__()
 
     @abstractmethod
-    def produce_content(self, field_data):
+    def produce_content(self, field_representation_name: str, field_data):
         pass
 
 
@@ -40,7 +40,7 @@ class TfIdfTechnique(FieldContentProductionTechnique):
         self.__memory_interface = memory_interface
         super().__init__()
 
-    def produce_content(self, field_data):
+    def produce_content(self, field_representation_name: str, field_data):
         print("Creating bag of words")
 
 
@@ -52,7 +52,7 @@ class EntityLinking(FieldContentProductionTechnique):
         super().__init__()
 
     @abstractmethod
-    def produce_content(self, field_data):
+    def produce_content(self, field_representation_name: str, field_data):
         pass
 
 
@@ -138,11 +138,12 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         self.__sentence_detection: SentenceDetectionTechnique = sentence_detection
         self.__granularity: Granularity = granularity
 
-    def produce_content(self, field_data):
+    def produce_content(self, field_representation_name: str, field_data):
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
         Args:
+            field_representation_name:
             field_data: The terms whose embeddings will be combined.
 
         Returns:
