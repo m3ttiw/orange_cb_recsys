@@ -9,6 +9,7 @@ class FieldRepresentation(ABC):
     Abstract class that generalize the concept of "field representation".
     A field representation is a semantic way to represent a field of an item.
     """
+
     def __init__(self, name: str):
         self.__name = name
 
@@ -25,6 +26,7 @@ class FeaturesBagField(FieldRepresentation):
     Args:
         features (dict): <str, object> the dictionary where feature are indexed
     """
+
     def __init__(self, name: str, features: Dict[str, object] = None):
         super().__init__(name)
         if features is None:
@@ -39,10 +41,29 @@ class FeaturesBagField(FieldRepresentation):
             feature_key (str): key, can be a url or a keyword
             feature_value: the value of the field
 
-        Returns:
-
         """
-        pass
+        self.__features[feature_key] = feature_value
+
+    def get_feature(self, feature_key):
+        """
+        Get the feature_value from the dict[feature_key]
+
+        Args:
+            feature_key (str): key, can be a url or a keyword
+
+        Returns:
+            feature_value: the value of the field
+        """
+        return self.__features[feature_key]
+
+    def get_feature_dict(self):
+        """
+        Get the features dict
+
+        Returns:
+            features: the features dict
+        """
+        return self.__features
 
 
 class EmbeddingField(FieldRepresentation):
@@ -59,6 +80,7 @@ class EmbeddingField(FieldRepresentation):
     Args:
         embedding_array:
     """
+    
     def __init__(self, name: str, embedding_array: np.ndarray):
         super().__init__(name)
         self.__embedding_array = embedding_array
@@ -68,6 +90,7 @@ class GraphField(FieldRepresentation):
     """
     Class for represent a graph-field.
     """
+
     def __init__(self, name):
         super().__init__(name)
 
@@ -79,6 +102,7 @@ class ContentField:
         field_name (str): the name of the field
         representations_list (list<FieldContent>): the list of the representations.
     """
+
     def __init__(self, field_name: str, representations_list: List[FieldRepresentation] = None):
         if representations_list is None:
             representations_list = []
