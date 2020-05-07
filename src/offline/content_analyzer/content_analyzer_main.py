@@ -97,7 +97,7 @@ class ContentAnalyzerConfig:
         return self.__fields_config.keys()
 
     def append_field_config(self, field_name: str, field_config: FieldConfig):
-        self.__fields_config[field_name] = FieldConfig
+        self.__fields_config[field_name] = field_config
 
 
 class ContentAnalyzer:
@@ -107,12 +107,9 @@ class ContentAnalyzer:
     and technique with which to obtain semantic descriptions from them.
 
     Args:
-        item_id_list (list): list of item id
         config (ContentAnalyzerConfig): configuration for processing the item fields
     """
-    def __init__(self, item_id_list: List[str],
-                 config: ContentAnalyzerConfig):
-        self.__item_id_list: List[str] = item_id_list
+    def __init__(self, config: ContentAnalyzerConfig):
         self.__config: ContentAnalyzerConfig = config
 
     def set_config(self, config: ContentAnalyzerConfig):

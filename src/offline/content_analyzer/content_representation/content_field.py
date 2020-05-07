@@ -1,6 +1,7 @@
 from abc import ABC
 
 from typing import List, Dict, Tuple
+import numpy as np
 
 
 class FieldRepresentation(ABC):
@@ -77,29 +78,12 @@ class EmbeddingField(FieldRepresentation):
                        [x,x]]
 
     Args:
-        shape (tuple): is the shape of the array
+        embedding_array:
     """
-
-    def __init__(self, name: str, shape: Tuple):
+    
+    def __init__(self, name: str, embedding_array: np.ndarray):
         super().__init__(name)
-        self.__shape: Tuple = shape
-        self.__embedding_array = None
-
-    def add_value(self, value: float, coords: tuple):
-        """
-        Add the value in the array at coords. Coords need to be coherent to the shape of the array.
-
-        Raises:
-            general Exception("len(coords) != len(self.__shape)")
-
-        Args:
-            value (float): the value to be added
-            coords (tuple): the coords where the value is added to the array
-        """
-        if len(coords) != len(self.__shape):
-            Exception("len(coords) != len(self.__shape)")
-        else:
-            pass
+        self.__embedding_array = embedding_array
 
 
 class GraphField(FieldRepresentation):
