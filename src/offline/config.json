@@ -1,6 +1,6 @@
 [{
   "content_type": "ITEM",
-  "raw_source_path": "movies_info.json",
+  "raw_source_path": "../../datasets/movies_info.json",
   "source_type": "json",
   "id_field_name": "imdbID",
   "start_from": "0",
@@ -8,7 +8,7 @@
   "fields": [
     {
       "field_name": "Plot",
-      "memory_interface": "None",
+      "memory_interface": "index",
       "memory_interface_path": "./test-index-plot",
       "pipeline_list": [
         {

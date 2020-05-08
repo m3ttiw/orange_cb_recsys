@@ -85,7 +85,7 @@ class RawDataManager:
             interface.init_writing()
         i = 0
         for content in self.__config.get_source():
-            # print("Item:", i)
+            print("Item:", i)
             content_id = content[id_merger(self.__config.get_id_field_name())]
             for interface in interfaces:
                 interface.new_content()
@@ -96,7 +96,7 @@ class RawDataManager:
                 memory_interface = self.__config.get_interface(field_name)
                 memory_interface.new_field(field_name, field_data)
             for interface in interfaces:
-                interface.serialize_item()
+                interface.serialize_content()
             i += 1
             print("\n")
 

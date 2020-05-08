@@ -30,7 +30,7 @@ class InformationInterface(ABC):
         """
 
     @abstractmethod
-    def serialize_item(self):
+    def serialize_content(self):
         """
         Add to the serialized collection the current item
         """
@@ -66,7 +66,7 @@ class ImageInterface(InformationInterface):
         pass
 
     @abstractmethod
-    def serialize_item(self):
+    def serialize_content(self):
         pass
 
     @abstractmethod
@@ -94,7 +94,7 @@ class AudioInterface(InformationInterface):
         """
 
     @abstractmethod
-    def serialize_item(self):
+    def serialize_content(self):
         pass
 
     @abstractmethod
@@ -119,7 +119,7 @@ class TextInterface(InformationInterface):
         pass
 
     @abstractmethod
-    def serialize_item(self):
+    def serialize_content(self):
         pass
 
     @abstractmethod

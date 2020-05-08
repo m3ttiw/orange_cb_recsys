@@ -3,6 +3,9 @@ import math
 
 from java.nio.file import Paths
 from org.apache.lucene.index import IndexWriter, IndexWriterConfig, IndexOptions
+from org.apache.lucene.analysis.core import KeywordAnalyzer
+from org.apache.lucene.queryparser.classic import QueryParser
+from org.apache.lucene.search import IndexSearcher, TermQuery
 from org.apache.lucene.document import Document, Field, StringField, TextField, FieldType
 from org.apache.lucene.store import SimpleFSDirectory
 from offline.memory_interfaces.memory_interfaces import TextInterface
@@ -46,24 +49,32 @@ class IndexInterface(TextInterface):
         self.__doc = Document()
 
     def new_field(self, field_name: str, field_data):
-        self.__doc.add(Field(field_name, field_data, StringField.TYPE_STORED))
+        self.__doc.add(Field(field_name, field_data, self.__field_type))
 
-    def serialize_item(self):
+    def serialize_content(self):
         self.__writer.addDocument(self.__doc)
 
     def stop_writing(self):
         self.__writer.commit()
         self.__writer.close()
 
-    def get_tf_idf(self, field_data, field_name: str, item_id: str):
-        reader = DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory())))
-        term_vector = reader.getTermVector(0, field_name)
+    def get_tf_idf(self, field_data, field_name: str, content_id: str):
+        searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
+        query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:" + content_id)
+        scoreDocs = searcher.search(query, 1).scoreDocs
+        for scoreDoc in scoreDocs:
+            document_offset = scoreDoc.doc
+        reader = searcher.getIndexReader()
+        term_vector = reader.getTermVector(document_offset, field_name)
         term_enum = term_vector.iterator()
+        field_words = field_data.split(' ')
         words_bag = {}
         for term in BytesRefIterator.cast_(term_enum):
+            term_text = term.utf8ToString()
+            if term_text not in field_words:
+                continue
             postings = term_enum.postings(None)
             postings.nextDoc()
-            term_text = term.utf8ToString()
             term_frequency = 1 + math.log(postings.freq())  # normalized term frequency
             inverse_document_frequency = math.log10(reader.maxDoc() / reader.docFreq(Term(field_name, term)))
             tf_idf = term_frequency * inverse_document_frequency
