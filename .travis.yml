@@ -16,7 +16,14 @@ before_install:
 #  - pip install -U pytest
 #  - pip install codecov
 install:
-  - pip install -r requirements.txt . # install package + test dependencies
+#  - pip install -r requirements.txt . # install package + test dependencies
+- pip install numpy
+- pip install wheel
+- pip install gensim
+- pip install nltk
+- pip install babelpy
+- pip install mysql
+- pip install mysql-connector-python
 script: python -m unittest
 after_success:
   - codecov # submit coverage
