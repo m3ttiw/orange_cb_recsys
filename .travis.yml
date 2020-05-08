@@ -5,9 +5,6 @@ python:
 
 cache: pip
 
-os:
-  - windows
-
 services:
   - docker
 
@@ -30,7 +27,6 @@ install:
 
 script:
   - python -m unittest
-  -
 after_success:
  - codecov # submit coverage
 # - python run.py # non si può runnare dopo lo script
