@@ -18,10 +18,9 @@ class Test(TestCase):
 
     def test_config(self):
         # test only if the key in the config.json are valid
-        config_list = json.load(open("src\offline\config.json"))
+        config_list = json.load(open("..\..\src\offline\config.json"))
         msg: str = "You have to put the {} in the {}"
-        with self.assertRaises(FileNotFoundError):
-            self.assert_(True, "Try to use double back_slashes '\\' instead of a single slash")
+        print(type(config_list))
         self.assertEqual(type(config_list), type(list()), "the config must contain a list of dict")
         for content_config in config_list:
             self.assertEqual(type(content_config), type(dict()),
@@ -43,15 +42,15 @@ class Test(TestCase):
                     for pipeline in field["pipeline_list"]:
                         if pipeline is not None:
                             """
-                            self.test_dict_key(field,
+                            self.test_dict_key(pipeline,
                                                ["field_content_production", "preprocessing_list"],
                                                context="pipeline config")
-                            self.test_dict_key(field["field_content_production"],
+                            self.test_dict_key(pipeline["field_content_production"],
                                                ["class"], context="field_content_production config")
                             """
                             for key in ["field_content_production", "preprocessing_list"]:
-                                self.assertIn(key, field.keys(), msg.format(key, "pipeline config"))
-                            self.assertIn("class", field["field_content_production"].keys(),
+                                self.assertIn(key, pipeline.keys(), msg.format(key, "pipeline config"))
+                            self.assertIn("class", pipeline["field_content_production"].keys(),
                                           msg.format(key, "field_content_production config"))
                             for preprocessing in pipeline["preprocessing_list"]:
                                 """
