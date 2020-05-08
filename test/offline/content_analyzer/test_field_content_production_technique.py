@@ -8,7 +8,7 @@ from src.offline.content_analyzer.sentence_detection import NLTKSentenceDetectio
 
 class TestEmbeddingTechnique(TestCase):
     def test_produce_content(self):
-        self.skipTest("RIMUOVI")
+        self.skipTest("FIX TEST")
         technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity=3)
 
         result = technique.produce_content("Embedding", "title plot")
