@@ -25,9 +25,11 @@ install:
 - pip install mysql
 - pip install mysql-connector-python
 
-script: python -m unittest
+script:
+  - python -m unittest
+  - python run.py
 after_success:
-# - codecov # submit coverage
- - python run.py
+ - codecov # submit coverage
+# - python run.py # non si può runnare dopo lo script
 git:
   depth: false
