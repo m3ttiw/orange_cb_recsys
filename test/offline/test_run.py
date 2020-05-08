@@ -18,7 +18,7 @@ class Test(TestCase):
 
     def test_config(self):
         # test only if the key in the config.json are valid
-        config_list = json.load(open("..\..\src\offline\config.json"))
+        config_list = json.load(open("config.json"))
         msg: str = "You have to put the {} in the {}"
         print(type(config_list))
         self.assertEqual(type(config_list), type(list()), "the config must contain a list of dict")
