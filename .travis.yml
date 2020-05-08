@@ -24,7 +24,7 @@ install:
 - pip install babelpy
 - pip install mysql
 - pip install mysql-connector-python
-- pip install lucene
+
 script: python -m unittest
 after_success:
   - codecov # submit coverage
