@@ -1,7 +1,7 @@
 from unittest import TestCase
 import numpy as np
 
-from offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile, EmbeddingType
+from src.offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile, EmbeddingType
 
 
 class TestGensimDownloader(TestCase):

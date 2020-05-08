@@ -1,17 +1,16 @@
 from unittest import TestCase
 import numpy as np
-from offline.content_analyzer.combining_technique import Centroid
-from offline.content_analyzer.embedding_source import BinaryFile, GensimDownloader
-from offline.content_analyzer.field_content_production_technique import EmbeddingTechnique, Granularity
-from offline.content_analyzer.sentence_detection import NLTKSentenceDetection
+from src.offline.content_analyzer.combining_technique import Centroid
+from src.offline.content_analyzer.embedding_source import BinaryFile, GensimDownloader
+from src.offline.content_analyzer.field_content_production_technique import EmbeddingTechnique, Granularity
+from src.offline.content_analyzer.sentence_detection import NLTKSentenceDetection
 
 
 class TestEmbeddingTechnique(TestCase):
     def test_produce_content(self):
-        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), None, Granularity.DOC)
+        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity=3)
 
-        result = technique.produce_content("title plot")
-
+        result = technique.produce_content("Embedding", "title plot")
         expected = np.ndarray(shape=(25,))
         expected[:] = [7.88080007e-01, 2.99764998e-01, 4.93862494e-02, -2.96350002e-01,
                        3.28214996e-01, -8.11504990e-01, 1.06998003e+00, -2.28915006e-01,
@@ -21,30 +20,30 @@ class TestEmbeddingTechnique(TestCase):
                        -7.03384009e-01, 6.97145015e-01, 5.35014980e-02, -8.15229982e-01,
                        -6.40249997e-01]
 
-        self.assertTrue(np.allclose(result, expected))
+        self.assertTrue(np.allclose(result.get_array(), expected))
 
-        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), None, Granularity.WORD)
+        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity=1)
 
-        result = technique.produce_content("title plot")
-
+        result = technique.produce_content("Embedding", "title plot")
+        print(type(result))
         expected = np.ndarray(shape=(2, 25))
-        expected[0, :] = [8.5013e-01, 4.5262e-01, -7.0575e-03, -8.7738e-01, 4.2448e-01,
-                          -8.3659e-01, 8.0416e-01, 3.7408e-01, 4.3085e-01, -6.3936e-01,
-                          1.1939e-01, 1.1342e+00, -3.2065e+00, 9.3146e-01, 3.6542e-01,
-                          -3.1931e-03, 1.9790e-01, -3.2954e-01, 2.9672e-01, 4.8869e-01,
-                          -1.3787e+00, 7.5234e-01, 2.0334e-01, -6.7998e-01, -8.9194e-01]
+        expected[0, :] = np.array([8.5013e-01, 4.5262e-01, -7.0575e-03, -8.7738e-01, 4.2448e-01,
+                                   -8.3659e-01, 8.0416e-01, 3.7408e-01, 4.3085e-01, -6.3936e-01,
+                                   1.1939e-01, 1.1342e+00, -3.2065e+00, 9.3146e-01, 3.6542e-01,
+                                   -3.1931e-03, 1.9790e-01, -3.2954e-01, 2.9672e-01, 4.8869e-01,
+                                   -1.3787e+00, 7.5234e-01, 2.0334e-01, -6.7998e-01, -8.9194e-01])
 
-        expected[1, :] = [0.72603, 0.14691, 0.10583, 0.28468, 0.23195,
-                          -0.78642, 1.3358, -0.83191, 0.43967, -0.30163,
-                          0.29388, 0.4537, -2.1844, 0.24571, 0.3216,
-                          0.69215, 0.66528, 0.53426, 0.0033024, -0.49139,
-                          -0.028068, 0.64195, -0.096337, -0.95048, -0.38856]
+        expected[1, :] = np.array([0.72603, 0.14691, 0.10583, 0.28468, 0.23195,
+                                   -0.78642, 1.3358, -0.83191, 0.43967, -0.30163,
+                                   0.29388, 0.4537, -2.1844, 0.24571, 0.3216,
+                                   0.69215, 0.66528, 0.53426, 0.0033024, -0.49139,
+                                   -0.028068, 0.64195, -0.096337, -0.95048, -0.38856])
 
-        self.assertTrue(np.allclose(result, expected))
+        self.assertTrue(np.allclose(result.get_array(), expected))
 
-        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), NLTKSentenceDetection(), Granularity.SENTENCE)
+        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity=2, sentence_detection=NLTKSentenceDetection())
 
-        result = technique.produce_content("god is great! i won lottery.")
+        result = technique.produce_content("Embedding", "god is great! i won lottery.")
         expected = np.ndarray(shape=(2, 25))
         expected[0, :] = [-0.37618333, 0.15434666, -0.28881, -0.07587333, -0.27056333,
                           -0.09340801, 1.50040003, -0.06122, -0.62004667, -0.33889667,
@@ -59,4 +58,4 @@ class TestEmbeddingTechnique(TestCase):
                           -4.11850005e-01, 5.29021009e-01, 3.65209666e-01, -3.64499937e-02,
                           -5.01233364e-02]
 
-        self.assertTrue(np.allclose(result, expected))
+        self.assertTrue(np.allclose(result.get_array(), expected))

@@ -92,7 +92,10 @@ class EmbeddingField(FieldRepresentation):
         self.__embedding_array: np.ndarray = embedding_array
 
     def __str__(self):
-        return str(self.__embedding_array.shape)
+        return str(self.__embedding_array)
+
+    def get_array(self) -> np.ndarray:
+        return self.__embedding_array
 
 
 class GraphField(FieldRepresentation):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from offline.content_analyzer.nlp import NLTK
+from src.offline.content_analyzer.nlp import NLTK
 
 
 class TestNLTK(TestCase):

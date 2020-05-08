@@ -1,9 +1,9 @@
 from typing import Dict
 
 from src.offline.memory_interfaces.memory_interfaces import InformationInterface
-from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 from src.offline.utils.id_merger import id_merger
+
 
 class RawDataConfig:
     """
@@ -99,7 +99,6 @@ class RawDataManager:
                 interface.serialize_item()
             i += 1
             print("\n")
-            break ############# TOGLI  ###################
 
         for interface in interfaces:
             interface.stop_writing()

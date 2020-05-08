@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from offline.content_analyzer.sentence_detection import NLTKSentenceDetection
+from src.offline.content_analyzer.sentence_detection import NLTKSentenceDetection
 
 
 class TestNLTKSentenceDetection(TestCase):

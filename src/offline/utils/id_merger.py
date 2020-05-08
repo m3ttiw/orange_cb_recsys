@@ -1,6 +1,3 @@
-from typing import List
-
-
 def id_merger(id_list):
     if type(id_list) == str or type(id_list) == int:
         return str(id_list)

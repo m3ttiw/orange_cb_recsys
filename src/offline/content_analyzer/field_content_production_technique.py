@@ -204,7 +204,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         if "granularity" in kwargs.keys():
             self.__granularity: Granularity = kwargs["granularity"]
 
-    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> np.ndarray:
+    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> EmbeddingField:
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
@@ -220,7 +220,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
         if self.__granularity == 1:
             doc_matrix = self.__embedding_source.load(field_data)
-            return EmbeddingField("Embedding", doc_matrix)
+            return EmbeddingField(field_representation_name, doc_matrix)
         if self.__granularity == 2:
             sentences = self.__sentence_detection.detect_sentences(field_data)
             sentences_embeddings = np.ndarray(shape=(len(sentences),
@@ -229,7 +229,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
                 sentence_matrix = self.__embedding_source.load(sentence)
                 sentences_embeddings[i, :] = self.__combining_technique.combine(sentence_matrix)
 
-            return sentences_embeddings
+            return EmbeddingField(field_representation_name, sentences_embeddings)
         if self.__granularity == 3:
             doc_matrix = self.__embedding_source.load(field_data)
-            return self.__combining_technique.combine(doc_matrix)
+            return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))

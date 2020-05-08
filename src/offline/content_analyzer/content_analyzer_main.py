@@ -1,7 +1,7 @@
 from typing import List, Dict
 import time
 
-from offline.utils.id_merger import id_merger
+from src.offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
 from src.offline.content_analyzer.field_content_production_technique \
