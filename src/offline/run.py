@@ -2,8 +2,8 @@ import json
 import sys
 from typing import List, Dict
 
-from offline.content_analyzer.combining_technique import Centroid
-from offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
+from src.offline.content_analyzer.combining_technique import Centroid
+from src.offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
 from src.offline.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
     FieldRepresentationPipeline
 from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
@@ -68,9 +68,12 @@ def check_for_available(config_list: List[Dict]):
 
 
 def dict_detector(technique_dict):
+    """
+    detect a a class constructor call in a sub-dict of a dict
+    """
     for key in technique_dict.keys():
         value = technique_dict[key]
-        if type(value) == dict:
+        if type(value) == dict and 'class' in value.keys():
             parameter_class_name = value.pop('class')
             technique_dict[key] = runnable_instances[parameter_class_name](**value)
 
@@ -109,6 +112,7 @@ def config_run(config_list: List[Dict]):
                 for preprocessing in pipeline_dict['preprocessing_list']:
                     # each preprocessing settings
                     class_name = preprocessing.pop('class')  # extract the class acronyms
+                    preprocessing = dict_detector(preprocessing)
                     preprocessing_list.append(runnable_instances[class_name](**preprocessing))  # params for the class
                 # content production settings
                 class_name = pipeline_dict['field_content_production'].pop('class')  # extract the class acronyms
