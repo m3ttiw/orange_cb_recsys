@@ -27,7 +27,7 @@ install:
 
 script: python -m unittest
 after_success:
-  - codecov # submit coverage
-
+# - codecov # submit coverage
+ - python run.py
 git:
   depth: false
