@@ -12,11 +12,11 @@ before_install:
   - docker pull rbarile17/py_cb_recsys
   - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
   - python --version
-#  - pip install -U pip
+  - pip install -U pip
 #  - pip install -U pytest
 #  - pip install codecov
-#install:
- # - pip install "./test" . # install package + test dependencies
+install:
+  - pip install requirements.txt . # install package + test dependencies
 script: python -m unittest
 after_success:
   - codecov # submit coverage

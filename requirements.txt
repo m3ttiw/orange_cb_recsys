@@ -1,0 +1,7 @@
+numpy
+wheel
+gensim
+nltk
+babelpy
+mysql
+mysql-connector-python
