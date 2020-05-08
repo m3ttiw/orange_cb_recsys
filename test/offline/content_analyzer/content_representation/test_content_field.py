@@ -5,7 +5,7 @@ from src.offline.content_analyzer.content_representation.content_field import Fe
 
 class TestFeaturesBagField(TestCase):
 
-    def test_add_get_feature(self):
+    def test_append_get_feature(self):
         feature = FeaturesBagField('repr_name')
         feature.append_feature('synsetID', 'global_score')
         self.assertEqual(feature.get_feature('synsetID'), 'global_score', "Error in the features_dict")
