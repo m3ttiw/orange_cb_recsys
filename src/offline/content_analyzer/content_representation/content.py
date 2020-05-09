@@ -36,11 +36,11 @@ class Content:
 
     def __str__(self):
         content_string = "Content:" + self.__content_id
-        field_string = " "
+        field_string = ""
         for field in self.__field_list:
-            field_string += str(field) + ", \n"
+            field_string += str(field) + "\n"
 
-        return content_string + '\n\n' + field_string
+        return content_string + '\n\n' + field_string + "##############################"
 
 
 class RepresentedContents:

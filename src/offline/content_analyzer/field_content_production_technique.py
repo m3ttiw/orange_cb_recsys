@@ -4,7 +4,7 @@ from typing import List
 
 import numpy as np
 
-from offline.memory_interfaces.text_interface import IndexInterface
+from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.content_analyzer.content_representation.content_field \
     import EmbeddingField, FeaturesBagField, FieldRepresentation, GraphField
 
@@ -19,7 +19,7 @@ class FieldContentProductionTechnique(ABC):
         pass
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FieldRepresentation:
+    def produce_content(self, field_representation_name: str, **kwargs) -> FieldRepresentation:
         """
         Given data of certain field it returns a copmlex representation's instance of the field.
         Args:
@@ -39,7 +39,7 @@ class FieldToGraph(FieldContentProductionTechnique):
     """
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> GraphField:
+    def produce_content(self, field_representation_name: str, **kwargs) -> GraphField:
         pass
 
 
@@ -54,7 +54,7 @@ class TfIdfTechnique(FieldContentProductionTechnique):
         super().__init__()
         self.__memory_interface = IndexInterface('./frequency-index')
 
-    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FeaturesBagField:
+    def produce_content(self, field_representation_name: str, **kwargs) -> FeaturesBagField:
         return FeaturesBagField(field_representation_name, self.__memory_interface.get_tf_idf(kwargs["field_name"], kwargs["item_id"])
 )
 
@@ -66,7 +66,7 @@ class EntityLinking(FieldContentProductionTechnique):
     """
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FeaturesBagField:
+    def produce_content(self, field_representation_name: str, **kwargs) -> FeaturesBagField:
         pass
 
 
@@ -197,7 +197,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         if "granularity" in kwargs.keys():
             self.__granularity: Granularity = kwargs["granularity"]
 
-    def produce_content(self, field_representation_name: str, field_data, **kwargs) -> EmbeddingField:
+    def produce_content(self, field_representation_name: str, **kwargs) -> EmbeddingField:
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
@@ -212,10 +212,10 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         """
 
         if self.__granularity == 1:
-            doc_matrix = self.__embedding_source.load(field_data)
+            doc_matrix = self.__embedding_source.load(kwargs["field_data"])
             return EmbeddingField(field_representation_name, doc_matrix)
         if self.__granularity == 2:
-            sentences = self.__sentence_detection.detect_sentences(field_data)
+            sentences = self.__sentence_detection.detect_sentences(kwargs["field_data"])
             sentences_embeddings = np.ndarray(shape=(len(sentences),
                                                      self.__embedding_source.get_vector_size()))
             for i, sentence in enumerate(sentences):
@@ -224,5 +224,5 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
             return EmbeddingField(field_representation_name, sentences_embeddings)
         if self.__granularity == 3:
-            doc_matrix = self.__embedding_source.load(field_data)
+            doc_matrix = self.__embedding_source.load(kwargs["field_data"])
             return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))

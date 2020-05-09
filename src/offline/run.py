@@ -101,6 +101,7 @@ def config_run(config_list: List[Dict]):
 
         # phase 2 : content production
         content_analyzer_config = ContentAnalyzerConfig(
+            content_config["content_type"],
             runnable_instances[content_config['source_type']](content_config['raw_source_path']),
             content_config['id_field_name'])
         for field_dict in content_config['fields']:

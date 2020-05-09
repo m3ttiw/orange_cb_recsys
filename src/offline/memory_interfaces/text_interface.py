@@ -8,9 +8,10 @@ from org.apache.lucene.queryparser.classic import QueryParser
 from org.apache.lucene.search import IndexSearcher, TermQuery
 from org.apache.lucene.document import Document, Field, StringField, TextField, FieldType
 from org.apache.lucene.store import SimpleFSDirectory
-from offline.memory_interfaces.memory_interfaces import TextInterface
 from org.apache.lucene.util import BytesRefIterator
 from org.apache.lucene.index import DirectoryReader, Term
+
+from src.offline.memory_interfaces.memory_interfaces import TextInterface
 
 
 class IndexInterface(TextInterface):

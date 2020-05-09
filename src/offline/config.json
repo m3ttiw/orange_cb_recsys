@@ -1,6 +1,6 @@
 [{
   "content_type": "ITEM",
-  "raw_source_path": "../../datasets/movies_info-ridotto.json",
+  "raw_source_path": "../../datasets/movies_info_reduced.json",
   "source_type": "json",
   "id_field_name": ["imdbID"],
   "start_from": "0",

@@ -1,7 +1,7 @@
 from typing import List, Dict, Tuple
 import time
 
-from offline.memory_interfaces.text_interface import IndexInterface
+from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
@@ -23,6 +23,7 @@ class FieldRepresentationPipeline:
             list of information processors that will be applied on original text,
             in a pipeline way
     """
+
     def __init__(self, content_technique: FieldContentProductionTechnique,
                  preprocessor_list: List[InformationProcessor] = None):
         if preprocessor_list is None:
@@ -51,6 +52,7 @@ class FieldConfig:
             list of pipeline that will be used to produce different field's representations,
             one pipeline for each representation
     """
+
     def __init__(self, pipelines_list: List[FieldRepresentationPipeline] = None):
         if pipelines_list is None:
             pipelines_list = []
@@ -75,14 +77,19 @@ class ContentAnalyzerConfig:
             store the config for each field_name
     """
 
-    def __init__(self, source: RawInformationSource,
+    def __init__(self, content_type: str,
+                 source: RawInformationSource,
                  id_field_name,
                  field_config_dict: Dict[str, FieldConfig] = None):
         if field_config_dict is None:
             field_config_dict = {}
+        self.__content_type = content_type
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
         self.__id_field_name: str = id_field_name
+
+    def get_content_type(self):
+        return self.__content_type
 
     def get_id_field_name(self):
         return self.__id_field_name
@@ -164,14 +171,13 @@ class ContentAnalyzer:
                     processed_field_data = raw_content[field_name]
                     for preprocessor in preprocessor_list:
                         processed_field_data = preprocessor.process(processed_field_data)
-                    index.new_field(field_name+str(field_to_index[(field_name, pipeline)]), processed_field_data)
+                    index.new_field(field_name + str(field_to_index[(field_name, pipeline)]), processed_field_data)
                 index.serialize_content()
 
             index.stop_writing()
 
         i = 0
         for raw_content in self.__config.get_source():
-            print("Content:", i)
             print(contents_producer.create_content(raw_content, field_to_index))
             i += 1
 
@@ -223,10 +229,12 @@ class ContentsProducer:
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
         else:
-            if "timestamp" in raw_content.keys():
-                timestamp = raw_content["timestamp"]
-            else:
-                timestamp = time.time()
+            timestamp = None
+            if self.__config.get_content_type() != "ITEM":
+                if "timestamp" in raw_content.keys():
+                    timestamp = raw_content["timestamp"]
+                else:
+                    timestamp = time.time()
 
             id_values = []
             for id_field_name in self.__config.get_id_field_name():
@@ -243,21 +251,21 @@ class ContentsProducer:
                     field_data = raw_content[field_name]
                 field = ContentField(field_name, timestamp)
                 for i, pipeline in enumerate(pipeline_list):
-                    preprocessor_list = pipeline.get_preprocessor_list()
-                    processed_field_data = field_data
-                    for preprocessor in preprocessor_list:
-                        processed_field_data = preprocessor.process(processed_field_data)
-
                     content_technique = pipeline.get_content_technique()
-
                     if (field_name, pipeline) in field_to_index:
-                        field.append(content_technique.produce_content(str(i), processed_field_data,
-                                                                       field_name=field_name+str(field_to_index[(field_name, pipeline)]),
-                                                                       item_id=content_id))
+                        field.append(
+                            content_technique.produce_content(str(i), field_name=field_name + str(
+                                field_to_index[(field_name, pipeline)]), item_id=content_id))
                     else:
-                        field.append(content_technique.produce_content(str(i), processed_field_data,
-                                                                       field_name=field_name,
-                                                                       item_id=content_id))
+                        preprocessor_list = pipeline.get_preprocessor_list()
+                        processed_field_data = field_data
+                        for preprocessor in preprocessor_list:
+                            processed_field_data = preprocessor.process(processed_field_data)
+
+                        field.append(
+                            content_technique.produce_content(str(i), field_data=processed_field_data,
+                                                              field_name=field_name,
+                                                              item_id=content_id))
                 content.append(field)
 
             return content
