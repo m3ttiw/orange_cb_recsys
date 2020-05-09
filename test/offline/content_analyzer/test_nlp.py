@@ -17,14 +17,14 @@ class TestNLTK(TestCase):
         nltka = NLTK(stopwords_removal=True, url_tagging=True)
         self.assertEqual(nltka.process(
                 "The striped bats are hanging on their feet for the best"),
-                "The striped bats hanging feet best")
+                ["The", "striped", "bats", "hanging", "feet", "best"])
 
         #Test for only stemming
         nltka.set_stemming(True)
         nltka.set_stopwords_removal(False)
         self.assertEqual(nltka.process(
                 "My name is Francesco and I am a student at the University of the city of Bari"),
-                "my name is francesco and i am a student at the univers of the citi of bari")
+                ["my", "name", "is", "francesco", "and", "i", "am", "a", "student", "at", "the", "univers", "of", "the", "citi", "of", "bari"])
         nltka.set_stemming(False)
 
         #Test for only lemmatization

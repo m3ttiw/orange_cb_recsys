@@ -45,12 +45,24 @@ class NLTK(NLP):
             nltk.data.find('punkt')
         except LookupError:
             nltk.download('punkt')
+        try:
+            nltk.data.find('averaged_perceptron_tagger')
+        except LookupError:
+            nltk.download('averaged_perceptron_tagger')
+        try:
+            nltk.data.find('wordnet')
+        except LookupError:
+            nltk.download('wordnet')
 
     def get_lan(self) -> str:
         return self.__lan
 
     def set_lan(self, lan: str):
         self.__lan = lan
+
+    def __tokenization_operation(self, text):
+        self.set_is_tokenized(True)
+        return word_tokenize(text)
 
     def __stopwords_removal_operation(self, text) -> str:
         """
@@ -63,13 +75,13 @@ class NLTK(NLP):
             str: input text without stopwords
         """
         stop_words = set(stopwords.words(self.get_lan()))
-        word_tokens = word_tokenize(text)
+
         filtered_sentence = []
-        for word_token in word_tokens:
+        for word_token in text:
             if word_token not in stop_words:
                 filtered_sentence.append(word_token)
 
-        return ' '.join(filtered_sentence)
+        return filtered_sentence
 
     def __stemming_operation(self, text):
         """
@@ -83,15 +95,14 @@ class NLTK(NLP):
         """
         from nltk.stem.snowball import SnowballStemmer
         stemmer = SnowballStemmer(language=self.get_lan())
-        splitted_text = text.split()
+
         stemmed_text = []
-        for word in splitted_text:
+        for word in text:
             stemmed_text.append(stemmer.stem(word))
 
-        return ' '.join(stemmed_text)
+        return stemmed_text
 
-    @staticmethod
-    def __lemmatization_operation(text):
+    def __lemmatization_operation(self, text):
         """
         Execute lemmatization on input text
 
@@ -101,15 +112,14 @@ class NLTK(NLP):
         Returns:
             str: input text, words reduced to their lemma
         """
-        lemmatizer = WordNetLemmatizer()
-        splitted_text = text.split()
-        lemmatized_text = []
-        for word in splitted_text:
-            lemmatized_text.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
-        return ' '.join(lemmatized_text)
 
-    @staticmethod
-    def __named_entity_recognition_operation(text):
+        lemmatizer = WordNetLemmatizer()
+        lemmatized_text = []
+        for word in text:
+            lemmatized_text.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
+        return lemmatized_text
+
+    def __named_entity_recognition_operation(self, text):
         """
         Execute NER on input text
 
@@ -119,15 +129,13 @@ class NLTK(NLP):
         Returns:
             str: input text, entities recognized
         """
-        text = nltk.word_tokenize(text)
         text = nltk.pos_tag(text)
         pattern = 'NP: {<DT>?<JJ>*<NN>}'
         cp = nltk.RegexpParser(pattern)
         cs = cp.parse(text)
         return cs
 
-    @staticmethod
-    def __strip_multiple_whitespaces_operation(text):
+    def __strip_multiple_whitespaces_operation(self, text):
         """
         Remove multiple whitespaces on input text
 
@@ -137,6 +145,7 @@ class NLTK(NLP):
         Returns:
             str: input text, multiple whitespaces removed
         """
+
         import re
         return re.sub(' +', ' ', text)
 
@@ -149,7 +158,7 @@ class NLTK(NLP):
             text:
 
         Returns:
-            str: input text, <URL> isntead of full url
+            str: input text, <URL> instead of full url
         """
         import re
         urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]| '
@@ -160,10 +169,12 @@ class NLTK(NLP):
         return text
 
     def process(self, field_data):
-        if self.get_url_tagging():
-            field_data = self.__url_tagging_operation(field_data)
         if self.get_strip_multiple_whitespaces():
             field_data = self.__strip_multiple_whitespaces_operation(field_data)
+        if self.get_url_tagging():
+            field_data = self.__url_tagging_operation(field_data)
+
+        field_data = self.__tokenization_operation(field_data)
         if self.get_stopwords_removal():
             field_data = self.__stopwords_removal_operation(field_data)
         if self.get_lemmatization():

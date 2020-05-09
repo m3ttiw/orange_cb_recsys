@@ -1,4 +1,5 @@
 import json
+import lucene
 import sys
 from typing import List, Dict
 
@@ -12,6 +13,8 @@ from src.offline.content_analyzer.nlp import NLTK
 from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
 from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVFile, SQLDatabase
+
+lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
 DEFAULT_CONFIG_PATH = "config.json"
 
@@ -38,10 +41,6 @@ runnable_instances = {
     "centroid": Centroid,
     "embedding": EmbeddingTechnique,
 }
-
-need_interface = [
-    "tf-idf",
-]
 
 
 def check_for_available(config_list: List[Dict]):
@@ -116,8 +115,6 @@ def config_run(config_list: List[Dict]):
                     preprocessing_list.append(runnable_instances[class_name](**preprocessing))  # params for the class
                 # content production settings
                 class_name = pipeline_dict['field_content_production'].pop('class')  # extract the class acronyms
-                if class_name in need_interface:
-                    pipeline_dict['memory_interface'] = content_config['memory_interface']
                 # append each field representation pipeline to the field config
                 technique_dict = pipeline_dict["field_content_production"]
                 technique_dict = dict_detector(technique_dict)

@@ -1,11 +1,12 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import time
 
+from offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
 from src.offline.content_analyzer.field_content_production_technique \
-    import FieldContentProductionTechnique
+    import FieldContentProductionTechnique, TfIdfTechnique
 from src.offline.content_analyzer.information_processor import InformationProcessor
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
@@ -75,7 +76,7 @@ class ContentAnalyzerConfig:
     """
 
     def __init__(self, source: RawInformationSource,
-                 id_field_name: str,
+                 id_field_name,
                  field_config_dict: Dict[str, FieldConfig] = None):
         if field_config_dict is None:
             field_config_dict = {}
@@ -83,7 +84,7 @@ class ContentAnalyzerConfig:
         self.__source: RawInformationSource = source
         self.__id_field_name: str = id_field_name
 
-    def get_id_field_name(self) -> str:
+    def get_id_field_name(self):
         return self.__id_field_name
 
     def get_source(self) -> RawInformationSource:
@@ -141,10 +142,37 @@ class ContentAnalyzer:
         contents_producer.set_config(self.__config)
         contents = RepresentedContents()
         print("####################### FASE 2 #########################")
+
+        field_to_index = {}
+
+        for field_name in self.__config.get_field_names():
+            for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
+                if type(pipeline.get_content_technique()) == TfIdfTechnique:
+                    field_to_index[(field_name, pipeline)] = i
+
+        if len(field_to_index) != 0:
+            index = IndexInterface('./frequency-index')
+            index.init_writing()
+            for raw_content in self.__config.get_source():
+                index.new_content()
+                id_values = []
+                for id_field_name in self.__config.get_id_field_name():
+                    id_values.append(raw_content[id_field_name])
+                index.new_field("content_id", id_merger(id_values))
+                for field_name, pipeline in field_to_index.keys():
+                    preprocessor_list = pipeline.get_preprocessor_list()
+                    processed_field_data = raw_content[field_name]
+                    for preprocessor in preprocessor_list:
+                        processed_field_data = preprocessor.process(processed_field_data)
+                    index.new_field(field_name+str(field_to_index[(field_name, pipeline)]), processed_field_data)
+                index.serialize_content()
+
+            index.stop_writing()
+
         i = 0
         for raw_content in self.__config.get_source():
             print("Content:", i)
-            print(contents_producer.create_content(raw_content))
+            print(contents_producer.create_content(raw_content, field_to_index))
             i += 1
 
         return contents
@@ -180,7 +208,7 @@ class ContentsProducer:
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
-    def create_content(self, raw_content: Dict):
+    def create_content(self, raw_content: Dict, field_to_index: List[Tuple[str, FieldRepresentationPipeline, int]]):
         """
         Create an item processing every field in the specified way,
         this class be iteratively invoked by the fit method
@@ -200,11 +228,13 @@ class ContentsProducer:
             else:
                 timestamp = time.time()
 
-            content_id = raw_content[id_merger(self.__config.get_id_field_name())]
+            id_values = []
+            for id_field_name in self.__config.get_id_field_name():
+                id_values.append(raw_content[id_field_name])
+            content_id = id_merger(id_values)
             content = Content(content_id)
             field_name_list = self.__config.get_field_names()
             for field_name in field_name_list:
-                print("Creating field:", field_name)
                 pipeline_list = self.__config.get_pipeline_list(field_name)
                 if type(raw_content[field_name]) == list:
                     timestamp = raw_content[field_name][1]
@@ -213,18 +243,21 @@ class ContentsProducer:
                     field_data = raw_content[field_name]
                 field = ContentField(field_name, timestamp)
                 for i, pipeline in enumerate(pipeline_list):
-                    print("Representation", str(i), " for field", field_name)
                     preprocessor_list = pipeline.get_preprocessor_list()
                     processed_field_data = field_data
                     for preprocessor in preprocessor_list:
                         processed_field_data = preprocessor.process(processed_field_data)
 
                     content_technique = pipeline.get_content_technique()
-                    field.append(content_technique.produce_content(str(i), processed_field_data,
-                                                                   field_name=field_name,
-                                                                   item_id=content_id))
-                    print("---------------------------------")
+
+                    if (field_name, pipeline) in field_to_index:
+                        field.append(content_technique.produce_content(str(i), processed_field_data,
+                                                                       field_name=field_name+str(field_to_index[(field_name, pipeline)]),
+                                                                       item_id=content_id))
+                    else:
+                        field.append(content_technique.produce_content(str(i), processed_field_data,
+                                                                       field_name=field_name,
+                                                                       item_id=content_id))
                 content.append(field)
-                print("\n")
 
             return content

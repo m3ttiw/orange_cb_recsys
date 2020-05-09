@@ -18,16 +18,12 @@ class IndexInterface(TextInterface):
     Abstract class that takes care of serializing and deserializing text in an indexed structure
     """
 
-    vm_flag = False
-
     def __init__(self, directory: str):
         super().__init__(directory)
-        if IndexInterface.vm_flag is False:
-            lucene.initVM(vmargs=['-Djava.awt.headless=true']) # controllare che non venga rieseguita
-            IndexInterface.vm_flag = True
         self.__doc = None
         self.__writer = None
         self.__field_type = None
+        self.__index_created = False
 
     def init_writing(self):
         self.__field_type = FieldType(StringField.TYPE_STORED)
@@ -36,8 +32,10 @@ class IndexInterface(TextInterface):
         self.__field_type.setStoreTermVectors(True)
         self.__field_type.setStoreTermVectorPositions(True)
         self.__field_type.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
-        fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
-        self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
+        if self.__index_created is False:
+            fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
+            self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
+            self.__index_created = True
 
     def new_content(self):
         """
@@ -49,6 +47,8 @@ class IndexInterface(TextInterface):
         self.__doc = Document()
 
     def new_field(self, field_name: str, field_data):
+        if type(field_data) == list:
+            field_data = ' '.join(field_data)
         self.__doc.add(Field(field_name, field_data, self.__field_type))
 
     def serialize_content(self):
@@ -58,21 +58,19 @@ class IndexInterface(TextInterface):
         self.__writer.commit()
         self.__writer.close()
 
-    def get_tf_idf(self, field_data, field_name: str, content_id: str):
+    def get_tf_idf(self, field_name: str, content_id: str):
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
         query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:" + content_id)
         scoreDocs = searcher.search(query, 1).scoreDocs
         for scoreDoc in scoreDocs:
             document_offset = scoreDoc.doc
+
         reader = searcher.getIndexReader()
+        words_bag = {}
         term_vector = reader.getTermVector(document_offset, field_name)
         term_enum = term_vector.iterator()
-        field_words = field_data.split(' ')
-        words_bag = {}
         for term in BytesRefIterator.cast_(term_enum):
             term_text = term.utf8ToString()
-            if term_text not in field_words:
-                continue
             postings = term_enum.postings(None)
             postings.nextDoc()
             term_frequency = 1 + math.log(postings.freq())  # normalized term frequency

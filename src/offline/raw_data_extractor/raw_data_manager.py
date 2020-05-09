@@ -85,8 +85,11 @@ class RawDataManager:
             interface.init_writing()
         i = 0
         for content in self.__config.get_source():
-            print("Item:", i)
-            content_id = content[id_merger(self.__config.get_id_field_name())]
+            #print("Item:", i)
+            id_values = []
+            for id_field_name in self.__config.get_id_field_name():
+                id_values.append(content[id_field_name])
+            content_id = id_merger(id_values)
             for interface in interfaces:
                 interface.new_content()
                 interface.new_field(CONTENT_ID, content_id)
@@ -98,7 +101,7 @@ class RawDataManager:
             for interface in interfaces:
                 interface.serialize_content()
             i += 1
-            print("\n")
+            #print("\n")
 
         for interface in interfaces:
             interface.stop_writing()

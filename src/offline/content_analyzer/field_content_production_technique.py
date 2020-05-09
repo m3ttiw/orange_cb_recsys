@@ -3,10 +3,10 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-import re
+
+from offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.content_analyzer.content_representation.content_field \
     import EmbeddingField, FeaturesBagField, FieldRepresentation, GraphField
-from src.offline.memory_interfaces.memory_interfaces import InformationInterface, TextInterface
 
 
 class FieldContentProductionTechnique(ABC):
@@ -21,8 +21,9 @@ class FieldContentProductionTechnique(ABC):
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FieldRepresentation:
         """
-
+        Given data of certain field it returns a copmlex representation's instance of the field.
         Args:
+            field_representation_name: name of the field representation object that will be created
             field_data: input for the complex representation production
 
         Returns:
@@ -46,17 +47,16 @@ class TfIdfTechnique(FieldContentProductionTechnique):
     """
     Class that produce a Bag of words with tf-idf metric
     Args:
-        memory_interface (InformationInterface):
-            the memory interface where all of the collection's terms are stored,
-            useful for frequency calc
+
     """
 
-    def __init__(self, memory_interface: TextInterface):
+    def __init__(self):
         super().__init__()
-        self.__memory_interface = memory_interface
+        self.__memory_interface = IndexInterface('./frequency-index')
 
     def produce_content(self, field_representation_name: str, field_data, **kwargs) -> FeaturesBagField:
-        return FeaturesBagField(self.__memory_interface.get_tf_idf(field_data, kwargs["field_name"], kwargs["item_id"]))
+        return FeaturesBagField(field_representation_name, self.__memory_interface.get_tf_idf(kwargs["field_name"], kwargs["item_id"])
+)
 
 
 class EntityLinking(FieldContentProductionTechnique):
@@ -129,16 +129,9 @@ class EmbeddingSource(ABC):
             np.ndarray: bi-dimensional numpy vector,
                 each row is a term vector
         """
-        alphabet = "abcdefghijklmnopqrstuvwxyz"
-        for letter in alphabet:
-            text = text.replace("'" + letter, '')
-        text = re.sub(r'[^\w\s]', ' ', text)
-        text = text.replace('"', ' ')
-        words = text.split(" ")
-        embedding_matrix = np.ndarray(shape=(len(words), self.get_vector_size()))
+        embedding_matrix = np.ndarray(shape=(len(text), self.get_vector_size()))
 
-        for i, word in enumerate(words):
-            word = word.lower()
+        for i, word in enumerate(text):
             try:
                 embedding_matrix[i, :] = self.__model[word]
             except:

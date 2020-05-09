@@ -131,6 +131,6 @@ class TextInterface(InformationInterface):
         pass
 
     @abstractmethod
-    def get_tf_idf(self, field_data, field_name: str, item_id: str):
+    def get_tf_idf(self, field_name: str, item_id: str):
         pass
 

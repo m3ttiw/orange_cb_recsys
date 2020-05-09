@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 
 
@@ -63,6 +64,10 @@ class NLP(TextProcessor):
         self.__named_entity_recognition: bool = named_entity_recognition
         self.__strip_multiple_whitespaces: bool = strip_multiple_whitespaces
         self.__url_tagging: bool = url_tagging
+        self.__is_tokenized = False
+
+    def get_is_tokenized(self):
+        return self.__is_tokenized
 
     def get_stopwords_removal(self):
         return self.__stopwords_removal
@@ -100,6 +105,9 @@ class NLP(TextProcessor):
     def set_url_tagging(self, url_tagging):
         self.__url_tagging = url_tagging
 
+    def set_is_tokenized(self, is_tokenized: bool):
+        self.__is_tokenized = is_tokenized
+
     @abstractmethod
     def process(self, field_data) -> str:
         """
@@ -111,3 +119,4 @@ class NLP(TextProcessor):
             str: text processed with the specified NLP pipeline
         """
         pass
+

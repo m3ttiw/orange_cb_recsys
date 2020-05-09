@@ -39,6 +39,9 @@ class FeaturesBagField(FieldRepresentation):
             features = {}
         self.__features: Dict[str, object] = features
 
+    def __str__(self):
+        return str(self.__features)
+
     def append_feature(self, feature_key: str, feature_value):
         """
         Add a feature (feature_key, feature_value) to the dict
