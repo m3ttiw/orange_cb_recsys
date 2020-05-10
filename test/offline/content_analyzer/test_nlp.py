@@ -31,28 +31,28 @@ class TestNLTK(TestCase):
         nltka.set_lemmatization(True)
         self.assertEqual(nltka.process(
                 "The striped bats are hanging on their feet for best"),
-                "The strip bat be hang on their foot for best")
+                ["The", "strip", "bat", "be", "hang", "on", "their", "foot", "for", "best"])
 
         #Test for lemmatization with multiple whitespaces removal
         nltka.set_strip_multiple_whitespaces(True)
         self.assertEqual(nltka.process(
                 "The   striped  bats    are    hanging   on   their    feet   for  best"),
-                "The strip bat be hang on their foot for best")
+                ["The", "strip", "bat", "be", "hang", "on", "their", "foot", "for", "best"])
 
         #Test for lemmatization with multiple whitespaces removal and URL tagging
         nltka.set_url_tagging(True)
         self.assertEqual(nltka.process(
                 "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
-                "The strip <URL> bat <URL> be <URL> hang on their foot for best <URL>")
+                ["The", "strip", "<URL>", "bat", "<URL>", "be", "<URL>", "hang", "on", "their", "foot", "for", "best", "<URL>"])
 
         # Test for lemmatization, multiple whitespaces removal, URL tagging and stemming
         nltka.set_stemming(True)
         self.assertEqual(nltka.process(
             "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
-            "the strip <url> bat <url> be <url> hang on their foot for best <url>")
+            ["the", "strip", "<url>", "bat", "<url>", "be", "<url>", "hang", "on", "their", "foot", "for", "best", "<url>"])
 
         # Test for lemmatization, multiple whitespaces removal, URL tagging, stemming, stop words removal
         nltka.set_stopwords_removal(True)
         self.assertEqual(nltka.process(
             "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
-            "the strip < url > bat < url > < url > hang foot best < url >")
+            ["the", "strip", "<url>", "bat", "<url>", "<url>", "hang", "foot", "best", "<url>"])
