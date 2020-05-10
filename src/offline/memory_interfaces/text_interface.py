@@ -24,7 +24,6 @@ class IndexInterface(TextInterface):
         self.__doc = None
         self.__writer = None
         self.__field_type = None
-        self.__index_created = False
 
     def init_writing(self):
         self.__field_type = FieldType(StringField.TYPE_STORED)
@@ -33,10 +32,8 @@ class IndexInterface(TextInterface):
         self.__field_type.setStoreTermVectors(True)
         self.__field_type.setStoreTermVectorPositions(True)
         self.__field_type.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
-        if self.__index_created is False:
-            fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
-            self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
-            self.__index_created = True
+        fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
+        self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
 
     def new_content(self):
         """
