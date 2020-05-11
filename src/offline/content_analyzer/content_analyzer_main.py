@@ -272,11 +272,3 @@ class ContentsProducer:
                 content.append(field)
 
             return content
-
-
-# cambiata struttura classe tecnica, suddivisione in tecniche basate su collezione e tecniche basate su singolo item
-# aggiunto metodo dataset refactor alle tecniche basate su collezione
-# aggiunto un id progressivo alla classe pipeline, da usare come nome del field da memorizzare nella nuova struttura (index per tf-idf ad esempio)
-# chiamato il metodo dataset_refactor per le coppie (field_name, pipeline) associate,
-# nella configurazione, a una tecnica che necessita di tale processo
-# alcuni commenti
