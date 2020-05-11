@@ -93,7 +93,8 @@ def config_run(config_list: List[Dict]):
                 config_dict[field_dict['field_name']] = runnable_instances[field_dict['memory_interface']](
                     field_dict['memory_interface_path'])
 
-        # setting the phase 1 configuration
+        # setting the phase 1 configurati\
+        # on
         raw_data_config = RawDataConfig(
             runnable_instances[content_config['source_type']](content_config['raw_source_path']),
             content_config['id_field_name'], config_dict)
