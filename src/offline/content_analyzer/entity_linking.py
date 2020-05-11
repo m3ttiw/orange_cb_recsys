@@ -14,8 +14,8 @@ class BabelPyEntityLinking(EntityLinking):
         params['lang'] = lang
         self.__babel_client = BabelfyClient(api_key, params)
 
-    def produce_content(self, field_representation_name: str, **kwargs) -> FeaturesBagField:
-        self.__babel_client.babelfy(kwargs["field_data"])
+    def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
+        self.__babel_client.babelfy(field_data)
         feature_bag = FeaturesBagField('repr_field_name')
         if self.__babel_client.entities is not None:
             for entity in self.__babel_client.entities:

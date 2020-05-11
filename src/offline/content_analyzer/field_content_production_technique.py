@@ -65,7 +65,7 @@ class FieldToGraph(SingleContentTechnique):
     """
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, **kwargs) -> GraphField:
+    def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
         pass
 
 
@@ -80,8 +80,9 @@ class TfIdfTechnique(CollectionBasedTechnique):
         super().__init__()
         self.__index = IndexInterface('./frequency-index')
 
-    def produce_content(self, field_representation_name: str, **kwargs) -> FeaturesBagField:
-        return FeaturesBagField(field_representation_name, self.__index.get_tf_idf(kwargs["field_name"], kwargs["item_id"]))
+    def produce_content(self, field_representation_name: str, content_id: str,
+                        field_name: str, pipeline_id: str) -> FeaturesBagField:
+        return FeaturesBagField(field_representation_name, self.__index.get_tf_idf(field_name + pipeline_id, content_id))
 
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
         if len(self.get_need_refactor().keys()) != 0:
@@ -96,12 +97,12 @@ class TfIdfTechnique(CollectionBasedTechnique):
 
                 self.__index.new_field("content_id", id_merger(id_values))
 
-                for field_pipeline_name in self.get_need_refactor().keys():
-                    preprocessor_list = self.get_need_refactor()[field_pipeline_name]
-                    processed_field_data = raw_content[field_pipeline_name]
+                for (field_name, pipeline_id) in self.get_need_refactor().keys():
+                    preprocessor_list = self.get_need_refactor()[(field_name, pipeline_id)]
+                    processed_field_data = raw_content[field_name]
                     for preprocessor in preprocessor_list:
                         processed_field_data = preprocessor.process(processed_field_data)
-                    self.__index.new_field(field_pipeline_name, processed_field_data)
+                    self.__index.new_field(field_name + pipeline_id, processed_field_data)
                 self.__index.serialize_content()
 
             self.__index.stop_writing()
@@ -114,7 +115,7 @@ class EntityLinking(SingleContentTechnique):
     """
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, **kwargs) -> FeaturesBagField:
+    def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
         pass
 
 
@@ -245,7 +246,7 @@ class EmbeddingTechnique(SingleContentTechnique):
         if "granularity" in kwargs.keys():
             self.__granularity: Granularity = kwargs["granularity"]
 
-    def produce_content(self, field_representation_name: str, **kwargs) -> EmbeddingField:
+    def produce_content(self, field_representation_name: str, field_data: str) -> EmbeddingField:
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
@@ -260,10 +261,10 @@ class EmbeddingTechnique(SingleContentTechnique):
         """
 
         if self.__granularity == 1:
-            doc_matrix = self.__embedding_source.load(kwargs["field_data"])
+            doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, doc_matrix)
         if self.__granularity == 2:
-            sentences = self.__sentence_detection.detect_sentences(kwargs["field_data"])
+            sentences = self.__sentence_detection.detect_sentences(field_data)
             sentences_embeddings = np.ndarray(shape=(len(sentences),
                                                      self.__embedding_source.get_vector_size()))
             for i, sentence in enumerate(sentences):
@@ -272,5 +273,5 @@ class EmbeddingTechnique(SingleContentTechnique):
 
             return EmbeddingField(field_representation_name, sentences_embeddings)
         if self.__granularity == 3:
-            doc_matrix = self.__embedding_source.load(kwargs["field_data"])
+            doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))

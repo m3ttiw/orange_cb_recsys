@@ -172,14 +172,14 @@ class ContentAnalyzer:
             for pipeline in self.__config.get_pipeline_list(field_name):
                 if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
                     pipeline.get_content_technique().\
-                        append_field_need_refactor(field_name + str(pipeline), pipeline.get_preprocessor_list())
+                        append_field_need_refactor(field_name, str(pipeline), pipeline.get_preprocessor_list())
 
         for technique in self.__config.get_collection_based_techniques():
             technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
 
         i = 0
         for raw_content in self.__config.get_source():
-            print(contents_producer.create_content(raw_content, need_dataset_refactor))
+            print(contents_producer.create_content(raw_content))
             i += 1
 
         return contents
