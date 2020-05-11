@@ -168,6 +168,23 @@ class NLTK(NLP):
             text = text.replace(url, "<URL>")
         return text
 
+    """
+    This method is useful because the tokenization operation separates the tokens that start with the '<'
+    symbol. For example, the '<URL>' token is seen as three different tokens. This method brings together
+    this kind of tokens, treating them as a unique one.
+    """
+    @staticmethod
+    def __compact_tokens(text: list):
+        for i in range(0, len(text)):
+            if i < len(text) and text[i] == '<':
+                j = i + 1
+                while text[j] != '>':
+                    text[i] = text[i] + text[j]
+                    del text[j]
+                text[i] = text[i] + text[j]
+                del text[j]
+        return text
+
     def process(self, field_data):
         if self.get_strip_multiple_whitespaces():
             field_data = self.__strip_multiple_whitespaces_operation(field_data)
@@ -183,4 +200,4 @@ class NLTK(NLP):
             field_data = self.__stemming_operation(field_data)
         if self.get_named_entity_recognition():
             field_data = self.__named_entity_recognition_operation(field_data)
-        return field_data
+        return self.__compact_tokens(field_data)
