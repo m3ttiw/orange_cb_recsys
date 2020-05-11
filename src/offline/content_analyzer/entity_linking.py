@@ -1,5 +1,3 @@
-from babelpy.config.config import LANG, API_KEY
-
 from src.offline.content_analyzer.content_representation.content_field import FeaturesBagField
 from src.offline.content_analyzer.field_content_production_technique import EntityLinking
 from babelpy.babelfy import BabelfyClient

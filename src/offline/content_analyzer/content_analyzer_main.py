@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Set
 import time
 
 from src.offline.memory_interfaces.text_interface import IndexInterface
@@ -6,7 +6,7 @@ from src.offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
 from src.offline.content_analyzer.field_content_production_technique \
-    import FieldContentProductionTechnique, TfIdfTechnique
+    import FieldContentProductionTechnique, CollectionBasedTechnique, SingleContentTechnique
 from src.offline.content_analyzer.information_processor import InformationProcessor
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
@@ -24,12 +24,16 @@ class FieldRepresentationPipeline:
             in a pipeline way
     """
 
+    instance_counter: int = 0
+
     def __init__(self, content_technique: FieldContentProductionTechnique,
                  preprocessor_list: List[InformationProcessor] = None):
         if preprocessor_list is None:
             preprocessor_list = []
         self.__preprocessor_list: List[InformationProcessor] = preprocessor_list
         self.__content_technique: FieldContentProductionTechnique = content_technique
+        self.__id: str = str(FieldRepresentationPipeline.instance_counter)
+        FieldRepresentationPipeline.instance_counter += 1
 
     def append_preprocessor(self, preprocessor: InformationProcessor):
         self.__preprocessor_list.append(preprocessor)
@@ -42,6 +46,9 @@ class FieldRepresentationPipeline:
 
     def get_content_technique(self) -> FieldContentProductionTechnique:
         return self.__content_technique
+
+    def __str__(self):
+        return self.__id
 
 
 class FieldConfig:
@@ -109,7 +116,7 @@ class ContentAnalyzerConfig:
         """
         return self.__field_config_dict[field_name].get_pipeline_list()
 
-    def get_field_names(self) -> List[str]:
+    def get_field_name_list(self) -> List[str]:
         """
         Get the list of the field names
         Returns:
@@ -119,6 +126,15 @@ class ContentAnalyzerConfig:
 
     def append_field_config(self, field_name: str, field_config: FieldConfig):
         self.__field_config_dict[field_name] = field_config
+
+    def get_collection_based_techniques(self) -> Set[CollectionBasedTechnique]:
+        techniques = set()
+        for field_config in self.__field_config_dict.values():
+            for pipeline in field_config.get_pipeline_list():
+                if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
+                    techniques.add(pipeline.get_content_technique())
+
+        return techniques
 
 
 class ContentAnalyzer:
@@ -150,35 +166,20 @@ class ContentAnalyzer:
         contents = RepresentedContents()
         print("####################### FASE 2 #########################")
 
-        field_to_index = {}
+        need_dataset_refactor: List[Dict[str, str]] = []
 
-        for field_name in self.__config.get_field_names():
-            for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
-                if type(pipeline.get_content_technique()) == TfIdfTechnique:
-                    field_to_index[(field_name, pipeline)] = i
+        for field_name in self.__config.get_field_name_list():
+            for pipeline in self.__config.get_pipeline_list(field_name):
+                if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
+                    pipeline.get_content_technique().\
+                        append_field_need_refactor(field_name + str(pipeline), pipeline.get_preprocessor_list())
 
-        if len(field_to_index) != 0:
-            index = IndexInterface('./frequency-index')
-            index.init_writing()
-            for raw_content in self.__config.get_source():
-                index.new_content()
-                id_values = []
-                for id_field_name in self.__config.get_id_field_name():
-                    id_values.append(raw_content[id_field_name])
-                index.new_field("content_id", id_merger(id_values))
-                for field_name, pipeline in field_to_index.keys():
-                    preprocessor_list = pipeline.get_preprocessor_list()
-                    processed_field_data = raw_content[field_name]
-                    for preprocessor in preprocessor_list:
-                        processed_field_data = preprocessor.process(processed_field_data)
-                    index.new_field(field_name + str(field_to_index[(field_name, pipeline)]), processed_field_data)
-                index.serialize_content()
-
-            index.stop_writing()
+        for technique in self.__config.get_collection_based_techniques():
+            technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
 
         i = 0
         for raw_content in self.__config.get_source():
-            print(contents_producer.create_content(raw_content, field_to_index))
+            print(contents_producer.create_content(raw_content, need_dataset_refactor))
             i += 1
 
         return contents
@@ -214,7 +215,7 @@ class ContentsProducer:
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
-    def create_content(self, raw_content: Dict, field_to_index: List[Tuple[str, FieldRepresentationPipeline, int]]):
+    def create_content(self, raw_content: Dict):
         """
         Create an item processing every field in the specified way,
         this class be iteratively invoked by the fit method
@@ -229,6 +230,7 @@ class ContentsProducer:
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
         else:
+            # search for timestamp as dataset field, no timestamp needed for items
             timestamp = None
             if self.__config.get_content_type() != "ITEM":
                 if "timestamp" in raw_content.keys():
@@ -236,36 +238,45 @@ class ContentsProducer:
                 else:
                     timestamp = time.time()
 
+            # construct id from list of fields that compound id
             id_values = []
             for id_field_name in self.__config.get_id_field_name():
                 id_values.append(raw_content[id_field_name])
             content_id = id_merger(id_values)
+
             content = Content(content_id)
-            field_name_list = self.__config.get_field_names()
-            for field_name in field_name_list:
+            for field_name in self.__config.get_field_name_list():
                 pipeline_list = self.__config.get_pipeline_list(field_name)
+
+                # search for timestamp override on specific field
                 if type(raw_content[field_name]) == list:
                     timestamp = raw_content[field_name][1]
                     field_data = raw_content[field_name][0]
                 else:
                     field_data = raw_content[field_name]
+
                 field = ContentField(field_name, timestamp)
+
                 for i, pipeline in enumerate(pipeline_list):
                     content_technique = pipeline.get_content_technique()
-                    if (field_name, pipeline) in field_to_index:
-                        field.append(
-                            content_technique.produce_content(str(i), field_name=field_name + str(
-                                field_to_index[(field_name, pipeline)]), item_id=content_id))
-                    else:
+                    if isinstance(content_technique, CollectionBasedTechnique):
+                        field.append(content_technique.produce_content(str(i), content_id, field_name, str(pipeline)))
+                    elif isinstance(content_technique, SingleContentTechnique):
                         preprocessor_list = pipeline.get_preprocessor_list()
                         processed_field_data = field_data
                         for preprocessor in preprocessor_list:
                             processed_field_data = preprocessor.process(processed_field_data)
 
-                        field.append(
-                            content_technique.produce_content(str(i), field_data=processed_field_data,
-                                                              field_name=field_name,
-                                                              item_id=content_id))
+                        field.append(content_technique.produce_content(str(i), processed_field_data))
+
                 content.append(field)
 
             return content
+
+
+# cambiata struttura classe tecnica, suddivisione in tecniche basate su collezione e tecniche basate su singolo item
+# aggiunto metodo dataset refactor alle tecniche basate su collezione
+# aggiunto un id progressivo alla classe pipeline, da usare come nome del field da memorizzare nella nuova struttura (index per tf-idf ad esempio)
+# chiamato il metodo dataset_refactor per le coppie (field_name, pipeline) associate,
+# nella configurazione, a una tecnica che necessita di tale processo
+# alcuni commenti
