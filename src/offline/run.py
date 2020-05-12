@@ -8,11 +8,12 @@ from src.offline.content_analyzer.embedding_source import GensimDownloader, Bina
 from src.offline.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
     FieldRepresentationPipeline
 from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
-from src.offline.content_analyzer.field_content_production_technique import TfIdfTechnique, EmbeddingTechnique
+from src.offline.content_analyzer.field_content_production_technique import EmbeddingTechnique
 from src.offline.content_analyzer.nlp import NLTK
 from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
 from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVFile, SQLDatabase
+from src.offline.content_analyzer.tf_idf import LuceneTfIdf
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
@@ -25,7 +26,7 @@ implemented_preprocessing = [
 implemented_content_prod = [
     "embedding",
     "babelpy",
-    "tf-idf",
+    "lucene_tf-idf",
 ]
 
 runnable_instances = {
@@ -35,7 +36,7 @@ runnable_instances = {
     "index": IndexInterface,
     "babelpy": BabelPyEntityLinking,
     "nltk": NLTK,
-    "tf-idf": TfIdfTechnique,
+    "lucene_tf-idf": LuceneTfIdf,
     "binary_file": BinaryFile,
     "gensim_downloader": GensimDownloader,
     "centroid": Centroid,
@@ -93,7 +94,8 @@ def config_run(config_list: List[Dict]):
                 config_dict[field_dict['field_name']] = runnable_instances[field_dict['memory_interface']](
                     field_dict['memory_interface_path'])
 
-        # setting the phase 1 configuration
+        # setting the phase 1 configurati\
+        # on
         raw_data_config = RawDataConfig(
             runnable_instances[content_config['source_type']](content_config['raw_source_path']),
             content_config['id_field_name'], config_dict)

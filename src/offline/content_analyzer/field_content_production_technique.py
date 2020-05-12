@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List
+from typing import List, Tuple, Dict
 
 import numpy as np
 
+from src.offline.content_analyzer.information_processor import InformationProcessor
 from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.content_analyzer.content_representation.content_field \
     import EmbeddingField, FeaturesBagField, FieldRepresentation, GraphField
+from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
 
 class FieldContentProductionTechnique(ABC):
@@ -18,10 +20,33 @@ class FieldContentProductionTechnique(ABC):
     def __init__(self):
         pass
 
+
+class CollectionBasedTechnique(FieldContentProductionTechnique):
+    def __init__(self):
+        super().__init__()
+        self.__need_refactor: Dict[Tuple[str, str], List[InformationProcessor]] = {}
+
+    def append_field_need_refactor(self, field_name: str, pipeline_id, processor_list: List[InformationProcessor]):
+        self.__need_refactor[(field_name, pipeline_id)] = processor_list
+
+    def get_need_refactor(self):
+        return self.__need_refactor
+
     @abstractmethod
-    def produce_content(self, field_representation_name: str, **kwargs) -> FieldRepresentation:
+    def produce_content(self, field_representation_name: str, content_id: str,
+                        field_name: str, pipeline_id: str) -> FieldRepresentation:
+        pass
+
+    @abstractmethod
+    def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
+        pass
+
+
+class SingleContentTechnique(FieldContentProductionTechnique):
+    @abstractmethod
+    def produce_content(self, field_representation_name: str, field_data: str) -> FieldRepresentation:
         """
-        Given data of certain field it returns a copmlex representation's instance of the field.
+        Given data of certain field it returns a complex representation's instance of the field.
         Args:
             field_representation_name: name of the field representation object that will be created
             field_data: input for the complex representation production
@@ -32,18 +57,18 @@ class FieldContentProductionTechnique(ABC):
         """
 
 
-class FieldToGraph(FieldContentProductionTechnique):
+class FieldToGraph(SingleContentTechnique):
     """
     Abstract class that generalize techniques
     that uses ontologies or LOD for producing the semantic description
     """
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, **kwargs) -> GraphField:
+    def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
         pass
 
 
-class TfIdfTechnique(FieldContentProductionTechnique):
+class TfIdfTechnique(CollectionBasedTechnique):
     """
     Class that produce a Bag of words with tf-idf metric
     Args:
@@ -52,21 +77,26 @@ class TfIdfTechnique(FieldContentProductionTechnique):
 
     def __init__(self):
         super().__init__()
-        self.__memory_interface = IndexInterface('./frequency-index')
+        self.__index = IndexInterface('./frequency-index')
 
-    def produce_content(self, field_representation_name: str, **kwargs) -> FeaturesBagField:
-        return FeaturesBagField(field_representation_name, self.__memory_interface.get_tf_idf(kwargs["field_name"], kwargs["item_id"])
-)
+    @abstractmethod
+    def produce_content(self, field_representation_name: str, content_id: str,
+                        field_name: str, pipeline_id: str) -> FeaturesBagField:
+        pass
+
+    @abstractmethod
+    def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
+        pass
 
 
-class EntityLinking(FieldContentProductionTechnique):
+class EntityLinking(SingleContentTechnique):
     """
     Abstract class that generalize implementations
     that uses entity linking for producing the semantic description
     """
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, **kwargs) -> FeaturesBagField:
+    def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
         pass
 
 
@@ -168,7 +198,7 @@ class SentenceDetectionTechnique(ABC):
         pass
 
 
-class EmbeddingTechnique(FieldContentProductionTechnique):
+class EmbeddingTechnique(SingleContentTechnique):
     """
     Class that can be used to combine different embeddings coming to various sources
     in order to produce the semantic description.
@@ -197,7 +227,7 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         if "granularity" in kwargs.keys():
             self.__granularity: Granularity = kwargs["granularity"]
 
-    def produce_content(self, field_representation_name: str, **kwargs) -> EmbeddingField:
+    def produce_content(self, field_representation_name: str, field_data: str) -> EmbeddingField:
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
@@ -212,10 +242,10 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
         """
 
         if self.__granularity == 1:
-            doc_matrix = self.__embedding_source.load(kwargs["field_data"])
+            doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, doc_matrix)
         if self.__granularity == 2:
-            sentences = self.__sentence_detection.detect_sentences(kwargs["field_data"])
+            sentences = self.__sentence_detection.detect_sentences(field_data)
             sentences_embeddings = np.ndarray(shape=(len(sentences),
                                                      self.__embedding_source.get_vector_size()))
             for i, sentence in enumerate(sentences):
@@ -224,5 +254,5 @@ class EmbeddingTechnique(FieldContentProductionTechnique):
 
             return EmbeddingField(field_representation_name, sentences_embeddings)
         if self.__granularity == 3:
-            doc_matrix = self.__embedding_source.load(kwargs["field_data"])
+            doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))
