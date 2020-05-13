@@ -21,6 +21,9 @@ class Content:
         self.__content_id: str = content_id
         self.__field_list: List[ContentField] = field_list
 
+    def load(self, path):
+        self = pickle.loads(path)
+
     def append(self, field: ContentField):
         self.__field_list.append(field)
 

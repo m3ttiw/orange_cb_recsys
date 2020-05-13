@@ -9,7 +9,7 @@ from src.offline.content_analyzer.field_content_production_technique \
 from src.offline.content_analyzer.information_processor import InformationProcessor
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
 
-parent_dir = os.getcwd() + '/contents'
+parent_dir = '../../contents'
 
 
 class FieldRepresentationPipeline:
