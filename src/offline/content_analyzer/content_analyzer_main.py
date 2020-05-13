@@ -50,6 +50,12 @@ class FieldRepresentationPipeline:
     def __str__(self):
         return self.__id
 
+    def __repr__(self):
+        msg = "< " + "FieldRepresentationPipeline: " + "" \
+            "preprocessor_list = " + str(self.__preprocessor_list) + "; " \
+            "content_technique = " + str(self.__content_technique) + ">"
+        return msg
+
 
 class FieldConfig:
     """
@@ -71,6 +77,13 @@ class FieldConfig:
 
     def get_pipeline_list(self) -> List[FieldRepresentationPipeline]:
         return self.__pipelines_list
+
+    def __str__(self):
+        return "FieldConfig"
+
+    def __repr__(self):
+        return "< " + "FieldConfig: " + "" \
+                "pipelines_list = " + str(self.__pipelines_list) + " >"
 
 
 class ContentAnalyzerConfig:
@@ -136,6 +149,19 @@ class ContentAnalyzerConfig:
 
         return techniques
 
+    def __str__(self):
+        return str(self.__id_field_name)
+
+    def __repr__(self):
+        msg = "< " + "ContentAnalyzerConfig: " + "" \
+                                                 "id_field_name = " + str(self.__id_field_name) + "; " \
+                                                                                                  "source = " + str(
+            self.__source) + "; " \
+                             "field_config_dict = " + str(self.__field_config_dict) + "; " \
+                                                                                      "content_type = " + str(
+            self.__content_type) + ">"
+        return msg
+
 
 class ContentAnalyzer:
     """
@@ -171,7 +197,7 @@ class ContentAnalyzer:
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
                 if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
-                    pipeline.get_content_technique().\
+                    pipeline.get_content_technique(). \
                         append_field_need_refactor(field_name, str(pipeline), pipeline.get_preprocessor_list())
 
         for technique in self.__config.get_collection_based_techniques():
@@ -183,6 +209,14 @@ class ContentAnalyzer:
             i += 1
 
         return contents
+
+    def __str__(self):
+        return "ContentAnalyzer"
+
+    def __repr__(self):
+        msg = "< " + "ContentAnalyzer: " + "" \
+                                           "config = " + str(self.__config) + "; >"
+        return msg
 
 
 class ContentsProducer:
@@ -272,3 +306,11 @@ class ContentsProducer:
                 content.append(field)
 
             return content
+
+    def __str__(self):
+        return "ContentsProducer"
+
+    def __repr__(self):
+        msg = "< " + "ContentsProducer:" + "" \
+                                           "config = " + str(self.__config) + " >"
+        return msg
