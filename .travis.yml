@@ -27,7 +27,7 @@ install:
 script:
 #  - cd test
 #  - python -m unittest
-  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; python -m unittest"
+  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; python -m unittest;"
 after_success:
  - codecov # submit coverage
 git:
