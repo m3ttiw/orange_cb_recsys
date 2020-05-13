@@ -10,23 +10,24 @@ services:
 
 before_install:
   - docker pull rbarile17/py_cb_recsys
-  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
-  - python --version
-  - export PYTHONPATH=$PYTHONPATH:$(pwd)
-  - pip install -U pip
+#  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
+#  - python --version
+#  - export PYTHONPATH=$PYTHONPATH:$(pwd)
+#  - pip install -U pip
 
 install:
-- pip install numpy
-- pip install wheel
-- pip install gensim
-- pip install nltk
-- pip install babelpy
-- pip install mysql
-- pip install mysql-connector-python
+#- pip install numpy
+#- pip install wheel
+#- pip install gensim
+#- pip install nltk
+#- pip install babelpy
+#- pip install mysql
+#- pip install mysql-connector-python
 
 script:
-  - cd test
-  - python -m unittest
+#  - cd test
+#  - python -m unittest
+  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; python -m unittest"
 after_success:
  - codecov # submit coverage
 git:
