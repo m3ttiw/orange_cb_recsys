@@ -1,7 +1,3 @@
-import os
-import sys
-sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '../src/')))
-
 from unittest import TestCase
 
 from src.offline.content_analyzer.content_representation.content_field import FeaturesBagField
