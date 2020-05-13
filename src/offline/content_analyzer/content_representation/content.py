@@ -1,4 +1,5 @@
 from typing import List
+import pickle
 from src.offline.content_analyzer.content_representation.content_field import ContentField
 
 
@@ -11,10 +12,11 @@ class Content:
         content_id (str): identifier
         field_list (list[ContentField]): list of the fields instances of a content
     """
+
     def __init__(self, content_id: str,
                  field_list: List[ContentField] = None):
         if field_list is None:
-            field_list = []         # list o dict
+            field_list = []  # list o dict
         self.__content_id: str = content_id
         self.__field_list: List[ContentField] = field_list
 
@@ -31,8 +33,10 @@ class Content:
 
     def serialize(self):
         """
-        Serialize an item
+        Serialize a content instance
         """
+        file = open(self.__content_id + 'bin', 'wb')
+        pickle.dump(self, file)
 
     def __str__(self):
         content_string = "Content:" + self.__content_id
@@ -51,6 +55,7 @@ class RepresentedContents:
         content_list (list<Item>): list of content's instances
         length: number of contents
     """
+
     def __init__(self, length: int = 0,
                  content_list: List[Content] = None):
         if content_list is None:
