@@ -10,7 +10,7 @@ services:
 
 before_install:
   - docker pull rbarile17/py_cb_recsys
-#  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
+  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
 #  - python --version
 #  - export PYTHONPATH=$PYTHONPATH:$(pwd)
 #  - pip install -U pip
@@ -27,7 +27,7 @@ install:
 script:
 #  - cd test
 #  - python -m unittest
-  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; python -m unittest;"
+  - docker run -it --rm python:rc Python 3.8; python -m unittest
 after_success:
  - codecov # submit coverage
 git:
