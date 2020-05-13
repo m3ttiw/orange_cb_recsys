@@ -1,7 +1,6 @@
 from typing import List, Dict, Tuple, Set
 import time
-
-from src.offline.memory_interfaces.text_interface import IndexInterface
+import os
 from src.offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
@@ -9,6 +8,8 @@ from src.offline.content_analyzer.field_content_production_technique \
     import FieldContentProductionTechnique, CollectionBasedTechnique, SingleContentTechnique
 from src.offline.content_analyzer.information_processor import InformationProcessor
 from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
+
+parent_dir = os.getcwd() + '/contents'
 
 
 class FieldRepresentationPipeline:
@@ -87,13 +88,18 @@ class ContentAnalyzerConfig:
     def __init__(self, content_type: str,
                  source: RawInformationSource,
                  id_field_name,
+                 output_directory: str,
                  field_config_dict: Dict[str, FieldConfig] = None):
         if field_config_dict is None:
             field_config_dict = {}
+        self.__output_directory: str = output_directory
         self.__content_type = content_type
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
         self.__id_field_name: str = id_field_name
+
+    def get_output_directory(self):
+        return self.__output_directory
 
     def get_content_type(self):
         return self.__content_type
@@ -161,9 +167,11 @@ class ContentAnalyzer:
             List<Content>:
                 list which elements are the produced content instances
         """
+        path = os.path.join(parent_dir, self.__config.get_output_directory())
+        os.mkdir(path)
+
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
-        contents = RepresentedContents()
         print("####################### FASE 2 #########################")
 
         need_dataset_refactor: List[Dict[str, str]] = []
@@ -179,10 +187,10 @@ class ContentAnalyzer:
 
         i = 0
         for raw_content in self.__config.get_source():
-            print(contents_producer.create_content(raw_content))
+            content = contents_producer.create_content(raw_content)
+            print(content)
+            content.serialize(path)
             i += 1
-
-        return contents
 
 
 class ContentsProducer:

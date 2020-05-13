@@ -1,5 +1,6 @@
 from typing import List
 import pickle
+import os
 from src.offline.content_analyzer.content_representation.content_field import ContentField
 
 
@@ -31,11 +32,11 @@ class Content:
         """
         self.__field_list.pop(self.__field_list.index(ContentField(field_name)))
 
-    def serialize(self):
+    def serialize(self, output_directory: str):
         """
         Serialize a content instance
         """
-        file = open(self.__content_id + 'bin', 'wb')
+        file = open(output_directory + '/' + self.__content_id + '.bin', 'wb')
         pickle.dump(self, file)
 
     def __str__(self):

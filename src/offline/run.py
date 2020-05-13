@@ -81,7 +81,6 @@ def dict_detector(technique_dict):
 
 
 def config_run(config_list: List[Dict]):
-    represented_content_list = list()
     for content_config in config_list:
 
         # phase 1 : memorize the selected fields with some high powered memory interface
@@ -105,7 +104,8 @@ def config_run(config_list: List[Dict]):
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
             runnable_instances[content_config['source_type']](content_config['raw_source_path']),
-            content_config['id_field_name'])
+            content_config['id_field_name'],
+            content_config['output_directory'])
         for field_dict in content_config['fields']:
             field_config = FieldConfig()
             # setting the content analyzer config
@@ -128,9 +128,7 @@ def config_run(config_list: List[Dict]):
 
         # fitting the data for each
         content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
-        represented_content_list.append(content_analyzer.fit())
-
-    return represented_content_list
+        content_analyzer.fit()
 
 
 if __name__ == "__main__":
