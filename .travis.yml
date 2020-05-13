@@ -12,13 +12,10 @@ before_install:
   - docker pull rbarile17/py_cb_recsys
   - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
   - python --version
-  - python setup.py build
-  - python setup.py install
+  - export PYTHONPATH=$PYTHONPATH:$(pwd)
   - pip install -U pip
-#  - pip install -U pytest
-#  - pip install codecov
+
 install:
-#- pip install -r requirements.txt . # install package + test dependencies
 - pip install numpy
 - pip install wheel
 - pip install gensim
@@ -32,6 +29,5 @@ script:
   - python -m unittest
 after_success:
  - codecov # submit coverage
-# - python run.py # non si può runnare dopo lo script
 git:
   depth: false
