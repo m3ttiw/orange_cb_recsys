@@ -13,6 +13,8 @@ script:
   - container_id=$(docker run -d -i testing/py_cb_recsys)
   - docker exec -it $container_id coverage run -m unittest
   - docker exec -it $container_id coverage report -m
+  - docker stop $container_id
+  - docker container rm $container_id
   
 git:
   depth: false
