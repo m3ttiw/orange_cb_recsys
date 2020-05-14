@@ -1,4 +1,4 @@
-import json
+import json, yaml
 import lucene
 import sys
 from typing import List, Dict
@@ -134,7 +134,14 @@ if __name__ == "__main__":
     config_path = sys.argv[0]
     if config_path is not None:
         config_path = DEFAULT_CONFIG_PATH
-    config_list_dict = json.load(open(config_path))
+
+    if config_path.endswith('.yml'):
+        config_list_dict = yaml.load(open(config_path))
+    elif config_path.endswith('.json'):
+        config_list_dict = json.load(open(config_path))
+    else:
+        raise Exception("Wrong file extesion")
+
     if check_for_available(config_list_dict):
         config_run(config_list_dict)
     else:
