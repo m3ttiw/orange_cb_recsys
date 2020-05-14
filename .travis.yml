@@ -10,6 +10,9 @@ services:
 
 script:
   - docker build -t testing/py_cb_recsys .
+  - container_id=$(docker run -d -i testing/py_cb_recsys)
+  - docker exec -it $container_id coverage run -m unittest
+  - docker exec -it $container_id coverage report -m
   
 git:
   depth: false
