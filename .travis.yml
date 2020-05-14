@@ -27,8 +27,7 @@ install:
 script:
 #  - cd test
 #  - python -m unittest
-  - docker run -it --rm python:rc Python 3.8
-  - docker run python -m unittest
+  - docker run -it --rm python:rc Python 3.8; python -m unittest
 after_success:
  - codecov # submit coverage
 git:
