@@ -24,7 +24,7 @@ install:
 - pip install mysql-connector-python
 
 script:
-  - python -m unittest
+  - docker run -it --rm autore/py_cb_recsys python -m unittest
 after_success:
   - python -c 'import lucene; print(lucene.VERSION)'
 git:
