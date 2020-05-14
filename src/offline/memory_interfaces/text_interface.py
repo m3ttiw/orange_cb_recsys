@@ -17,6 +17,9 @@ from src.offline.memory_interfaces.memory_interfaces import TextInterface
 class IndexInterface(TextInterface):
     """
     Abstract class that takes care of serializing and deserializing text in an indexed structure
+
+    Args:
+        directory (str): Path of the directory where the content will be serialized
     """
 
     def __init__(self, directory: str):
@@ -39,8 +42,6 @@ class IndexInterface(TextInterface):
         """
         In the lucene index case the new content
         is a new document in the index
-        Returns:
-
         """
         self.__doc = Document()
 
@@ -57,6 +58,17 @@ class IndexInterface(TextInterface):
         self.__writer.close()
 
     def get_tf_idf(self, field_name: str, content_id: str):
+        """
+        Calculates the tf-idf for the words contained in the field of the content whose id
+        is content_id
+        Args:
+            field_name (str): Name of the field containing the words for which calculate the tf-idf
+            content_id (str): Id of the content that contains the specified field
+
+        Returns:
+             words_bag (Dict <str, float>): Dictionary whose keys are the words contained in the field,
+                and the corresponding values are the tf-idf values.
+        """
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
         query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:" + content_id)
         scoreDocs = searcher.search(query, 1).scoreDocs

@@ -25,8 +25,8 @@ class InformationInterface(ABC):
         """
         Serialize the raw data of a field.
         Args:
-            field_data: data to serialize
             field_name: name of the created field
+            field_data: data to serialize
         """
 
     @abstractmethod
@@ -39,7 +39,7 @@ class InformationInterface(ABC):
     def init_writing(self):
         """
         Set the interface in writing mode,
-        if the specified directory oes not exit a new one will be created
+        if the specified directory does not exit a new one will be created
         """
 
     @abstractmethod

@@ -7,8 +7,8 @@ from src.offline.content_analyzer.field_content_production_technique import Embe
 
 class EmbeddingType(Enum):
     """
-    Embeddings can be learned using different techniques,
-    embeddings learned in different ways need to be loaded in different ways,
+    Embeddings can be learned using different techniques.
+    Embeddings learned in different ways need to be loaded in different ways,
     so embedding_type needs to be specified.
     """
     WORD2VEC = 1
@@ -18,9 +18,9 @@ class EmbeddingType(Enum):
 
 class BinaryFile(EmbeddingSource):
     """
-    Class that implements the abstract class EmbeddingSource,
-    this class loads the embeddings from a binary file
-    in a way that depends from embedding type.
+    Class that implements the abstract class EmbeddingSource.
+    This class loads the embeddings from a binary file
+    in a way that depends from embedding_type.
 
     Attributes:
         file_path (str): path for the binary file containing the embeddings

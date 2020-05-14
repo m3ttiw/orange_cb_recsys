@@ -13,7 +13,7 @@ from src.offline.raw_data_extractor.raw_information_source import RawInformation
 
 class FieldContentProductionTechnique(ABC):
     """
-    Abstract class that generalize the technique to use for producing the semantic description
+    Abstract class that generalizes the techniques to use for producing the semantic description
     of a content's field's representation
     """
 
@@ -22,6 +22,9 @@ class FieldContentProductionTechnique(ABC):
 
 
 class CollectionBasedTechnique(FieldContentProductionTechnique):
+    """
+    This class generalizes the techniques that work on the entire content collection, like the tf-idf technique
+    """
     def __init__(self):
         super().__init__()
         self.__need_refactor: Dict[Tuple[str, str], List[InformationProcessor]] = {}
@@ -59,8 +62,8 @@ class SingleContentTechnique(FieldContentProductionTechnique):
 
 class FieldToGraph(SingleContentTechnique):
     """
-    Abstract class that generalize techniques
-    that uses ontologies or LOD for producing the semantic description
+    Abstract class that generalizes techniques
+    that use ontologies or LOD for producing the semantic description
     """
 
     @abstractmethod
@@ -71,8 +74,6 @@ class FieldToGraph(SingleContentTechnique):
 class TfIdfTechnique(CollectionBasedTechnique):
     """
     Class that produce a Bag of words with tf-idf metric
-    Args:
-
     """
 
     def __init__(self):
@@ -91,8 +92,8 @@ class TfIdfTechnique(CollectionBasedTechnique):
 
 class EntityLinking(SingleContentTechnique):
     """
-    Abstract class that generalize implementations
-    that uses entity linking for producing the semantic description
+    Abstract class that generalizes implementations that use entity linking
+    for producing the semantic description
     """
 
     @abstractmethod
@@ -149,8 +150,8 @@ class EmbeddingSource(ABC):
 
     def load(self, text: str) -> np.ndarray:
         """
-        Function that extract from the embeddings model
-        the vectors of thw words contained in text
+        Function that extracts from the embeddings model
+        the vectors of the words contained in text
 
         Args:
             text (str): contains words of which vectors will be extracted
@@ -187,7 +188,7 @@ class SentenceDetectionTechnique(ABC):
     @abstractmethod
     def detect_sentences(self, text: str) -> List[str]:
         """
-        Divide the input text in a list of sentences
+        Split the input text in a list of sentences
 
         Args:
             text (str): text that will be divided

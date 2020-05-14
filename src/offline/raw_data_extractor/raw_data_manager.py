@@ -11,9 +11,8 @@ class RawDataConfig:
     Args:
         source (RawInformationSource): raw data source from which extract the content
         id_field_name (str): name of the field that represents the item id
-        fields_interface (InformationInterface):
-            specifies for each field
-            which interface use to serialize field data
+        fields_interface (InformationInterface): specifies for each field
+            which interface to use to serialize field data
     """
     def __init__(self, source: RawInformationSource = None,
                  id_field_name: str = None,
@@ -63,8 +62,8 @@ class RawDataConfig:
 
 class RawDataManager:
     """
-    Class to carry out the steps of this phase,
-    then data extraction and data serialization according to the config.
+    Class that first carries out the steps of this phase,
+    executing data extraction and data serialization according to the config.
 
     Args:
         config (RawDataConfig): manager configuration
@@ -74,8 +73,8 @@ class RawDataManager:
 
     def fit(self):
         """
-        Begins to extract data from the source
-        and serializing them according to ways specified in the config
+        Extracts and serializes data from the source
+        according to the ways specified by config
         """
         print("####################### FASE 1 #########################")
         CONTENT_ID = "content_id"

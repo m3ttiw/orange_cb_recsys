@@ -1,19 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>src.offline.content_analyzer package &#8212; Prova 1.0 documentation</title>
     <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head><body>
@@ -41,11 +39,11 @@
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="src.offline.content_analyzer.item_representation.html">src.offline.content_analyzer.item_representation package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.item_representation.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.item_representation.html#src-offline-content-analyzer-item-representation-item-module">src.offline.content_analyzer.item_representation.item module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.item_representation.html#src-offline-content-analyzer-item-representation-item-field-module">src.offline.content_analyzer.item_representation.item_field module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.item_representation.html#module-src.offline.content_analyzer.item_representation">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="src.offline.content_analyzer.content_representation.html">src.offline.content_analyzer.content_representation package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.content_representation.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.content_representation.html#module-src.offline.content_analyzer.content_representation.content">src.offline.content_analyzer.content_representation.content module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.content_representation.html#module-src.offline.content_analyzer.content_representation.content_field">src.offline.content_analyzer.content_representation.content_field module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.offline.content_analyzer.content_representation.html#module-src.offline.content_analyzer.content_representation">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -54,342 +52,188 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-src.offline.content_analyzer.combining_technique">
-<span id="src-offline-content-analyzer-combining-technique-module"></span><h2>src.offline.content_analyzer.combining_technique module<a class="headerlink" href="#module-src.offline.content_analyzer.combining_technique" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="src.offline.content_analyzer.combining_technique.Centroid">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.combining_technique.</code><code class="descname">Centroid</code><span class="sig-paren">(</span><em>weights: list = None</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.combining_technique.Centroid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.field_content_production_technique.CombiningTechnique" title="src.offline.content_analyzer.field_content_production_technique.CombiningTechnique"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.field_content_production_technique.CombiningTechnique</span></code></a></p>
-<p>”
-Class that implements the Abstract Class CombiningTechnique.
-This class calculate the centroid given the list of weights.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>weights</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of weights, used to calculate the centroid.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="src.offline.content_analyzer.combining_technique.Centroid.combine">
-<code class="descname">combine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.combining_technique.Centroid.combine" title="Permalink to this definition">¶</a></dt>
-<dd><p>”
-Implements the Abstract Method combine in Combining Technique.</p>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="src-offline-content-analyzer-combining-technique-module">
+<h2>src.offline.content_analyzer.combining_technique module<a class="headerlink" href="#src-offline-content-analyzer-combining-technique-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="src-offline-content-analyzer-content-analyzer-main-module">
 <h2>src.offline.content_analyzer.content_analyzer_main module<a class="headerlink" href="#src-offline-content-analyzer-content-analyzer-main-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-src.offline.content_analyzer.embedding_source">
-<span id="src-offline-content-analyzer-embedding-source-module"></span><h2>src.offline.content_analyzer.embedding_source module<a class="headerlink" href="#module-src.offline.content_analyzer.embedding_source" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="src.offline.content_analyzer.embedding_source.BinaryFile">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.embedding_source.</code><code class="descname">BinaryFile</code><span class="sig-paren">(</span><em>file_path: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.embedding_source.BinaryFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingSource" title="src.offline.content_analyzer.field_content_production_technique.EmbeddingSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.field_content_production_technique.EmbeddingSource</span></code></a></p>
-<p>Class that implements the abstract class EmbeddingSource.
-This class loads the embeddings from a binary file.</p>
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.embedding_source.BinaryFile.file_path">
-<code class="descname">file_path</code><a class="headerlink" href="#src.offline.content_analyzer.embedding_source.BinaryFile.file_path" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – Path for the binary file containing the embeddings</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="src.offline.content_analyzer.embedding_source.BinaryFile.load">
-<code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.embedding_source.BinaryFile.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function that loads the embeddings from the file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The loaded embedding</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
+<div class="section" id="src-offline-content-analyzer-embedding-source-module">
+<h2>src.offline.content_analyzer.embedding_source module<a class="headerlink" href="#src-offline-content-analyzer-embedding-source-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-src.offline.content_analyzer.field_content_production_technique">
-<span id="src-offline-content-analyzer-field-content-production-technique-module"></span><h2>src.offline.content_analyzer.field_content_production_technique module<a class="headerlink" href="#module-src.offline.content_analyzer.field_content_production_technique" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="src.offline.content_analyzer.field_content_production_technique.CombiningTechnique">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.field_content_production_technique.</code><code class="descname">CombiningTechnique</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.CombiningTechnique" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
-<p>Class that generalizes the modality in which previously learned embeddings will be
-combined to produce a semantic description.</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.field_content_production_technique.CombiningTechnique.combine">
-<code class="descname">combine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.CombiningTechnique.combine" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EmbeddingSource">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.field_content_production_technique.</code><code class="descname">EmbeddingSource</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingSource" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
-<p>General class whose purpose is to load the previously learned embeddings to combine.</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EmbeddingSource.load">
-<code class="descname">load</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingSource.load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.field_content_production_technique.</code><code class="descname">EmbeddingTechnique</code><span class="sig-paren">(</span><em>combining_technique: src.offline.content_analyzer.field_content_production_technique.CombiningTechnique</em>, <em>embedding_source: src.offline.content_analyzer.field_content_production_technique.EmbeddingSource</em>, <em>granularity: src.offline.content_analyzer.field_content_production_technique.Granularity</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique" title="src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique</span></code></a></p>
-<p>Class that can be used to combine different embeddings coming to various sources
-in order to produce the semantic description.</p>
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.combining_technique">
-<code class="descname">combining_technique</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.combining_technique" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>CombiningTechnique</em> – The technique that will be used</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">for combining the embeddings.</code></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.embedding_source">
-<code class="descname">embedding_source</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.embedding_source" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>EmbeddingSource</em> – Source from which to get the embeddings.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.granularity">
-<code class="descname">granularity</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.granularity" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Granularity</em> – It can assume three values, depending on whether you want</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">to combine words, phrases or documents.</code></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.produce_content">
-<code class="descname">produce_content</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EmbeddingTechnique.produce_content" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that builds the semantic content starting from the embeddings contained in
-field_data.
-:param field_data: The embeddings to combine. This attribute can be of different kinds.</p>
-<p>Returns:</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EntityLinking">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.field_content_production_technique.</code><code class="descname">EntityLinking</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EntityLinking" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique" title="src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique</span></code></a></p>
-<p>Class that uses entity linking techniques for producing the semantic description</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.field_content_production_technique.EntityLinking.produce_content">
-<code class="descname">produce_content</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.EntityLinking.produce_content" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.field_content_production_technique.</code><code class="descname">FieldContentProductionTechnique</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
-<p>Abstract class that manages to generalize the technique to use for producing the semantic description
-of an item’s field’s content</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique.produce_content">
-<code class="descname">produce_content</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique.produce_content" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.field_content_production_technique.FieldToGraph">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.field_content_production_technique.</code><code class="descname">FieldToGraph</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.FieldToGraph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique" title="src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.field_content_production_technique.FieldContentProductionTechnique</span></code></a></p>
-<p>Class that uses ontologies or LOD for producing the semantic description</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.field_content_production_technique.FieldToGraph.produce_content">
-<code class="descname">produce_content</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.FieldToGraph.produce_content" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.field_content_production_technique.Granularity">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.field_content_production_technique.</code><code class="descname">Granularity</code><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.Granularity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/enum.html#enum.Enum" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></a></p>
-<p>Enumeration class whose elements are the possible units to combine for generating an embedding.</p>
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.field_content_production_technique.Granularity.DOC">
-<code class="descname">DOC</code><em class="property"> = 3</em><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.Granularity.DOC" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.field_content_production_technique.Granularity.SENTENCE">
-<code class="descname">SENTENCE</code><em class="property"> = 2</em><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.Granularity.SENTENCE" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.field_content_production_technique.Granularity.WORD">
-<code class="descname">WORD</code><em class="property"> = 1</em><a class="headerlink" href="#src.offline.content_analyzer.field_content_production_technique.Granularity.WORD" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="src-offline-content-analyzer-entity-linking-module">
+<h2>src.offline.content_analyzer.entity_linking module<a class="headerlink" href="#src-offline-content-analyzer-entity-linking-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-src.offline.content_analyzer.information_loader">
-<span id="src-offline-content-analyzer-information-loader-module"></span><h2>src.offline.content_analyzer.information_loader module<a class="headerlink" href="#module-src.offline.content_analyzer.information_loader" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="src.offline.content_analyzer.information_loader.AudioLoader">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_loader.</code><code class="descname">AudioLoader</code><a class="headerlink" href="#src.offline.content_analyzer.information_loader.AudioLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.information_loader.InformationLoader" title="src.offline.content_analyzer.information_loader.InformationLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.information_loader.InformationLoader</span></code></a></p>
-<p>Abstract class to use when the field information is in audio format.</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.information_loader.AudioLoader.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>item_id: str</em>, <em>field_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_loader.AudioLoader.load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.information_loader.ImageLoader">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_loader.</code><code class="descname">ImageLoader</code><a class="headerlink" href="#src.offline.content_analyzer.information_loader.ImageLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.information_loader.InformationLoader" title="src.offline.content_analyzer.information_loader.InformationLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.information_loader.InformationLoader</span></code></a></p>
-<p>Abstract class to use when the field information is in image format.</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.information_loader.ImageLoader.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>item_id: str</em>, <em>field_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_loader.ImageLoader.load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.information_loader.InformationLoader">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_loader.</code><code class="descname">InformationLoader</code><a class="headerlink" href="#src.offline.content_analyzer.information_loader.InformationLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
-<p>Abstract Class for loading raw information about an item’s field.</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.information_loader.InformationLoader.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>item_id: str</em>, <em>field_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_loader.InformationLoader.load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="src.offline.content_analyzer.information_loader.TextLoader">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_loader.</code><code class="descname">TextLoader</code><a class="headerlink" href="#src.offline.content_analyzer.information_loader.TextLoader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.information_loader.InformationLoader" title="src.offline.content_analyzer.information_loader.InformationLoader"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.information_loader.InformationLoader</span></code></a></p>
-<p>Abstract class to use when the field information is textual.</p>
-<dl class="method">
-<dt id="src.offline.content_analyzer.information_loader.TextLoader.load">
-<code class="descname">load</code><span class="sig-paren">(</span><em>item_id: str</em>, <em>field_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_loader.TextLoader.load" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<div class="section" id="src-offline-content-analyzer-field-content-production-technique-module">
+<h2>src.offline.content_analyzer.field_content_production_technique module<a class="headerlink" href="#src-offline-content-analyzer-field-content-production-technique-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-src.offline.content_analyzer.information_processor">
 <span id="src-offline-content-analyzer-information-processor-module"></span><h2>src.offline.content_analyzer.information_processor module<a class="headerlink" href="#module-src.offline.content_analyzer.information_processor" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="src.offline.content_analyzer.information_processor.AudioProcessor">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_processor.</code><code class="descname">AudioProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.AudioProcessor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.content_analyzer.information_processor.</code><code class="sig-name descname">AudioProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.AudioProcessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.information_processor.InformationProcessor" title="src.offline.content_analyzer.information_processor.InformationProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.information_processor.InformationProcessor</span></code></a></p>
 <p>Abstract class for audio processing.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="src.offline.content_analyzer.information_processor.AudioProcessor.process">
-<code class="descname">process</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.AudioProcessor.process" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.AudioProcessor.process" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="src.offline.content_analyzer.information_processor.ImageProcessor">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_processor.</code><code class="descname">ImageProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.ImageProcessor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.content_analyzer.information_processor.</code><code class="sig-name descname">ImageProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.ImageProcessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.information_processor.InformationProcessor" title="src.offline.content_analyzer.information_processor.InformationProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.information_processor.InformationProcessor</span></code></a></p>
 <p>Abstract class for image processing.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="src.offline.content_analyzer.information_processor.ImageProcessor.process">
-<code class="descname">process</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.ImageProcessor.process" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.ImageProcessor.process" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="src.offline.content_analyzer.information_processor.InformationProcessor">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_processor.</code><code class="descname">InformationProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.InformationProcessor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.content_analyzer.information_processor.</code><code class="sig-name descname">InformationProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.InformationProcessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
-<p>General class for data processing.</p>
-<dl class="method">
+<p>Abstract class that generalize the data processing.</p>
+<dl class="py method">
 <dt id="src.offline.content_analyzer.information_processor.InformationProcessor.process">
-<code class="descname">process</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.InformationProcessor.process" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.InformationProcessor.process" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="src.offline.content_analyzer.information_processor.NLP">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_processor.</code><code class="descname">NLP</code><span class="sig-paren">(</span><em>stopwords_removal: bool = False</em>, <em>stemming: bool = False</em>, <em>lemmatization: bool = False</em>, <em>named_entity_recognition: bool = False</em>, <em>strip_multiple_whitespaces: bool = True</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.content_analyzer.information_processor.</code><code class="sig-name descname">NLP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stopwords_removal</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stemming</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">lemmatization</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">named_entity_recognition</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">strip_multiple_whitespaces</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">url_tagging</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.information_processor.TextProcessor" title="src.offline.content_analyzer.information_processor.TextProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.information_processor.TextProcessor</span></code></a></p>
 <p>Class for processing a text via Natural Language Processing.</p>
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.information_processor.NLP.stopwords_removal">
-<code class="descname">stopwords_removal</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.stopwords_removal" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – Whether you want to remove stop words</p>
-</dd></dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stopwords_removal</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Whether you want to remove stop words</p></li>
+<li><p><strong>stemming</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Whether you want to execute stemming</p></li>
+<li><p><strong>lemmatization</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Whether you want to execute lemmatization</p></li>
+<li><p><strong>named_entity_recognition</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Whether you want to execute named entity recognition</p></li>
+<li><p><strong>strip_multiple_whitespaces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Whether you want to remove multiple whitespaces</p></li>
+<li><p><strong>url_tagging</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – Whether you want to tag the urls in the text and to replace with “&lt;URL&gt;”</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.get_is_tokenized">
+<code class="sig-name descname">get_is_tokenized</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.get_is_tokenized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.information_processor.NLP.stemming">
-<code class="descname">stemming</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.stemming" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – Whether you want to execute stemming</p>
-</dd></dl>
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.get_lemmatization">
+<code class="sig-name descname">get_lemmatization</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.get_lemmatization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.information_processor.NLP.lemmatization">
-<code class="descname">lemmatization</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.lemmatization" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – Whether you want to execute lemmatization</p>
-</dd></dl>
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.get_named_entity_recognition">
+<code class="sig-name descname">get_named_entity_recognition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.get_named_entity_recognition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.information_processor.NLP.named_entity_recognition">
-<code class="descname">named_entity_recognition</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.named_entity_recognition" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – Whether you want to execute named entity recognition</p>
-</dd></dl>
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.get_stemming">
+<code class="sig-name descname">get_stemming</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.get_stemming" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="attribute">
-<dt id="src.offline.content_analyzer.information_processor.NLP.strip_multiple_whitespaces">
-<code class="descname">strip_multiple_whitespaces</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.strip_multiple_whitespaces" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em> – Whether you want to remove multiple whitespaces</p>
-</dd></dl>
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.get_stopwords_removal">
+<code class="sig-name descname">get_stopwords_removal</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.get_stopwords_removal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.get_strip_multiple_whitespaces">
+<code class="sig-name descname">get_strip_multiple_whitespaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.get_strip_multiple_whitespaces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.get_url_tagging">
+<code class="sig-name descname">get_url_tagging</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.get_url_tagging" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="src.offline.content_analyzer.information_processor.NLP.process">
-<code class="descname">process</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.process" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field_data</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.process" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply on original text operations with True value
+:param field_data: text on which NLP with specified phases will be applied</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>The text, after being processed with the specified NLP pipeline,</dt><dd><p>is splitted in single words that are put into a list</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list&lt;str&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.set_is_tokenized">
+<code class="sig-name descname">set_is_tokenized</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">is_tokenized</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.set_is_tokenized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.set_lemmatization">
+<code class="sig-name descname">set_lemmatization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lemmatization</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.set_lemmatization" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.set_named_entity_recognition">
+<code class="sig-name descname">set_named_entity_recognition</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">named_entity_recognition</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.set_named_entity_recognition" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.set_stemming">
+<code class="sig-name descname">set_stemming</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stemming</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.set_stemming" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.set_stopwords_removal">
+<code class="sig-name descname">set_stopwords_removal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stopwords_removal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.set_stopwords_removal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.set_strip_multiple_whitespaces">
+<code class="sig-name descname">set_strip_multiple_whitespaces</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strip_multiple_whitespaces</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.set_strip_multiple_whitespaces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.content_analyzer.information_processor.NLP.set_url_tagging">
+<code class="sig-name descname">set_url_tagging</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url_tagging</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.NLP.set_url_tagging" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="src.offline.content_analyzer.information_processor.TextProcessor">
-<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.information_processor.</code><code class="descname">TextProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.TextProcessor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.content_analyzer.information_processor.</code><code class="sig-name descname">TextProcessor</code><a class="headerlink" href="#src.offline.content_analyzer.information_processor.TextProcessor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.information_processor.InformationProcessor" title="src.offline.content_analyzer.information_processor.InformationProcessor"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.information_processor.InformationProcessor</span></code></a></p>
 <p>Abstract class for raw text processing.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="src.offline.content_analyzer.information_processor.TextProcessor.process">
-<code class="descname">process</code><span class="sig-paren">(</span><em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.TextProcessor.process" title="Permalink to this definition">¶</a></dt>
+<em class="property">abstract </em><code class="sig-name descname">process</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field_data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.information_processor.TextProcessor.process" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
+</div>
+<div class="section" id="src-offline-content-analyzer-nlp-module">
+<h2>src.offline.content_analyzer.nlp module<a class="headerlink" href="#src-offline-content-analyzer-nlp-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="src-offline-content-analyzer-sentence-detection-module">
+<h2>src.offline.content_analyzer.sentence_detection module<a class="headerlink" href="#src-offline-content-analyzer-sentence-detection-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="src-offline-content-analyzer-tf-idf-module">
+<h2>src.offline.content_analyzer.tf_idf module<a class="headerlink" href="#src-offline-content-analyzer-tf-idf-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-src.offline.content_analyzer">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.offline.content_analyzer" title="Permalink to this headline">¶</a></h2>
@@ -402,17 +246,20 @@ of an item’s field’s content</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">src.offline.content_analyzer package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-src.offline.content_analyzer.combining_technique">src.offline.content_analyzer.combining_technique module</a></li>
+<li><a class="reference internal" href="#src-offline-content-analyzer-combining-technique-module">src.offline.content_analyzer.combining_technique module</a></li>
 <li><a class="reference internal" href="#src-offline-content-analyzer-content-analyzer-main-module">src.offline.content_analyzer.content_analyzer_main module</a></li>
-<li><a class="reference internal" href="#module-src.offline.content_analyzer.embedding_source">src.offline.content_analyzer.embedding_source module</a></li>
-<li><a class="reference internal" href="#module-src.offline.content_analyzer.field_content_production_technique">src.offline.content_analyzer.field_content_production_technique module</a></li>
-<li><a class="reference internal" href="#module-src.offline.content_analyzer.information_loader">src.offline.content_analyzer.information_loader module</a></li>
+<li><a class="reference internal" href="#src-offline-content-analyzer-embedding-source-module">src.offline.content_analyzer.embedding_source module</a></li>
+<li><a class="reference internal" href="#src-offline-content-analyzer-entity-linking-module">src.offline.content_analyzer.entity_linking module</a></li>
+<li><a class="reference internal" href="#src-offline-content-analyzer-field-content-production-technique-module">src.offline.content_analyzer.field_content_production_technique module</a></li>
 <li><a class="reference internal" href="#module-src.offline.content_analyzer.information_processor">src.offline.content_analyzer.information_processor module</a></li>
+<li><a class="reference internal" href="#src-offline-content-analyzer-nlp-module">src.offline.content_analyzer.nlp module</a></li>
+<li><a class="reference internal" href="#src-offline-content-analyzer-sentence-detection-module">src.offline.content_analyzer.sentence_detection module</a></li>
+<li><a class="reference internal" href="#src-offline-content-analyzer-tf-idf-module">src.offline.content_analyzer.tf_idf module</a></li>
 <li><a class="reference internal" href="#module-src.offline.content_analyzer">Module contents</a></li>
 </ul>
 </li>
@@ -426,17 +273,15 @@ of an item’s field’s content</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -455,7 +300,7 @@ of an item’s field’s content</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, SWAP.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
     </div>
   </body>
 </html>

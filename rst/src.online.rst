@@ -5,6 +5,6 @@ Module contents
 ---------------
 
 .. automodule:: src.online
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:
