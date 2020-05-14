@@ -8,24 +8,14 @@ cache: pip
 services:
   - docker
 
-before_install:
-  - docker build -t autore/py_cb_recsys .
-  - docker run -d -p 127.0.0.1:80:4567 autore/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
-  - python --version
-  - pip install -U pip
 install:
-- pip install numpy
-- pip install wheel
-- pip install gensim
-- pip install nltk
-- pip install babelpy
-- pip install mysql
-- pip install mysql-connector-python
+  - docker build -t autore/py_cb_recsys .
 
 script:
-  - docker run -it --rm autore/py_cb_recsys ls
   - docker run -it --rm autore/py_cb_recsys python -m unittest
+  
 after_success:
-  - python -c 'import lucene; print(lucene.VERSION)'
+  - python -c 'print("FINITO")'
+  
 git:
   depth: false
