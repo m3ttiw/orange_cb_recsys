@@ -1,4 +1,4 @@
-FROM rbarile17/py_cb_recsys
+FROM rbarile17/framework_dependencies
 
 COPY src ./src
 COPY test ./test
