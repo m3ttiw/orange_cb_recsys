@@ -8,14 +8,8 @@ cache: pip
 services:
   - docker
 
-install:
-  - docker build -t autore/py_cb_recsys .
-
 script:
-  - docker run -it --rm autore/py_cb_recsys python -m unittest
-  
-after_success:
-  - python -c 'print("FINITO")'
+  - docker build -t testing/py_cb_recsys .
   
 git:
   depth: false
