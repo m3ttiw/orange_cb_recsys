@@ -16,6 +16,12 @@ class LuceneTfIdf(TfIdfTechnique):
         super().__init__()
         self.__index = IndexInterface('./frequency-index')
 
+    def __str__(self):
+        return "LuceneTfIdf"
+
+    def __repr__(self):
+        return "< LuceneTfIdf: " + "index = " + str(self.__index) + ">"
+
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str, pipeline_id: str) -> FeaturesBagField:
         return FeaturesBagField(field_representation_name, self.__index.get_tf_idf(field_name + pipeline_id, content_id))
