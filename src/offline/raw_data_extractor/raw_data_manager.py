@@ -24,6 +24,15 @@ class RawDataConfig:
         self.__id_field_name: str = id_field_name
         self.__source: RawInformationSource = source
 
+    def __str__(self):
+        return "RawDataConfig"
+
+    def __repr__(self):
+        return "< RawDataConfig: " + \
+                "source = " + str(self.__source) + ";" + \
+                "id_field_name = " + str(self.__id_field_name) + ";" + \
+                "fields_interface = " + str(self.__fields_interface) + " >"
+
     def set_source(self, source: str):
         self.__source = source
 
