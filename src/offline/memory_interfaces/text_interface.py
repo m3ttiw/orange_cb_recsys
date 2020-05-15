@@ -25,6 +25,9 @@ class IndexInterface(TextInterface):
         self.__writer = None
         self.__field_type = None
 
+    def __str__(self):
+        return "IndexInterface"
+
     def init_writing(self):
         self.__field_type = FieldType(StringField.TYPE_STORED)
         self.__field_type.setStored(True)
