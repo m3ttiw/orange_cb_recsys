@@ -14,6 +14,7 @@ from src.offline.raw_data_extractor.raw_information_source import RawInformation
 class FieldRepresentationPipeline:
     """
     Pipeline which specifies how to produce one of the representations of a field.
+
     Args:
         content_technique (FieldContentProductionTechnique):
             used to produce complex representation of the field given pre-processed information

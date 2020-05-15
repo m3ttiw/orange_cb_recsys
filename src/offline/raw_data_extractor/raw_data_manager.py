@@ -8,6 +8,7 @@ from src.offline.utils.id_merger import id_merger
 class RawDataConfig:
     """
     Configuration of RawDataManager.
+
     Args:
         source (RawInformationSource): raw data source from which extract the content
         id_field_name (str): name of the field that represents the item id
