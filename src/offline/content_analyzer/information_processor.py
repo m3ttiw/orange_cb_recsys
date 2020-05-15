@@ -116,7 +116,8 @@ class NLP(TextProcessor):
             field_data: text on which NLP with specified phases will be applied
 
         Returns:
-            str: text processed with the specified NLP pipeline
+            list<str>: The text, after being processed with the specified NLP pipeline,
+                is splitted in single words that are put into a list
         """
         pass
 
