@@ -1,3 +1,4 @@
+PyYAML
 numpy
 wheel
 gensim

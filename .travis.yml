@@ -8,27 +8,20 @@ cache: pip
 services:
   - docker
 
-before_install:
-  - docker pull rbarile17/py_cb_recsys
-  - docker run -d -p 127.0.0.1:80:4567 rbarile17/py_cb_recsys /bin/sh -c "cd /root/py_cb_recsys; bundle exec foreman start;"
-#  - python --version
-#  - export PYTHONPATH=$PYTHONPATH:$(pwd)
-#  - pip install -U pip
-
-install:
-#- pip install numpy
-#- pip install wheel
-#- pip install gensim
-#- pip install nltk
-#- pip install babelpy
-#- pip install mysql
-#- pip install mysql-connector-python
+before-script:
+  - pip install coveralls
 
 script:
-#  - cd test
-#  - python -m unittest
-  - docker run -it --rm python:rc Python 3.8; python -m unittest
-after_success:
- - codecov # submit coverage
+  - docker build -t testing/py_cb_recsys .
+  - container_id=$(docker run -d -i testing/py_cb_recsys)
+  - docker exec -it $container_id coverage run -m unittest
+  - docker exec -it $container_id coverage report -m
+  - docker cp $container_id:.coverage .
+  - docker stop $container_id
+  - docker container rm $container_id
+  
+after-success:
+  - coveralls
+  
 git:
   depth: false
