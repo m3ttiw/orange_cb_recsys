@@ -81,6 +81,13 @@ class RawDataManager:
     def __init__(self, config: RawDataConfig):
         self.__config: RawDataConfig = config
 
+    def __str__(self):
+        return "RawDataManager"
+
+    def __repr__(self):
+        return "< RawDataManager: " + \
+                "config = " + str(self.__config) + " >"
+
     def fit(self):
         """
         Begins to extract data from the source
