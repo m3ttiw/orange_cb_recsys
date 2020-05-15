@@ -5,4 +5,6 @@ COPY test ./test
 
 ENV PYTHONPATH "${PYTHONPATH}:./src"
 
+RUN pip install coverage
+
 RUN chmod a+x .
