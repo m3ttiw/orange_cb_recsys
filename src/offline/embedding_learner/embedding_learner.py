@@ -18,7 +18,7 @@ class EmbeddingLearner(ABC):
 
     @abstractmethod
     def start_learning(self):
-        pass
+        raise NotImplementedError
 
 
 class Word2Vec(EmbeddingLearner):
@@ -33,7 +33,7 @@ class Word2Vec(EmbeddingLearner):
         """"
         Abstract Method
         """
-        pass
+        raise NotImplementedError
 
 
 class LatentSemanticAnalysis(EmbeddingLearner):
@@ -48,7 +48,7 @@ class LatentSemanticAnalysis(EmbeddingLearner):
         """"
         Abstract Method
         """
-        pass
+        raise NotImplementedError
 
 
 class RandomIndexing(EmbeddingLearner):
@@ -63,7 +63,7 @@ class RandomIndexing(EmbeddingLearner):
         """"
         Abstract Method
         """
-        pass
+        raise NotImplementedError
 
 
 class ExplicitSemanticAnalysis(EmbeddingLearner):
@@ -78,4 +78,4 @@ class ExplicitSemanticAnalysis(EmbeddingLearner):
         """"
         Abstract Method
         """
-        pass
+        raise NotImplementedError

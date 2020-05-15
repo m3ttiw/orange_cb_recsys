@@ -21,7 +21,7 @@ class RawInformationSource(ABC):
         Iter on contents in the source,
         each iteration return a dict representing the raw content
         """
-        pass
+        raise NotImplementedError
 
 
 class JSONFile(RawInformationSource):

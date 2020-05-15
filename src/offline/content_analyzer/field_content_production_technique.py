@@ -35,11 +35,11 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str, pipeline_id: str) -> FieldRepresentation:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
-        pass
+        raise NotImplementedError
 
 
 class SingleContentTechnique(FieldContentProductionTechnique):
@@ -65,7 +65,7 @@ class FieldToGraph(SingleContentTechnique):
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
-        pass
+        raise NotImplementedError
 
 
 class TfIdfTechnique(CollectionBasedTechnique):
@@ -82,11 +82,11 @@ class TfIdfTechnique(CollectionBasedTechnique):
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str, pipeline_id: str) -> FeaturesBagField:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
-        pass
+        raise NotImplementedError
 
 
 class EntityLinking(SingleContentTechnique):
@@ -97,7 +97,7 @@ class EntityLinking(SingleContentTechnique):
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
-        pass
+        raise NotImplementedError
 
 
 class Granularity(Enum):
@@ -131,7 +131,7 @@ class CombiningTechnique(ABC):
         Returns:
 
         """
-        pass
+        raise NotImplementedError
 
 
 class EmbeddingSource(ABC):
@@ -165,7 +165,7 @@ class EmbeddingSource(ABC):
             try:
                 embedding_matrix[i, :] = self.__model[word]
             except:
-                pass
+                raise NotImplementedError
         return embedding_matrix
 
     def set_model(self, model):
@@ -195,7 +195,7 @@ class SentenceDetectionTechnique(ABC):
         Returns:
             List<str>: list of sentences
         """
-        pass
+        raise NotImplementedError
 
 
 class EmbeddingTechnique(SingleContentTechnique):
