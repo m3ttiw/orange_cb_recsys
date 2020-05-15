@@ -8,13 +8,20 @@ cache: pip
 services:
   - docker
 
+before-script:
+  - pip install coveralls
+
 script:
   - docker build -t testing/py_cb_recsys .
   - container_id=$(docker run -d -i testing/py_cb_recsys)
   - docker exec -it $container_id coverage run -m unittest
   - docker exec -it $container_id coverage report -m
+  - docker cp $container_id:.coverage .
   - docker stop $container_id
   - docker container rm $container_id
+  
+after-success:
+  - coveralls
   
 git:
   depth: false
