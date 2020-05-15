@@ -3,6 +3,8 @@ exclude_lines =
     pragma: no cover
     def __repr__
     def __str__
+    def set
+    def get
     if self.debug:
     if settings.DEBUG
     raise AssertionError
