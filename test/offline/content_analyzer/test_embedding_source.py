@@ -6,7 +6,7 @@ from src.offline.content_analyzer.embedding_source import GensimDownloader, Bina
 
 class TestGensimDownloader(TestCase):
     def test_load(self):
-        self.skipTest("FIX TEST")
+        self.skipTest("SLOW")
         source = GensimDownloader('glove-twitter-25')
         result = source.load("title plot")
 
@@ -35,7 +35,7 @@ class TestGensimDownloader(TestCase):
 
 class TestBinaryFile(TestCase):
     def test_load(self):
-        self.skipTest("FIX TEST")
+        self.skipTest("SLOW")
         source = BinaryFile('../../../datasets/word2vec/google_news.bin', EmbeddingType.WORD2VEC)
         result = source.load("text news")
         expected = np.ndarray(shape=(2, 300))

@@ -1,23 +1,25 @@
 import json
-import lucene
 import sys
+import yaml
 from typing import List, Dict
 
+import lucene
+
 from src.offline.content_analyzer.combining_technique import Centroid
-from src.offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
 from src.offline.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
     FieldRepresentationPipeline
+from src.offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
 from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
 from src.offline.content_analyzer.field_content_production_technique import EmbeddingTechnique
 from src.offline.content_analyzer.nlp import NLTK
+from src.offline.content_analyzer.tf_idf import LuceneTfIdf
 from src.offline.memory_interfaces.text_interface import IndexInterface
 from src.offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
 from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVFile, SQLDatabase
-from src.offline.content_analyzer.tf_idf import LuceneTfIdf
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config.json"
+DEFAULT_CONFIG_PATH = "config.yml"
 
 implemented_preprocessing = [
     "nltk",
@@ -81,7 +83,6 @@ def dict_detector(technique_dict):
 
 
 def config_run(config_list: List[Dict]):
-    represented_content_list = list()
     for content_config in config_list:
 
         # phase 1 : memorize the selected fields with some high powered memory interface
@@ -94,8 +95,7 @@ def config_run(config_list: List[Dict]):
                 config_dict[field_dict['field_name']] = runnable_instances[field_dict['memory_interface']](
                     field_dict['memory_interface_path'])
 
-        # setting the phase 1 configurati\
-        # on
+        # setting the phase 1 configuration
         raw_data_config = RawDataConfig(
             runnable_instances[content_config['source_type']](content_config['raw_source_path']),
             content_config['id_field_name'], config_dict)
@@ -105,7 +105,8 @@ def config_run(config_list: List[Dict]):
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
             runnable_instances[content_config['source_type']](content_config['raw_source_path']),
-            content_config['id_field_name'])
+            content_config['id_field_name'],
+            content_config['output_directory'])
         for field_dict in content_config['fields']:
             field_config = FieldConfig()
             # setting the content analyzer config
@@ -128,16 +129,21 @@ def config_run(config_list: List[Dict]):
 
         # fitting the data for each
         content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
-        represented_content_list.append(content_analyzer.fit())
-
-    return represented_content_list
+        content_analyzer.fit()
 
 
 if __name__ == "__main__":
     config_path = sys.argv[0]
     if config_path is not None:
         config_path = DEFAULT_CONFIG_PATH
-    config_list_dict = json.load(open(config_path))
+
+    if config_path.endswith('.yml'):
+        config_list_dict = yaml.load(open(config_path), Loader=yaml.FullLoader)
+    elif config_path.endswith('.json'):
+        config_list_dict = json.load(open(config_path))
+    else:
+        raise Exception("Wrong file extension")
+
     if check_for_available(config_list_dict):
         config_run(config_list_dict)
     else:

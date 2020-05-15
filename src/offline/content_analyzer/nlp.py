@@ -3,7 +3,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-
+from typing import List
 from src.offline.content_analyzer.information_processor import NLP
 
 
@@ -22,7 +22,7 @@ def get_wordnet_pos(word):
 
 class NLTK(NLP):
     """
-    Interface for the library OpenNlp for natural language processing features
+    Interface for the library NLTK for natural language processing features
 
     """
     def __init__(self, stopwords_removal: bool = False,
