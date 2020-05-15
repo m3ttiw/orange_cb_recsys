@@ -1,3 +1,10 @@
+env:
+  global:
+    - CI_NAME:travis-pro
+    - COVERALLS_REPO_TOKEN=m7F9CNmqoMWrzUv0lcmojwOCqk7PGjDG8
+
+sudo: required
+
 language: python
 
 python:
