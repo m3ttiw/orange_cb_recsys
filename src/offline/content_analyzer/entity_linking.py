@@ -14,6 +14,9 @@ class BabelPyEntityLinking(EntityLinking):
         params['lang'] = lang
         self.__babel_client = BabelfyClient(api_key, params)
 
+    def __str__(self):
+        return "BabelPyEntityLinking"
+
     def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
         self.__babel_client.babelfy(field_data)
         feature_bag = FeaturesBagField('repr_field_name')

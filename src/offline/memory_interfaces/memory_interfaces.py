@@ -59,23 +59,23 @@ class ImageInterface(InformationInterface):
     """
     @abstractmethod
     def new_content(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def new_field(self, field_name: str, field_data):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def serialize_content(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def init_writing(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def stop_writing(self):
-        pass
+        raise NotImplementedError
 
 
 class AudioInterface(InformationInterface):
@@ -85,7 +85,7 @@ class AudioInterface(InformationInterface):
     """
     @abstractmethod
     def new_content(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def new_field(self, field_name: str, field_data):
@@ -95,15 +95,15 @@ class AudioInterface(InformationInterface):
 
     @abstractmethod
     def serialize_content(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def init_writing(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def stop_writing(self):
-        pass
+        raise NotImplementedError
 
 
 class TextInterface(InformationInterface):
@@ -112,25 +112,25 @@ class TextInterface(InformationInterface):
     """
     @abstractmethod
     def new_content(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def new_field(self, field_name: str, field_data):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def serialize_content(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def init_writing(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def stop_writing(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_tf_idf(self, field_name: str, item_id: str):
-        pass
+        raise NotImplementedError
 

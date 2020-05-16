@@ -38,11 +38,17 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str, pipeline_id: str) -> FieldRepresentation:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
-        pass
+        raise NotImplementedError
+
+    def __str__(self):
+        return "CollectionBasedTechnique"
+
+    def __repr__(self):
+        return "CollectionBasedTechnique " + str(self.__need_refactor)
 
 
 class SingleContentTechnique(FieldContentProductionTechnique):
@@ -68,7 +74,13 @@ class FieldToGraph(SingleContentTechnique):
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
-        pass
+        raise NotImplementedError
+
+    def __str__(self):
+        return "FieldToGraph"
+
+    def __repr__(self):
+        return "FieldToGraph " + "graph content"
 
 
 class TfIdfTechnique(CollectionBasedTechnique):
@@ -83,11 +95,17 @@ class TfIdfTechnique(CollectionBasedTechnique):
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str, pipeline_id: str) -> FeaturesBagField:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
-        pass
+        raise NotImplementedError
+
+    def __str__(self):
+        return "TfIdfTechnique"
+
+    def __repr__(self):
+        return "TfIdfTechnique " + str(self.__index)
 
 
 class EntityLinking(SingleContentTechnique):
@@ -98,7 +116,7 @@ class EntityLinking(SingleContentTechnique):
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
-        pass
+        raise NotImplementedError
 
 
 class Granularity(Enum):
@@ -132,7 +150,7 @@ class CombiningTechnique(ABC):
         Returns:
 
         """
-        pass
+        raise NotImplementedError
 
 
 class EmbeddingSource(ABC):
@@ -167,6 +185,7 @@ class EmbeddingSource(ABC):
                 embedding_matrix[i, :] = self.__model[word]
             except:
                 pass
+
         return embedding_matrix
 
     def set_model(self, model):
@@ -174,6 +193,12 @@ class EmbeddingSource(ABC):
 
     def get_vector_size(self) -> int:
         return self.__model.vector_size
+
+    def __str__(self):
+        return "EmbeddingSource"
+
+    def __repr__(self):
+        return "EmbeddingSource " + str(self.__model)
 
 
 class SentenceDetectionTechnique(ABC):
@@ -196,7 +221,7 @@ class SentenceDetectionTechnique(ABC):
         Returns:
             List<str>: list of sentences
         """
-        pass
+        raise NotImplementedError
 
 
 class EmbeddingTechnique(SingleContentTechnique):
@@ -257,3 +282,10 @@ class EmbeddingTechnique(SingleContentTechnique):
         if self.__granularity == 3:
             doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))
+
+    def __str__(self):
+        return "EmbeddingTechnique"
+
+    def __repr__(self):
+        return "EmbeddingTechnique " + str(self.__combining_technique) + " " + str(self.__embedding_source) + " " + str(
+            self.__granularity)

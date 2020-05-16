@@ -8,7 +8,7 @@ class InformationProcessor(ABC):
     """
     @abstractmethod
     def process(self, field_data):
-        pass
+        raise NotImplementedError
 
 
 class ImageProcessor(InformationProcessor):
@@ -17,7 +17,7 @@ class ImageProcessor(InformationProcessor):
     """
     @abstractmethod
     def process(self, field_data):
-        pass
+        raise NotImplementedError
 
 
 class AudioProcessor(InformationProcessor):
@@ -26,7 +26,7 @@ class AudioProcessor(InformationProcessor):
     """
     @abstractmethod
     def process(self, field_data):
-        pass
+        raise NotImplementedError
 
 
 class TextProcessor(InformationProcessor):
@@ -35,7 +35,7 @@ class TextProcessor(InformationProcessor):
     """
     @abstractmethod
     def process(self, field_data):
-        pass
+        raise NotImplementedError
 
 
 class NLP(TextProcessor):
@@ -119,5 +119,5 @@ class NLP(TextProcessor):
             list<str>: The text, after being processed with the specified NLP pipeline,
                 is splitted in single words that are put into a list
         """
-        pass
+        raise NotImplementedError
 

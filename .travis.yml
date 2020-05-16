@@ -1,3 +1,10 @@
+env:
+  global:
+    - CI_NAME:travis-pro
+    - COVERALLS_REPO_TOKEN=m7F9CNmqoMWrzUv0lcmojwOCqk7PGjDG8
+
+sudo: required
+
 language: python
 
 python:
@@ -9,10 +16,10 @@ services:
   - docker
 
 script:
-  - docker build -t testing/py_cb_recsys .
-  - container_id=$(docker run -d -i testing/py_cb_recsys)
-  - docker exec -it $container_id coverage run -m unittest
-  - docker exec -it $container_id coverage report -m
+  - docker pull rbarile17/framework_dependencies
+  - container_id=$(docker run -d -it -v $(pwd):/usr/src rbarile17/framework_dependencies)
+  - docker exec -it $container_id coverage run --source=src -m unittest
+  - docker exec -it $container_id bash -c "TRAVIS_JOB_ID=$TRAVIS_JOB_ID TRAVIS_BRANCH=$TRAVIS_BRANCH COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls"
   - docker stop $container_id
   - docker container rm $container_id
   

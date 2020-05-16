@@ -3,6 +3,8 @@ from unittest import TestCase
 from src.offline.content_analyzer.content_representation.content_field import FeaturesBagField
 
 
+
+
 class TestFeaturesBagField(TestCase):
 
     def test_append_get_feature(self):

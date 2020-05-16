@@ -2,7 +2,7 @@ import json
 from typing import Dict, List
 from unittest import TestCase
 
-#from src.offline.run import check_for_available
+from src.offline.run import check_for_available
 
 
 class Test(TestCase):

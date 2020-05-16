@@ -54,6 +54,18 @@ class NLTK(NLP):
         except LookupError:
             nltk.download('wordnet')
 
+    def __str__(self):
+        return "NLTK"
+
+    def __repr__(self):
+        return "< NLTK: " + "" \
+                "stopwords_removal = " + str(self.__stopwords_removal) + ";" + \
+                 "stemming = " + str(self.__stemming) + ";" + \
+                 "lemmatization = " + str(self.__lemmatization) + ";" + \
+                 "named_entity_recognition = " + str(self.__named_entity_recognition) + ";" + \
+                 "strip_multiple_whitespaces = " + str(self.__strip_multiple_whitespaces) + ";" + \
+                 "url_tagging = " + str(self.__url_tagging) + " >"
+
     def get_lan(self) -> str:
         return self.__lan
 

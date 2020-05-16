@@ -20,7 +20,7 @@ class FieldRepresentation(ABC):
         return self.__name
 
     def __str__(self):
-        pass
+        raise NotImplementedError
 
 
 class FeaturesBagField(FieldRepresentation):

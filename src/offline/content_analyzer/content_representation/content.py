@@ -66,3 +66,6 @@ class RepresentedContents:
         Returns:
 
         """
+
+    def __str__(self):
+        return str(self.__content_list)

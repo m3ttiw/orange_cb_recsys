@@ -13,7 +13,6 @@ class TestNLTK(TestCase):
                 lan="english")"""
 
     def test_process(self):
-        self.skipTest("SLOW")
         #Test for only stop words removal
         nltka = NLTK(stopwords_removal=True, url_tagging=True)
         self.assertEqual(nltka.process(
