@@ -41,6 +41,12 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
         raise NotImplementedError
 
+    def __str__(self):
+        return "CollectionBasedTechnique"
+
+    def __repr__(self):
+        return "CollectionBasedTechnique " + str(self.__need_refactor)
+
 
 class SingleContentTechnique(FieldContentProductionTechnique):
     @abstractmethod
@@ -67,6 +73,12 @@ class FieldToGraph(SingleContentTechnique):
     def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
         raise NotImplementedError
 
+    def __str__(self):
+        return "FieldToGraph"
+
+    def __repr__(self):
+        return "FieldToGraph " + "graph content"
+
 
 class TfIdfTechnique(CollectionBasedTechnique):
     """
@@ -87,6 +99,12 @@ class TfIdfTechnique(CollectionBasedTechnique):
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
         raise NotImplementedError
+
+    def __str__(self):
+        return "TfIdfTechnique"
+
+    def __repr__(self):
+        return "TfIdfTechnique " + str(self.__index)
 
 
 class EntityLinking(SingleContentTechnique):
@@ -174,6 +192,12 @@ class EmbeddingSource(ABC):
     def get_vector_size(self) -> int:
         return self.__model.vector_size
 
+    def __str__(self):
+        return "EmbeddingSource"
+
+    def __repr__(self):
+        return "EmbeddingSource " + str(self.__model)
+
 
 class SentenceDetectionTechnique(ABC):
     """
@@ -256,3 +280,10 @@ class EmbeddingTechnique(SingleContentTechnique):
         if self.__granularity == 3:
             doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))
+
+    def __str__(self):
+        return "EmbeddingTechnique"
+
+    def __repr__(self):
+        return "EmbeddingTechnique " + str(self.__combining_technique) + " " + str(self.__embedding_source) + " " + str(
+            self.__granularity)

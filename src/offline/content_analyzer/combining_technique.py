@@ -20,4 +20,10 @@ class Centroid(CombiningTechnique):
         """
         return np.average(embedding_matrix, axis=0)
 
+    def __str__(self):
+        return "Centroid"
+
+    def __repr__(self):
+        return "< Centroid >"
+
 # your combining technique
