@@ -7,9 +7,7 @@ from src.offline.utils.id_merger import id_merger
 
 class LuceneTfIdf(TfIdfTechnique):
     """
-    Class that produce a Bag of words with tf-idf metric
-    Args:
-
+    Class that produces a Bag of words with tf-idf metric
     """
 
     def __init__(self):
@@ -27,6 +25,14 @@ class LuceneTfIdf(TfIdfTechnique):
         return FeaturesBagField(field_representation_name, self.__index.get_tf_idf(field_name + pipeline_id, content_id))
 
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
+        """
+        This method restructures the raw data in a way functional to the final representation.
+        This is done only for those field representations that require this phase to be done.
+        Args:
+            information_source (RawInformationSource):
+            id_field_names:
+
+        """
         if len(self.get_need_refactor().keys()) != 0:
             self.__index = IndexInterface('./frequency-index')
             self.__index.init_writing()

@@ -1,0 +1,291 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>src.offline.memory_interfaces package &#8212; Prova 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Prova 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="src-offline-memory-interfaces-package">
+<h1>src.offline.memory_interfaces package<a class="headerlink" href="#src-offline-memory-interfaces-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.offline.memory_interfaces.memory_interfaces">
+<span id="src-offline-memory-interfaces-memory-interfaces-module"></span><h2>src.offline.memory_interfaces.memory_interfaces module<a class="headerlink" href="#module-src.offline.memory_interfaces.memory_interfaces" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.offline.memory_interfaces.memory_interfaces.AudioInterface">
+<em class="property">class </em><code class="descclassname">src.offline.memory_interfaces.memory_interfaces.</code><code class="descname">AudioInterface</code><span class="sig-paren">(</span><em>directory: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.AudioInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="src.offline.memory_interfaces.memory_interfaces.InformationInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.memory_interfaces.memory_interfaces.InformationInterface</span></code></a></p>
+<p>Future feature
+Abstract class to use when the field information is in audio format.</p>
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.AudioInterface.init_writing">
+<code class="descname">init_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.AudioInterface.init_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface in writing mode,
+if the specified directory oes not exit a new one will be created</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.AudioInterface.new_content">
+<code class="descname">new_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.AudioInterface.new_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new item, that will be serialized by the apposite method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.AudioInterface.new_field">
+<code class="descname">new_field</code><span class="sig-paren">(</span><em>field_name: str</em>, <em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.AudioInterface.new_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract method</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.AudioInterface.serialize_content">
+<code class="descname">serialize_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.AudioInterface.serialize_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add to the serialized collection the current item</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.AudioInterface.stop_writing">
+<code class="descname">stop_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.AudioInterface.stop_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop writing mode</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.memory_interfaces.memory_interfaces.ImageInterface">
+<em class="property">class </em><code class="descclassname">src.offline.memory_interfaces.memory_interfaces.</code><code class="descname">ImageInterface</code><span class="sig-paren">(</span><em>directory: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.ImageInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="src.offline.memory_interfaces.memory_interfaces.InformationInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.memory_interfaces.memory_interfaces.InformationInterface</span></code></a></p>
+<p>Future feature
+Abstract class to use when the field information is in image format.</p>
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.ImageInterface.init_writing">
+<code class="descname">init_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.ImageInterface.init_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface in writing mode,
+if the specified directory oes not exit a new one will be created</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.ImageInterface.new_content">
+<code class="descname">new_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.ImageInterface.new_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new item, that will be serialized by the apposite method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.ImageInterface.new_field">
+<code class="descname">new_field</code><span class="sig-paren">(</span><em>field_name: str</em>, <em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.ImageInterface.new_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize the raw data of a field.
+:param field_data: data to serialize
+:param field_name: name of the created field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.ImageInterface.serialize_content">
+<code class="descname">serialize_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.ImageInterface.serialize_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add to the serialized collection the current item</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.ImageInterface.stop_writing">
+<code class="descname">stop_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.ImageInterface.stop_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop writing mode</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.memory_interfaces.memory_interfaces.InformationInterface">
+<em class="property">class </em><code class="descclassname">src.offline.memory_interfaces.memory_interfaces.</code><code class="descname">InformationInterface</code><span class="sig-paren">(</span><em>directory: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>Abstract class that deals with the serialization
+and deserialization of a field (of a content) data
+basing on the type of element extracted.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>directory</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – directory where to store the serialized content and where to access for deserialization</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.InformationInterface.get_directory">
+<code class="descname">get_directory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface.get_directory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.InformationInterface.init_writing">
+<code class="descname">init_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface.init_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface in writing mode,
+if the specified directory oes not exit a new one will be created</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.InformationInterface.new_content">
+<code class="descname">new_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface.new_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new item, that will be serialized by the apposite method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.InformationInterface.new_field">
+<code class="descname">new_field</code><span class="sig-paren">(</span><em>field_name: str</em>, <em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface.new_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize the raw data of a field.
+:param field_data: data to serialize
+:param field_name: name of the created field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.InformationInterface.serialize_content">
+<code class="descname">serialize_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface.serialize_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add to the serialized collection the current item</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.InformationInterface.stop_writing">
+<code class="descname">stop_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface.stop_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop writing mode</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.memory_interfaces.memory_interfaces.TextInterface">
+<em class="property">class </em><code class="descclassname">src.offline.memory_interfaces.memory_interfaces.</code><code class="descname">TextInterface</code><span class="sig-paren">(</span><em>directory: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.TextInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="src.offline.memory_interfaces.memory_interfaces.InformationInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.memory_interfaces.memory_interfaces.InformationInterface</span></code></a></p>
+<p>Abstract class to use when the field information is textual.</p>
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.TextInterface.get_tf_idf">
+<code class="descname">get_tf_idf</code><span class="sig-paren">(</span><em>field_name: str</em>, <em>item_id: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.TextInterface.get_tf_idf" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.TextInterface.init_writing">
+<code class="descname">init_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.TextInterface.init_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the interface in writing mode,
+if the specified directory oes not exit a new one will be created</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.TextInterface.new_content">
+<code class="descname">new_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.TextInterface.new_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new item, that will be serialized by the apposite method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.TextInterface.new_field">
+<code class="descname">new_field</code><span class="sig-paren">(</span><em>field_name: str</em>, <em>field_data</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.TextInterface.new_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize the raw data of a field.
+:param field_data: data to serialize
+:param field_name: name of the created field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.TextInterface.serialize_content">
+<code class="descname">serialize_content</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.TextInterface.serialize_content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add to the serialized collection the current item</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.memory_interfaces.memory_interfaces.TextInterface.stop_writing">
+<code class="descname">stop_writing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.memory_interfaces.memory_interfaces.TextInterface.stop_writing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop writing mode</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="src-offline-memory-interfaces-text-interface-module">
+<h2>src.offline.memory_interfaces.text_interface module<a class="headerlink" href="#src-offline-memory-interfaces-text-interface-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.offline.memory_interfaces">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.offline.memory_interfaces" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">src.offline.memory_interfaces package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-src.offline.memory_interfaces.memory_interfaces">src.offline.memory_interfaces.memory_interfaces module</a></li>
+<li><a class="reference internal" href="#src-offline-memory-interfaces-text-interface-module">src.offline.memory_interfaces.text_interface module</a></li>
+<li><a class="reference internal" href="#module-src.offline.memory_interfaces">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/rst/src.offline.memory_interfaces.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Prova 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, SWAP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,317 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>src.offline.content_analyzer.content_representation package &#8212; Prova 1.0 documentation</title>
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Prova 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="src-offline-content-analyzer-content-representation-package">
+<h1>src.offline.content_analyzer.content_representation package<a class="headerlink" href="#src-offline-content-analyzer-content-representation-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-src.offline.content_analyzer.content_representation.content">
+<span id="src-offline-content-analyzer-content-representation-content-module"></span><h2>src.offline.content_analyzer.content_representation.content module<a class="headerlink" href="#module-src.offline.content_analyzer.content_representation.content" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.offline.content_analyzer.content_representation.content.Content">
+<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.content_representation.content.</code><code class="descname">Content</code><span class="sig-paren">(</span><em>content_id: str</em>, <em>field_list: List[src.offline.content_analyzer.content_representation.content_field.ContentField] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.Content" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class that represent a content,
+a content can be an item, a user or a rating
+A content is identified by a string id and is composed of different fields
+:param content_id: identifier
+:type content_id: str
+:param field_list: list of the fields instances of a content
+:type field_list: list[ContentField]</p>
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content.Content.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>field: src.offline.content_analyzer.content_representation.content_field.ContentField</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.Content.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content.Content.load">
+<code class="descname">load</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.Content.load" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content.Content.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>field_name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.Content.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove the field with field_name in the fields list
+:param field_name: the name of the field to remove
+:type field_name: str</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content.Content.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><em>output_directory: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.Content.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize a content instance</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.content_analyzer.content_representation.content.RepresentedContents">
+<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.content_representation.content.</code><code class="descname">RepresentedContents</code><span class="sig-paren">(</span><em>length: int = 0</em>, <em>content_list: List[src.offline.content_analyzer.content_representation.content.Content] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.RepresentedContents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class that collects the Contents instance created,
+the whole collection can be serialized.
+:param content_list: list of content’s instances
+:type content_list: list&lt;Item&gt;
+:param length: number of contents</p>
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content.RepresentedContents.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>content: src.offline.content_analyzer.content_representation.content.Content</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.RepresentedContents.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content.RepresentedContents.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content.RepresentedContents.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize the entire collection
+Returns:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.offline.content_analyzer.content_representation.content_field">
+<span id="src-offline-content-analyzer-content-representation-content-field-module"></span><h2>src.offline.content_analyzer.content_representation.content_field module<a class="headerlink" href="#module-src.offline.content_analyzer.content_representation.content_field" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.offline.content_analyzer.content_representation.content_field.ContentField">
+<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.content_representation.content_field.</code><code class="descname">ContentField</code><span class="sig-paren">(</span><em>field_name: str</em>, <em>timestamp: str</em>, <em>representation_list: List[src.offline.content_analyzer.content_representation.content_field.FieldRepresentation] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.ContentField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class that represents a field,
+a field can have different representation of itself
+:param field_name: the name of the field
+:type field_name: str
+:param representation_list: the list of the representations.
+:type representation_list: list&lt;FieldRepresentation&gt;</p>
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content_field.ContentField.append">
+<code class="descname">append</code><span class="sig-paren">(</span><em>representation: src.offline.content_analyzer.content_representation.content_field.FieldRepresentation</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.ContentField.append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content_field.ContentField.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.ContentField.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.content_analyzer.content_representation.content_field.EmbeddingField">
+<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.content_representation.content_field.</code><code class="descname">EmbeddingField</code><span class="sig-paren">(</span><em>name: str</em>, <em>embedding_array: numpy.ndarray</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.EmbeddingField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.content_representation.content_field.FieldRepresentation" title="src.offline.content_analyzer.content_representation.content_field.FieldRepresentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.content_representation.content_field.FieldRepresentation</span></code></a></p>
+<p>Class for field representation using embeddings(dense numeric vectors)
+this representation is produced by the EmbeddingTechnique.</p>
+<p class="rubric">Examples</p>
+<p>shape (4) = [x,x,x,x]
+shape (2,2) = [[x,x],</p>
+<blockquote>
+<div>[x,x]]</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>embedding_array</strong> (<em>np.ndarray</em>) – embeddings array,
+it can be of different shapes according to the granularity of the technique</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content_field.EmbeddingField.get_array">
+<code class="descname">get_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; numpy.ndarray<a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.EmbeddingField.get_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.content_analyzer.content_representation.content_field.FeaturesBagField">
+<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.content_representation.content_field.</code><code class="descname">FeaturesBagField</code><span class="sig-paren">(</span><em>name: str</em>, <em>features: Dict[str</em>, <em>object] = None</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.FeaturesBagField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.content_representation.content_field.FieldRepresentation" title="src.offline.content_analyzer.content_representation.content_field.FieldRepresentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.content_representation.content_field.FieldRepresentation</span></code></a></p>
+<p>Class for field representation using a bag of features,
+this class can be also used to represent a bag of words: &lt;keyword, score&gt;;
+this representation is produced by the EntityLinking and tf-idf techniques</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>features</strong> (<em>dict&lt;str</em><em>, </em><em>object&gt;</em>) – the dictionary where features are stored</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content_field.FeaturesBagField.append_feature">
+<code class="descname">append_feature</code><span class="sig-paren">(</span><em>feature_key: str</em>, <em>feature_value</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.FeaturesBagField.append_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a feature (feature_key, feature_value) to the dict</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>feature_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – key, can be a url or a keyword</li>
+<li><strong>feature_value</strong> – the value of the field</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content_field.FeaturesBagField.get_feature">
+<code class="descname">get_feature</code><span class="sig-paren">(</span><em>feature_key</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.FeaturesBagField.get_feature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the feature_value from the dict[feature_key]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>feature_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – key, can be a url or a keyword</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the value of the field</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">feature_value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content_field.FeaturesBagField.get_feature_dict">
+<code class="descname">get_feature_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.FeaturesBagField.get_feature_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the features dict</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the features dict</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">features</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.content_analyzer.content_representation.content_field.FieldRepresentation">
+<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.content_representation.content_field.</code><code class="descname">FieldRepresentation</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.FieldRepresentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>Abstract class that generalize the concept of “field representation”,
+a field representation is a semantic way to represent a field of an item.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the representation’s instance</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="src.offline.content_analyzer.content_representation.content_field.FieldRepresentation.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; str<a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.FieldRepresentation.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.offline.content_analyzer.content_representation.content_field.GraphField">
+<em class="property">class </em><code class="descclassname">src.offline.content_analyzer.content_representation.content_field.</code><code class="descname">GraphField</code><span class="sig-paren">(</span><em>name: str</em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.content_analyzer.content_representation.content_field.GraphField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.content_analyzer.content_representation.content_field.FieldRepresentation" title="src.offline.content_analyzer.content_representation.content_field.FieldRepresentation"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.content_analyzer.content_representation.content_field.FieldRepresentation</span></code></a></p>
+<p>Class for field representation using a graph.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.offline.content_analyzer.content_representation">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.offline.content_analyzer.content_representation" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">src.offline.content_analyzer.content_representation package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-src.offline.content_analyzer.content_representation.content">src.offline.content_analyzer.content_representation.content module</a></li>
+<li><a class="reference internal" href="#module-src.offline.content_analyzer.content_representation.content_field">src.offline.content_analyzer.content_representation.content_field module</a></li>
+<li><a class="reference internal" href="#module-src.offline.content_analyzer.content_representation">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/rst/src.offline.content_analyzer.content_representation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Prova 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, SWAP.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
+    </div>
+  </body>
+</html>

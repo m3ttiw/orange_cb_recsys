@@ -5,7 +5,7 @@ from babelpy.babelfy import BabelfyClient
 
 class BabelPyEntityLinking(EntityLinking):
     """
-    Interface for the Babelpy library that wrap some feature of Babelfy entity Linking.
+    Interface for the Babelpy library that wraps some feature of Babelfy entity Linking.
     """
 
     def __init__(self, lang: str = "EN", api_key: str = None):
