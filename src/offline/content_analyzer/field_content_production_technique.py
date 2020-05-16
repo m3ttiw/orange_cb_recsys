@@ -183,7 +183,8 @@ class EmbeddingSource(ABC):
             try:
                 embedding_matrix[i, :] = self.__model[word]
             except:
-                raise NotImplementedError
+                pass
+
         return embedding_matrix
 
     def set_model(self, model):
