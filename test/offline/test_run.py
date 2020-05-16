@@ -2,7 +2,30 @@ import json
 from typing import Dict, List
 from unittest import TestCase
 
-#from src.offline.run import check_for_available
+# from src.offline.run import check_for_available
+from offline.run import config_run, check_for_available
+
+config_dict = {
+    "content_type": "ITEM",
+    "raw_source_path": "movies_info.json",
+    "source_type": "json",
+    "id_field_name": "imdbID",
+    "start_from": "0",
+    "end_up_at": "all",
+    "fields": [
+        {
+            "field_name": "Title",
+            "memory_interface": "None",
+            "memory_interface_path": "./test-index-plot",
+            "pipeline_list": [
+                {
+                    "field_content_production": {"class": "babelpy"},
+                    "preprocessing_list": []
+                }
+            ]
+        }
+    ]
+}
 
 
 class Test(TestCase):
@@ -57,10 +80,17 @@ class Test(TestCase):
                                 """
                                 self.test_dict_key(preprocessing, ["class"], context="preprocessing config")
                                 """
-                                self.assertIn("class", preprocessing.keys(),msg.format(key, "preprocessing config"))
+                                self.assertIn("class", preprocessing.keys(), msg.format(key, "preprocessing config"))
+
+    def test_check_for_available(self):
+        global config_dict
+        self.assertEqual(check_for_available([{}]), False)
+        self.assertEqual(check_for_available(config_dict), True)
 
     def test_run(self):
-        self.skipTest("test in the submodules.")
+        #self.skipTest("test in the submodules.")
+        global config_dict
+        self.assertEqual(config_run(config_dict), 0, "The configuration should run without problems ok")
 
     def test_check_for_available(self):
         self.skipTest("FIX TEST")
@@ -69,7 +99,7 @@ class Test(TestCase):
         in_dict = [{"source_type": "json", "fields": [{"memory_interface": "not-index"}]}]
         self.assertFalse(check_for_available(in_dict))
         in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
-                        "field_content_production": {"class": "no-class"}}]}]}]
+            "field_content_production": {"class": "no-class"}}]}]}]
         self.assertFalse(check_for_available(in_dict))
         in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
             "field_content_production": {"class": "babelpy"}, "preprocessing_list": [{"class": "no-class"}]}]}]}]

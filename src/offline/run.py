@@ -131,6 +131,8 @@ def config_run(config_list: List[Dict]):
         content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
         content_analyzer.fit()
 
+        return 0
+
 
 if __name__ == "__main__":
     config_path = sys.argv[0]
