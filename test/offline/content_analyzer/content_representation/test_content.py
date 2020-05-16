@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from offline.content_analyzer.content_representation.content import Content
-from offline.content_analyzer.content_representation.content_field import FeaturesBagField, ContentField
+from src.offline.content_analyzer.content_representation.content import Content
+from src.offline.content_analyzer.content_representation.content_field import FeaturesBagField, ContentField
 
 
 class TestContent(TestCase):
