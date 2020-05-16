@@ -119,7 +119,7 @@ class ContentField:
     """
 
     def __init__(self, field_name: str,
-                 timestamp: str,
+                 timestamp: str = None,
                  representation_list: List[FieldRepresentation] = None):
         if representation_list is None:
             representation_list = []

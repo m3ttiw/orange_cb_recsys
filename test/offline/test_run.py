@@ -3,7 +3,7 @@ from typing import Dict, List
 from unittest import TestCase
 
 # from src.offline.run import check_for_available
-from offline.run import config_run, check_for_available
+from src.offline.run import config_run, check_for_available
 
 config_dict = {
     "content_type": "ITEM",
