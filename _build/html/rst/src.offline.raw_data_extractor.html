@@ -38,11 +38,205 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="src-offline-raw-data-extractor-raw-data-manager-module">
-<h2>src.offline.raw_data_extractor.raw_data_manager module<a class="headerlink" href="#src-offline-raw-data-extractor-raw-data-manager-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-src.offline.raw_data_extractor.raw_data_manager">
+<span id="src-offline-raw-data-extractor-raw-data-manager-module"></span><h2>src.offline.raw_data_extractor.raw_data_manager module<a class="headerlink" href="#module-src.offline.raw_data_extractor.raw_data_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig">
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.raw_data_extractor.raw_data_manager.</code><code class="sig-name descname">RawDataConfig</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.offline.raw_data_extractor.raw_information_source.RawInformationSource" title="src.offline.raw_data_extractor.raw_information_source.RawInformationSource">src.offline.raw_data_extractor.raw_information_source.RawInformationSource</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">id_field_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fields_interface</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><span class="p">, </span><a class="reference internal" href="src.offline.memory_interfaces.html#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="src.offline.memory_interfaces.memory_interfaces.InformationInterface">src.offline.memory_interfaces.memory_interfaces.InformationInterface</a><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Configuration of RawDataManager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<a class="reference internal" href="#src.offline.raw_data_extractor.raw_information_source.RawInformationSource" title="src.offline.raw_data_extractor.raw_information_source.RawInformationSource"><em>RawInformationSource</em></a>) – raw data source from which extract the content</p></li>
+<li><p><strong>id_field_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of the field that represents the item id</p></li>
+<li><p><strong>fields_interface</strong> (<a class="reference internal" href="src.offline.memory_interfaces.html#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="src.offline.memory_interfaces.memory_interfaces.InformationInterface"><em>InformationInterface</em></a>) – specifies for each field
+which interface to use to serialize field data</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_field_names">
+<code class="sig-name descname">get_field_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_field_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the list of field names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of config dict keys</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List&lt;str&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_id_field_name">
+<code class="sig-name descname">get_id_field_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_id_field_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_interface">
+<code class="sig-name descname">get_interface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="src.offline.memory_interfaces.html#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="src.offline.memory_interfaces.memory_interfaces.InformationInterface">src.offline.memory_interfaces.memory_interfaces.InformationInterface</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_interface" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_interfaces">
+<code class="sig-name descname">get_interfaces</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_interfaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the list of field interfaces</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of config dict values</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List&lt;InformationInterface&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_source">
+<code class="sig-name descname">get_source</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#src.offline.raw_data_extractor.raw_information_source.RawInformationSource" title="src.offline.raw_data_extractor.raw_information_source.RawInformationSource">src.offline.raw_data_extractor.raw_information_source.RawInformationSource</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.get_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.set_id_field_name">
+<code class="sig-name descname">set_id_field_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">id_field_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.set_id_field_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.set_interface">
+<code class="sig-name descname">set_interface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">field_interface</span><span class="p">:</span> <span class="n"><a class="reference internal" href="src.offline.memory_interfaces.html#src.offline.memory_interfaces.memory_interfaces.InformationInterface" title="src.offline.memory_interfaces.memory_interfaces.InformationInterface">src.offline.memory_interfaces.memory_interfaces.InformationInterface</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.set_interface" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.set_source">
+<code class="sig-name descname">set_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig.set_source" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataManager">
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.raw_data_extractor.raw_data_manager.</code><code class="sig-name descname">RawDataManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig" title="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig">src.offline.raw_data_extractor.raw_data_manager.RawDataConfig</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class that first carries out the steps of this phase,
+executing data extraction and data serialization according to the config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<a class="reference internal" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataConfig" title="src.offline.raw_data_extractor.raw_data_manager.RawDataConfig"><em>RawDataConfig</em></a>) – manager configuration</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_data_manager.RawDataManager.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_data_manager.RawDataManager.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts and serializes data from the source
+according to the ways specified by config</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="src-offline-raw-data-extractor-raw-information-source-module">
-<h2>src.offline.raw_data_extractor.raw_information_source module<a class="headerlink" href="#src-offline-raw-data-extractor-raw-information-source-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-src.offline.raw_data_extractor.raw_information_source">
+<span id="src-offline-raw-data-extractor-raw-information-source-module"></span><h2>src.offline.raw_data_extractor.raw_information_source module<a class="headerlink" href="#module-src.offline.raw_data_extractor.raw_information_source" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="src.offline.raw_data_extractor.raw_information_source.CSVFile">
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.raw_data_extractor.raw_information_source.</code><code class="sig-name descname">CSVFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.CSVFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.raw_data_extractor.raw_information_source.RawInformationSource" title="src.offline.raw_data_extractor.raw_information_source.RawInformationSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.raw_data_extractor.raw_information_source.RawInformationSource</span></code></a></p>
+<p>Abstract class for the data acquisition from a csv file</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.offline.raw_data_extractor.raw_information_source.JSONFile">
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.raw_data_extractor.raw_information_source.</code><code class="sig-name descname">JSONFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_path</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.JSONFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.raw_data_extractor.raw_information_source.RawInformationSource" title="src.offline.raw_data_extractor.raw_information_source.RawInformationSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.raw_data_extractor.raw_information_source.RawInformationSource</span></code></a></p>
+<p>Class for the data acquisition from a json file</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.offline.raw_data_extractor.raw_information_source.RawInformationSource">
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.raw_data_extractor.raw_information_source.</code><code class="sig-name descname">RawInformationSource</code><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.RawInformationSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/abc.html#abc.ABC" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></a></p>
+<p>Abstract Class that generalizes the acquisition of raw descriptions of the contents
+from one of the possible acquisition channels.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase">
+<em class="property">class </em><code class="sig-prename descclassname">src.offline.raw_data_extractor.raw_information_source.</code><code class="sig-name descname">SQLDatabase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">host</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">username</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">password</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">database_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em>, <em class="sig-param"><span class="n">table_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.offline.raw_data_extractor.raw_information_source.RawInformationSource" title="src.offline.raw_data_extractor.raw_information_source.RawInformationSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">src.offline.raw_data_extractor.raw_information_source.RawInformationSource</span></code></a></p>
+<p>Abstract class for the data acquisition from a SQL Database
+:param host: host ip of the sql server
+:type host: str
+:param username: username for the access
+:type username: str
+:param password: password for the access
+:type password: str
+:param database_name: name of database
+:type database_name: str
+:param table_name: name of the database table where data is stored
+:type table_name: str</p>
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_conn">
+<code class="sig-name descname">get_conn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_conn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_database_name">
+<code class="sig-name descname">get_database_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_database_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_host">
+<code class="sig-name descname">get_host</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_password">
+<code class="sig-name descname">get_password</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_table_name">
+<code class="sig-name descname">get_table_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_table_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_username">
+<code class="sig-name descname">get_username</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.get_username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_conn">
+<code class="sig-name descname">set_conn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">conn</span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_conn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_database_name">
+<code class="sig-name descname">set_database_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">database_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_database_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_host">
+<code class="sig-name descname">set_host</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">host</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_password">
+<code class="sig-name descname">set_password</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">password</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_password" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_table_name">
+<code class="sig-name descname">set_table_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table_name</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_table_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_username">
+<code class="sig-name descname">set_username</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span><span class="p">:</span> <span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#src.offline.raw_data_extractor.raw_information_source.SQLDatabase.set_username" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-src.offline.raw_data_extractor">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-src.offline.raw_data_extractor" title="Permalink to this headline">¶</a></h2>
@@ -59,8 +253,8 @@
   <ul>
 <li><a class="reference internal" href="#">src.offline.raw_data_extractor package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#src-offline-raw-data-extractor-raw-data-manager-module">src.offline.raw_data_extractor.raw_data_manager module</a></li>
-<li><a class="reference internal" href="#src-offline-raw-data-extractor-raw-information-source-module">src.offline.raw_data_extractor.raw_information_source module</a></li>
+<li><a class="reference internal" href="#module-src.offline.raw_data_extractor.raw_data_manager">src.offline.raw_data_extractor.raw_data_manager module</a></li>
+<li><a class="reference internal" href="#module-src.offline.raw_data_extractor.raw_information_source">src.offline.raw_data_extractor.raw_information_source module</a></li>
 <li><a class="reference internal" href="#module-src.offline.raw_data_extractor">Module contents</a></li>
 </ul>
 </li>
