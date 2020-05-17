@@ -28,13 +28,12 @@ class NLTK(NLP):
     def __init__(self, stopwords_removal: bool = False,
                  stemming: bool = False,
                  lemmatization: bool = False,
-                 named_entity_recognition: bool = False,
                  strip_multiple_whitespaces: bool = True,
                  url_tagging: bool = False,
                  lan: str = "english"):
 
         super().__init__(stopwords_removal,
-                         stemming, lemmatization, named_entity_recognition,
+                         stemming, lemmatization,
                          strip_multiple_whitespaces, url_tagging)
         self.__lan: str = lan
         try:
@@ -62,7 +61,6 @@ class NLTK(NLP):
                 "stopwords_removal = " + str(self.__stopwords_removal) + ";" + \
                  "stemming = " + str(self.__stemming) + ";" + \
                  "lemmatization = " + str(self.__lemmatization) + ";" + \
-                 "named_entity_recognition = " + str(self.__named_entity_recognition) + ";" + \
                  "strip_multiple_whitespaces = " + str(self.__strip_multiple_whitespaces) + ";" + \
                  "url_tagging = " + str(self.__url_tagging) + " >"
 
@@ -140,23 +138,8 @@ class NLTK(NLP):
             lemmatized_text.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
         return lemmatized_text
 
-    def __named_entity_recognition_operation(self, text) -> nltk.tree.Tree:
-        """
-        Execute NER on input text
-
-        Args:
-            text (str): Text containing the entities
-
-        Returns:
-            cs (nltk.tree.Tree): A tree containing the bonds between the entities
-        """
-        text = nltk.pos_tag(text)
-        pattern = 'NP: {<DT>?<JJ>*<NN>}'
-        cp = nltk.RegexpParser(pattern)
-        cs = cp.parse(text)
-        return cs
-
-    def __strip_multiple_whitespaces_operation(self, text) -> str:
+    @staticmethod
+    def __strip_multiple_whitespaces_operation(text) -> str:
         """
         Remove multiple whitespaces on input text
 
@@ -217,7 +200,6 @@ class NLTK(NLP):
             field_data = self.__strip_multiple_whitespaces_operation(field_data)
         if self.get_url_tagging():
             field_data = self.__url_tagging_operation(field_data)
-
         field_data = self.__tokenization_operation(field_data)
         if self.get_stopwords_removal():
             field_data = self.__stopwords_removal_operation(field_data)
@@ -225,6 +207,4 @@ class NLTK(NLP):
             field_data = self.__lemmatization_operation(field_data)
         if self.get_stemming():
             field_data = self.__stemming_operation(field_data)
-        if self.get_named_entity_recognition():
-            field_data = self.__named_entity_recognition_operation(field_data)
         return self.__compact_tokens(field_data)
