@@ -3,7 +3,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-
+from typing import List
 from src.offline.content_analyzer.information_processor import NLP
 
 
@@ -22,7 +22,7 @@ def get_wordnet_pos(word):
 
 class NLTK(NLP):
     """
-    Interface for the library OpenNlp for natural language processing features
+    Interface for the library NLTK for natural language processing features
 
     """
     def __init__(self, stopwords_removal: bool = False,
@@ -54,25 +54,46 @@ class NLTK(NLP):
         except LookupError:
             nltk.download('wordnet')
 
+    def __str__(self):
+        return "NLTK"
+
+    def __repr__(self):
+        return "< NLTK: " + "" \
+                "stopwords_removal = " + str(self.__stopwords_removal) + ";" + \
+                 "stemming = " + str(self.__stemming) + ";" + \
+                 "lemmatization = " + str(self.__lemmatization) + ";" + \
+                 "named_entity_recognition = " + str(self.__named_entity_recognition) + ";" + \
+                 "strip_multiple_whitespaces = " + str(self.__strip_multiple_whitespaces) + ";" + \
+                 "url_tagging = " + str(self.__url_tagging) + " >"
+
     def get_lan(self) -> str:
         return self.__lan
 
     def set_lan(self, lan: str):
         self.__lan = lan
 
-    def __tokenization_operation(self, text):
+    def __tokenization_operation(self, text) -> List[str]:
+        """
+        Splits the text in one-word tokens
+        Args:
+             text (str): Text to split in tokens
+
+        Returns:
+             List<str>: a list of words
+
+        """
         self.set_is_tokenized(True)
         return word_tokenize(text)
 
-    def __stopwords_removal_operation(self, text) -> str:
+    def __stopwords_removal_operation(self, text) -> List[str]:
         """
         Execute stopwords removal on input text
 
         Args:
-            text:
+            text (str):
 
         Returns:
-            str: input text without stopwords
+            filtered_sentence (List<str>): list of words from the text, without the stopwords
         """
         stop_words = set(stopwords.words(self.get_lan()))
 
@@ -83,7 +104,7 @@ class NLTK(NLP):
 
         return filtered_sentence
 
-    def __stemming_operation(self, text):
+    def __stemming_operation(self, text) -> List[str]:
         """
         Execute stemming on input text
 
@@ -91,7 +112,7 @@ class NLTK(NLP):
             text:
 
         Returns:
-            str: input text, words reduced to their stems
+            stemmed_text (List<str>): List of the fords from the text, reduced to their stem version
         """
         from nltk.stem.snowball import SnowballStemmer
         stemmer = SnowballStemmer(language=self.get_lan())
@@ -102,7 +123,7 @@ class NLTK(NLP):
 
         return stemmed_text
 
-    def __lemmatization_operation(self, text):
+    def __lemmatization_operation(self, text) -> List[str]:
         """
         Execute lemmatization on input text
 
@@ -110,7 +131,7 @@ class NLTK(NLP):
             text:
 
         Returns:
-            str: input text, words reduced to their lemma
+            lemmatized_text (List<str>): List of the fords from the text, reduced to their lemmatized version
         """
 
         lemmatizer = WordNetLemmatizer()
@@ -119,23 +140,24 @@ class NLTK(NLP):
             lemmatized_text.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
         return lemmatized_text
 
-    def __named_entity_recognition_operation(self, text):
+    def __named_entity_recognition_operation(self, text) -> nltk.tree.Tree:
         """
         Execute NER on input text
 
         Args:
-            text:
+            text (str): Text containing the entities
 
         Returns:
-            str: input text, entities recognized
+            namedEnt (nltk.tree.Tree): A tree containing the bonds between the entities
         """
+        if type(text) == 'str':
+            text = self.__tokenization_operation(text)
         text = nltk.pos_tag(text)
-        pattern = 'NP: {<DT>?<JJ>*<NN>}'
-        cp = nltk.RegexpParser(pattern)
-        cs = cp.parse(text)
-        return cs
+        named_ent = nltk.ne_chunk(text)
+        #namedEnt.draw()        #You can uncomment this line to see the actual tree
+        return named_ent
 
-    def __strip_multiple_whitespaces_operation(self, text):
+    def __strip_multiple_whitespaces_operation(self, text) -> str:
         """
         Remove multiple whitespaces on input text
 
@@ -145,20 +167,19 @@ class NLTK(NLP):
         Returns:
             str: input text, multiple whitespaces removed
         """
-
         import re
         return re.sub(' +', ' ', text)
 
     @staticmethod
-    def __url_tagging_operation(text):
+    def __url_tagging_operation(text) -> List[str]:
         """
-        substitute urls with <URL> string on input text
+        Replaces urls with <URL> string on input text
 
         Args:
             text:
 
         Returns:
-            str: input text, <URL> instead of full url
+            text (str): input text, <URL> instead of full url
         """
         import re
         urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]| '
@@ -168,13 +189,20 @@ class NLTK(NLP):
             text = text.replace(url, "<URL>")
         return text
 
-    """
-    This method is useful because the tokenization operation separates the tokens that start with the '<'
-    symbol. For example, the '<URL>' token is seen as three different tokens. This method brings together
-    this kind of tokens, treating them as a unique one.
-    """
     @staticmethod
-    def __compact_tokens(text: list):
+    def __compact_tokens(text: List[str]) -> List[str]:
+        """
+        This method is useful because the tokenization operation separates the tokens that start with the '<'
+        symbol. For example, the '<URL>' token is seen as three different tokens. This method brings together
+        this kind of tokens, treating them as a unique one.
+
+        Args:
+            text (List<str>): List of tokens containing the tokens to compact
+
+        Returns:
+            text (List<str>): List of tokens in which the '<', 'URL', '>' tokens are compacted
+                in an unique token
+        """
         for i in range(0, len(text)):
             if i < len(text) and text[i] == '<':
                 j = i + 1
@@ -185,7 +213,7 @@ class NLTK(NLP):
                 del text[j]
         return text
 
-    def process(self, field_data):
+    def process(self, field_data) -> List[str]:
         if self.get_strip_multiple_whitespaces():
             field_data = self.__strip_multiple_whitespaces_operation(field_data)
         if self.get_url_tagging():

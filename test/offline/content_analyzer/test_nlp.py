@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from nltk import Tree
+
 from src.offline.content_analyzer.nlp import NLTK
 
 
@@ -13,7 +15,6 @@ class TestNLTK(TestCase):
                 lan="english")"""
 
     def test_process(self):
-        self.skipTest("SLOW")
         #Test for only stop words removal
         nltka = NLTK(stopwords_removal=True, url_tagging=True)
         self.assertEqual(nltka.process(
@@ -57,3 +58,12 @@ class TestNLTK(TestCase):
         self.assertEqual(nltka.process(
             "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
             ["the", "strip", "<url>", "bat", "<url>", "<url>", "hang", "foot", "best", "<url>"])
+
+        nltka.set_named_entity_recognition(True)
+        nltka.set_stopwords_removal(False)
+        nltka.set_stemming(False)
+        nltka.set_lemmatization(False)
+        self.assertEqual(nltka.process(
+            "Facebook was fined by Hewlett Packard for spending $100 to buy Cristiano Ronaldo from Juventus"),
+            Tree('S', [Tree('PERSON', [('Facebook', 'NNP')]), ('was', 'VBD'), ('fined', 'VBN'), ('by', 'IN'), Tree('PERSON', [('Hewlett', 'NNP'), ('Packard', 'NNP')]), ('for', 'IN'), ('spending', 'VBG'), ('$', '$'), ('100', 'CD'), ('to', 'TO'), ('buy', 'VB'), Tree('PERSON', [('Cristiano', 'NNP'), ('Ronaldo', 'NNP')]), ('from', 'IN'), Tree('GPE', [('Juventus', 'NNP')])])
+        )
