@@ -1,8 +1,13 @@
+[run]
+omit =
+    */online/*
+
 [report]
 exclude_lines =
     pragma: no cover
     def __repr__
     def __str__
+    def __init__
     def set
     def get
     if self.debug:

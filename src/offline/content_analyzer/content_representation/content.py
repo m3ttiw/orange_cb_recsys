@@ -18,6 +18,9 @@ class Content:
         self.__content_id: str = content_id
         self.__field_list: List[ContentField] = field_list
 
+    def get_field_list(self):
+        return self.__field_list
+
     def append(self, field: ContentField):
         self.__field_list.append(field)
 
@@ -27,14 +30,21 @@ class Content:
         Args:
             field_name (str): the name of the field to remove
         """
-        self.__field_list.pop(self.__field_list.index(ContentField(field_name)))
+
+        i = 0
+        for field in self.__field_list:
+            if field.get_name() == field_name:
+                break
+            i += 1
+
+        self.__field_list.pop(i)
 
     def serialize(self, output_directory: str):
         """
         Serialize a content instance
         """
-        file = open(output_directory + '/' + self.__content_id + '.bin', 'wb')
-        pickle.dump(self, file)
+        with open(output_directory + '/' + self.__content_id + '.bin', 'wb') as file:
+            pickle.dump(self, file)
 
     def __str__(self):
         content_string = "Content:" + self.__content_id
@@ -43,6 +53,9 @@ class Content:
             field_string += str(field) + "\n"
 
         return content_string + '\n\n' + field_string + "##############################"
+
+    def __eq__(self, other):
+        return self.__content_id == other.__content_id and self.__field_list == other.__field_list
 
 
 class RepresentedContents:

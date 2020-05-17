@@ -1,3 +1,5 @@
+import nltk
+
 from typing import List
 from nltk.tokenize import sent_tokenize
 
@@ -20,6 +22,12 @@ class NLTKSentenceDetection(SentenceDetectionTechnique):
         Returns:
             List<str>: list of sentences
         """
+
+        try:
+            nltk.data.find('punkt')
+        except LookupError:
+            nltk.download('punkt')
+
         sentences = sent_tokenize(text)
         for i, sentence in enumerate(sentences):
             sentences[i] = sentence[:len(sentence) - 1]

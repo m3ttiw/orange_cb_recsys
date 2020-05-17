@@ -52,6 +52,26 @@ class NLTK(NLP):
             nltk.data.find('wordnet')
         except LookupError:
             nltk.download('wordnet')
+        try:
+            nltk.data.find('maxent_ne_chunker')
+        except LookupError:
+            nltk.download('maxent_ne_chunker')
+        try:
+            nltk.data.find('words')
+        except LookupError:
+            nltk.download('words')
+
+    def __str__(self):
+        return "NLTK"
+
+    def __repr__(self):
+        return "< NLTK: " + "" \
+                "stopwords_removal = " + str(self.__stopwords_removal) + ";" + \
+                 "stemming = " + str(self.__stemming) + ";" + \
+                 "lemmatization = " + str(self.__lemmatization) + ";" + \
+                 "named_entity_recognition = " + str(self.__named_entity_recognition) + ";" + \
+                 "strip_multiple_whitespaces = " + str(self.__strip_multiple_whitespaces) + ";" + \
+                 "url_tagging = " + str(self.__url_tagging) + " >"
 
     def __str__(self):
         return "NLTK"
@@ -137,6 +157,23 @@ class NLTK(NLP):
         for word in text:
             lemmatized_text.append(lemmatizer.lemmatize(word, get_wordnet_pos(word)))
         return lemmatized_text
+
+    def __named_entity_recognition_operation(self, text) -> nltk.tree.Tree:
+        """
+        Execute NER on input text
+
+        Args:
+            text (str): Text containing the entities
+
+        Returns:
+            namedEnt (nltk.tree.Tree): A tree containing the bonds between the entities
+        """
+        if type(text) == 'str':
+            text = self.__tokenization_operation(text)
+        text = nltk.pos_tag(text)
+        named_ent = nltk.ne_chunk(text)
+        #namedEnt.draw()        #You can uncomment this line to see the actual tree
+        return named_ent
 
     @staticmethod
     def __strip_multiple_whitespaces_operation(text) -> str:
