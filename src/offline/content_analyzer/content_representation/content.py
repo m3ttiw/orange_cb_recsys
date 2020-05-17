@@ -46,8 +46,8 @@ class Content:
         """
         Serialize a content instance
         """
-        file = open(output_directory + '/' + self.__content_id + '.bin', 'wb')
-        pickle.dump(self, file)
+        with open(output_directory + '/' + self.__content_id + '.bin', 'wb') as file:
+            pickle.dump(self, file)
 
     def __str__(self):
         content_string = "Content:" + self.__content_id
