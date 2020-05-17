@@ -1,3 +1,4 @@
+import pickle
 from unittest import TestCase
 
 from src.offline.content_analyzer.content_representation.content import Content
@@ -11,20 +12,29 @@ class TestContent(TestCase):
         content_field = ContentField("test_field", "0000")
         content_field.append(content_field_repr)
         content = Content("001")
-        content_not_serialized = content
         content.append(content_field)
         try:
-            content.serialize("test_dir")
-            content.load("test_dir")
+            content.serialize(".")
         except:
             pass
-        self.assertEqual(content_not_serialized, content)
+
+        file = open('001.bin', 'rb')
+        self.assertEqual(content, pickle.loads(file))
 
     def test_append_remove(self):
         content_field_repr = FeaturesBagField("test")
         content_field_repr.append_feature("test_key", "test_value")
         content_field = ContentField("test_field", "0000")
         content_field.append(content_field_repr)
-        content = Content("001")
-        content.append(content_field)
-        self.assertEqual(content.remove("test_field"), content_field)
+        content1 = Content("001")
+        content1.append(content_field)
+
+        content2 = Content("002")
+        content2.append(content_field)
+        content_field_repr = FeaturesBagField("test")
+        content_field_repr.append_feature("test_key", "test_value")
+        content_field2 = ContentField("test_field2", "0000")
+        content_field2.append(content_field_repr)
+        content2.append(content_field2)
+        content2.remove("test_field2")
+        self.assertTrue(content1.get_field_list(), content2.get_field_list())

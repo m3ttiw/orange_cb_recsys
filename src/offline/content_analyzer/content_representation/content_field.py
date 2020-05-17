@@ -75,6 +75,9 @@ class FeaturesBagField(FieldRepresentation):
         """
         return self.__features
 
+    def __eq__(self, other):
+        return self.__features == other.__features
+
 
 class EmbeddingField(FieldRepresentation):
     """
@@ -101,6 +104,9 @@ class EmbeddingField(FieldRepresentation):
 
     def get_array(self) -> np.ndarray:
         return self.__embedding_array
+
+    def __eq__(self, other):
+        return self.__embedding_array == other.__embedding_array
 
 
 class GraphField(FieldRepresentation):
@@ -137,7 +143,8 @@ class ContentField:
         Returns:
             bool: True if the names are equals
         """
-        return self.__field_name == other.get_name()
+
+        return self.__field_name == other.get_name() and self.__representation_list == other.__representation_list
 
     def __str__(self):
         field_string = "Field:" + self.__field_name
