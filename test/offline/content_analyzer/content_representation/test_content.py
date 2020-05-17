@@ -18,8 +18,8 @@ class TestContent(TestCase):
         except:
             pass
 
-        file = open('001.bin', 'rb')
-        self.assertEqual(content, pickle.loads(file))
+        with open('001.bin', 'rb') as file:
+            self.assertEqual(content, pickle.load(file))
 
     def test_append_remove(self):
         content_field_repr = FeaturesBagField("test")
