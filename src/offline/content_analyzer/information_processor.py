@@ -54,7 +54,8 @@ class NLP(TextProcessor):
                  stemming: bool = False,
                  lemmatization: bool = False,
                  strip_multiple_whitespaces: bool = True,
-                 url_tagging: bool = False):
+                 url_tagging: bool = False,
+                 named_entity_recognition: bool = False):
         super().__init__()
         self.__stopwords_removal: bool = stopwords_removal
         self.__stemming: bool = stemming
@@ -62,6 +63,7 @@ class NLP(TextProcessor):
         self.__strip_multiple_whitespaces: bool = strip_multiple_whitespaces
         self.__url_tagging: bool = url_tagging
         self.__is_tokenized = False
+        self.__named_entity_recognition: bool = named_entity_recognition
 
     def get_is_tokenized(self):
         return self.__is_tokenized
@@ -81,6 +83,9 @@ class NLP(TextProcessor):
     def get_url_tagging(self):
         return self.__url_tagging
 
+    def get_named_entity_recognition(self):
+        return self.__named_entity_recognition
+
     def set_stopwords_removal(self, stopwords_removal):
         self.__stopwords_removal = stopwords_removal
 
@@ -98,6 +103,9 @@ class NLP(TextProcessor):
 
     def set_is_tokenized(self, is_tokenized: bool):
         self.__is_tokenized = is_tokenized
+
+    def set_named_entity_recognition(self, named_entity_recognition: bool):
+        self.__named_entity_recognition = named_entity_recognition
 
     @abstractmethod
     def process(self, field_data) -> str:

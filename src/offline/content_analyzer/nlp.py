@@ -244,4 +244,6 @@ class NLTK(NLP):
             field_data = self.__lemmatization_operation(field_data)
         if self.get_stemming():
             field_data = self.__stemming_operation(field_data)
+        if self.get_named_entity_recognition():
+            field_data = self.__named_entity_recognition_operation(field_data)
         return self.__compact_tokens(field_data)
