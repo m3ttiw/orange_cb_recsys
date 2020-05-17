@@ -121,6 +121,7 @@ class ContentField:
     a field can have different representation of itself
     Args:
         field_name (str): the name of the field
+        timestamp (str): string that represents the timestamp
         representation_list (list<FieldRepresentation>): the list of the representations.
     """
 

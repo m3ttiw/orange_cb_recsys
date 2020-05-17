@@ -5,7 +5,7 @@ from babelpy.babelfy import BabelfyClient
 
 class BabelPyEntityLinking(EntityLinking):
     """
-    Interface for the Babelpy library that wrap some feature of Babelfy entity Linking.
+    Interface for the Babelpy library that wraps some feature of Babelfy entity Linking.
     """
 
     def __init__(self, lang: str = "EN", api_key: str = None):
@@ -13,6 +13,9 @@ class BabelPyEntityLinking(EntityLinking):
         params = dict()
         params['lang'] = lang
         self.__babel_client = BabelfyClient(api_key, params)
+
+    def __str__(self):
+        return "BabelPyEntityLinking"
 
     def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
         self.__babel_client.babelfy(field_data)

@@ -1,6 +1,7 @@
-from typing import List, Dict, Tuple, Set
+from typing import List, Dict, Set
 import time
 import os
+
 from src.offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
@@ -14,15 +15,13 @@ parent_dir = '../../contents'
 
 class FieldRepresentationPipeline:
     """
-    Pipeline which specifies:
-     a list of pre-processing techniques(optional) and a content production technique
-    to specify how to produce one of the representations of a field.
+    Pipeline which specifies how to produce one of the representations of a field.
+
     Args:
         content_technique (FieldContentProductionTechnique):
             used to produce complex representation of the field given pre-processed information
         preprocessor_list (InformationProcessor):
-            list of information processors that will be applied on original text,
-            in a pipeline way
+            list of information processors that will be applied to the original text, in a pipeline way
     """
 
     instance_counter: int = 0
@@ -37,6 +36,11 @@ class FieldRepresentationPipeline:
         FieldRepresentationPipeline.instance_counter += 1
 
     def append_preprocessor(self, preprocessor: InformationProcessor):
+        """
+        Add a new preprocessor to the preprocessor list
+        Args:
+            preprocessor (InformationProcessor): The preprocessor to add
+        """
         self.__preprocessor_list.append(preprocessor)
 
     def set_content_technique(self, content_technique: FieldContentProductionTechnique):
@@ -51,13 +55,19 @@ class FieldRepresentationPipeline:
     def __str__(self):
         return self.__id
 
+    def __repr__(self):
+        msg = "< " + "FieldRepresentationPipeline: " + "" \
+            "preprocessor_list = " + str(self.__preprocessor_list) + "; " \
+            "content_technique = " + str(self.__content_technique) + ">"
+        return msg
+
 
 class FieldConfig:
     """
-    Class that represent the config for a field.
+    Class that represents the configuration of a single field.
     Args:
         pipelines_list (List<FieldRepresentationPipeline>):
-            list of pipeline that will be used to produce different field's representations,
+            list of the pipelines that will be used to produce different field's representations,
             one pipeline for each representation
     """
 
@@ -73,14 +83,21 @@ class FieldConfig:
     def get_pipeline_list(self) -> List[FieldRepresentationPipeline]:
         return self.__pipelines_list
 
+    def __str__(self):
+        return "FieldConfig"
+
+    def __repr__(self):
+        return "< " + "FieldConfig: " + "" \
+                "pipelines_list = " + str(self.__pipelines_list) + " >"
+
 
 class ContentAnalyzerConfig:
     """
-    Class that represent the Configuration for the content analyzer,
+    Class that represents the Configuration for the content analyzer.
     Args:
         source (RawInformationSource):
-            raw data source to iterate on for item's extraction
-        id_field_name (str): name of the field where the item_id can be found
+            raw data source to iterate on for extracting the contents
+        id_field_name (str): name of the field containing the content's id
         field_config_dict (Dict<str, FieldConfig>):
             store the config for each field_name
     """
@@ -92,7 +109,7 @@ class ContentAnalyzerConfig:
                  field_config_dict: Dict[str, FieldConfig] = None):
         if field_config_dict is None:
             field_config_dict = {}
-        self.__output_directory: str = output_directory + '_' + str(time.time())
+        self.__output_directory: str = output_directory + str(time.time())
         self.__content_type = content_type
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
@@ -142,15 +159,28 @@ class ContentAnalyzerConfig:
 
         return techniques
 
+    def __str__(self):
+        return str(self.__id_field_name)
+
+    def __repr__(self):
+        msg = "< " + "ContentAnalyzerConfig: " + "" \
+                                                 "id_field_name = " + str(self.__id_field_name) + "; " \
+                                                                                                  "source = " + str(
+            self.__source) + "; " \
+                             "field_config_dict = " + str(self.__field_config_dict) + "; " \
+                                                                                      "content_type = " + str(
+            self.__content_type) + ">"
+        return msg
+
 
 class ContentAnalyzer:
     """
     Class to whom the control of the content analysis phase is delegated,
-    providing the appropriate parameters in the config,
-    config objects provide possibility of customization on input data and how to process them.
 
     Args:
-        config (ContentAnalyzerConfig): configuration for processing the item fields
+        config (ContentAnalyzerConfig):
+            configuration for processing the item fields. This parameter provides the possibility
+            of customizing the way in which the input data is processed.
     """
 
     def __init__(self, config: ContentAnalyzerConfig):
@@ -167,11 +197,13 @@ class ContentAnalyzer:
             List<Content>:
                 list which elements are the produced content instances
         """
+
         path = os.path.join(parent_dir, self.__config.get_output_directory())
         os.mkdir(path)
 
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
+        contents = RepresentedContents()
         print("####################### FASE 2 #########################")
 
         need_dataset_refactor: List[Dict[str, str]] = []
@@ -179,7 +211,7 @@ class ContentAnalyzer:
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
                 if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
-                    pipeline.get_content_technique().\
+                    pipeline.get_content_technique(). \
                         append_field_need_refactor(field_name, str(pipeline), pipeline.get_preprocessor_list())
 
         for technique in self.__config.get_collection_based_techniques():
@@ -190,14 +222,23 @@ class ContentAnalyzer:
             content = contents_producer.create_content(raw_content)
             print(content)
             content.serialize(path)
-            i += 1
+
+        return contents
+      
+    def __str__(self):
+        return "ContentAnalyzer"
+
+    def __repr__(self):
+        msg = "< " + "ContentAnalyzer: " + "" \
+                                           "config = " + str(self.__config) + "; >"
+        return msg
 
 
 class ContentsProducer:
     """
     Singleton class which encapsulates the creation process of the items,
-    The creation process is specified in config of ContentAnalyzer and
-    it is supposed to be the same for each item.
+    The creation process is specified in the config parameter of ContentAnalyzer and
+    is supposed to be the same for each item.
     """
     __instance = None
 
@@ -225,8 +266,8 @@ class ContentsProducer:
 
     def create_content(self, raw_content: Dict):
         """
-        Create an item processing every field in the specified way,
-        this class be iteratively invoked by the fit method
+        Creates a content processing every field in the specified way.
+        This class is iteratively invoked by the fit method.
 
         Returns:
             Content: an instance of content with his fields
@@ -246,7 +287,7 @@ class ContentsProducer:
                 else:
                     timestamp = time.time()
 
-            # construct id from list of fields that compound id
+            # construct id from the list of the fields that compound id
             id_values = []
             for id_field_name in self.__config.get_id_field_name():
                 id_values.append(raw_content[id_field_name])
@@ -280,3 +321,11 @@ class ContentsProducer:
                 content.append(field)
 
             return content
+
+    def __str__(self):
+        return "ContentsProducer"
+
+    def __repr__(self):
+        msg = "< " + "ContentsProducer:" + "" \
+                                           "config = " + str(self.__config) + " >"
+        return msg

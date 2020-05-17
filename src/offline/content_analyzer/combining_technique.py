@@ -9,15 +9,20 @@ class Centroid(CombiningTechnique):
     """
     def combine(self, embedding_matrix: np.ndarray) -> np.ndarray:
         """"
-        Implements the Abstract Method combine in Combining Technique,
-        calculate centroid of the input matrix
+        Calculates the centroid of the input matrix
 
         Args:
-            embedding_matrix (np.ndarray): np bi-dimensional array of which calculate the centroid
+            embedding_matrix (np.ndarray): np bi-dimensional array whose centroid will be calculated
 
         Returns:
-            np.ndarray: centroid vector of input matrix
+            np.ndarray: centroid vector of the input matrix
         """
         return np.average(embedding_matrix, axis=0)
+
+    def __str__(self):
+        return "Centroid"
+
+    def __repr__(self):
+        return "< Centroid >"
 
 # your combining technique

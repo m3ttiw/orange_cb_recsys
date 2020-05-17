@@ -13,7 +13,7 @@ from src.offline.raw_data_extractor.raw_information_source import RawInformation
 
 class FieldContentProductionTechnique(ABC):
     """
-    Abstract class that generalize the technique to use for producing the semantic description
+    Abstract class that generalizes the techniques to use for producing the semantic description
     of a content's field's representation
     """
 
@@ -22,6 +22,9 @@ class FieldContentProductionTechnique(ABC):
 
 
 class CollectionBasedTechnique(FieldContentProductionTechnique):
+    """
+    This class generalizes the techniques that work on the entire content collection, like the tf-idf technique
+    """
     def __init__(self):
         super().__init__()
         self.__need_refactor: Dict[Tuple[str, str], List[InformationProcessor]] = {}
@@ -41,6 +44,12 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
         raise NotImplementedError
 
+    def __str__(self):
+        return "CollectionBasedTechnique"
+
+    def __repr__(self):
+        return "CollectionBasedTechnique " + str(self.__need_refactor)
+
 
 class SingleContentTechnique(FieldContentProductionTechnique):
     @abstractmethod
@@ -59,20 +68,24 @@ class SingleContentTechnique(FieldContentProductionTechnique):
 
 class FieldToGraph(SingleContentTechnique):
     """
-    Abstract class that generalize techniques
-    that uses ontologies or LOD for producing the semantic description
+    Abstract class that generalizes techniques
+    that use ontologies or LOD for producing the semantic description
     """
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
         raise NotImplementedError
 
+    def __str__(self):
+        return "FieldToGraph"
+
+    def __repr__(self):
+        return "FieldToGraph " + "graph content"
+
 
 class TfIdfTechnique(CollectionBasedTechnique):
     """
     Class that produce a Bag of words with tf-idf metric
-    Args:
-
     """
 
     def __init__(self):
@@ -88,11 +101,17 @@ class TfIdfTechnique(CollectionBasedTechnique):
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
         raise NotImplementedError
 
+    def __str__(self):
+        return "TfIdfTechnique"
+
+    def __repr__(self):
+        return "TfIdfTechnique " + str(self.__index)
+
 
 class EntityLinking(SingleContentTechnique):
     """
-    Abstract class that generalize implementations
-    that uses entity linking for producing the semantic description
+    Abstract class that generalizes implementations that use entity linking
+    for producing the semantic description
     """
 
     @abstractmethod
@@ -149,8 +168,8 @@ class EmbeddingSource(ABC):
 
     def load(self, text: str) -> np.ndarray:
         """
-        Function that extract from the embeddings model
-        the vectors of thw words contained in text
+        Function that extracts from the embeddings model
+        the vectors of the words contained in text
 
         Args:
             text (str): contains words of which vectors will be extracted
@@ -165,7 +184,8 @@ class EmbeddingSource(ABC):
             try:
                 embedding_matrix[i, :] = self.__model[word]
             except:
-                raise NotImplementedError
+                pass
+
         return embedding_matrix
 
     def set_model(self, model):
@@ -173,6 +193,12 @@ class EmbeddingSource(ABC):
 
     def get_vector_size(self) -> int:
         return self.__model.vector_size
+
+    def __str__(self):
+        return "EmbeddingSource"
+
+    def __repr__(self):
+        return "EmbeddingSource " + str(self.__model)
 
 
 class SentenceDetectionTechnique(ABC):
@@ -187,7 +213,7 @@ class SentenceDetectionTechnique(ABC):
     @abstractmethod
     def detect_sentences(self, text: str) -> List[str]:
         """
-        Divide the input text in a list of sentences
+        Split the input text in a list of sentences
 
         Args:
             text (str): text that will be divided
@@ -256,3 +282,10 @@ class EmbeddingTechnique(SingleContentTechnique):
         if self.__granularity == 3:
             doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))
+
+    def __str__(self):
+        return "EmbeddingTechnique"
+
+    def __repr__(self):
+        return "EmbeddingTechnique " + str(self.__combining_technique) + " " + str(self.__embedding_source) + " " + str(
+            self.__granularity)
