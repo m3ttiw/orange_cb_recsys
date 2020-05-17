@@ -53,6 +53,14 @@ class NLTK(NLP):
             nltk.data.find('wordnet')
         except LookupError:
             nltk.download('wordnet')
+        try:
+            nltk.data.find('maxent_ne_chunker')
+        except LookupError:
+            nltk.download('maxent_ne_chunker')
+        try:
+            nltk.data.find('words')
+        except LookupError:
+            nltk.download('words')
 
     def __str__(self):
         return "NLTK"

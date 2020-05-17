@@ -15,7 +15,6 @@ class TestNLTK(TestCase):
                 lan="english")"""
 
     def test_process(self):
-        self.skipTest("NEED maxent_ne_chunker ")
         #Test for only stop words removal
         nltka = NLTK(stopwords_removal=True, url_tagging=True)
         self.assertEqual(nltka.process(
