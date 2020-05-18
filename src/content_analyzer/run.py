@@ -5,16 +5,16 @@ from typing import List, Dict
 
 import lucene
 
-from src.offline.content_analyzer.combining_technique import Centroid
-from src.offline.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
+from src.content_analyzer.field_content_production_techniques.embedding_technique.combining_technique import Centroid
+from src.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
     FieldRepresentationPipeline
-from src.offline.content_analyzer.embedding_source import GensimDownloader, BinaryFile
-from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
-from src.offline.content_analyzer.field_content_production_technique import EmbeddingTechnique
-from src.offline.content_analyzer.nlp import NLTK
-from src.offline.content_analyzer.tf_idf import LuceneTfIdf
-from src.offline.memory_interfaces.text_interface import IndexInterface
-from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVFile, SQLDatabase
+from src.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import GensimDownloader, BinaryFile
+from src.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
+from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EmbeddingTechnique
+from src.content_analyzer.information_processor.nlp import NLTK
+from src.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf
+from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from src.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 

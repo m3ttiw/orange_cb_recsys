@@ -4,7 +4,8 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from typing import List
-from src.offline.content_analyzer.information_processor import NLP
+
+from src.content_analyzer.information_processor.information_processor import NLP
 
 
 def get_wordnet_pos(word):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.offline.content_analyzer.content_representation.content_field import FeaturesBagField
+from src.content_analyzer.content_representation.content_field import FeaturesBagField
 
 
 

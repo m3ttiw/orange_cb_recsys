@@ -4,11 +4,11 @@ from typing import List, Tuple, Dict
 
 import numpy as np
 
-from src.offline.content_analyzer.information_processor import InformationProcessor
-from src.offline.memory_interfaces.text_interface import IndexInterface
-from src.offline.content_analyzer.content_representation.content_field \
+from src.content_analyzer.content_representation.content_field \
     import EmbeddingField, FeaturesBagField, FieldRepresentation, GraphField
-from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
+from src.content_analyzer.information_processor.information_processor import InformationProcessor
+from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from src.content_analyzer.raw_information_source import RawInformationSource
 
 
 class FieldContentProductionTechnique(ABC):

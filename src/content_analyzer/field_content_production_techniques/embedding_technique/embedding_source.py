@@ -2,7 +2,8 @@ from enum import Enum
 
 import gensim.downloader as downloader
 from gensim.models import KeyedVectors, Doc2Vec, fasttext
-from src.offline.content_analyzer.field_content_production_technique import EmbeddingSource
+
+from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EmbeddingSource
 
 
 class EmbeddingType(Enum):

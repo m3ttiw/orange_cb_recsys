@@ -1,6 +1,7 @@
 from typing import List
 import pickle
-from src.offline.content_analyzer.content_representation.content_field import ContentField
+
+from src.content_analyzer.content_representation.content_field import ContentField
 
 
 class Content:

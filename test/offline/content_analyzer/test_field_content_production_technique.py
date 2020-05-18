@@ -1,9 +1,9 @@
 from unittest import TestCase
 import numpy as np
-from src.offline.content_analyzer.combining_technique import Centroid
-from src.offline.content_analyzer.embedding_source import BinaryFile, GensimDownloader
-from src.offline.content_analyzer.field_content_production_technique import EmbeddingTechnique, Granularity
-from src.offline.content_analyzer.sentence_detection import NLTKSentenceDetection
+from src.content_analyzer.field_content_production_techniques import Centroid
+from src.content_analyzer.field_content_production_techniques import GensimDownloader
+from src.content_analyzer.field_content_production_techniques import EmbeddingTechnique
+from src.content_analyzer.field_content_production_techniques import NLTKSentenceDetection
 
 
 class TestEmbeddingTechnique(TestCase):

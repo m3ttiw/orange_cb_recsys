@@ -1,17 +1,16 @@
-import lucene
 import math
 
 from java.nio.file import Paths
 from org.apache.lucene.index import IndexWriter, IndexWriterConfig, IndexOptions
 from org.apache.lucene.analysis.core import KeywordAnalyzer
 from org.apache.lucene.queryparser.classic import QueryParser
-from org.apache.lucene.search import IndexSearcher, TermQuery
-from org.apache.lucene.document import Document, Field, StringField, TextField, FieldType
+from org.apache.lucene.search import IndexSearcher
+from org.apache.lucene.document import Document, Field, StringField, FieldType
 from org.apache.lucene.store import SimpleFSDirectory
 from org.apache.lucene.util import BytesRefIterator
 from org.apache.lucene.index import DirectoryReader, Term
 
-from src.offline.memory_interfaces.memory_interfaces import TextInterface
+from src.content_analyzer.memory_interfaces.memory_interfaces import TextInterface
 
 
 class IndexInterface(TextInterface):

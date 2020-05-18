@@ -1,7 +1,7 @@
 from unittest import TestCase
 import numpy as np
 
-from src.offline.content_analyzer.combining_technique import Centroid
+from src.content_analyzer.field_content_production_techniques import Centroid
 
 
 class TestCentroid(TestCase):

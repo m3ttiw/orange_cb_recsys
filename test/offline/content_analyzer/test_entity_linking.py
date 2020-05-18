@@ -1,9 +1,6 @@
 from unittest import TestCase
 
-from babelpy.babelfy import BabelfyClient
-from babelpy.config.config import API_KEY
-
-from src.offline.content_analyzer.entity_linking import BabelPyEntityLinking
+from src.content_analyzer.field_content_production_techniques import BabelPyEntityLinking
 
 
 class TestBabelPyEntityLinking(TestCase):

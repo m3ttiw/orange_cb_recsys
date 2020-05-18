@@ -1,8 +1,8 @@
-from src.offline.content_analyzer.content_representation.content_field import FeaturesBagField
-from src.offline.content_analyzer.field_content_production_technique import TfIdfTechnique
-from src.offline.memory_interfaces.text_interface import IndexInterface
-from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
-from src.offline.utils.id_merger import id_merger
+from src.content_analyzer.content_representation.content_field import FeaturesBagField
+from src.content_analyzer.field_content_production_techniques.field_content_production_technique import TfIdfTechnique
+from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from src.content_analyzer.raw_information_source import RawInformationSource
+from src.utils.id_merger import id_merger
 
 
 class LuceneTfIdf(TfIdfTechnique):

@@ -1,6 +1,7 @@
-from src.offline.content_analyzer.content_representation.content_field import FeaturesBagField
-from src.offline.content_analyzer.field_content_production_technique import EntityLinking
+from src.content_analyzer.content_representation.content_field import FeaturesBagField
 from babelpy.babelfy import BabelfyClient
+
+from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EntityLinking
 
 
 class BabelPyEntityLinking(EntityLinking):

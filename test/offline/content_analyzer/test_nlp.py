@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from nltk import Tree
 
-from src.offline.content_analyzer.nlp import NLTK
+from src.content_analyzer import NLTK
 
 
 class TestNLTK(TestCase):

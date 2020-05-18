@@ -2,15 +2,14 @@ from typing import List, Dict, Set
 import time
 import os
 
-
-from offline.memory_interfaces.memory_interfaces import InformationInterface
-from src.offline.utils.id_merger import id_merger
-from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
-from src.offline.content_analyzer.content_representation.content_field import ContentField
-from src.offline.content_analyzer.field_content_production_technique \
-    import FieldContentProductionTechnique, CollectionBasedTechnique, SingleContentTechnique
-from src.offline.content_analyzer.information_processor import InformationProcessor
-from src.offline.raw_data_extractor.raw_information_source import RawInformationSource
+from src.content_analyzer.content_representation.content import Content
+from src.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+    FieldContentProductionTechnique, CollectionBasedTechnique, SingleContentTechnique
+from src.content_analyzer.information_processor.information_processor import InformationProcessor
+from src.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
+from src.utils.id_merger import id_merger
+from src.content_analyzer.content_representation.content_field import ContentField
+from src.content_analyzer.raw_information_source import RawInformationSource
 
 parent_dir = '../../contents'
 
@@ -230,6 +229,7 @@ class ContentAnalyzer:
         contents_producer.set_config(self.__config)
 
         interfaces = self.__config.get_interfaces()
+        print(interfaces)
         for interface in interfaces:
             interface.init_writing()
 
@@ -246,6 +246,9 @@ class ContentAnalyzer:
             content = contents_producer.create_content(raw_content)
             print(content)
             content.serialize(path)
+
+        for interface in interfaces:
+            interface.stop_writing()
 
     def __str__(self):
         return "ContentAnalyzer"
@@ -354,6 +357,9 @@ class ContentsProducer:
                         field.append(content_technique.produce_content(str(i), processed_field_data))
 
                 content.append(field)
+
+            for interface in interfaces:
+                interface.serialize_content()
 
             return content
 

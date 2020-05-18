@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.offline.raw_data_extractor.raw_information_source import SQLDatabase
+from src.content_analyzer.raw_information_source import SQLDatabase
 
 
 class TestSQLDatabase(TestCase):

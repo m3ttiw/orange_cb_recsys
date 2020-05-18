@@ -1,5 +1,7 @@
 import numpy as np
-from src.offline.content_analyzer.field_content_production_technique import CombiningTechnique
+
+from src.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+    CombiningTechnique
 
 
 class Centroid(CombiningTechnique):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.offline.utils.id_merger import id_merger
+from src.utils.id_merger import id_merger
 
 
 class Test(TestCase):

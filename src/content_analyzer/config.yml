@@ -9,8 +9,8 @@
   end_up_at: "all"
   fields:
   - field_name: "Title"
-    memory_interface: "None"
-    memory_interface_path: "None"
+    memory_interface: "index"
+    memory_interface_path: "test-movielens-explanation"
     pipeline_list:
     - field_content_production:
         class: "babelpy"
