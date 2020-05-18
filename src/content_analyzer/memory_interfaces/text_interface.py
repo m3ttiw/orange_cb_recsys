@@ -1,3 +1,4 @@
+import lucene
 import math
 
 from java.nio.file import Paths
