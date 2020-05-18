@@ -9,7 +9,7 @@ from _csv import reader
 
 class RawInformationSource(ABC):
     """
-    Abstract Class that generalize the acquisition of raw descriptions of the contents
+    Abstract Class that generalizes the acquisition of raw descriptions of the contents
     from one of the possible acquisition channels.
     """
     def __init__(self):
@@ -19,7 +19,7 @@ class RawInformationSource(ABC):
     def __iter__(self) -> Dict:
         """
         Iter on contents in the source,
-        each iteration return a dict representing the raw content
+        each iteration returns a dict representing the raw content
         """
         raise NotImplementedError
 
@@ -129,6 +129,6 @@ class SQLDatabase(RawInformationSource):
         cursor = self.get_conn().cursor(dictionary=True)
         query = """SELECT * FROM """ + self.get_table_name() + """;"""
         cursor.execute(query)
-        results = cursor.fetchall()     # dicts list
+        results = cursor.fetchall()     #list of dicts
         for result in results:
             yield result

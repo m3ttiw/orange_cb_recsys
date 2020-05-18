@@ -18,7 +18,7 @@ from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVF
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config.yml"
+DEFAULT_CONFIG_PATH = "config.json"
 
 implemented_preprocessing = [
     "nltk",
@@ -119,12 +119,13 @@ def config_run(config_list: List[Dict]):
         content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
         content_analyzer.fit()
 
+        return 0
+
 
 if __name__ == "__main__":
     config_path = sys.argv[0]
     if config_path is not None:
         config_path = DEFAULT_CONFIG_PATH
-
     if config_path.endswith('.yml'):
         config_list_dict = yaml.load(open(config_path), Loader=yaml.FullLoader)
     elif config_path.endswith('.json'):

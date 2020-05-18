@@ -5,11 +5,10 @@ from src.offline.content_analyzer.sentence_detection import NLTKSentenceDetectio
 
 class TestNLTKSentenceDetection(TestCase):
     def test_detect_sentences(self):
-        self.skipTest("SLOW")
         text = "god is great! i won lottery."
         detector = NLTKSentenceDetection()
 
         expected = ["god is great", "i won lottery"]
         result = detector.detect_sentences(text)
 
-        self.assertEquals(result, expected)
+        self.assertEqual(result, expected)
