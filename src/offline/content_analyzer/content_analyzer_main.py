@@ -1,6 +1,8 @@
 from typing import List, Dict, Tuple, Set
 import time
 import os
+
+from offline.memory_interfaces.memory_interfaces import InformationInterface
 from src.offline.utils.id_merger import id_merger
 from src.offline.content_analyzer.content_representation.content import RepresentedContents, Content
 from src.offline.content_analyzer.content_representation.content_field import ContentField
@@ -67,11 +69,18 @@ class FieldConfig:
             one pipeline for each representation
     """
 
-    def __init__(self, pipelines_list: List[FieldRepresentationPipeline] = None):
+    def __init__(self, memory_interface: InformationInterface = None,
+                 pipelines_list: List[FieldRepresentationPipeline] = None):
         if pipelines_list is None:
             pipelines_list = []
-
+        self.__memory_interface: InformationInterface = memory_interface
         self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
+
+    def get_memory_interface(self) -> InformationInterface:
+        return self.__memory_interface
+
+    def set_memory_interface(self, memory_interface: InformationInterface):
+        self.__memory_interface = memory_interface
 
     def append_pipeline(self, pipeline: FieldRepresentationPipeline):
         self.__pipelines_list.append(pipeline)
@@ -123,6 +132,9 @@ class ContentAnalyzerConfig:
     def get_source(self) -> RawInformationSource:
         return self.__source
 
+    def get_memory_interface(self, field_name: str) -> InformationInterface:
+        return self.__field_config_dict[field_name].get_memory_interface()
+
     def get_pipeline_list(self, field_name: str) -> List[FieldRepresentationPipeline]:
         """
         Get the list of the pipelines specified for the input field
@@ -142,6 +154,19 @@ class ContentAnalyzerConfig:
             List<str>: list of config dictionary keys
         """
         return self.__field_config_dict.keys()
+
+    def get_interfaces(self) -> Set[InformationInterface]:
+        """
+        get the list of field interfaces
+
+        Returns:
+            List<InformationInterface>: list of config dict values
+        """
+        interfaces = set()
+        for key in self.__field_config_dict.keys():
+            if self.__field_config_dict[key].get_memory_interface() is not None:
+                interfaces.add(self.__field_config_dict[key].get_memory_interface())
+        return interfaces
 
     def append_field_config(self, field_name: str, field_config: FieldConfig):
         self.__field_config_dict[field_name] = field_config
@@ -185,7 +210,7 @@ class ContentAnalyzer:
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
-    def fit(self) -> RepresentedContents:
+    def fit(self):
         """
         Begins to process the creation of the contents
 
@@ -198,9 +223,10 @@ class ContentAnalyzer:
 
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
-        print("####################### FASE 2 #########################")
 
-        need_dataset_refactor: List[Dict[str, str]] = []
+        interfaces = self.__config.get_interfaces()
+        for interface in interfaces:
+            interface.init_writing()
 
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
@@ -272,6 +298,7 @@ class ContentsProducer:
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
         else:
+            CONTENT_ID = "content_id"
             # search for timestamp as dataset field, no timestamp needed for items
             timestamp = None
             if self.__config.get_content_type() != "ITEM":
@@ -286,6 +313,12 @@ class ContentsProducer:
                 id_values.append(raw_content[id_field_name])
             content_id = id_merger(id_values)
 
+            interfaces = self.__config.get_interfaces()
+            for interface in interfaces:
+                interface.new_content()
+                interface.new_field(CONTENT_ID, content_id)
+
+            # produce
             content = Content(content_id)
             for field_name in self.__config.get_field_name_list():
                 pipeline_list = self.__config.get_pipeline_list(field_name)
@@ -297,6 +330,12 @@ class ContentsProducer:
                 else:
                     field_data = raw_content[field_name]
 
+                # serialize for explanation
+                memory_interface = self.__config.get_memory_interface(field_name)
+                if memory_interface is not None:
+                    memory_interface.new_field(field_name, field_data)
+
+                # produce representations
                 field = ContentField(field_name, timestamp)
 
                 for i, pipeline in enumerate(pipeline_list):

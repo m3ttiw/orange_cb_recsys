@@ -14,7 +14,6 @@ from src.offline.content_analyzer.field_content_production_technique import Embe
 from src.offline.content_analyzer.nlp import NLTK
 from src.offline.content_analyzer.tf_idf import LuceneTfIdf
 from src.offline.memory_interfaces.text_interface import IndexInterface
-from src.offline.raw_data_extractor.raw_data_manager import RawDataConfig, RawDataManager
 from src.offline.raw_data_extractor.raw_information_source import JSONFile, CSVFile, SQLDatabase
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
@@ -85,31 +84,17 @@ def dict_detector(technique_dict):
 def config_run(config_list: List[Dict]):
     for content_config in config_list:
 
-        # phase 1 : memorize the selected fields with some high powered memory interface
-        config_dict = {}
-        for field_dict in content_config['fields']:
-
-            # verify that the memory interface is set
-            if field_dict['memory_interface'] != "None":
-                # setting the config dict for each
-                config_dict[field_dict['field_name']] = runnable_instances[field_dict['memory_interface']](
-                    field_dict['memory_interface_path'])
-
-        # setting the phase 1 configuration
-        raw_data_config = RawDataConfig(
-            runnable_instances[content_config['source_type']](content_config['raw_source_path']),
-            content_config['id_field_name'], config_dict)
-        RawDataManager(raw_data_config).fit()
-
-        # phase 2 : content production
+        # content production
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
             runnable_instances[content_config['source_type']](content_config['raw_source_path']),
             content_config['id_field_name'],
             content_config['output_directory'])
+
         for field_dict in content_config['fields']:
             field_config = FieldConfig()
             # setting the content analyzer config
+
             for pipeline_dict in field_dict['pipeline_list']:
                 preprocessing_list = list()
                 for preprocessing in pipeline_dict['preprocessing_list']:
@@ -124,7 +109,10 @@ def config_run(config_list: List[Dict]):
                 technique_dict = dict_detector(technique_dict)
                 field_config.append_pipeline(
                     FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict), preprocessing_list))
-
+            # verify that the memory interface is set
+            if field_dict['memory_interface'] != "None":
+                field_config.set_memory_interface(runnable_instances[field_dict['memory_interface']](
+                    field_dict['memory_interface_path']))
             content_analyzer_config.append_field_config(field_dict["field_name"], field_config)
 
         # fitting the data for each
