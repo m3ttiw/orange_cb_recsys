@@ -1,6 +1,6 @@
-from src.content_analyzer import InformationProcessor
-from src.content_analyzer.embedding_learner import Word2Vec
-from src.content_analyzer.memory_interfaces import InformationInterface
+from src.content_analyzer.embedding_learner.embedding_learner import Word2Vec
+from src.content_analyzer.information_processor.information_processor import InformationProcessor
+from src.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 
 
 class GensimWord2Vec(Word2Vec):
