@@ -16,7 +16,7 @@ class Test(TestCase):
     def test_config(self):
         # test only if the key in the config.json are valid
         try:
-            with open("test/offline/config.json") as file:
+            with open("test/content_analyzer/config.json") as file:
                 config_list = json.load(file)
         except FileNotFoundError:
             with open("config.json") as file:
