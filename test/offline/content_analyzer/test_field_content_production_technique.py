@@ -1,9 +1,13 @@
 from unittest import TestCase
 import numpy as np
-from src.content_analyzer.field_content_production_techniques import Centroid
-from src.content_analyzer.field_content_production_techniques import GensimDownloader
-from src.content_analyzer.field_content_production_techniques import EmbeddingTechnique
-from src.content_analyzer.field_content_production_techniques import NLTKSentenceDetection
+
+from src.content_analyzer.field_content_production_techniques.embedding_technique.combining_technique import Centroid
+from src.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
+    GensimDownloader
+from src.content_analyzer.field_content_production_techniques.embedding_technique.sentence_detection import \
+    NLTKSentenceDetection
+from src.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+    EmbeddingTechnique
 
 
 class TestEmbeddingTechnique(TestCase):
