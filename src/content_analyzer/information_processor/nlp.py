@@ -101,7 +101,6 @@ class NLTK(NLP):
              List<str>: a list of words
 
         """
-        self.set_is_tokenized(True)
         return word_tokenize(text)
 
     def __stopwords_removal_operation(self, text) -> List[str]:

@@ -34,7 +34,7 @@ class IndexInterface(TextInterface):
     def init_writing(self):
         self.__field_type = FieldType(StringField.TYPE_STORED)
         self.__field_type.setStored(True)
-        self.__field_type.setTokenized(True)
+        self.__field_type.setTokenized(False)
         self.__field_type.setStoreTermVectors(True)
         self.__field_type.setStoreTermVectorPositions(True)
         self.__field_type.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
@@ -50,8 +50,10 @@ class IndexInterface(TextInterface):
 
     def new_field(self, field_name: str, field_data):
         if type(field_data) == list:
-            field_data = ' '.join(field_data)
-        self.__doc.add(Field(field_name, field_data, self.__field_type))
+            for word in field_data:
+                self.__doc.add(Field(field_name, word, self.__field_type))
+        else:
+            self.__doc.add(Field(field_name, field_data, self.__field_type))
 
     def serialize_content(self):
         self.__writer.addDocument(self.__doc)
@@ -72,11 +74,15 @@ class IndexInterface(TextInterface):
              words_bag (Dict <str, float>): Dictionary whose keys are the words contained in the field,
                 and the corresponding values are the tf-idf values.
         """
+
+        print(content_id)
+
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
-        query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:" + content_id)
-        scoreDocs = searcher.search(query, 1).scoreDocs
-        for scoreDoc in scoreDocs:
-            document_offset = scoreDoc.doc
+        query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:\"" + content_id + "\"")
+        score_docs = searcher.search(query, 1).scoreDocs
+        document_offset = -1
+        for score_doc in score_docs:
+            document_offset = score_doc.doc
 
         reader = searcher.getIndexReader()
         words_bag = {}

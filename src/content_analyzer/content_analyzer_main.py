@@ -229,7 +229,6 @@ class ContentAnalyzer:
         contents_producer.set_config(self.__config)
 
         interfaces = self.__config.get_interfaces()
-        print(interfaces)
         for interface in interfaces:
             interface.init_writing()
 
