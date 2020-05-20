@@ -36,6 +36,21 @@ class Word2Vec(EmbeddingLearner):
         raise NotImplementedError
 
 
+class Doc2Vec(EmbeddingLearner):
+    """"
+    Abstract Class for the different kinds of Doc2Vec.
+    """
+    def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
+        super().__init__(loader, preprocessor)
+
+    @abstractmethod
+    def start_learning(self):
+        """"
+        Abstract Method
+        """
+        raise NotImplementedError
+
+
 class LatentSemanticAnalysis(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Latent Semantic Analysis.
