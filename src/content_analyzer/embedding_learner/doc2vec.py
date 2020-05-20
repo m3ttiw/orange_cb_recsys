@@ -74,3 +74,12 @@ class GensimDoc2Vec(embedding_learner.Doc2Vec):
             model.min_alpha = model.alpha  # fix the learning rate, no decay
 
         model.save("d2v.model")
+
+        return_list = list()
+        n = model.docvecs.count
+        for i in range(n):
+            print("Doc-{}: {}".format(i, model.docvecs[str(i)]))
+            return_list.append(model.docvecs[str(i)])
+
+        return return_list
+
