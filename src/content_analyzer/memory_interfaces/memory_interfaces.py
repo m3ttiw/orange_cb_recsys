@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class InformationInterface(ABC):
+class RawInformationSource(ABC):
     """
     Abstract class that deals with the serialization
     and deserialization of a field (of a content) data
@@ -52,7 +52,7 @@ class InformationInterface(ABC):
         return self.__directory
 
 
-class ImageInterface(InformationInterface):
+class ImageInterface(RawInformationSource):
     """
     Future feature
     Abstract class to use when the field information is in image format.
@@ -78,7 +78,7 @@ class ImageInterface(InformationInterface):
         raise NotImplementedError
 
 
-class AudioInterface(InformationInterface):
+class AudioInterface(RawInformationSource):
     """
     Future feature
     Abstract class to use when the field information is in audio format.
@@ -106,7 +106,7 @@ class AudioInterface(InformationInterface):
         raise NotImplementedError
 
 
-class TextInterface(InformationInterface):
+class TextInterface(RawInformationSource):
     """
     Abstract class to use when the field information is textual.
     """

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from src.content_analyzer.information_processor.information_processor import InformationProcessor
-from src.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
+from src.content_analyzer.memory_interfaces.memory_interfaces import RawInformationSource
 
 
 class EmbeddingLearner(ABC):
@@ -9,11 +9,11 @@ class EmbeddingLearner(ABC):
     Abstract Class for the different kinds of embedding.
 
     Args:
-        loader (InformationLoader): Instance of the class InformationLoader.
+        source (RawInformationSource): Source in which the content is stored.
         preprocessor (InformationProcessor): Instance of the class InformationProcessor.
     """
-    def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
-        self.__loader: InformationInterface = loader
+    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
+        self.__source: RawInformationSource = source
         self.__preprocessor: InformationProcessor = preprocessor
 
     @abstractmethod
@@ -25,8 +25,8 @@ class Word2Vec(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Word2Vec.
     """
-    def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
-        super().__init__(loader, preprocessor)
+    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
+        super().__init__(source, preprocessor)
 
     @abstractmethod
     def start_learning(self):
@@ -40,8 +40,8 @@ class LatentSemanticAnalysis(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Latent Semantic Analysis.
     """
-    def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
-        super().__init__(loader, preprocessor)
+    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
+        super().__init__(source, preprocessor)
 
     @abstractmethod
     def start_learning(self):
@@ -55,8 +55,8 @@ class RandomIndexing(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Random Indexing.
     """
-    def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
-        super().__init__(loader, preprocessor)
+    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
+        super().__init__(source, preprocessor)
 
     @abstractmethod
     def start_learning(self):
@@ -70,8 +70,8 @@ class ExplicitSemanticAnalysis(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Explicit Semantic Analysis.
     """
-    def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
-        super().__init__(loader, preprocessor)
+    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
+        super().__init__(source, preprocessor)
 
     @abstractmethod
     def start_learning(self):

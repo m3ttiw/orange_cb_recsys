@@ -6,7 +6,7 @@ from src.content_analyzer.content_representation.content import Content
 from src.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     FieldContentProductionTechnique, CollectionBasedTechnique, SingleContentTechnique
 from src.content_analyzer.information_processor.information_processor import InformationProcessor
-from src.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
+from src.content_analyzer.memory_interfaces.memory_interfaces import RawInformationSource
 from src.utils.id_merger import id_merger
 from src.content_analyzer.content_representation.content_field import ContentField
 from src.content_analyzer.raw_information_source import RawInformationSource
@@ -72,17 +72,17 @@ class FieldConfig:
             one pipeline for each representation
     """
 
-    def __init__(self, memory_interface: InformationInterface = None,
+    def __init__(self, memory_interface: RawInformationSource = None,
                  pipelines_list: List[FieldRepresentationPipeline] = None):
         if pipelines_list is None:
             pipelines_list = []
-        self.__memory_interface: InformationInterface = memory_interface
+        self.__memory_interface: RawInformationSource = memory_interface
         self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
 
-    def get_memory_interface(self) -> InformationInterface:
+    def get_memory_interface(self) -> RawInformationSource:
         return self.__memory_interface
 
-    def set_memory_interface(self, memory_interface: InformationInterface):
+    def set_memory_interface(self, memory_interface: RawInformationSource):
         self.__memory_interface = memory_interface
 
     def append_pipeline(self, pipeline: FieldRepresentationPipeline):
@@ -135,7 +135,7 @@ class ContentAnalyzerConfig:
     def get_source(self) -> RawInformationSource:
         return self.__source
 
-    def get_memory_interface(self, field_name: str) -> InformationInterface:
+    def get_memory_interface(self, field_name: str) -> RawInformationSource:
         return self.__field_config_dict[field_name].get_memory_interface()
 
     def get_pipeline_list(self, field_name: str) -> List[FieldRepresentationPipeline]:
@@ -158,7 +158,7 @@ class ContentAnalyzerConfig:
         """
         return self.__field_config_dict.keys()
 
-    def get_interfaces(self) -> Set[InformationInterface]:
+    def get_interfaces(self) -> Set[RawInformationSource]:
         """
         get the list of field interfaces
 
