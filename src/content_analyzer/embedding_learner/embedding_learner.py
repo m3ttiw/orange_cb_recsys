@@ -12,6 +12,7 @@ class EmbeddingLearner(ABC):
         loader (InformationLoader): Instance of the class InformationLoader.
         preprocessor (InformationProcessor): Instance of the class InformationProcessor.
     """
+
     def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
         self.__loader: InformationInterface = loader
         self.__preprocessor: InformationProcessor = preprocessor
@@ -25,6 +26,23 @@ class Word2Vec(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Word2Vec.
     """
+
+    def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
+        super().__init__(loader, preprocessor)
+
+    @abstractmethod
+    def start_learning(self):
+        """"
+        Abstract Method
+        """
+        raise NotImplementedError
+
+
+class FastText(EmbeddingLearner):
+    """"
+    Abstract Class for the different kinds of FastText.
+    """
+
     def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
         super().__init__(loader, preprocessor)
 
@@ -40,6 +58,7 @@ class LatentSemanticAnalysis(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Latent Semantic Analysis.
     """
+
     def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
         super().__init__(loader, preprocessor)
 
@@ -55,6 +74,7 @@ class RandomIndexing(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Random Indexing.
     """
+
     def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
         super().__init__(loader, preprocessor)
 
@@ -70,6 +90,7 @@ class ExplicitSemanticAnalysis(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Explicit Semantic Analysis.
     """
+
     def __init__(self, loader: InformationInterface, preprocessor: InformationProcessor):
         super().__init__(loader, preprocessor)
 
