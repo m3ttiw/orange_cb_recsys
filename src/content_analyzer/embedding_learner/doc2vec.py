@@ -1,9 +1,9 @@
 from src.content_analyzer.embedding_learner import embedding_learner
-from src.content_analyzer.information_processor.information_processor import InformationProcessor
+from src.content_analyzer.information_processor.information_processor import NLP
 from src.content_analyzer.raw_information_source import RawInformationSource
-from gensim.test.utils import get_tmpfile
-from gensim.test.utils import common_texts
+from gensim.test.utils import get_tmpfile, common_texts
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from nltk.tokenize import word_tokenize
 
 
 class GensimDoc2Vec(embedding_learner.Doc2Vec):
@@ -14,23 +14,28 @@ class GensimDoc2Vec(embedding_learner.Doc2Vec):
     is_first_instance = True
 
     def __init__(self, source: RawInformationSource,
-                 preprocessor: InformationProcessor,
+                 preprocessor: NLP,
+                 field_name: str,
                  **kwargs):
+        # set tokenization on the preprocessor
+        preprocessor.set_is_tokenized(True)
         super().__init__(source, preprocessor)
+        self.__field_name = field_name
 
-        if "model_path" in kwargs.keys():
-            self.__fname = get_tmpfile(str(kwargs["model_path"]))
+        if "max_epochs" in kwargs.keys():
+            self.__max_epochs = kwargs["max_epochs"]
         else:
-            self.__fname = get_tmpfile("doc2vec_model")
+            self.__max_epochs = 100
 
-        if GensimDoc2Vec.is_first_instance:
-            documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(common_texts)]
-            self.__model = Doc2Vec(documents, vector_size=5, window=2, min_count=1, workers=4)
-        elif "use_pre_trained_model" in kwargs.keys():
-            self.__model = Doc2Vec.load(self.__fname)  # you can continue training with the loaded model!
+        if "vec_size" in kwargs.keys():
+            self.__vec_size = kwargs["vec_size"]
+        else:
+            self.__vec_size = 20
 
-        self.__model.save(self.__fname)
-        GensimDoc2Vec.is_first_instance = False
+        if "alpha" in kwargs.keys():
+            self.__alpha = kwargs["alpha"]
+        else:
+            self.__alpha = 0.025
 
     def __str__(self):
         return "GensimDoc2Vec"
@@ -44,5 +49,28 @@ class GensimDoc2Vec(embedding_learner.Doc2Vec):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Doc2vec.
         """
+        data = list()
+        # iter the source
+        for doc in self.__source:
+            # apply preprocessing and save the data in the list
+            data.append(self.__preprocessor.process(doc[self.__field_name].lower()))
 
-        print("learning")
+        tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(data)]
+
+        model = Doc2Vec(vector_size=self.__vec_size,
+                        alpha=self.__alpha,
+                        min_alpha=0.00025,
+                        min_count=1,
+                        dm=1)
+
+        model.build_vocab(tagged_data)  # this create the vocabulary
+
+        for epoch in range(self.__max_epochs):
+            print('iteration {0}'.format(epoch))
+            model.train(tagged_data,
+                        total_examples=model.corpus_count,
+                        epochs=model.iter)
+            model.alpha -= 0.0002  # decrease the learning rate
+            model.min_alpha = model.alpha  # fix the learning rate, no decay
+
+        model.save("d2v.model")
