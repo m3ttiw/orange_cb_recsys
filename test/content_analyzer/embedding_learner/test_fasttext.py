@@ -28,7 +28,6 @@ class TestGensimFastText(TestCase):
                 [[0.04067247, 0.00251827, -0.03531238, -0.04543722]]]
         result = GensimFastText(source=JSONFile("movies_info_reduced.json"),
                                 preprocessor=NLTK(),
-                                loader= TextInterface,
                                 field_name="Genre").start_learning()
         for i, res in enumerate(result):
             self.assertEqual(list[i], res, "Fail in Doc {} - Vector = {}".format(str(i), res))

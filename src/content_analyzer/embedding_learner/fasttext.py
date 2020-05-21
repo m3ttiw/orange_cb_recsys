@@ -1,6 +1,5 @@
 from src.content_analyzer.embedding_learner import embedding_learner
 from src.content_analyzer.information_processor.information_processor import NLP
-from src.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 from gensim.models.fasttext import FastText
 from src.content_analyzer.raw_information_source import RawInformationSource
 
@@ -12,12 +11,11 @@ class GensimFastText(embedding_learner.FastText):
     """
 
     def __init__(self, source: RawInformationSource,
-                 loader: InformationInterface,
                  preprocessor: NLP,
                  field_name: str,
                  **kwargs):
         preprocessor.set_is_tokenized(True)
-        super().__init__(loader, preprocessor)
+        super().__init__(preprocessor)
         self.__field_name = field_name
         self.__source = source
 
@@ -112,7 +110,6 @@ class GensimFastText(embedding_learner.FastText):
 
     def __repr__(self):
         return "< FastText :" + \
-               "loader = " + str(self.__loader) + \
                "preprocessor = " + str(self.__preprocessor) + " >"
 
     def __iter__(self):
@@ -125,7 +122,7 @@ class GensimFastText(embedding_learner.FastText):
         Implementation of the Abstract Method start_training in the Abstract Class FastText.
         """
         model = self.get_model()
-        model.build_vocab(senteces=GensimFastText(self.__source, self.__loader, self.__preprocessor, self.__field_name))
+        model.build_vocab(senteces=GensimFastText(self.__source, self.__preprocessor, self.__field_name))
         model_list = list()
         n = model.corpus_count
         for i in range(n):
@@ -139,7 +136,7 @@ class GensimFastText(embedding_learner.FastText):
         """
         model = FastText(size=self.__size, window=self.__window, min_count=self.__min_count)
         total_examples = model.corpus_count
-        model.train(sentences=GensimFastText(self.__source, self.__loader, self.__preprocessor, self.__field_name),
+        model.train(sentences=GensimFastText(self.__source, self.__preprocessor, self.__field_name),
                     total_examples=total_examples, epochs=self.__epochs)
         return model
 
