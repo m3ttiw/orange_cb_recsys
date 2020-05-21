@@ -23,6 +23,9 @@ class EmbeddingLearner(ABC):
     def get_source(self):
         return self.__source
 
+    def get_preprocessor(self):
+        return self.__preprocessor
+
 
 class Word2Vec(EmbeddingLearner):
     """"

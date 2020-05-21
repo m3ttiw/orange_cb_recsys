@@ -50,7 +50,7 @@ class GensimDoc2Vec(EmbeddingLearner):
             # apply preprocessing and save the data in the list
             data.append(self.__preprocessor.process(doc[self.__field_name].lower()))
         """
-        data = [self.__preprocessor.process(field_data=doc[self.__field_name].lower()) for doc in self.get_source()]
+        data = [self.get_preprocessor().process(field_data=doc[self.__field_name].lower()) for doc in self.get_source()]
 
         tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(data)]
 
