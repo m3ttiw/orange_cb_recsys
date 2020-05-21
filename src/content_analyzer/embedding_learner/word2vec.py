@@ -46,7 +46,11 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
                "source = " + str(self.__source) + \
                "preprocessor = " + str(self.__preprocessor) + " >"
 
-
+    def __iter__(self):
+        data_to_train = list()
+        for line in self.__source:
+            for field in self.__field_list:
+                data_to_train.append(self.__preprocessor.process(line[field].lower()))
 
     def fit(self):
         """"
