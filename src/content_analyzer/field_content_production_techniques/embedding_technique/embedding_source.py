@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List
 
 import gensim.downloader as downloader
 from gensim.models import KeyedVectors, Doc2Vec, fasttext
@@ -78,7 +79,7 @@ class Wikipedia2VecDownloader(EmbeddingSource):
     def get_vector_size(self) -> int:
         return self.get_model().get_word_vector("a").shape[0]
 
-    def load(self, text: str) -> np.ndarray:
+    def load(self, text: List[str]) -> np.ndarray:
         """
         Function that extracts from the embeddings model
         the vectors of the words contained in text

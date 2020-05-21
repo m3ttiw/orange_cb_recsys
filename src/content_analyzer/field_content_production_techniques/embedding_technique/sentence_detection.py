@@ -12,7 +12,7 @@ class NLTKSentenceDetection(SentenceDetectionTechnique):
     Implements abstract class SentenceDetectionTechnique,
     in this class nltk library is used for this operation
     """
-    def detect_sentences(self, text: str) -> List[str]:
+    def detect_sentences(self, text) -> List[str]:
         """
         Implements the abstract method using the nltk library
 
