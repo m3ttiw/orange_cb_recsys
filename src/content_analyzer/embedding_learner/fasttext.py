@@ -16,8 +16,7 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
                  preprocessor: NLP,
                  field_list: List[str],
                  **kwargs):
-        super().__init__(source, preprocessor)
-        self.__field_list = field_list
+        super().__init__(source, preprocessor, field_list)
 
         if "size" in kwargs.keys():
             self.__size = kwargs["size"]
