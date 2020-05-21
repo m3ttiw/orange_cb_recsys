@@ -62,11 +62,7 @@ class NLP(TextProcessor):
         self.__lemmatization: bool = lemmatization
         self.__strip_multiple_whitespaces: bool = strip_multiple_whitespaces
         self.__url_tagging: bool = url_tagging
-        self.__is_tokenized = False
         self.__named_entity_recognition: bool = named_entity_recognition
-
-    def get_is_tokenized(self):
-        return self.__is_tokenized
 
     def get_stopwords_removal(self):
         return self.__stopwords_removal
@@ -100,9 +96,6 @@ class NLP(TextProcessor):
 
     def set_url_tagging(self, url_tagging):
         self.__url_tagging = url_tagging
-
-    def set_is_tokenized(self, is_tokenized: bool):
-        self.__is_tokenized = is_tokenized
 
     def set_named_entity_recognition(self, named_entity_recognition: bool):
         self.__named_entity_recognition = named_entity_recognition

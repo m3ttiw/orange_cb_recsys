@@ -43,7 +43,8 @@ class LuceneTfIdf(TfIdfTechnique):
                 for name in id_field_names:
                     id_values.append(raw_content[name])
 
-                self.__index.new_field("content_id", id_merger(id_values))
+                content_id = id_merger(id_values)
+                self.__index.new_field("content_id", content_id)
 
                 for (field_name, pipeline_id) in self.get_need_refactor().keys():
                     preprocessor_list = self.get_need_refactor()[(field_name, pipeline_id)]

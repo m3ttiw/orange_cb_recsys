@@ -9,7 +9,7 @@ class EmbeddingLearner(ABC):
     Abstract Class for the different kinds of embedding.
 
     Args:
-        loader (InformationLoader): Instance of the class InformationLoader.
+        source (RawInformationSource): Source where the content is stored.
         preprocessor (InformationProcessor): Instance of the class InformationProcessor.
     """
     def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
@@ -24,21 +24,6 @@ class EmbeddingLearner(ABC):
 class Word2Vec(EmbeddingLearner):
     """"
     Abstract Class for the different kinds of Word2Vec.
-    """
-    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
-        super().__init__(source, preprocessor)
-
-    @abstractmethod
-    def start_learning(self):
-        """"
-        Abstract Method
-        """
-        raise NotImplementedError
-
-
-class Doc2Vec(EmbeddingLearner):
-    """"
-    Abstract Class for the different kinds of Doc2Vec.
     """
     def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
         super().__init__(source, preprocessor)

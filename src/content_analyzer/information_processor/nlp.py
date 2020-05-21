@@ -101,7 +101,6 @@ class NLTK(NLP):
              List<str>: a list of words
 
         """
-        self.set_is_tokenized(True)
         return word_tokenize(text)
 
     def __stopwords_removal_operation(self, text) -> List[str]:
@@ -109,7 +108,7 @@ class NLTK(NLP):
         Execute stopwords removal on input text
 
         Args:
-            text (str):
+            text (List<str>):
 
         Returns:
             filtered_sentence (List<str>): list of words from the text, without the stopwords
@@ -128,7 +127,7 @@ class NLTK(NLP):
         Execute stemming on input text
 
         Args:
-            text:
+            text (List<str>):
 
         Returns:
             stemmed_text (List<str>): List of the fords from the text, reduced to their stem version
@@ -147,7 +146,7 @@ class NLTK(NLP):
         Execute lemmatization on input text
 
         Args:
-            text:
+            text (List<str>):
 
         Returns:
             lemmatized_text (List<str>): List of the fords from the text, reduced to their lemmatized version
@@ -164,7 +163,7 @@ class NLTK(NLP):
         Execute NER on input text
 
         Args:
-            text (str): Text containing the entities
+            text (List<str>): Text containing the entities
 
         Returns:
             namedEnt (nltk.tree.Tree): A tree containing the bonds between the entities
@@ -173,7 +172,6 @@ class NLTK(NLP):
             text = self.__tokenization_operation(text)
         text = nltk.pos_tag(text)
         named_ent = nltk.ne_chunk(text)
-        #namedEnt.draw()        #You can uncomment this line to see the actual tree
         return named_ent
 
     @staticmethod
@@ -182,7 +180,7 @@ class NLTK(NLP):
         Remove multiple whitespaces on input text
 
         Args:
-            text:
+            text (str):
 
         Returns:
             str: input text, multiple whitespaces removed
@@ -196,7 +194,7 @@ class NLTK(NLP):
         Replaces urls with <URL> string on input text
 
         Args:
-            text:
+            text (str):
 
         Returns:
             text (str): input text, <URL> instead of full url
