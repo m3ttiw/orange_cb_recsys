@@ -5,7 +5,7 @@ from src.content_analyzer.raw_information_source import JSONFile
 
 
 class TestGensimFastText(TestCase):
-    def test_start_learning(self):
+    def test_fit(self):
         list = [[[0.02949842, 0.04819039, 0.02683405, 0.13783221]],
                 [[-0.24603415, -0.1258604, 0.24925545, -0.23021373]],
                 [[-0.24713391, 0.13750966, 0.00877043, -0.21628569]],
