@@ -1,8 +1,8 @@
 from unittest import TestCase
 from src.content_analyzer.information_processor.nlp import NLTK
 from src.content_analyzer.embedding_learner.fasttext import GensimFastText
+from src.content_analyzer.memory_interfaces.memory_interfaces import TextInterface
 from src.content_analyzer.raw_information_source import JSONFile
-
 
 class TestGensimFastText(TestCase):
     def test_start_learning(self):
@@ -28,6 +28,7 @@ class TestGensimFastText(TestCase):
                 [[0.04067247, 0.00251827, -0.03531238, -0.04543722]]]
         result = GensimFastText(source=JSONFile("movies_info_reduced.json"),
                                 preprocessor=NLTK(),
+                                loader= TextInterface,
                                 field_name="Genre").start_learning()
         for i, res in enumerate(result):
             self.assertEqual(list[i], res, "Fail in Doc {} - Vector = {}".format(str(i), res))
