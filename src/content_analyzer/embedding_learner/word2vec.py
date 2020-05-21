@@ -18,6 +18,26 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         self.__field_list = field_list
         super().__init__(source, preprocessor)
 
+        if "size" in kwargs.keys():
+            self.__size = kwargs["size"]
+        else:
+            self.__size = 100
+
+        if "window" in kwargs.keys():
+            self.__window = kwargs["window"]
+        else:
+            self.__window = 5
+
+        if "min_count" in kwargs.keys():
+            self.__min_count = kwargs["min_count"]
+        else:
+            self.__min_count = 1
+
+        if "ephocs" in kwargs.keys():
+            self.__epochs = kwargs["ephocs"]
+        else:
+            self.__epochs = 50
+
     def __str__(self):
         return "GensimWord2Vec"
 
@@ -25,6 +45,8 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         return "< GensimWord2Vec :" + \
                "source = " + str(self.__source) + \
                "preprocessor = " + str(self.__preprocessor) + " >"
+
+
 
     def fit(self):
         """"
