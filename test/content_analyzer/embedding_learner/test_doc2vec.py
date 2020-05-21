@@ -1,5 +1,5 @@
 from unittest import TestCase
-
+import os
 from content_analyzer.embedding_learner.doc2vec import GensimDoc2Vec
 from content_analyzer.information_processor.nlp import NLTK
 from src.content_analyzer.raw_information_source import JSONFile
@@ -19,10 +19,12 @@ class TestGensimDoc2Vec(TestCase):
                      [0.05343575, 0.20417786, 0.19907168, -0.05516035, -0.03117811, -0.12420024, -0.01822128,
                       0.24684472, 0.552818, 0.10604687, -0.47952488, 0.18031257, -0.14340155, -0.370736, 0.3842013,
                       -0.34952304, -0.70719564, -0.00113534, 0.09173155, 0.05633677]]
-
-        test_results = GensimDoc2Vec(source=JSONFile("../datasets/d2v_test_data.json"),
-                                     preprocessor=NLTK(),
-                                     field_name="doc_field").start_learning()
+        try:
+            test_results = GensimDoc2Vec(source=JSONFile(file_path="datasets/d2v_test_data.json"),
+                                         preprocessor=NLTK(), field_name="doc_field").start_learning()
+        except FileNotFoundError:
+            test_results = GensimDoc2Vec(source=JSONFile(file_path="../../../datasets/d2v_test_data.json"),
+                                         preprocessor=NLTK(), field_name="doc_field").start_learning()
 
         for i, res in enumerate(test_results):
             self.assertEqual(test_list[i], res, "Fail in Doc {} - Vector = {}".format(str(i), res))
