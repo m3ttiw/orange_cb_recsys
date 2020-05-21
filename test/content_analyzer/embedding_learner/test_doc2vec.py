@@ -27,6 +27,6 @@ class TestGensimDoc2Vec(TestCase):
 
         test_results = GensimDoc2Vec(source=JSONFile(file_path=path),
                                      preprocessor=NLTK(), field_name="doc_field").start_learning()
-
-        for i, res in enumerate(test_results):
-            self.assertEqual(test_list[i], res, "Fail in Doc {} - Vector = {}".format(str(i), res))
+        for i in range(len(test_results)):
+            self.assertEqual(test_list[i], test_results[i],
+                             "Fail in Doc {} - Vector = {}".format(str(i), test_results[i]))
