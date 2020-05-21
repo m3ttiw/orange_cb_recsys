@@ -5,6 +5,7 @@ from gensim.models.fasttext import FastText
 from gensim.utils import tokenize
 from gensim.test.utils import datapath
 from gensim import utils
+from src.content_analyzer.raw_information_source import RawInformationSource
 
 
 class GensimFastText(embedding_learner.FastText):
@@ -13,10 +14,11 @@ class GensimFastText(embedding_learner.FastText):
     Implementation of FastText using the Gensim library.
     """
 
-    def __init__(self, loader: InformationInterface, preprocessor: NLP, field_name: str, **kwargs):
+    def __init__(self, source: RawInformationSource, loader: InformationInterface, preprocessor: NLP, field_name: str, **kwargs):
         preprocessor.set_is_tokenized(True)
         super().__init__(loader, preprocessor)
         self.__field_name = field_name
+        self.__source = source
 
         if "size" in kwargs.keys():
             self.__size = kwargs["size"]
@@ -99,6 +101,11 @@ class GensimFastText(embedding_learner.FastText):
         if "sorted_vocab" in kwargs.keys():
             self.__sorted_vocab = kwargs["sorted_vocab"]
 
+        if "ephocs" in kwargs.keys():
+            self.__epochs = kwargs["ephocs"]
+        else:
+            self.__epochs = 5
+
     def __str__(self):
         return "FastText"
 
@@ -106,6 +113,11 @@ class GensimFastText(embedding_learner.FastText):
         return "< FastText :" + \
                "loader = " + str(self.__loader) + \
                "preprocessor = " + str(self.__preprocessor) + " >"
+
+    def __iter__(self):
+        data_to_train = list()
+        for line in self.__source:
+            data_to_train.append(self.__preprocessor.process(line[self.__field_name].lower()))
 
     def start_learning(self):
         """"
