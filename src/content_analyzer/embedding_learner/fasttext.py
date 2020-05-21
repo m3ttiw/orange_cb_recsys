@@ -137,7 +137,8 @@ class GensimFastText(embedding_learner.FastText):
         """
         Method used to save the curret model trained with FastText
         """
-        print("saving")
+        model = self.start_learning()
+        model.save("fasttext.model")
 
     def load_model(self):
         """
