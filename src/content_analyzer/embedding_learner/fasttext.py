@@ -16,9 +16,8 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
                  preprocessor: NLP,
                  field_list: List[str],
                  **kwargs):
-        super().__init__(preprocessor)
+        super().__init__(source, preprocessor)
         self.__field_list = field_list
-        self.__source = source
 
         if "size" in kwargs.keys():
             self.__size = kwargs["size"]
@@ -44,7 +43,8 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
         return "FastText"
 
     def __repr__(self):
-        return "< FastText :" + \
+        return "< GensimDoc2Vec :" + \
+               "source = " + str(self.__source) + \
                "preprocessor = " + str(self.__preprocessor) + " >"
 
     def __iter__(self):
@@ -59,8 +59,8 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
         """
         model = FastText(size=self.__size, window=self.__window, min_count=self.__min_count)
         total_examples = model.corpus_count
-        model.build_vocab(senteces=GensimFastText(self.__source, self.__preprocessor, self.__field_name))
-        model.train(sentences=GensimFastText(self.__source, self.__preprocessor, self.__field_name),
+        model.build_vocab(senteces=GensimFastText(self.__source, self.__preprocessor, self.__field_list))
+        model.train(sentences=GensimFastText(self.__source, self.__preprocessor, self.__field_list),
                     total_examples=total_examples, epochs=self.__epochs)
         model.save("fasttext.model")
         model_list = list()
