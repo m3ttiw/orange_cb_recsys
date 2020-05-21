@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List
 
 from src.content_analyzer.information_processor.information_processor import InformationProcessor
 from src.content_analyzer.raw_information_source import RawInformationSource
@@ -11,13 +12,17 @@ class EmbeddingLearner(ABC):
     Args:
         source (RawInformationSource): Source where the content is stored.
         preprocessor (InformationProcessor): Instance of the class InformationProcessor.
+        field_list (List[str]): Field name list.
     """
-    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
+    def __init__(self, source: RawInformationSource,
+                 preprocessor: InformationProcessor,
+                 field_list: List[str]):
         self.__source: RawInformationSource = source
         self.__preprocessor: InformationProcessor = preprocessor
+        self.__field_list = field_list
 
     @abstractmethod
-    def start_learning(self):
+    def fit(self):
         raise NotImplementedError
 
     def get_source(self):
@@ -26,62 +31,5 @@ class EmbeddingLearner(ABC):
     def get_preprocessor(self):
         return self.__preprocessor
 
-
-class Word2Vec(EmbeddingLearner):
-    """"
-    Abstract Class for the different kinds of Word2Vec.
-    """
-    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
-        super().__init__(source, preprocessor)
-
-    @abstractmethod
-    def start_learning(self):
-        """"
-        Abstract Method
-        """
-        raise NotImplementedError
-
-
-class LatentSemanticAnalysis(EmbeddingLearner):
-    """"
-    Abstract Class for the different kinds of Latent Semantic Analysis.
-    """
-    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
-        super().__init__(source, preprocessor)
-
-    @abstractmethod
-    def start_learning(self):
-        """"
-        Abstract Method
-        """
-        raise NotImplementedError
-
-
-class RandomIndexing(EmbeddingLearner):
-    """"
-    Abstract Class for the different kinds of Random Indexing.
-    """
-    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
-        super().__init__(source, preprocessor)
-
-    @abstractmethod
-    def start_learning(self):
-        """"
-        Abstract Method
-        """
-        raise NotImplementedError
-
-
-class ExplicitSemanticAnalysis(EmbeddingLearner):
-    """"
-    Abstract Class for the different kinds of Explicit Semantic Analysis.
-    """
-    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor):
-        super().__init__(source, preprocessor)
-
-    @abstractmethod
-    def start_learning(self):
-        """"
-        Abstract Method
-        """
-        raise NotImplementedError
+    def get_field_list(self):
+        return self.__field_list
