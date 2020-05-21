@@ -28,4 +28,4 @@ class TestGensimFastText(TestCase):
                 [[-0.00274554, -0.0653871, -0.02701236, 0.04182423]]]
         result = GensimFastText(source=JSONFile("dataset/movies_info_reduced.json"),
                                 preprocessor=NLTK(),
-                                field_name="Genre").start_learning()
+                                field_list=["Genre"]).fit()
