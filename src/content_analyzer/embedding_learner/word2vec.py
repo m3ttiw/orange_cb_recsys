@@ -17,8 +17,7 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
                  preprocessor: InformationProcessor,
                  field_list=List[str],
                  **kwargs):
-        self.__field_list = field_list
-        super().__init__(source, preprocessor)
+        super().__init__(source, preprocessor, field_list)
 
         if "size" in kwargs.keys():
             self.__size = kwargs["size"]
