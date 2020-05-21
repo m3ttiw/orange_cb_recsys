@@ -14,7 +14,11 @@ class GensimFastText(embedding_learner.FastText):
     Implementation of FastText using the Gensim library.
     """
 
-    def __init__(self, source: RawInformationSource, loader: InformationInterface, preprocessor: NLP, field_name: str, **kwargs):
+    def __init__(self, source: RawInformationSource,
+                 loader: InformationInterface,
+                 preprocessor: NLP,
+                 field_name: str,
+                 **kwargs):
         preprocessor.set_is_tokenized(True)
         super().__init__(loader, preprocessor)
         self.__field_name = field_name
@@ -123,7 +127,11 @@ class GensimFastText(embedding_learner.FastText):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class FastText.
         """
-        print("learning")
+        model = FastText(size=self.__size, window=self.__window, min_count=self.__min_count)
+        model.build_vocab(senteces=GensimFastText(self.__source, self.__loader, self.__preprocessor, self.__field_name))
+        total_examples = model.corpus_count
+        model.train(sentences=GensimFastText, total_examples=total_examples, epochs=self.__epochs)
+        return model
 
     def save_model(self):
         """
