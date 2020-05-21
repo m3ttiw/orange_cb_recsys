@@ -2,9 +2,6 @@ from src.content_analyzer.embedding_learner import embedding_learner
 from src.content_analyzer.information_processor.information_processor import NLP
 from src.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 from gensim.models.fasttext import FastText
-from gensim.utils import tokenize
-from gensim.test.utils import datapath
-from gensim import utils
 from src.content_analyzer.raw_information_source import RawInformationSource
 
 
