@@ -127,17 +127,30 @@ class GensimFastText(embedding_learner.FastText):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class FastText.
         """
-        model = FastText(size=self.__size, window=self.__window, min_count=self.__min_count)
+        model = self.get_model()
         model.build_vocab(senteces=GensimFastText(self.__source, self.__loader, self.__preprocessor, self.__field_name))
+        model_list = list()
+        n = model.corpus_count
+        for i in range(n):
+            print("Doc-{}: {}".format(i, model.wv.__getitem__([str(i)])))
+            model_list.append(model.wv.__getitem__([str(i)]))
+        return model_list
+
+    def get_model(self):
+        """
+        Method that returns a gensim FastText model
+        """
+        model = FastText(size=self.__size, window=self.__window, min_count=self.__min_count)
         total_examples = model.corpus_count
-        model.train(sentences=GensimFastText, total_examples=total_examples, epochs=self.__epochs)
+        model.train(sentences=GensimFastText(self.__source, self.__loader, self.__preprocessor, self.__field_name),
+                    total_examples=total_examples, epochs=self.__epochs)
         return model
 
     def save_model(self):
         """
         Method used to save the curret model trained with FastText
         """
-        model = self.start_learning()
+        model = self.get_model()
         model.save("fasttext.model")
 
     def load_model(self):
