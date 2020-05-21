@@ -29,5 +29,3 @@ class TestGensimFastText(TestCase):
         result = GensimFastText(source=JSONFile("dataset/movies_info_reduced.json"),
                                 preprocessor=NLTK(),
                                 field_name="Genre").start_learning()
-        for i, res in enumerate(result):
-            self.assertEqual(list[i], res, "Fail in Doc {} - Vector = {}".format(str(i), res))

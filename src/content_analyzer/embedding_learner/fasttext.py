@@ -1,10 +1,12 @@
+from typing import List
+
 from src.content_analyzer.embedding_learner import embedding_learner
 from src.content_analyzer.information_processor.information_processor import NLP
 from gensim.models.fasttext import FastText
 from src.content_analyzer.raw_information_source import RawInformationSource
 
 
-class GensimFastText(embedding_learner.FastText):
+class GensimFastText(embedding_learner):
     """"
     Class that implements the Abstract Class FastText.
     Implementation of FastText using the Gensim library.
@@ -12,11 +14,10 @@ class GensimFastText(embedding_learner.FastText):
 
     def __init__(self, source: RawInformationSource,
                  preprocessor: NLP,
-                 field_name: str,
+                 field_list: List[str],
                  **kwargs):
-        preprocessor.set_is_tokenized(True)
         super().__init__(preprocessor)
-        self.__field_name = field_name
+        self.__field_list = field_list
         self.__source = source
 
         if "size" in kwargs.keys():
@@ -49,7 +50,9 @@ class GensimFastText(embedding_learner.FastText):
     def __iter__(self):
         data_to_train = list()
         for line in self.__source:
-            data_to_train.append(self.__preprocessor.process(line[self.__field_name].lower()))
+            for field in self.__field_list:
+                data_to_train.append(self.__preprocessor.process(line[field].lower()))
+
 
     def start_learning(self):
         """"
