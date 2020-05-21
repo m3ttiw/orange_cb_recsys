@@ -1,24 +1,18 @@
-from src.content_analyzer.embedding_learner import embedding_learner
+from src.content_analyzer.embedding_learner import EmbeddingLearner
 from src.content_analyzer.information_processor.information_processor import NLP
 from src.content_analyzer.raw_information_source import RawInformationSource
-from gensim.test.utils import get_tmpfile, common_texts
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from nltk.tokenize import word_tokenize
 
 
-class GensimDoc2Vec(embedding_learner.Doc2Vec):
+class GensimDoc2Vec(EmbeddingLearner):
     """"
     Class that implements the Abstract Class Word2Vec.
     Implementation of Word2Vec using the Gensim library.
     """
-    is_first_instance = True
-
     def __init__(self, source: RawInformationSource,
                  preprocessor: NLP,
                  field_name: str,
                  **kwargs):
-        # set tokenization on the preprocessor
-        preprocessor.set_is_tokenized(True)
         super().__init__(source, preprocessor)
         self.__field_name = field_name
 
@@ -49,11 +43,14 @@ class GensimDoc2Vec(embedding_learner.Doc2Vec):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Doc2vec.
         """
+        """
         data = list()
         # iter the source
         for doc in self.__source:
             # apply preprocessing and save the data in the list
             data.append(self.__preprocessor.process(doc[self.__field_name].lower()))
+        """
+        data = [self.__preprocessor.process(field_data=doc[self.__field_name].lower()) for doc in self.__source]
 
         tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(data)]
 
