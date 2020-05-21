@@ -144,4 +144,5 @@ class GensimFastText(embedding_learner.FastText):
         """
         Method used to load a model trained with FastText
         """
-        print("loading")
+        model = FastText.load("fasttext.model")
+        return model
