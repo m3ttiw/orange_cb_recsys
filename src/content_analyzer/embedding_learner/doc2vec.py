@@ -1,3 +1,5 @@
+from typing import List
+
 from src.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
 from src.content_analyzer.information_processor.information_processor import NLP
 from src.content_analyzer.raw_information_source import RawInformationSource
@@ -11,10 +13,9 @@ class GensimDoc2Vec(EmbeddingLearner):
     """
     def __init__(self, source: RawInformationSource,
                  preprocessor: NLP,
-                 field_name: str,
+                 field_list: List[str],
                  **kwargs):
-        super().__init__(source, preprocessor)
-        self.__field_name = field_name
+        super().__init__(source, preprocessor, field_list)
 
         if "max_epochs" in kwargs.keys():
             self.__max_epochs = kwargs["max_epochs"]
@@ -39,7 +40,7 @@ class GensimDoc2Vec(EmbeddingLearner):
                "loader = " + str(self.__source) + \
                "preprocessor = " + str(self.__preprocessor) + " >"
 
-    def start_learning(self):
+    def fit(self):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Doc2vec.
         """
@@ -47,8 +48,9 @@ class GensimDoc2Vec(EmbeddingLearner):
         data = list()
         # iter the source
         for doc in self.get_source():
-            # apply preprocessing and save the data in the list
-            data.append(self.get_preprocessor().process(doc[self.__field_name].lower()))
+            for field_name in self.get_field_list():
+                # apply preprocessing and save the data in the list
+                data.append(self.get_preprocessor().process(doc[field_name].lower()))
 
         #data = [self.get_preprocessor().process(field_data=doc[self.__field_name].lower()) for doc in self.get_source()]
 

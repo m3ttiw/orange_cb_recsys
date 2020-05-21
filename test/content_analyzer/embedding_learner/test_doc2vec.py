@@ -1,7 +1,5 @@
 from unittest import TestCase
-import os
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
-from nltk.tokenize import word_tokenize
+from gensim.models.doc2vec import Doc2Vec
 from content_analyzer.embedding_learner.doc2vec import GensimDoc2Vec
 from content_analyzer.information_processor.nlp import NLTK
 from src.content_analyzer.raw_information_source import JSONFile
@@ -28,7 +26,7 @@ class TestGensimDoc2Vec(TestCase):
             path = "../../../datasets/d2v_test_data.json"
 
         model_r = GensimDoc2Vec(source=JSONFile(file_path=path),
-                                preprocessor=NLTK(), field_name="doc_field").start_learning()
+                                preprocessor=NLTK(), field_list=["doc_field"]).fit()
 
         model_test = Doc2Vec.load("d2v.model")
 
