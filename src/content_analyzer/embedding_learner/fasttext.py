@@ -6,9 +6,9 @@ from gensim.models.fasttext import FastText
 from src.content_analyzer.raw_information_source import RawInformationSource
 
 
-class GensimFastText(embedding_learner):
+class GensimFastText(embedding_learner.EmbeddingLearner):
     """"
-    Class that implements the Abstract Class FastText.
+    Class that implements the Abstract Class EmdeddingLearner.
     Implementation of FastText using the Gensim library.
     """
 
@@ -53,10 +53,9 @@ class GensimFastText(embedding_learner):
             for field in self.__field_list:
                 data_to_train.append(self.__preprocessor.process(line[field].lower()))
 
-
-    def start_learning(self):
+    def fit(self):
         """"
-        Implementation of the Abstract Method start_training in the Abstract Class FastText.
+        Implementation of the Abstract Method fit in the Abstract Class EmbeddingLearner.
         """
         model = FastText(size=self.__size, window=self.__window, min_count=self.__min_count)
         total_examples = model.corpus_count
