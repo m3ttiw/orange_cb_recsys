@@ -20,7 +20,7 @@ class TestGensimDoc2Vec(TestCase):
                       0.24684472, 0.552818, 0.10604687, -0.47952488, 0.18031257, -0.14340155, -0.370736, 0.3842013,
                       -0.34952304, -0.70719564, -0.00113534, 0.09173155, 0.05633677]]
 
-        test_results = GensimDoc2Vec(source=JSONFile("../../datasets/d2v_test_data.json"),
+        test_results = GensimDoc2Vec(source=JSONFile("../datasets/d2v_test_data.json"),
                                      preprocessor=NLTK(),
                                      field_name="doc_field").start_learning()
 
