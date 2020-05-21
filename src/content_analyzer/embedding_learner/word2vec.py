@@ -1,5 +1,7 @@
 from typing import List
 
+from gensim.models import Word2Vec
+
 from src.content_analyzer.embedding_learner import embedding_learner
 from src.content_analyzer.information_processor.information_processor import InformationProcessor
 from src.content_analyzer.raw_information_source import RawInformationSource
@@ -56,4 +58,15 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Word2vec.
         """
-        print("learning")
+        model = Word2Vec(size=self.__size, window=self.__window, min_count=self.__min_count)
+        total_examples = model.corpus_count
+        model.build_vocab(senteces=GensimWord2Vec(self.__source, self.__preprocessor, self.__field_list))
+        model.train(sentences=GensimWord2Vec(self.__source, self.__preprocessor, self.__field_list),
+                    total_examples=total_examples, epochs=self.__epochs)
+        model.save("word2vec.model")
+        model_list = list()
+        n = model.corpus_count
+        for i in range(n):
+            print("Doc-{}: {}".format(i, model.wv.__getitem__([str(i)])))
+            model_list.append(model.wv.__getitem__([str(i)]))
+        return model_list
