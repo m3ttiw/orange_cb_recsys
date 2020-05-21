@@ -20,6 +20,9 @@ class EmbeddingLearner(ABC):
     def start_learning(self):
         raise NotImplementedError
 
+    def get_source(self):
+        return self.__source
+
 
 class Word2Vec(EmbeddingLearner):
     """"
