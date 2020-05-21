@@ -25,3 +25,15 @@ class GensimFastText(FastText):
         Implementation of the Abstract Method start_training in the Abstract Class FastText.
         """
         print("learning")
+
+    def save_model(self):
+        """
+        Method used to save the curret model trained with FastText
+        """
+        print("saving")
+
+    def load_model(self):
+        """
+        Method used to load a model trained with FastText
+        """
+        print("loading")
