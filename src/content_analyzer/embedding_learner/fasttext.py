@@ -153,9 +153,9 @@ class GensimFastText(embedding_learner.FastText):
         model = self.get_model()
         model.save("fasttext.model")
 
-    def load_model(self):
+    def load_model(self, file_name):
         """
         Method used to load a model trained with FastText
         """
-        model = FastText.load("fasttext.model")
+        model = FastText.load(file_name)
         return model
