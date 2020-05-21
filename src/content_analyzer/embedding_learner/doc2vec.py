@@ -63,7 +63,7 @@ class GensimDoc2Vec(EmbeddingLearner):
         model.build_vocab(tagged_data)  # this create the vocabulary
 
         for epoch in range(self.__max_epochs):
-            print('iteration {0}'.format(epoch))
+            #print('iteration {0}'.format(epoch))
             model.train(tagged_data,
                         total_examples=model.corpus_count,
                         epochs=model.iter)
@@ -71,12 +71,12 @@ class GensimDoc2Vec(EmbeddingLearner):
             model.min_alpha = model.alpha  # fix the learning rate, no decay
 
         model.save("d2v.model")
-
+        """
         return_list = list()
         n = model.docvecs.count
         for i in range(n):
-            print("Doc-{}: {}".format(i, model.docvecs[str(i)]))
+            #print("Doc-{}: {}".format(i, model.docvecs[str(i)]))
             return_list.append(model.docvecs[str(i)])
-
-        return return_list
+        """
+        return model
 
