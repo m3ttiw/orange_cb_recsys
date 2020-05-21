@@ -2,6 +2,8 @@ from enum import Enum
 
 import gensim.downloader as downloader
 from gensim.models import KeyedVectors, Doc2Vec, fasttext
+from wikipedia2vec import Wikipedia2Vec
+import numpy as np
 
 from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EmbeddingSource
 
@@ -55,5 +57,47 @@ class GensimDownloader(EmbeddingSource):
         self.__name: str = name
         self.set_model(downloader.load(self.__name))
 
+
+class Wikipedia2VecDownloader(EmbeddingSource):
+    """
+    Class that implements the abstract class EmbeddingSoruce.
+    This class loads the embeddings using the Wikipedia2Vec binary file loader.
+    Can be used for loading of pre-trained wikipedia dump embedding, 
+    both downloaded or trained on local machine.
+
+    Attributes:
+        path (str): path for the binary file containing the embeddings
+    """
+
+    def __init__(self, path: str):
+        super().__init__()
+        self.__path: str = path
+
+        self.set_model(Wikipedia2Vec.load(self.__path))
+
+    def get_vector_size(self) -> int:
+        return self.get_model().get_word_vector("a").shape[0]
+
+    def load(self, text: str) -> np.ndarray:
+        """
+        Function that extracts from the embeddings model
+        the vectors of the words contained in text
+
+        Args:
+            text (str): contains words of which vectors will be extracted
+
+        Returns:
+            np.ndarray: bi-dimensional numpy vector,
+                each row is a term vector
+        """
+        embedding_matrix = np.ndarray(shape=(len(text), self.get_vector_size()))
+
+        for i, word in enumerate(text):
+            try:
+                embedding_matrix[i, :] = self.get_model().get_word_vector(word)
+            except:
+                pass
+
+        return embedding_matrix
 
 # your embedding source

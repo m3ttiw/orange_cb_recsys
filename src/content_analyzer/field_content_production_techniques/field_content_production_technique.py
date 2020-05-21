@@ -194,6 +194,9 @@ class EmbeddingSource(ABC):
     def get_vector_size(self) -> int:
         return self.__model.vector_size
 
+    def get_model(self):
+        return self.__model
+
     def __str__(self):
         return "EmbeddingSource"
 
