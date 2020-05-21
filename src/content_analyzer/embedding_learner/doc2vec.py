@@ -1,4 +1,4 @@
-from src.content_analyzer.embedding_learner import EmbeddingLearner
+from src.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
 from src.content_analyzer.information_processor.information_processor import NLP
 from src.content_analyzer.raw_information_source import RawInformationSource
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
