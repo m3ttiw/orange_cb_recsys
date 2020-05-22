@@ -63,7 +63,7 @@ class TestNLTK(TestCase):
         nltka.set_stopwords_removal(False)
         nltka.set_stemming(False)
         nltka.set_lemmatization(False)
-        result = nltka.process("Facebook was fined by Hewlett Packard for spending $100 to buy Cristiano Ronaldo from Juventus")
+        result = nltka.process("Facebook was fined by Hewlett Packard for spending 100€ to buy Cristiano Ronaldo from Juventus")
 
         self.assertEqual(result,
-                         Tree('S', [Tree('PERSON', [('Facebook', 'NNP')]), ('was', 'VBD'), ('fined', 'VBN'), ('by', 'IN'), Tree('PERSON', [('Hewlett', 'NNP'), ('Packard', 'NNP')]), ('for', 'IN'), ('spending', 'VBG'), ('$', '$'), ('100', 'CD'), ('to', 'TO'), ('buy', 'VB'), Tree('PERSON', [('Cristiano', 'NNP'), ('Ronaldo', 'NNP')]), ('from', 'IN'), Tree('GPE', [('Juventus', 'NNP')])]))
+                         Tree('S', [Tree('PERSON', [('Facebook', 'NNP')]), ('was', 'VBD'), ('fined', 'VBN'), ('by', 'IN'), Tree('PERSON', [('Hewlett', 'NNP'), ('Packard', 'NNP')]), ('for', 'IN'), ('spending', 'VBG'), ('100€', 'CD'), ('to', 'TO'), ('buy', 'VB'), Tree('PERSON', [('Cristiano', 'NNP'), ('Ronaldo', 'NNP')]), ('from', 'IN'), Tree('GPE', [('Juventus', 'NNP')])]))

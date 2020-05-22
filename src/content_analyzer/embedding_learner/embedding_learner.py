@@ -22,7 +22,7 @@ class EmbeddingLearner(ABC):
         self.__field_list = field_list
 
     @abstractmethod
-    def fit(self):
+    def fit(self, **kwargs):
         raise NotImplementedError
 
     def get_source(self):
