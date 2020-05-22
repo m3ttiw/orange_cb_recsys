@@ -19,21 +19,82 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
                  **kwargs):
         super().__init__(source, preprocessor, field_list)
 
+        self.optionals = {}
         if "size" in kwargs.keys():
-            self.__size = kwargs["size"]
-        else:
-            self.__size = 100
+            self.optionals["size"] = kwargs["size"]
 
         if "window" in kwargs.keys():
-            self.__window = kwargs["window"]
-        else:
-            self.__window = 5
+            self.optionals["window"] = kwargs["window"]
 
         if "min_count" in kwargs.keys():
-            self.__min_count = kwargs["min_count"]
-        else:
-            self.__min_count = 1
+            self.optionals["min_count"] = kwargs["min_count"]
+            
+        if "workers" in kwargs.keys():
+            self.optionals["workers"] = kwargs["workers"]
 
+        if "alpha" in kwargs.keys():
+            self.optionals["alpha"] = kwargs["alpha"]
+
+        if "min_alpha" in kwargs.keys():
+            self.optionals["min_alpha"] = kwargs["min_alpha"]
+
+        if "sg" in kwargs.keys():
+            self.optionals["sg"] = kwargs["sg"]
+
+        if "hs" in kwargs.keys():
+            self.optionals["hs"] = kwargs["hs"]
+
+        if "seed" in kwargs.keys():
+            self.optionals["seed"] = kwargs["seed"]
+
+        if "max_vocab_size" in kwargs.keys():
+            self.optionals["max_vocab_size"] = kwargs["max_vocab_size"]
+
+        if "sample" in kwargs.keys():
+            self.optionals["sample"] = kwargs["sample"]
+
+        if "negative" in kwargs.keys():
+            self.optionals["negative"] = kwargs["negative"]
+
+        if "ns_exponent" in kwargs.keys():
+            self.optionals["ns_exponent"] = kwargs["ns_exponent"]
+
+        if "cbow_mean" in kwargs.keys():
+            self.optionals["cbow_mean"] = kwargs["cbow_mean"]
+
+        if "hashfxn" in kwargs.keys():
+            self.optionals["hashfxn"] = kwargs["hashfxn"]
+
+        if "iter" in kwargs.keys():
+            self.optionals["iter"] = kwargs["iter"]
+
+        if "trim_rule" in kwargs.keys():
+            self.optionals["trim_rule"] = kwargs["trim_rule"]
+
+        if "batch_words" in kwargs.keys():
+            self.optionals["batch_words"] = kwargs["batch_words"]
+
+        if "min_n" in kwargs.keys():
+            self.optionals["min_n"] = kwargs["min_n"]
+
+        if "max_n" in kwargs.keys():
+            self.optionals["max_n"] = kwargs["max_n"]
+
+        if "word_ngrams" in kwargs.keys():
+            self.optionals["word_ngrams"] = kwargs["word_ngrams"]
+
+        if "bucket" in kwargs.keys():
+            self.optionals["bucket"] = kwargs["bucket"]
+
+        if "callbacks" in kwargs.keys():
+            self.optionals["callbacks"] = kwargs["callbacks"]
+
+        if "compatible_hash" in kwargs.keys():
+            self.optionals["compatible_hash"] = kwargs["compatible_hash"]
+
+        if "sorted_vocab" in kwargs.keys():
+            self.optionals["sorted_vocab"] = kwargs["sorted_vocab"]
+        
         if "ephocs" in kwargs.keys():
             self.__epochs = kwargs["ephocs"]
         else:
@@ -60,8 +121,8 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
                     field_data = ' '.join(field_data)
                 doc.append(field_data)
             data_to_train.append(doc)
-        model = Word2Vec(sentences=data_to_train)
-        model.build_vocab(data_to_train)
+        model = Word2Vec(sentences=data_to_train, **self.optionals)
+        # model.build_vocab(data_to_train)
         model.train(sentences=data_to_train,
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)
