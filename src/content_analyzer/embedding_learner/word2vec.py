@@ -56,11 +56,11 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
             for field in self.get_field_list():
                 data_to_train.append(self.get_preprocessor().process(line[field].lower()))
         model = Word2Vec(sentences=data_to_train, size=self.__size, window=self.__window, min_count=self.__min_count)
-        total_examples = model.corpus_count
-        model.build_vocab(senteces=data_to_train)
-        model.train(sentences=data_to_train,
-                    total_examples=total_examples,
-                    epochs=self.__epochs)
+        #total_examples = model.corpus_count
+        #model.build_vocab(senteces=data_to_train)
+        #model.train(sentences=data_to_train,
+                   # total_examples=total_examples,
+                    #epochs=self.__epochs)
         return model
 
     def save(self):
