@@ -63,9 +63,4 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         model.train(sentences=GensimWord2Vec(self.__source, self.__preprocessor, self.__field_list),
                     total_examples=total_examples, epochs=self.__epochs)
         model.save("word2vec.model")
-        model_list = list()
-        n = model.corpus_count
-        for i in range(n):
-            print("Doc-{}: {}".format(i, model.wv.__getitem__([str(i)])))
-            model_list.append(model.wv.__getitem__([str(i)]))
-        return model_list
+        return model
