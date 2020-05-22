@@ -61,10 +61,4 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
         model.build_vocab(senteces=GensimFastText(self.__source, self.__preprocessor, self.__field_list))
         model.train(sentences=GensimFastText(self.__source, self.__preprocessor, self.__field_list),
                     total_examples=total_examples, epochs=self.__epochs)
-        model.save("fasttext.model")
-        model_list = list()
-        n = model.corpus_count
-        for i in range(n):
-            print("Doc-{}: {}".format(i, model.wv.__getitem__([str(i)])))
-            model_list.append(model.wv.__getitem__([str(i)]))
-        return model_list
+        return model
