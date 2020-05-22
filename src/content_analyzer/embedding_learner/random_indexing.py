@@ -1,4 +1,5 @@
 from typing import List
+import time
 
 from gensim.models import RpModel
 from gensim.corpora import Dictionary
@@ -20,7 +21,10 @@ class RandomIndexing(EmbeddingLearner):
         for content in self.get_source():
             document = []
             for field_name in self.get_field_list():
-                document.append(content[field_name])
+                field_data = self.get_preprocessor().process(content[field_name])
+                if type(field_data) is list:
+                    field_data = ' '.join(field_data)
+                document.append(field_data)
             corpus.append(document)
 
         dictionary = Dictionary(corpus)
@@ -28,3 +32,7 @@ class RandomIndexing(EmbeddingLearner):
         model = RpModel(corpus, id2word=dictionary)
 
         return model
+
+    def save(self, model):
+        model.save('random_indexing' + time.time())
+
