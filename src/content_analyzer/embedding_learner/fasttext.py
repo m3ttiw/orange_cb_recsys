@@ -62,3 +62,9 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
         model.train(sentences=GensimFastText(self.__source, self.__preprocessor, self.__field_list),
                     total_examples=total_examples, epochs=self.__epochs)
         return model
+
+    def save(self):
+        model = GensimFastText(source=self.__source,
+                               preprocessor=self.__preprocessor,
+                               field_list=self.__field_list).fit()
+        model.save("fasttext.model")
