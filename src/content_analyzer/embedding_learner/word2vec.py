@@ -44,14 +44,14 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
 
     def __repr__(self):
         return "< GensimWord2Vec :" + \
-               "source = " + str(self.__source) + \
-               "preprocessor = " + str(self.__preprocessor) + " >"
+               "source = " + str(self.get_source()) + \
+               "preprocessor = " + str(self.get_preprocessor()) + " >"
 
     def __iter__(self):
         data_to_train = list()
-        for line in self.__source:
-            for field in self.__field_list:
-                data_to_train.append(self.__preprocessor.process(line[field].lower()))
+        for line in self.get_source():
+            for field in self.get_field_list():
+                data_to_train.append(self.get_preprocessor().process(line[field].lower()))
 
     def fit(self):
         """"
@@ -59,13 +59,13 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         """
         model = Word2Vec(size=self.__size, window=self.__window, min_count=self.__min_count)
         total_examples = model.corpus_count
-        model.build_vocab(senteces=GensimWord2Vec(self.__source, self.__preprocessor, self.__field_list))
-        model.train(sentences=GensimWord2Vec(self.__source, self.__preprocessor, self.__field_list),
+        model.build_vocab(senteces=GensimWord2Vec(self.get_source(), self.get_preprocessor(), self.get_field_list()))
+        model.train(sentences=GensimWord2Vec(self.get_source(), self.get_preprocessor(), self.get_field_list()),
                     total_examples=total_examples, epochs=self.__epochs)
         return model
 
     def save(self):
-        model = GensimWord2Vec(source=self.__source,
-                               preprocessor=self.__preprocessor,
-                               field_list=self.__field_list).fit()
+        model = GensimWord2Vec(source=self.get_source(),
+                               preprocessor=self.get_preprocessor(),
+                               field_list=self.get_field_list()).fit()
         model.save("word2vec.model")
