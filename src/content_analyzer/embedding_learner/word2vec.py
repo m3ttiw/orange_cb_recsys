@@ -55,7 +55,7 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         for line in self.get_source():
             for field in self.get_field_list():
                 data_to_train.append(self.get_preprocessor().process(line[field].lower()))
-        model = Word2Vec(size=self.__size, window=self.__window, min_count=self.__min_count)
+        model = Word2Vec(sentences=data_to_train, size=self.__size, window=self.__window, min_count=self.__min_count)
         total_examples = model.corpus_count
         model.build_vocab(senteces=data_to_train)
         model.train(sentences=data_to_train,
