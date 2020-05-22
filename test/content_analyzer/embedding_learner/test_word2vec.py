@@ -11,8 +11,8 @@ class TestGensimWord2Vec(TestCase):
         try:
             result = GensimWord2Vec(source=JSONFile('../../../datasets/movies_info_reduced.json'),
                                     preprocessor=NLTK(),
-                                    field_name=["Genre"]).fit()
+                                    field_name=["Title", "Year", "Genre"]).fit()
         except FileNotFoundError:
             result = GensimWord2Vec(source=JSONFile('datasets/movies_info_reduced.json'),
                                     preprocessor=NLTK(),
-                                    field_name=["Genre"]).fit()
+                                    field_name=["Title", "Year", "Genre"]).fit()
