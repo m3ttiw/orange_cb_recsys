@@ -90,12 +90,6 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
         if "callbacks" in kwargs.keys():
             self.optionals["callbacks"] = kwargs["callbacks"]
 
-        if "max_final_vocab" in kwargs.keys():
-            self.optionals["max_final_vocab"] = kwargs["max_final_vocab"]
-
-        if "compute_loss" in kwargs.keys():
-            self.optionals["compute_loss"] = kwargs["compute_loss"]
-
         if "compatible_hash" in kwargs.keys():
             self.optionals["compatible_hash"] = kwargs["compatible_hash"]
 
