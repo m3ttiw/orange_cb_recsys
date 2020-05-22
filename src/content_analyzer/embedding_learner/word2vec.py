@@ -47,21 +47,20 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
                "source = " + str(self.get_source()) + \
                "preprocessor = " + str(self.get_preprocessor()) + " >"
 
-    def __iter__(self):
-        data_to_train = list()
-        for line in self.get_source():
-            for field in self.get_field_list():
-                data_to_train.append(self.get_preprocessor().process(line[field].lower()))
-
     def fit(self):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Word2vec.
         """
+        data_to_train = list()
+        for line in self.get_source():
+            for field in self.get_field_list():
+                data_to_train.append(self.get_preprocessor().process(line[field].lower()))
         model = Word2Vec(size=self.__size, window=self.__window, min_count=self.__min_count)
         total_examples = model.corpus_count
-        model.build_vocab(senteces=GensimWord2Vec(self.get_source(), self.get_preprocessor(), self.get_field_list()))
-        model.train(sentences=GensimWord2Vec(self.get_source(), self.get_preprocessor(), self.get_field_list()),
-                    total_examples=total_examples, epochs=self.__epochs)
+        model.build_vocab(senteces=data_to_train)
+        model.train(sentences=data_to_train,
+                    total_examples=total_examples,
+                    epochs=self.__epochs)
         return model
 
     def save(self):
