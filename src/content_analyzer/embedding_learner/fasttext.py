@@ -46,12 +46,6 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
                "source = " + str(self.get_source()) + \
                "preprocessor = " + str(self.get_preprocessor()) + " >"
 
-    def __iter__(self):
-        data_to_train = list()
-        for line in self.get_source():
-            for field in self.get_field_list():
-                data_to_train.append(self.get_preprocessor().process(line[field].lower()))
-
     def fit(self):
         """"
         Implementation of the Abstract Method fit in the Abstract Class EmbeddingLearner.
