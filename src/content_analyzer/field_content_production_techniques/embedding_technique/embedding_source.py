@@ -96,8 +96,8 @@ class Wikipedia2VecDownloader(EmbeddingSource):
         for i, word in enumerate(text):
             try:
                 embedding_matrix[i, :] = self.get_model().get_word_vector(word)
-            except:
-                pass
+            except KeyError:
+                embedding_matrix[i, :] = np.zeros(self.get_vector_size())
 
         return embedding_matrix
 

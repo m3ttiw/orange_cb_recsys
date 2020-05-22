@@ -183,8 +183,8 @@ class EmbeddingSource(ABC):
         for i, word in enumerate(text):
             try:
                 embedding_matrix[i, :] = self.__model[word]
-            except:
-                pass
+            except KeyError:
+                embedding_matrix[i, :] = np.zeros(self.get_vector_size())
 
         return embedding_matrix
 
