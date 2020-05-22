@@ -6,14 +6,13 @@ import os
 
 
 class TestGensimLatentSemanticAnalysis(TestCase):
-    try:
+    """try:
         os.chdir("../../../datasets")
     except FileNotFoundError:
-        os.chdir("datasets")
+        os.chdir("datasets")"""
     def test_load_data_from_source(self):
-        src = JSONFile("movies_info_reduced.json")
         preprocessor = NLTK(stopwords_removal=True, stemming=True)
-        learner = GensimLatentSemanticAnalysis(src, preprocessor, ["Title", "Released"])
+        fields = ["Title", "Released"]
         expected = [['jumanji', '15', 'dec', '1995'],
                     ['grumpier', 'old', 'men', '22', 'dec', '1995'],
                     ['toy', 'stori', '22', 'nov', '1995'],
@@ -34,21 +33,43 @@ class TestGensimLatentSemanticAnalysis(TestCase):
                     ['four', 'room', '25', 'dec', '1995'],
                     ['money', 'train', '22', 'nov', '1995'],
                     ['ace', 'ventura', 'when', 'natur', 'call', '10', 'nov', '1995']]
-        self.assertEqual(learner.load_data_from_source(),
-                         expected)
+
+        try:
+            src = JSONFile("datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            generated = learner.load_data_from_source()
+        except FileNotFoundError:
+            src = JSONFile("../../../datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            generated = learner.load_data_from_source()
+
+        self.assertEqual(generated, expected)
 
     def test_create_dictionary(self):
-        src = JSONFile("movies_info_reduced.json")
         preprocessor = NLTK(stopwords_removal=True, stemming=True)
-        learner = GensimLatentSemanticAnalysis(src, preprocessor, ["Title", "Released"])
-        docs = learner.load_data_from_source()
+        fields = ["Title", "Released"]
+        try:
+            src = JSONFile("datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
+        except FileNotFoundError:
+            src = JSONFile("../../../datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
         self.assertEqual(len(learner.create_dictionary(docs)), 55)
 
     def test_create_word_docs_matrix(self):
-        src = JSONFile("movies_info_test.json")
         preprocessor = NLTK(stopwords_removal=True)
-        learner = GensimLatentSemanticAnalysis(src, preprocessor, ["Plot"])
-        docs = learner.load_data_from_source()
+        fields = ["Plot"]
+        try:
+            src = JSONFile("datasets/movies_info_test.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
+        except FileNotFoundError:
+            src = JSONFile("../../../datasets/movies_info_test.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
+
         dct = learner.create_dictionary(docs)
         expected = [[(0, 1), (1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1), (9, 1), (10, 1), (11, 2),
                      (12, 2), (13, 1), (14, 1), (15, 1), (16, 1), (17, 1), (18, 1), (19, 1), (20, 1), (21, 1), (22, 1)],
@@ -61,19 +82,31 @@ class TestGensimLatentSemanticAnalysis(TestCase):
                          expected)
 
     def test_fit(self):
-        src = JSONFile("movies_info_reduced.json")
         preprocessor = NLTK(stopwords_removal=True)
-        learner = GensimLatentSemanticAnalysis(src, preprocessor, ["Plot"])
-        docs = learner.load_data_from_source()
+        fields = ["Plot"]
+        try:
+            src = JSONFile("datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
+        except FileNotFoundError:
+            src = JSONFile("../../../datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
         dct = learner.create_dictionary(docs)
         word_docs_matrix = learner.create_word_docs_matrix(docs, dct)
         learner.fit(dct, word_docs_matrix)
 
     def test_save(self):
-        src = JSONFile("movies_info_reduced.json")
         preprocessor = NLTK(stopwords_removal=True)
-        learner = GensimLatentSemanticAnalysis(src, preprocessor, ["Plot"])
-        docs = learner.load_data_from_source()
+        fields = ["Plot"]
+        try:
+            src = JSONFile("datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
+        except FileNotFoundError:
+            src = JSONFile("../../../datasets/movies_info_reduced.json")
+            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+            docs = learner.load_data_from_source()
         dct = learner.create_dictionary(docs)
         word_docs_matrix = learner.create_word_docs_matrix(docs, dct)
         model = learner.fit(dct, word_docs_matrix)
