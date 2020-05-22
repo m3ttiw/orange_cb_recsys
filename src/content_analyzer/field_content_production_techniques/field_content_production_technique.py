@@ -53,7 +53,7 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
 
 class SingleContentTechnique(FieldContentProductionTechnique):
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data: str) -> FieldRepresentation:
+    def produce_content(self, field_representation_name: str, field_data) -> FieldRepresentation:
         """
         Given data of certain field it returns a complex representation's instance of the field.
         Args:
@@ -166,7 +166,7 @@ class EmbeddingSource(ABC):
     def __init__(self):
         self.__model = None
 
-    def load(self, text: str) -> np.ndarray:
+    def load(self, text: List[str]) -> np.ndarray:
         """
         Function that extracts from the embeddings model
         the vectors of the words contained in text
@@ -183,8 +183,8 @@ class EmbeddingSource(ABC):
         for i, word in enumerate(text):
             try:
                 embedding_matrix[i, :] = self.__model[word]
-            except:
-                pass
+            except KeyError:
+                embedding_matrix[i, :] = np.zeros(self.get_vector_size())
 
         return embedding_matrix
 
@@ -193,6 +193,9 @@ class EmbeddingSource(ABC):
 
     def get_vector_size(self) -> int:
         return self.__model.vector_size
+
+    def get_model(self):
+        return self.__model
 
     def __str__(self):
         return "EmbeddingSource"
