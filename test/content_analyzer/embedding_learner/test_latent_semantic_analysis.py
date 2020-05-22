@@ -6,7 +6,10 @@ import os
 
 
 class TestGensimLatentSemanticAnalysis(TestCase):
-    os.chdir("../../../datasets")
+    try:
+        os.chdir("../../../datasets")
+    except FileNotFoundError:
+        os.chdir("datasets")
     def test_load_data_from_source(self):
         src = JSONFile("movies_info_reduced.json")
         preprocessor = NLTK(stopwords_removal=True, stemming=True)
