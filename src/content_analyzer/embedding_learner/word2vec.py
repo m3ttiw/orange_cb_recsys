@@ -53,13 +53,17 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         """
         data_to_train = list()
         for line in self.get_source():
-            for field in self.get_field_list():
-                data_to_train.append(self.get_preprocessor().process(line[field].lower()))
-        model = Word2Vec(sentences=data_to_train, size=self.__size, window=self.__window, min_count=self.__min_count)
-        total_examples = model.corpus_count
+            doc = []
+            for field_name in self.get_field_list():
+                field_data = self.get_preprocessor().process(line[field_name].lower())
+                if type(field_data) is list:
+                    field_data = ' '.join(field_data)
+                doc.append(field_data)
+            data_to_train.append(doc)
+        model = Word2Vec(sentences=data_to_train)
         model.build_vocab(data_to_train)
         model.train(sentences=data_to_train,
-                    total_examples=total_examples,
+                    total_examples=model.corpus_count,
                     epochs=self.__epochs)
         return model
 
