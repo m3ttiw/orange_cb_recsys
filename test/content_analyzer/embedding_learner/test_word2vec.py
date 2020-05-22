@@ -8,7 +8,7 @@ import os
 
 class TestGensimWord2Vec(TestCase):
     def test_fit(self):
-        result = GensimWord2Vec(source=JSONFile(os.path.abspath(os.path.join("..", "..", "..", "dataset",
+        result = GensimWord2Vec(source=JSONFile(os.path.abspath(os.path.join("..", "..", "dataset",
                                 "movies_info_reduced.json"))),
                                 preprocessor=NLTK(),
                                 field_name="Genre").fit()
