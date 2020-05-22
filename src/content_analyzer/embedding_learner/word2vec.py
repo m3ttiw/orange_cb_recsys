@@ -62,5 +62,10 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         model.build_vocab(senteces=GensimWord2Vec(self.__source, self.__preprocessor, self.__field_list))
         model.train(sentences=GensimWord2Vec(self.__source, self.__preprocessor, self.__field_list),
                     total_examples=total_examples, epochs=self.__epochs)
-        model.save("word2vec.model")
         return model
+
+    def save(self):
+        model = GensimWord2Vec(source=self.__source,
+                               preprocessor=self.__preprocessor,
+                               field_list=self.__field_list).fit()
+        model.save("word2vec.model")
