@@ -8,7 +8,11 @@ import os
 
 class TestGensimWord2Vec(TestCase):
     def test_fit(self):
-        result = GensimWord2Vec(source=JSONFile(os.path.dirname(os.path.join(os.path.abspath(__file__),
-                                                                             "\movies_info_reduced.json"))),
-                                preprocessor=NLTK(),
-                                field_name="Genre").fit()
+        try:
+            result = GensimWord2Vec(source=JSONFile('../../../datasets/movies_info_reduced.json'),
+                                    preprocessor=NLTK(),
+                                    field_name="Genre").fit()
+        except FileNotFoundError:
+            result = GensimWord2Vec(source=JSONFile('datasets/movies_info_reduced.json'),
+                                    preprocessor=NLTK(),
+                                    field_name="Genre").fit()
