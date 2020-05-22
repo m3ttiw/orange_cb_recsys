@@ -20,6 +20,9 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         super().__init__(source, preprocessor, field_list)
 
         self.optionals = {}
+        if "corpus_file" in kwargs.keys():
+            self.optionals["corpus_file"] = kwargs["corpus_file"]
+
         if "size" in kwargs.keys():
             self.optionals["size"] = kwargs["size"]
 
@@ -89,6 +92,12 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         if "callbacks" in kwargs.keys():
             self.optionals["callbacks"] = kwargs["callbacks"]
 
+        if "max_final_vocab" in kwargs.keys():
+            self.optionals["max_final_vocab"] = kwargs["max_final_vocab"]
+
+        if "compute_loss" in kwargs.keys():
+            self.optionals["compute_loss"] = kwargs["compute_loss"]
+
         if "compatible_hash" in kwargs.keys():
             self.optionals["compatible_hash"] = kwargs["compatible_hash"]
 
@@ -111,6 +120,9 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
     def fit(self):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Word2vec.
+
+        Returns:
+            generator: the model, trained on the data in the field_list variable, is returned
         """
         data_to_train = list()
         for line in self.get_source():
