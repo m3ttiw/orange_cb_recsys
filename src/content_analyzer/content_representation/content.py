@@ -1,5 +1,6 @@
 from typing import List
 import pickle
+import re
 
 from src.content_analyzer.content_representation.content_field import ContentField
 
@@ -44,7 +45,8 @@ class Content:
         """
         Serialize a content instance
         """
-        with open(output_directory + '/' + self.__content_id + '.bin', 'wb') as file:
+        file_name = re.sub(r'[^\w\s]','', self.__content_id)
+        with open(output_directory + '/' + file_name + '.bin', 'wb') as file:
             pickle.dump(self, file)
 
     def __str__(self):

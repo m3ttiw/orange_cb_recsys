@@ -313,10 +313,7 @@ class ContentsProducer:
                     timestamp = time.time()
 
             # construct id from the list of the fields that compound id
-            id_values = []
-            for id_field_name in self.__config.get_id_field_name():
-                id_values.append(raw_content[id_field_name])
-            content_id = id_merger(id_values)
+            content_id = id_merger(raw_content, self.__config.get_id_field_name())
 
             interfaces = self.__config.get_interfaces()
             for interface in interfaces:

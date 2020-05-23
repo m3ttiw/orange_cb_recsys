@@ -38,12 +38,7 @@ class LuceneTfIdf(TfIdfTechnique):
             self.__index.init_writing()
             for raw_content in information_source:
                 self.__index.new_content()
-                id_values = []
-
-                for name in id_field_names:
-                    id_values.append(raw_content[name])
-
-                content_id = id_merger(id_values)
+                content_id = id_merger(raw_content, id_field_names)
                 self.__index.new_field("content_id", content_id)
 
                 for (field_name, pipeline_id) in self.get_need_refactor().keys():
