@@ -3,7 +3,7 @@ from typing import List
 from gensim.models import Word2Vec
 
 from src.content_analyzer.embedding_learner import embedding_learner
-from src.content_analyzer.information_processor.information_processor import InformationProcessor
+from src.content_analyzer.information_processor.information_processor import TextProcessor
 from src.content_analyzer.raw_information_source import RawInformationSource
 
 
@@ -14,7 +14,7 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
     """
 
     def __init__(self, source: RawInformationSource,
-                 preprocessor: InformationProcessor,
+                 preprocessor: TextProcessor,
                  field_list=List[str],
                  **kwargs):
         super().__init__(source, preprocessor, field_list)
@@ -124,22 +124,10 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         Returns:
             generator: the model, trained on the data in the field_list variable, is returned
         """
-        data_to_train = list()
-        for line in self.get_source():
-            doc = []
-            for field_name in self.get_field_list():
-                field_data = self.get_preprocessor().process(line[field_name].lower())
-                doc.append(field_data)
-            data_to_train.append(doc)
+        data_to_train = self.extract_corpus()
         model = Word2Vec(sentences=data_to_train, **self.optionals)
         # model.build_vocab(data_to_train)
         model.train(sentences=data_to_train,
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)
         return model
-
-    def save(self):
-        model = GensimWord2Vec(source=self.get_source(),
-                               preprocessor=self.get_preprocessor(),
-                               field_list=self.get_field_list()).fit()
-        model.save("word2vec.model")

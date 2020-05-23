@@ -116,22 +116,10 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
         Returns:
             generator: the model, trained on the data in the field_list variable, is returned
         """
-        data_to_train = list()
-        for line in self.get_source():
-            doc = []
-            for field_name in self.get_field_list():
-                field_data = self.get_preprocessor().process(line[field_name].lower())
-                doc.append(field_data)
-            data_to_train.append(doc)
+        data_to_train = self.extract_corpus()
         model = FastText(sentences=data_to_train, **self.optionals)
         # model.build_vocab(senteces=GensimFastText(self.get_source(), self.get_preprocessor(), self.get_field_list()))
         model.train(data_to_train,
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)
         return model
-
-    def save(self):
-        model = GensimFastText(source=self.get_source(),
-                               preprocessor=self.get_preprocessor(),
-                               field_list=self.get_field_list()).fit()
-        model.save("fasttext.model")

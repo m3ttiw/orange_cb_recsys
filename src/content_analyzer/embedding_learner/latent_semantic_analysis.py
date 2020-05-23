@@ -4,7 +4,7 @@ from gensim.corpora import Dictionary
 from gensim.models import LsiModel
 
 from src.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
-from src.content_analyzer.information_processor.information_processor import InformationProcessor
+from src.content_analyzer.information_processor.information_processor import TextProcessor
 from src.content_analyzer.raw_information_source import RawInformationSource
 
 
@@ -12,7 +12,7 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
     """
     Class that implements latent semantic analysis using Gensim
     """
-    def __init__(self, source: RawInformationSource, preprocessor: InformationProcessor, field_list: List[str]):
+    def __init__(self, source: RawInformationSource, preprocessor: TextProcessor, field_list: List[str]):
         super().__init__(source, preprocessor, field_list)
 
     def __str__(self):
@@ -23,23 +23,6 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
                 "source = " + str(self.__source) + \
                 "preprocessor = " + str(self.__preprocessor) + " >"
 
-    def load_data_from_source(self) -> List[List[str]]:
-        my_iter = iter(self.get_source())
-        end_loop = False
-        docs = []
-        while not end_loop:
-            try:
-                row = next(my_iter)
-            except StopIteration:
-                end_loop = True
-            else:
-                text = ""
-                for field_name in self.get_field_list():
-                    text += " " + row[field_name]
-                text = self.get_preprocessor().process(text)
-                docs.append(text)
-        return docs
-
     @staticmethod
     def create_dictionary(docs) -> Dictionary:
         return Dictionary(docs)
@@ -48,7 +31,7 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
     def create_word_docs_matrix(docs, dictionary) -> List[str]:
         return [dictionary.doc2bow(doc) for doc in docs]
 
-    def fit(self, dictionary, word_docs_matrix):
+    def fit(self):
         """
         Creates the model for the embedding
 
@@ -60,9 +43,8 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
         Returns:
             LsiModel: The LSI (Latent Semantic Index) built.
         """
+        docs = self.extract_corpus()
+        dictionary = GensimLatentSemanticAnalysis.create_dictionary(docs)
+        word_docs_matrix = GensimLatentSemanticAnalysis.create_word_docs_matrix(docs, dictionary)
         return LsiModel(word_docs_matrix, id2word=dictionary)
 
-    @staticmethod
-    def save_model(name, model: LsiModel):
-        name = name+".model"
-        model.save(name)

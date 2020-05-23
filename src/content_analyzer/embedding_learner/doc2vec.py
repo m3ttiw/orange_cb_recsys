@@ -48,14 +48,7 @@ class GensimDoc2Vec(EmbeddingLearner):
         Implementation of the Abstract Method fit in the Abstract Class Doc2vec.
         """
 
-        corpus = list()
-        # iter the source
-        for doc in self.get_source():
-            doc_data = ""
-            for field_name in self.get_field_list():
-                # apply preprocessing and save the data in the list
-                doc_data += " " + doc[field_name].lower()
-            corpus.append(self.get_preprocessor().process(doc_data))
+        corpus = self.extract_corpus()
 
         tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(corpus)]
 
@@ -75,7 +68,7 @@ class GensimDoc2Vec(EmbeddingLearner):
             model.alpha -= 0.0002  # decrease the learning rate
             model.min_alpha = model.alpha  # fix the learning rate, no decay
 
-        self.__model = model
+        self.set_model(model)
 
         # model.save("d2v.model")
         """
