@@ -2,6 +2,7 @@ from src.content_analyzer.content_representation.content_field import FeaturesBa
 from src.content_analyzer.field_content_production_techniques.field_content_production_technique import TfIdfTechnique
 from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from src.content_analyzer.raw_information_source import RawInformationSource
+from src.utils.check_tokenization import check_tokenized
 from src.utils.id_merger import id_merger
 
 
@@ -46,6 +47,8 @@ class LuceneTfIdf(TfIdfTechnique):
                     processed_field_data = raw_content[field_name]
                     for preprocessor in preprocessor_list:
                         processed_field_data = preprocessor.process(processed_field_data)
+
+                    processed_field_data = check_tokenized(processed_field_data)
                     self.__index.new_field(field_name + pipeline_id, processed_field_data)
                 self.__index.serialize_content()
 
