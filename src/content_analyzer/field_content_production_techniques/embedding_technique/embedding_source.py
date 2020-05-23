@@ -7,6 +7,7 @@ from wikipedia2vec import Wikipedia2Vec
 import numpy as np
 
 from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EmbeddingSource
+from src.utils.check_tokenization import check_tokenized
 
 
 class EmbeddingType(Enum):
@@ -93,7 +94,11 @@ class Wikipedia2VecDownloader(EmbeddingSource):
         """
         embedding_matrix = np.ndarray(shape=(len(text), self.get_vector_size()))
 
+        text = check_tokenized(text)
+
         for i, word in enumerate(text):
+            word = word.lower()
+
             try:
                 embedding_matrix[i, :] = self.get_model().get_word_vector(word)
             except KeyError:

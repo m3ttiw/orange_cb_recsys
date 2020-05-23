@@ -9,6 +9,7 @@ from src.content_analyzer.content_representation.content_field \
 from src.content_analyzer.information_processor.information_processor import InformationProcessor
 from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from src.content_analyzer.raw_information_source import RawInformationSource
+from src.utils.check_tokenization import check_tokenized
 
 
 class FieldContentProductionTechnique(ABC):
@@ -180,10 +181,14 @@ class EmbeddingSource(ABC):
         """
         embedding_matrix = np.ndarray(shape=(len(text), self.get_vector_size()))
 
+        text = check_tokenized(text)
+
         for i, word in enumerate(text):
+            word = word.lower()
             try:
                 embedding_matrix[i, :] = self.__model[word]
             except KeyError:
+                print(word)
                 embedding_matrix[i, :] = np.zeros(self.get_vector_size())
 
         return embedding_matrix

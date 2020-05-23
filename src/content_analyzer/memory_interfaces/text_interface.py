@@ -75,8 +75,6 @@ class IndexInterface(TextInterface):
                 and the corresponding values are the tf-idf values.
         """
 
-        print(content_id)
-
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
         query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:\"" + content_id + "\"")
         score_docs = searcher.search(query, 1).scoreDocs

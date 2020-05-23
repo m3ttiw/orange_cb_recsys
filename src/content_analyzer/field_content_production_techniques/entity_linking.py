@@ -2,6 +2,7 @@ from src.content_analyzer.content_representation.content_field import FeaturesBa
 from babelpy.babelfy import BabelfyClient
 
 from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EntityLinking
+from src.utils.check_tokenization import check_not_tokenized
 
 
 class BabelPyEntityLinking(EntityLinking):
@@ -19,6 +20,8 @@ class BabelPyEntityLinking(EntityLinking):
         return "BabelPyEntityLinking"
 
     def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
+        field_data = check_not_tokenized(field_data)
+
         self.__babel_client.babelfy(field_data)
         feature_bag = FeaturesBagField(field_representation_name)
         if self.__babel_client.entities is not None:
