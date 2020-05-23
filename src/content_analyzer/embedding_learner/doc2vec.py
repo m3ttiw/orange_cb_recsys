@@ -11,6 +11,7 @@ class GensimDoc2Vec(EmbeddingLearner):
     Class that implements the Abstract Class Word2Vec.
     Implementation of Word2Vec using the Gensim library.
     """
+
     def __init__(self, source: RawInformationSource,
                  preprocessor: NLP,
                  field_list: List[str],
@@ -32,6 +33,8 @@ class GensimDoc2Vec(EmbeddingLearner):
         else:
             self.__alpha = 0.025
 
+        self.__model = None
+
     def __str__(self):
         return "GensimDoc2Vec"
 
@@ -42,19 +45,19 @@ class GensimDoc2Vec(EmbeddingLearner):
 
     def fit(self):
         """"
-        Implementation of the Abstract Method start_training in the Abstract Class Doc2vec.
+        Implementation of the Abstract Method fit in the Abstract Class Doc2vec.
         """
 
-        data = list()
+        corpus = list()
         # iter the source
         for doc in self.get_source():
+            doc_data = ""
             for field_name in self.get_field_list():
                 # apply preprocessing and save the data in the list
-                data.append(self.get_preprocessor().process(doc[field_name].lower()))
+                doc_data += " " + doc[field_name].lower()
+            corpus.append(self.get_preprocessor().process(doc_data))
 
-        #data = [self.get_preprocessor().process(field_data=doc[self.__field_name].lower()) for doc in self.get_source()]
-
-        tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(data)]
+        tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(corpus)]
 
         model = Doc2Vec(vector_size=self.__vec_size,
                         alpha=self.__alpha,
@@ -65,14 +68,16 @@ class GensimDoc2Vec(EmbeddingLearner):
         model.build_vocab(tagged_data)  # this create the vocabulary
 
         for epoch in range(self.__max_epochs):
-            #print('iteration {0}'.format(epoch))
+            # print('iteration {0}'.format(epoch))
             model.train(tagged_data,
                         total_examples=model.corpus_count,
                         epochs=model.iter)
             model.alpha -= 0.0002  # decrease the learning rate
             model.min_alpha = model.alpha  # fix the learning rate, no decay
 
-        model.save("d2v.model")
+        self.__model = model
+
+        # model.save("d2v.model")
         """
         return_list = list()
         n = model.docvecs.count
@@ -81,4 +86,6 @@ class GensimDoc2Vec(EmbeddingLearner):
             return_list.append(model.docvecs[str(i)])
         """
         return model
+
+
 
