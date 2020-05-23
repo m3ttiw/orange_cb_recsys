@@ -22,8 +22,6 @@ class RandomIndexing(EmbeddingLearner):
             document = []
             for field_name in self.get_field_list():
                 field_data = self.get_preprocessor().process(content[field_name])
-                if type(field_data) is list:
-                    field_data = ' '.join(field_data)
                 document.append(field_data)
             corpus.append(document)
 

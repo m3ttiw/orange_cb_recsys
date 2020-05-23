@@ -121,8 +121,6 @@ class GensimFastText(embedding_learner.EmbeddingLearner):
             doc = []
             for field_name in self.get_field_list():
                 field_data = self.get_preprocessor().process(line[field_name].lower())
-                if type(field_data) is list:
-                    field_data = ' '.join(field_data)
                 doc.append(field_data)
             data_to_train.append(doc)
         model = FastText(sentences=data_to_train, **self.optionals)
