@@ -6,6 +6,4 @@ nltk~=3.5
 babelpy~=1.0.1
 mysql~=0.0.2
 mysql-connector-python~=8.0.20
-
-lucene~=8.3.0
 wikipedia2vec~=1.0.4
