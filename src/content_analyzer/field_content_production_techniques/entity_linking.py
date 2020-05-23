@@ -19,7 +19,7 @@ class BabelPyEntityLinking(EntityLinking):
     def __str__(self):
         return "BabelPyEntityLinking"
 
-    def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
+    def produce_content(self, field_representation_name: str, field_data) -> FeaturesBagField:
         field_data = check_not_tokenized(field_data)
 
         self.__babel_client.babelfy(field_data)

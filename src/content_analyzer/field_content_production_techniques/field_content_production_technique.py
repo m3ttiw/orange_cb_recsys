@@ -116,7 +116,7 @@ class EntityLinking(SingleContentTechnique):
     """
 
     @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data: str) -> FeaturesBagField:
+    def produce_content(self, field_representation_name: str, field_data) -> FeaturesBagField:
         raise NotImplementedError
 
 
@@ -261,7 +261,7 @@ class EmbeddingTechnique(SingleContentTechnique):
         if "granularity" in kwargs.keys():
             self.__granularity: Granularity = kwargs["granularity"]
 
-    def produce_content(self, field_representation_name: str, field_data: str) -> EmbeddingField:
+    def produce_content(self, field_representation_name: str, field_data) -> EmbeddingField:
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
