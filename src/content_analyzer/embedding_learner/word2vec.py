@@ -130,4 +130,4 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         model.train(sentences=data_to_train,
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)
-        return model
+        self.set_model(model)

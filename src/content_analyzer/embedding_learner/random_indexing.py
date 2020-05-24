@@ -17,9 +17,6 @@ class RandomIndexing(EmbeddingLearner):
 
     def fit(self):
         corpus = self.extract_corpus()
-
         dictionary = Dictionary(corpus)
-
         model = RpModel(corpus, id2word=dictionary)
-
-        return model
+        self.set_model(model)

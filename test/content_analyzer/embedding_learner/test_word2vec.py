@@ -10,10 +10,10 @@ class TestGensimWord2Vec(TestCase):
     def test_fit(self):
         field_list = ['Title', 'Year', 'Genre']
         try:
-            result = GensimWord2Vec(source=JSONFile('../../../datasets/movies_info_reduced.json'),
-                                    preprocessor=NLTK(),
-                                    field_list=field_list).fit()
+            GensimWord2Vec(source=JSONFile('../../../datasets/movies_info_reduced.json'),
+                           preprocessor=NLTK(),
+                           field_list=field_list).fit()
         except FileNotFoundError:
-            result = GensimWord2Vec(source=JSONFile('datasets/movies_info_reduced.json'),
-                                    preprocessor=NLTK(),
-                                    field_list=field_list).fit()
+            GensimWord2Vec(source=JSONFile('datasets/movies_info_reduced.json'),
+                           preprocessor=NLTK(),
+                           field_list=field_list).fit()

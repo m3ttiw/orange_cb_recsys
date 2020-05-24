@@ -47,18 +47,15 @@ class GensimDoc2Vec(EmbeddingLearner):
         """"
         Implementation of the Abstract Method fit in the Abstract Class Doc2vec.
         """
-
         corpus = self.extract_corpus()
-
         tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(corpus)]
-
         model = Doc2Vec(vector_size=self.__vec_size,
                         alpha=self.__alpha,
                         min_alpha=0.00025,
                         min_count=1,
                         dm=1)
 
-        model.build_vocab(tagged_data)  # this create the vocabulary
+        model.build_vocab(tagged_data)  # this creates the vocabulary
 
         for epoch in range(self.__max_epochs):
             # print('iteration {0}'.format(epoch))
@@ -78,7 +75,7 @@ class GensimDoc2Vec(EmbeddingLearner):
             #print("Doc-{}: {}".format(i, model.docvecs[str(i)]))
             return_list.append(model.docvecs[str(i)])
         """
-        return model
+
 
 
 

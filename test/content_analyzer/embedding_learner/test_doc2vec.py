@@ -6,7 +6,7 @@ from src.content_analyzer.raw_information_source import JSONFile
 
 
 class TestGensimDoc2Vec(TestCase):
-    def test_start_learning(self):
+    def test_fit(self):
 
         try:
             path = "datasets/d2v_test_data.json"
