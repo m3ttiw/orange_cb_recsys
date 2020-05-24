@@ -8,6 +8,6 @@ from src.content_analyzer.information_processor.nlp import NLTK
 class TestRandomIndexing(TestCase):
     def test_fit(self):
         try:
-            model = RandomIndexing(JSONFile('../../../datasets/movies_info_reduced.json'), NLTK(), ['Genre', 'Plot']).fit()
+            RandomIndexing(JSONFile('../../../datasets/movies_info_reduced.json'), NLTK(), ['Genre', 'Plot']).fit()
         except FileNotFoundError:
-            model = RandomIndexing(JSONFile('datasets/movies_info_reduced.json'), NLTK(), ['Genre', 'Plot']).fit()
+            RandomIndexing(JSONFile('datasets/movies_info_reduced.json'), NLTK(), ['Genre', 'Plot']).fit()
