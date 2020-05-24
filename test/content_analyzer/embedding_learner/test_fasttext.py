@@ -8,10 +8,10 @@ class TestGensimFastText(TestCase):
     def test_fit(self):
             field_list = ['Title', 'Year', 'Genre']
             try:
-                    result = GensimFastText(source=JSONFile('../../../datasets/movies_info_reduced.json'),
-                                            preprocessor=NLTK(),
-                                            field_list=field_list).fit()
+                    GensimFastText(source=JSONFile('../../../datasets/movies_info_reduced.json'),
+                                   preprocessor=NLTK(),
+                                   field_list=field_list).fit()
             except FileNotFoundError:
-                    result = GensimFastText(source=JSONFile('datasets/movies_info_reduced.json'),
-                                            preprocessor=NLTK(),
-                                            field_list=field_list).fit()
+                    GensimFastText(source=JSONFile('datasets/movies_info_reduced.json'),
+                                   preprocessor=NLTK(),
+                                   field_list=field_list).fit()
