@@ -129,6 +129,5 @@ class SQLDatabase(RawInformationSource):
         cursor = self.get_conn().cursor(dictionary=True)
         query = """SELECT * FROM """ + self.get_table_name() + """;"""
         cursor.execute(query)
-        results = cursor.fetchall()     #list of dicts
-        for result in results:
+        for result in cursor:
             yield result
