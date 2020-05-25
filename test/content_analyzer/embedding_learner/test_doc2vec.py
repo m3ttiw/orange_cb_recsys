@@ -10,7 +10,8 @@ class TestGensimDoc2Vec(TestCase):
 
         try:
             path = "datasets/d2v_test_data.json"
-            open(path)
+            with open(path):
+                pass
         except FileNotFoundError:
             path = "../../../datasets/d2v_test_data.json"
 

@@ -7,7 +7,11 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 class TestRandomIndexing(TestCase):
     def test_fit(self):
+        file_path = '../../../datasets/movies_info_reduced.json'
         try:
-            RandomIndexing(JSONFile('../../../datasets/movies_info_reduced.json'), NLTK(), ['Genre', 'Plot']).fit()
+            with open(file_path):
+                pass
         except FileNotFoundError:
-            RandomIndexing(JSONFile('datasets/movies_info_reduced.json'), NLTK(), ['Genre', 'Plot']).fit()
+            file_path = 'datasets/movies_info_reduced.json'
+
+        RandomIndexing(JSONFile(file_path), NLTK(), ['Genre', 'Plot']).fit()

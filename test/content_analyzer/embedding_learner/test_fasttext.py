@@ -8,11 +8,16 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 class TestGensimFastText(TestCase):
     def test_fit(self):
         field_list = ['Title', 'Year', 'Genre']
+
+        file_path = '../../../datasets/movies_info_reduced.json'
         try:
-            GensimFastText(source=JSONFile('../../../datasets/movies_info_reduced.json'),
-                           preprocessor=NLTK(),
-                           field_list=field_list).fit()
+            with open(file_path):
+                pass
         except FileNotFoundError:
-            GensimFastText(source=JSONFile('datasets/movies_info_reduced.json'),
-                           preprocessor=NLTK(),
-                           field_list=field_list).fit()
+            file_path = '../../../datasets/movies_info_reduced.json'
+
+        GensimFastText(source=JSONFile(file_path),
+                       preprocessor=NLTK(),
+                       field_list=field_list).fit()
+
+

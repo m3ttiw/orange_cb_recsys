@@ -9,11 +9,15 @@ class TestGensimLatentSemanticAnalysis(TestCase):
     def test_fit(self):
         preprocessor = NLTK(stopwords_removal=True)
         fields = ["Plot"]
+
+        file_path = "datasets/movies_info_reduced.json"
         try:
-            src = JSONFile("datasets/movies_info_reduced.json")
-            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
-            learner.fit()
+            with open(file_path):
+                pass
         except FileNotFoundError:
-            src = JSONFile("../../../datasets/movies_info_reduced.json")
-            learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
-            learner.fit()
+            file_path = "../../../datasets/movies_info_reduced.json"
+
+        src = JSONFile(file_path)
+        learner = GensimLatentSemanticAnalysis(src, preprocessor, fields)
+        learner.fit()
+
