@@ -2,9 +2,9 @@ import time
 from abc import ABC, abstractmethod
 from typing import List
 
-from src.content_analyzer.information_processor.information_processor import TextProcessor
-from src.content_analyzer.information_processor.nlp import NLTK
-from src.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.content_analyzer.information_processor.information_processor import TextProcessor
+from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
 
 class EmbeddingLearner(ABC):

@@ -4,12 +4,12 @@ from typing import List, Tuple, Dict
 
 import numpy as np
 
-from src.content_analyzer.content_representation.content_field \
-    import EmbeddingField, FeaturesBagField, FieldRepresentation, GraphField
-from src.content_analyzer.information_processor.information_processor import InformationProcessor
-from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
-from src.content_analyzer.raw_information_source import RawInformationSource
-from src.utils.check_tokenization import check_tokenized
+from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation, \
+    FeaturesBagField, EmbeddingField
+from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
+from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.utils.check_tokenization import check_tokenized
 
 
 class FieldContentProductionTechnique(ABC):

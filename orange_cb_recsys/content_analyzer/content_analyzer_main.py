@@ -2,14 +2,14 @@ from typing import List, Dict, Set
 import time
 import os
 
-from src.content_analyzer.content_representation.content import Content
-from src.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+from orange_cb_recsys.content_analyzer.content_representation.content import Content
+from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     FieldContentProductionTechnique, CollectionBasedTechnique, SingleContentTechnique
-from src.content_analyzer.information_processor.information_processor import InformationProcessor
-from src.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
-from src.utils.id_merger import id_merger
-from src.content_analyzer.content_representation.content_field import ContentField
-from src.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
+from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
+from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.utils.id_merger import id_merger
 
 parent_dir = '../../contents'
 

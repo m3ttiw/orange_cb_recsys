@@ -4,9 +4,9 @@ import time
 from gensim.models import RpModel
 from gensim.corpora import Dictionary
 
-from src.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
-from src.content_analyzer.information_processor.information_processor import TextProcessor
-from src.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
+from orange_cb_recsys.content_analyzer.information_processor.information_processor import TextProcessor
+from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
 
 class RandomIndexing(EmbeddingLearner):

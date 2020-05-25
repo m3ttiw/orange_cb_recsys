@@ -1,24 +1,22 @@
 from typing import List
+from gensim.models.fasttext import FastText
 
-from gensim.models import Word2Vec
-
-from src.content_analyzer.embedding_learner import embedding_learner
-from src.content_analyzer.information_processor.information_processor import TextProcessor
-from src.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
+from orange_cb_recsys.content_analyzer.information_processor.information_processor import NLP
+from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
 
-class GensimWord2Vec(embedding_learner.EmbeddingLearner):
+class GensimFastText(EmbeddingLearner):
     """"
-    Class that implements the Abstract Class Word2Vec.
-    Implementation of Word2Vec using the Gensim library.
+    Class that implements the Abstract Class EmdeddingLearner.
+    Implementation of FastText using the Gensim library.
     """
 
     def __init__(self, source: RawInformationSource,
-                 preprocessor: TextProcessor,
-                 field_list=List[str],
+                 preprocessor: NLP,
+                 field_list: List[str],
                  **kwargs):
         super().__init__(source, preprocessor, field_list)
-
         self.optionals = {}
         if "corpus_file" in kwargs.keys():
             self.optionals["corpus_file"] = kwargs["corpus_file"]
@@ -31,7 +29,7 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
 
         if "min_count" in kwargs.keys():
             self.optionals["min_count"] = kwargs["min_count"]
-            
+
         if "workers" in kwargs.keys():
             self.optionals["workers"] = kwargs["workers"]
 
@@ -92,42 +90,36 @@ class GensimWord2Vec(embedding_learner.EmbeddingLearner):
         if "callbacks" in kwargs.keys():
             self.optionals["callbacks"] = kwargs["callbacks"]
 
-        if "max_final_vocab" in kwargs.keys():
-            self.optionals["max_final_vocab"] = kwargs["max_final_vocab"]
-
-        if "compute_loss" in kwargs.keys():
-            self.optionals["compute_loss"] = kwargs["compute_loss"]
-
         if "compatible_hash" in kwargs.keys():
             self.optionals["compatible_hash"] = kwargs["compatible_hash"]
 
         if "sorted_vocab" in kwargs.keys():
             self.optionals["sorted_vocab"] = kwargs["sorted_vocab"]
-        
+
         if "ephocs" in kwargs.keys():
             self.__epochs = kwargs["ephocs"]
         else:
             self.__epochs = 50
 
     def __str__(self):
-        return "GensimWord2Vec"
+        return "FastText"
 
     def __repr__(self):
-        return "< GensimWord2Vec :" + \
+        return "< GensimDoc2Vec :" + \
                "source = " + str(self.get_source()) + \
                "preprocessor = " + str(self.get_preprocessor()) + " >"
 
     def fit(self):
         """"
-        Implementation of the Abstract Method start_training in the Abstract Class Word2vec.
+        Implementation of the Abstract Method fit in the Abstract Class EmbeddingLearner.
 
         Returns:
             generator: the model, trained on the data in the field_list variable, is returned
         """
         data_to_train = self.extract_corpus()
-        model = Word2Vec(sentences=data_to_train, **self.optionals)
-        # model.build_vocab(data_to_train)
-        model.train(sentences=data_to_train,
+        model = FastText(sentences=data_to_train, **self.optionals)
+        # model.build_vocab(senteces=GensimFastText(self.get_source(), self.get_preprocessor(), self.get_field_list()))
+        model.train(data_to_train,
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)
         self.set_model(model)
