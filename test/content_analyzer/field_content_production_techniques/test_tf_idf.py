@@ -21,3 +21,7 @@ class TestLuceneTfIdf(TestCase):
         technique.append_field_need_refactor("Plot", str(1), [NLTK()])
         technique.dataset_refactor(JSONFile(file_path), ["imdbID"])
         features_bag_test = technique.produce_content("test", "tt0113497", "Plot", str(1))
+        features = features_bag_test.get_feature_dict()
+
+        self.assertEqual(features['years'], 0)
+
