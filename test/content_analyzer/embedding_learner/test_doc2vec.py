@@ -1,8 +1,8 @@
 from unittest import TestCase
-from gensim.models.doc2vec import Doc2Vec
-from src.content_analyzer.embedding_learner.doc2vec import GensimDoc2Vec
-from src.content_analyzer.information_processor.nlp import NLTK
-from src.content_analyzer.raw_information_source import JSONFile
+
+from orange_cb_recsys.content_analyzer.embedding_learner.doc2vec import GensimDoc2Vec
+from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 
 class TestGensimDoc2Vec(TestCase):

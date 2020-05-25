@@ -1,9 +1,8 @@
 from unittest import TestCase
 
-from src.content_analyzer.embedding_learner.word2vec import GensimWord2Vec
-from src.content_analyzer.information_processor.nlp import NLTK
-from src.content_analyzer.raw_information_source import JSONFile
-import os
+from orange_cb_recsys.content_analyzer.embedding_learner.word2vec import GensimWord2Vec
+from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 
 class TestGensimWord2Vec(TestCase):

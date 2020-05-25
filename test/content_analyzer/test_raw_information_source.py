@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.content_analyzer.raw_information_source import SQLDatabase
+from orange_cb_recsys.content_analyzer.raw_information_source import SQLDatabase
 
 
 class TestSQLDatabase(TestCase):

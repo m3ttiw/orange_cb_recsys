@@ -1,8 +1,7 @@
 import json
 from unittest import TestCase
 
-
-from src.content_analyzer.run import config_run, check_for_available
+from orange_cb_recsys.content_analyzer.run import config_run, check_for_available
 
 config_dict = '[{"content_type": "ITEM", "output_directory": "movielens_test", "raw_source_path": "datasets/movies_info_reduced.json", ' \
               '"source_type": "json", "id_field_name": ["imdbID"], "start_from": "0", "end_up_at": "all", ' \

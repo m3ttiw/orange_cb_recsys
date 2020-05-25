@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
 
 
 class TestBabelPyEntityLinking(TestCase):

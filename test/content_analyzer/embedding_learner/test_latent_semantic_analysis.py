@@ -1,8 +1,8 @@
 from unittest import TestCase
-from src.content_analyzer.embedding_learner.latent_semantic_analysis import GensimLatentSemanticAnalysis
-from src.content_analyzer.information_processor.nlp import NLTK
-from src.content_analyzer.raw_information_source import JSONFile
-import os
+
+from orange_cb_recsys.content_analyzer.embedding_learner.latent_semantic_analysis import GensimLatentSemanticAnalysis
+from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 
 class TestGensimLatentSemanticAnalysis(TestCase):
