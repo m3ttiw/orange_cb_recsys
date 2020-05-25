@@ -1,11 +1,10 @@
+import csv
 from abc import ABC, abstractmethod
 
 import json
 from typing import Dict
 
 import mysql.connector
-from _csv import reader
-
 
 class RawInformationSource(ABC):
     """
@@ -52,9 +51,9 @@ class CSVFile(RawInformationSource):
         self.__file_path: str = file_path
 
     def __iter__(self) -> Dict:
-        with open(self.__file_path) as j:
-            csv_reader = reader(j)
-            for line in csv_reader:
+        with open(self.__file_path, newline='', encoding='utf-8-sig') as csv_file:
+            reader = csv.DictReader(csv_file, quoting=csv.QUOTE_MINIMAL)
+            for line in reader:
                 yield line
 
 
