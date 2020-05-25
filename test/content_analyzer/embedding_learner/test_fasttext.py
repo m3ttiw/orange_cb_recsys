@@ -14,7 +14,7 @@ class TestGensimFastText(TestCase):
             with open(file_path):
                 pass
         except FileNotFoundError:
-            file_path = '../../../datasets/movies_info_reduced.json'
+            file_path = 'datasets/movies_info_reduced.json'
 
         GensimFastText(source=JSONFile(file_path),
                        preprocessor=NLTK(),

@@ -7,9 +7,6 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 class TestLuceneTfIdf(TestCase):
     def test_produce_content(self):
-        import lucene
-        lucene.initVM(vmargs=['-Djava.awt.headless=true'])
-
         file_path = '../../../datasets/movies_info_test.json'
         try:
             with open(file_path):
