@@ -11,7 +11,7 @@ from org.apache.lucene.store import SimpleFSDirectory
 from org.apache.lucene.util import BytesRefIterator
 from org.apache.lucene.index import DirectoryReader, Term
 
-from src.content_analyzer.memory_interfaces.memory_interfaces import TextInterface
+from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import TextInterface
 
 
 class IndexInterface(TextInterface):

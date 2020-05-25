@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.content_analyzer.content_representation.content_field import FeaturesBagField
+from orange_cb_recsys.content_analyzer.content_representation.content_field import FeaturesBagField
 
 
 class TestFeaturesBagField(TestCase):

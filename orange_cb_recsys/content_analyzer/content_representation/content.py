@@ -2,7 +2,7 @@ from typing import List
 import pickle
 import re
 
-from src.content_analyzer.content_representation.content_field import ContentField
+from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 
 
 class Content:

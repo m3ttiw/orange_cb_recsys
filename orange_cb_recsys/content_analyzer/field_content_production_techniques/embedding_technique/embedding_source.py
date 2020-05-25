@@ -6,8 +6,9 @@ from gensim.models import KeyedVectors, Doc2Vec, fasttext
 from wikipedia2vec import Wikipedia2Vec
 import numpy as np
 
-from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EmbeddingSource
-from src.utils.check_tokenization import check_tokenized
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+    EmbeddingSource
+from orange_cb_recsys.utils.check_tokenization import check_tokenized
 
 
 class EmbeddingType(Enum):

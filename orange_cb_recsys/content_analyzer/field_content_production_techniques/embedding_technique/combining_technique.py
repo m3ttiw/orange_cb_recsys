@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     CombiningTechnique
 
 

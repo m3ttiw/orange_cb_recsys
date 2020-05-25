@@ -1,9 +1,10 @@
-from src.content_analyzer.content_representation.content_field import FeaturesBagField
-from src.content_analyzer.field_content_production_techniques.field_content_production_technique import TfIdfTechnique
-from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
-from src.content_analyzer.raw_information_source import RawInformationSource
-from src.utils.check_tokenization import check_tokenized
-from src.utils.id_merger import id_merger
+from orange_cb_recsys.content_analyzer.content_representation.content_field import FeaturesBagField
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+    TfIdfTechnique
+from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.utils.check_tokenization import check_tokenized
+from orange_cb_recsys.utils.id_merger import id_merger
 
 
 class LuceneTfIdf(TfIdfTechnique):

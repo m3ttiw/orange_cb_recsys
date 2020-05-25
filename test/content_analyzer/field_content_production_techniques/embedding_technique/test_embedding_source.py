@@ -1,8 +1,8 @@
 from unittest import TestCase
 import numpy as np
 
-from src.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
-    GensimDownloader, BinaryFile, EmbeddingType, Wikipedia2VecDownloader
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
+    GensimDownloader, Wikipedia2VecDownloader, BinaryFile, EmbeddingType
 
 
 class TestGensimDownloader(TestCase):

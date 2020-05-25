@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from src.content_analyzer.embedding_learner.random_indexing import RandomIndexing
-from src.content_analyzer.raw_information_source import JSONFile
-from src.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.embedding_learner.random_indexing import RandomIndexing
+from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 
 class TestRandomIndexing(TestCase):

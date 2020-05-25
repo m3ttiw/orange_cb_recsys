@@ -3,7 +3,7 @@ import nltk
 from typing import List
 from nltk.tokenize import sent_tokenize
 
-from src.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     SentenceDetectionTechnique
 
 

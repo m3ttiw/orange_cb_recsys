@@ -1,8 +1,8 @@
 import pickle
 from unittest import TestCase
 
-from src.content_analyzer.content_representation.content import Content
-from src.content_analyzer.content_representation.content_field import FeaturesBagField, ContentField
+from orange_cb_recsys.content_analyzer.content_representation.content import Content
+from orange_cb_recsys.content_analyzer.content_representation.content_field import FeaturesBagField, ContentField
 
 
 class TestContent(TestCase):

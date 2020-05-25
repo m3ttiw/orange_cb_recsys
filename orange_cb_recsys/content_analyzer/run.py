@@ -5,16 +5,19 @@ from typing import List, Dict
 
 import lucene
 
-from src.content_analyzer.field_content_production_techniques.embedding_technique.combining_technique import Centroid
-from src.content_analyzer.content_analyzer_main import ContentAnalyzer, FieldConfig, ContentAnalyzerConfig, \
-    FieldRepresentationPipeline
-from src.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import GensimDownloader, BinaryFile
-from src.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
-from src.content_analyzer.field_content_production_techniques.field_content_production_technique import EmbeddingTechnique
-from src.content_analyzer.information_processor.nlp import NLTK
-from src.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf
-from src.content_analyzer.memory_interfaces.text_interface import IndexInterface
-from src.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase
+from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzerConfig, FieldConfig, \
+    FieldRepresentationPipeline, ContentAnalyzer
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.combining_technique import \
+    Centroid
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
+    BinaryFile, GensimDownloader
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+    EmbeddingTechnique
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf
+from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, SQLDatabase, CSVFile
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
