@@ -1,7 +1,7 @@
 from typing import List, Dict, Set
 import time
 import os
-
+from os import path
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
@@ -12,6 +12,8 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 from orange_cb_recsys.utils.id_merger import id_merger
 
 parent_dir = '../../contents'
+if not path.exists(parent_dir):
+    parent_dir = 'contents'
 
 
 class FieldRepresentationPipeline:
