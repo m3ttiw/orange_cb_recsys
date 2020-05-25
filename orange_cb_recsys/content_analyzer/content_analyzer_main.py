@@ -105,7 +105,9 @@ class ContentAnalyzerConfig:
     Args:
         source (RawInformationSource):
             raw data source to iterate on for extracting the contents
-        id_field_name (str): name of the field containing the content's id
+        id_field_name (str): list of the fields names containing the content's id,
+            it's a list instead of single value for handling complex id
+            composed of multiple fields
         field_config_dict (Dict<str, FieldConfig>):
             store the config for each field_name
     """
@@ -243,7 +245,6 @@ class ContentAnalyzer:
 
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
-            print(content)
             content.serialize(path)
 
         for interface in interfaces:
