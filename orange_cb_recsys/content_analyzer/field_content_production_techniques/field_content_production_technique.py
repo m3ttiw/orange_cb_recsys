@@ -257,7 +257,7 @@ class EmbeddingTechnique(SingleContentTechnique):
         self.__combining_technique: CombiningTechnique = combining_technique
         self.__embedding_source: EmbeddingSource = embedding_source
 
-        self.__granularity: Granularity = "granularity"
+        self.__granularity: Granularity = granularity
 
     def produce_content(self, field_representation_name: str, field_data) -> EmbeddingField:
         """
@@ -275,6 +275,7 @@ class EmbeddingTechnique(SingleContentTechnique):
 
         if self.__granularity == 1:
             doc_matrix = self.__embedding_source.load(field_data)
+            print(doc_matrix)
             return EmbeddingField(field_representation_name, doc_matrix)
         if self.__granularity == 2:
             try:
