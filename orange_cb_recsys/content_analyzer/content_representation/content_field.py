@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from typing import List, Dict
 import numpy as np
@@ -20,6 +20,10 @@ class FieldRepresentation(ABC):
         return self.__name
 
     def __str__(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_value(self):
         raise NotImplementedError
 
 
@@ -66,7 +70,7 @@ class FeaturesBagField(FieldRepresentation):
         """
         return self.__features[feature_key]
 
-    def get_feature_dict(self):
+    def get_value(self) -> Dict[str, object]:
         """
         Get the features dict
 
@@ -102,7 +106,7 @@ class EmbeddingField(FieldRepresentation):
         representation_string = "Representation: " + self.get_name() + "\n\n"
         return representation_string + str(self.__embedding_array)
 
-    def get_array(self) -> np.ndarray:
+    def get_value(self) -> np.ndarray:
         return self.__embedding_array
 
     def __eq__(self, other):

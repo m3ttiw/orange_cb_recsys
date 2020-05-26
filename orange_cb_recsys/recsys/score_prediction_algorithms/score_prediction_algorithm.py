@@ -38,10 +38,12 @@ class SingleFieldSPA(ScorePredictionAlgorithm):
 
 
 class MultipleFieldSPA(ScorePredictionAlgorithm):
-    def __init__(self, user_field: List[str], item_field: List[str]):
+    def __init__(self, user_field: List[str], item_field: List[str], user_field_representation: str = None, item_field_representation: str = None):
         super().__init__()
         self.__user_field: List[str] = user_field
         self.__item_field: List[str] = item_field
+        self.__user_field_representation = user_field_representation
+        self.__item_field_representation = item_field_representation
 
     def predict(self, user: Content, item: Content):
         raise NotImplementedError
