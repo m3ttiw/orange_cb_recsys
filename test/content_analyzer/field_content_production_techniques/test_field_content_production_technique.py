@@ -5,8 +5,6 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.embed
     Centroid
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
     GensimDownloader
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.sentence_detection import \
-    NLTKSentenceDetection
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     EmbeddingTechnique
 
