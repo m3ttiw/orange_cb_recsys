@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 import pickle
 import re
 
@@ -11,20 +11,23 @@ class Content:
     A content is identified by a string id and is composed of different fields
     Args:
         content_id (str): identifier
-        field_list (list[ContentField]): list of the fields instances of a content
+        field_dict (list[ContentField]): list of the fields instances of a content
     """
     def __init__(self, content_id: str,
-                 field_list: List[ContentField] = None):
-        if field_list is None:
-            field_list = []         # list o dict
+                 field_dict: Dict[str, ContentField] = None):
+        if field_dict is None:
+            field_dict = []         # list o dict
         self.__content_id: str = content_id
-        self.__field_list: List[ContentField] = field_list
+        self.__field_dict: Dict[str, ContentField] = field_dict
 
     def get_field_list(self):
-        return self.__field_list
+        return self.__field_dict
 
-    def append(self, field: ContentField):
-        self.__field_list.append(field)
+    def get_field(self, field_name: str):
+        return self.__field_dict[field_name]
+
+    def append(self, field_name: str, field: ContentField):
+        self.__field_dict[field_name] = field
 
     def remove(self, field_name: str):
         """
@@ -33,13 +36,7 @@ class Content:
             field_name (str): the name of the field to remove
         """
 
-        i = 0
-        for field in self.__field_list:
-            if field.get_name() == field_name:
-                break
-            i += 1
-
-        self.__field_list.pop(i)
+        self.__field_dict.pop(field_name)
 
     def serialize(self, output_directory: str):
         """
@@ -52,13 +49,16 @@ class Content:
     def __str__(self):
         content_string = "Content:" + self.__content_id
         field_string = ""
-        for field in self.__field_list:
+        for field in self.__field_dict:
             field_string += str(field) + "\n"
 
         return content_string + '\n\n' + field_string + "##############################"
 
+    def get_content_id(self):
+        return self.__content_id
+
     def __eq__(self, other):
-        return self.__content_id == other.__content_id and self.__field_list == other.__field_list
+        return self.__content_id == other.__content_id and self.__field_dict == other.__field_dict
 
 
 class RepresentedContents:

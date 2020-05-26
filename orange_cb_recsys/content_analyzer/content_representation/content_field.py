@@ -122,17 +122,17 @@ class ContentField:
     Args:
         field_name (str): the name of the field
         timestamp (str): string that represents the timestamp
-        representation_list (list<FieldRepresentation>): the list of the representations.
+        representation_dict (list<FieldRepresentation>): the list of the representations.
     """
 
     def __init__(self, field_name: str,
                  timestamp: str = None,
-                 representation_list: List[FieldRepresentation] = None):
-        if representation_list is None:
-            representation_list = []
+                 representation_dict: Dict[str, FieldRepresentation] = None):
+        if representation_dict is None:
+            representation_dict = []
         self.__timestamp = timestamp
         self.__field_name: str = field_name
-        self.__representation_list: List[FieldRepresentation] = representation_list
+        self.__representation_dict: Dict[str, FieldRepresentation] = representation_dict
 
     def __eq__(self, other) -> bool:
         """
@@ -145,18 +145,21 @@ class ContentField:
             bool: True if the names are equals
         """
 
-        return self.__field_name == other.get_name() and self.__representation_list == other.__representation_list
+        return self.__field_name == other.get_name() and self.__representation_dict == other.__representation_dict
 
     def __str__(self):
         field_string = "Field:" + self.__field_name
         rep_string = ""
-        for rep in self.__representation_list:
+        for rep in self.__representation_dict:
             rep_string += str(rep) + '\n\n'
 
         return field_string + '\n\n' + rep_string + "------------------------------"
 
-    def append(self, representation: FieldRepresentation):
-        self.__representation_list.append(representation)
+    def append(self, representation_id: str, representation: FieldRepresentation):
+        self.__representation_dict[representation_id] = representation
+
+    def get_representation(self, representation_id: str):
+        return self.__representation_dict[representation_id]
 
     def get_name(self) -> str:
         return self.__field_name

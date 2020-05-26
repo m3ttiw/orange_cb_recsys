@@ -346,16 +346,16 @@ class ContentsProducer:
                 for i, pipeline in enumerate(pipeline_list):
                     content_technique = pipeline.get_content_technique()
                     if isinstance(content_technique, CollectionBasedTechnique):
-                        field.append(content_technique.produce_content(str(i), content_id, field_name, str(pipeline)))
+                        field.append(str(i), content_technique.produce_content(str(i), content_id, field_name, str(pipeline)))
                     elif isinstance(content_technique, SingleContentTechnique):
                         preprocessor_list = pipeline.get_preprocessor_list()
                         processed_field_data = field_data
                         for preprocessor in preprocessor_list:
                             processed_field_data = preprocessor.process(processed_field_data)
 
-                        field.append(content_technique.produce_content(str(i), processed_field_data))
+                        field.append(str(i), content_technique.produce_content(str(i), processed_field_data))
 
-                content.append(field)
+                content.append(field_name, field)
 
             for interface in interfaces:
                 interface.serialize_content()
