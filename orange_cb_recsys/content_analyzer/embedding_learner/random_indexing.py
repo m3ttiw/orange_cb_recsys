@@ -9,7 +9,7 @@ from orange_cb_recsys.content_analyzer.information_processor.information_process
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
 
-class RandomIndexing(EmbeddingLearner):
+class GensimRandomIndexing(EmbeddingLearner):
     def __init__(self, source: RawInformationSource,
                  preprocessor: TextProcessor,
                  field_list: List[str]):

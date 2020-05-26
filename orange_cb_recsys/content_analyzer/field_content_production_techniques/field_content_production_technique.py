@@ -2,8 +2,10 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List, Tuple, Dict
 
+import nltk
 import numpy as np
 
+from nltk.tokenize import sent_tokenize
 from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation, \
     FeaturesBagField, EmbeddingField, GraphField
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
@@ -250,15 +252,12 @@ class EmbeddingTechnique(SingleContentTechnique):
 
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
-                 **kwargs):
+                 **granularity):
         super().__init__()
         self.__combining_technique: CombiningTechnique = combining_technique
         self.__embedding_source: EmbeddingSource = embedding_source
 
-        if "sentence_detection" in kwargs.keys():
-            self.__sentence_detection: SentenceDetectionTechnique = kwargs["sentence_detection"]
-        if "granularity" in kwargs.keys():
-            self.__granularity: Granularity = kwargs["granularity"]
+        self.__granularity: Granularity = "granularity"
 
     def produce_content(self, field_representation_name: str, field_data) -> EmbeddingField:
         """
@@ -278,9 +277,16 @@ class EmbeddingTechnique(SingleContentTechnique):
             doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, doc_matrix)
         if self.__granularity == 2:
-            sentences = self.__sentence_detection.detect_sentences(field_data)
-            sentences_embeddings = np.ndarray(shape=(len(sentences),
-                                                     self.__embedding_source.get_vector_size()))
+            try:
+                nltk.data.find('punkt')
+            except LookupError:
+                nltk.download('punkt')
+
+            sentences = sent_tokenize(field_data)
+            for i, sentence in enumerate(sentences):
+                sentences[i] = sentence[:len(sentence) - 1]
+
+            sentences_embeddings = np.ndarray(shape=(len(sentences), self.__embedding_source.get_vector_size()))
             for i, sentence in enumerate(sentences):
                 sentence_matrix = self.__embedding_source.load(sentence)
                 sentences_embeddings[i, :] = self.__combining_technique.combine(sentence_matrix)
