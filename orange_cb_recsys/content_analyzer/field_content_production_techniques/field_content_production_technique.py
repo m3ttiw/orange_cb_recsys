@@ -252,7 +252,7 @@ class EmbeddingTechnique(SingleContentTechnique):
 
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
-                 **granularity):
+                 granularity):
         super().__init__()
         self.__combining_technique: CombiningTechnique = combining_technique
         self.__embedding_source: EmbeddingSource = embedding_source
