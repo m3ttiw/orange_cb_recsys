@@ -188,7 +188,6 @@ class EmbeddingSource(ABC):
             try:
                 embedding_matrix[i, :] = self.__model[word]
             except KeyError:
-                print(word)
                 embedding_matrix[i, :] = np.zeros(self.get_vector_size())
 
         return embedding_matrix
