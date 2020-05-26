@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-setup(name='Framework_CBRS_py',
+setup(name='orange_cb_recsys',
       version='1.0',
       description='Python Framework for Content-Based Recommeder Systems',
       url='https://github.com/m3ttiw/Framework_CBRS_py',
