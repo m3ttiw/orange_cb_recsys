@@ -16,7 +16,7 @@ class Content:
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None):
         if field_dict is None:
-            field_dict = []         # list o dict
+            field_dict = {}       # list o dict
         self.__content_id: str = content_id
         self.__field_dict: Dict[str, ContentField] = field_dict
 

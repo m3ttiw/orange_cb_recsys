@@ -133,7 +133,7 @@ class ContentField:
                  timestamp: str = None,
                  representation_dict: Dict[str, FieldRepresentation] = None):
         if representation_dict is None:
-            representation_dict = []
+            representation_dict = {}
         self.__timestamp = timestamp
         self.__field_name: str = field_name
         self.__representation_dict: Dict[str, FieldRepresentation] = representation_dict
