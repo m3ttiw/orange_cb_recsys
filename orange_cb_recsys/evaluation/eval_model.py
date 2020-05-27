@@ -65,9 +65,10 @@ class EvalModel:
                 train = ratings.iloc[partition_index[0]]
                 test = ratings.iloc[partition_index[1]]
 
-                for user, item, truth_rating in zip(test.user, test.item, test.rating):
-                    predict_score = recsys.fit(user, item).values()[0]
-                    predictions.append(pd.Series([predict_score]), ignore_index=True)
+                for user in test.user:
+                    item_to_predict_list = [item for item in test[test['user_id'].str.match(user)].item]
+                    predicted_ranking = recsys.fit(user, item_to_predict_list)
+                    predictions.concat(pd.DataFrame([predict_score]), ignore_index=True)
                     truth.append(pd.Series([truth_rating]), ignore_index=True)
 
             perform_prediction_metrics(predictions, truth)
