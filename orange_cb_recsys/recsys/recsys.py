@@ -4,9 +4,7 @@ from typing import List
 
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.config import RecSysConfig
-from orange_cb_recsys.recsys.ranking_algorithms.ranking_algorithm import RankingAlgorithm, TopNRanking
-from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import ScorePredictionAlgorithm, \
-    RatingsSPA
+from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import RatingsSPA
 
 
 class RecSys:
@@ -30,7 +28,7 @@ class RecSys:
         for item_filename in item_to_predict_filename_list:
             item = pickle.load(item_filename)
 
-            if type(self.__config.get_score_prediction_algorithm()) == RatingsSPA:
+            if isinstance(self.__config.get_score_prediction_algorithm(), RatingsSPA):
                 assert (self.__config.get_rating_field() is not None), "You must specify where to find ratings if you use ratings based algorithm"
                 score_dict[item_filename] = self.__config.get_score_prediction_algorithm().\
                     predict(user, item, self.__config.get_rating_field(), self.__config.get_items_directory())
