@@ -2,7 +2,7 @@ from unittest import TestCase
 import numpy as np
 
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
-    GensimDownloader, Wikipedia2VecDownloader, BinaryFile, EmbeddingType
+    GensimDownloader, Wikipedia2VecDownloader, BinaryFile
 
 
 class TestGensimDownloader(TestCase):
