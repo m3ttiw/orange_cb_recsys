@@ -2,7 +2,7 @@ from unittest import TestCase
 import numpy as np
 
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
-    GensimDownloader, Wikipedia2VecDownloader, BinaryFile, EmbeddingType
+    GensimDownloader, Wikipedia2VecDownloader, BinaryFile
 
 
 class TestGensimDownloader(TestCase):
@@ -89,7 +89,7 @@ class TestWikipedia2VecDownloader(TestCase):
 class TestBinaryFile(TestCase):
     def test_load(self):
         self.skipTest("SLOW")
-        source = BinaryFile('../../../datasets/word2vec/google_news.bin', EmbeddingType.WORD2VEC)
+        source = BinaryFile('../../../datasets/word2vec/google_news.bin', "Word2Vec")
         result = source.load("text news")
         expected = np.ndarray(shape=(2, 300))
         expected[0, :] = [0.27929688, -0.08447266, -0.04150391, 0.12011719, -0.01794434,
@@ -216,7 +216,7 @@ class TestBinaryFile(TestCase):
 
         self.assertTrue(np.allclose(result, expected))
 
-        source = BinaryFile('../../../datasets/doc2vec/doc2vec.bin', EmbeddingType.DOC2VEC)
+        source = BinaryFile('../../../datasets/doc2vec/doc2vec.bin', "Doc2Vec")
         result = source.load("text news")
         expected = np.ndarray(shape=(2, 300))
         expected[0, :] = [3.32591474e-01, -3.09491992e-01, -1.16927773e-01, -1.89882010e-01,
@@ -358,7 +358,7 @@ class TestBinaryFile(TestCase):
 
         self.assertTrue(np.allclose(result, expected))
 
-        source = BinaryFile('../../../datasets/fasttext/wiki.simple.bin', EmbeddingType.FASTTEXT)
+        source = BinaryFile('../../../datasets/fasttext/wiki.simple.bin', "fasttext")
         result = source.load("text news")
         expected = np.ndarray(shape=(2, 300))
         expected[0, :] = [0.20265126, -0.21283358, 0.14194603, 0.33037463, 0.41914618,

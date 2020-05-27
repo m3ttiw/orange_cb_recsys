@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from typing import List, Dict
+from typing import Dict
 import numpy as np
 
 
@@ -103,6 +103,7 @@ class EmbeddingField(FieldRepresentation):
         self.__embedding_array: np.ndarray = embedding_array
 
     def __str__(self):
+        print("sto")
         representation_string = "Representation: " + self.get_name() + "\n\n"
         return representation_string + str(self.__embedding_array)
 
@@ -154,7 +155,7 @@ class ContentField:
     def __str__(self):
         field_string = "Field:" + self.__field_name
         rep_string = ""
-        for rep in self.__representation_dict:
+        for rep in self.__representation_dict.values():
             rep_string += str(rep) + '\n\n'
 
         return field_string + '\n\n' + rep_string + "------------------------------"
