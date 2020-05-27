@@ -122,16 +122,6 @@ class EntityLinking(SingleContentTechnique):
         raise NotImplementedError
 
 
-class Granularity(Enum):
-    """
-    Enumeration whose elements are the possible units
-    respect to which combine for generating an embedding.
-    """
-    WORD = 1
-    SENTENCE = 2
-    DOC = 3
-
-
 class CombiningTechnique(ABC):
     """
     Class that generalizes the modality in which previously learned embeddings will be
@@ -210,29 +200,6 @@ class EmbeddingSource(ABC):
         return "EmbeddingSource " + str(self.__model)
 
 
-class SentenceDetectionTechnique(ABC):
-    """
-    Abstract class that generalizes implementation of
-    techniques used to divide a text in sentences
-    """
-
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    def detect_sentences(self, text: str) -> List[str]:
-        """
-        Split the input text in a list of sentences
-
-        Args:
-            text (str): text that will be divided
-
-        Returns:
-            List<str>: list of sentences
-        """
-        raise NotImplementedError
-
-
 class EmbeddingTechnique(SingleContentTechnique):
     """
     Class that can be used to combine different embeddings coming to various sources
@@ -243,8 +210,6 @@ class EmbeddingTechnique(SingleContentTechnique):
         for combining the embeddings.
         embedding_source (EmbeddingSource):
             Source from which extract the embeddings vectors for the words in field_data.
-        sentence_detection (SentenceDetectionTechnique): technique that wil lbe use to divide
-            the text in sentences if the granularity specified is SENTENCE
         granularity (Granularity): It can assume three values,
             depending on whether framework user want
             to combine relatively to words, phrases or documents.
@@ -252,12 +217,12 @@ class EmbeddingTechnique(SingleContentTechnique):
 
     def __init__(self, combining_technique: CombiningTechnique,
                  embedding_source: EmbeddingSource,
-                 granularity):
+                 granularity: str):
         super().__init__()
         self.__combining_technique: CombiningTechnique = combining_technique
         self.__embedding_source: EmbeddingSource = embedding_source
 
-        self.__granularity: Granularity = granularity
+        self.__granularity: str = granularity.lower()
 
     def produce_content(self, field_representation_name: str, field_data) -> EmbeddingField:
         """
@@ -273,11 +238,11 @@ class EmbeddingTechnique(SingleContentTechnique):
                 bi-dimensional array for SENTENCE and WORD embedding
         """
 
-        if self.__granularity == 1:
+        if self.__granularity == "word":
             doc_matrix = self.__embedding_source.load(field_data)
             print(doc_matrix)
             return EmbeddingField(field_representation_name, doc_matrix)
-        if self.__granularity == 2:
+        elif self.__granularity == "sentence":
             try:
                 nltk.data.find('punkt')
             except LookupError:
@@ -293,9 +258,11 @@ class EmbeddingTechnique(SingleContentTechnique):
                 sentences_embeddings[i, :] = self.__combining_technique.combine(sentence_matrix)
 
             return EmbeddingField(field_representation_name, sentences_embeddings)
-        if self.__granularity == 3:
+        elif self.__granularity == "doc":
             doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))
+        else:
+            raise ValueError("Must specify a valid embedding technique granularity")
 
     def __str__(self):
         return "EmbeddingTechnique"

@@ -11,17 +11,6 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.field
 from orange_cb_recsys.utils.check_tokenization import check_tokenized
 
 
-class EmbeddingType(Enum):
-    """
-    Embeddings can be learned using different techniques.
-    Embeddings learned in different ways need to be loaded in different ways,
-    so embedding_type needs to be specified.
-    """
-    WORD2VEC = 1
-    DOC2VEC = 2
-    FASTTEXT = 3
-
-
 class BinaryFile(EmbeddingSource):
     """
     Class that implements the abstract class EmbeddingSource.
@@ -35,15 +24,18 @@ class BinaryFile(EmbeddingSource):
     """
 
     def __init__(self, file_path: str,
-                 embedding_type: EmbeddingType):
+                 embedding_type: str):
         super().__init__()
         self.__file_path: str = file_path
-        if embedding_type == 1:
+        embedding_type = embedding_type.lower()
+        if embedding_type == "word2vec":
             self.set_model(KeyedVectors.load_word2vec_format(self.__file_path, binary=True))
-        elif embedding_type == 2:
+        elif embedding_type == "doc2vec":
             self.set_model(Doc2Vec.load(self.__file_path))
-        else:
+        elif embedding_type == "fasttext":
             self.set_model(fasttext.load_facebook_vectors(self.__file_path))
+        else:
+            raise ValueError("Must specify a valid embedding model type for loading from binary file")
 
 
 class GensimDownloader(EmbeddingSource):

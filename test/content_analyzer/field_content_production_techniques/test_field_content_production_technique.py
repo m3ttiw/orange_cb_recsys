@@ -12,7 +12,7 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.field
 class TestEmbeddingTechnique(TestCase):
     def test_produce_content(self):
         self.skipTest("SLOW")
-        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity=3)
+        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity="doc")
 
         result = technique.produce_content("Embedding", "title plot")
         expected = np.ndarray(shape=(25,))
@@ -24,9 +24,9 @@ class TestEmbeddingTechnique(TestCase):
                        -7.03384009e-01, 6.97145015e-01, 5.35014980e-02, -8.15229982e-01,
                        -6.40249997e-01]
 
-        self.assertTrue(np.allclose(result.get_array(), expected))
+        self.assertTrue(np.allclose(result.get_value(), expected))
 
-        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity=1)
+        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity="word")
 
         result = technique.produce_content("Embedding", "title plot")
         print(type(result))
@@ -43,9 +43,9 @@ class TestEmbeddingTechnique(TestCase):
                                    0.69215, 0.66528, 0.53426, 0.0033024, -0.49139,
                                    -0.028068, 0.64195, -0.096337, -0.95048, -0.38856])
 
-        self.assertTrue(np.allclose(result.get_array(), expected))
+        self.assertTrue(np.allclose(result.get_value(), expected))
 
-        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity=2, sentence_detection=NLTKSentenceDetection())
+        technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity="sentence")
 
         result = technique.produce_content("Embedding", "god is great! i won lottery.")
         expected = np.ndarray(shape=(2, 25))
@@ -62,4 +62,4 @@ class TestEmbeddingTechnique(TestCase):
                           -4.11850005e-01, 5.29021009e-01, 3.65209666e-01, -3.64499937e-02,
                           -5.01233364e-02]
 
-        self.assertTrue(np.allclose(result.get_array(), expected))
+        self.assertTrue(np.allclose(result.get_value(), expected))
