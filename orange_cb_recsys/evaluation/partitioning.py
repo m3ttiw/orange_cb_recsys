@@ -1,0 +1,31 @@
+from abc import ABC
+from sklearn.model_selection import KFold
+import pandas as pd
+
+
+class Partitioning(ABC):
+    def __init__(self):
+        self.__dataframe: pd.DataFrame = None
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def set_dataframe(self, dataframe: pd.DataFrame):
+        self.__dataframe = dataframe
+
+    def get_dataframe(self):
+        return self.__dataframe
+
+
+class KFoldPartioning(Partitioning):
+    def __init__(self, n_splits: int = 2, random_state=2):
+        super().__init__()
+        self.__n_splits = n_splits
+        self.__random_state = random_state
+
+    def __iter__(self):
+        kf = KFold(n_splits=self.__n_splits, shuffle=True, random_state=self.__random_state)
+        split_result = kf.split(self.get_dataframe())
+
+        for result in split_result:
+            yield result
