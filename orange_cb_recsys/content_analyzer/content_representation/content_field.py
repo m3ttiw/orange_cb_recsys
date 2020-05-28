@@ -103,7 +103,6 @@ class EmbeddingField(FieldRepresentation):
         self.__embedding_array: np.ndarray = embedding_array
 
     def __str__(self):
-        print("sto")
         representation_string = "Representation: " + self.get_name() + "\n\n"
         return representation_string + str(self.__embedding_array)
 

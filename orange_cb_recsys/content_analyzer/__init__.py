@@ -1,1 +1,2 @@
-from .content_analyzer_main import FieldRepresentationPipeline, FieldConfig, ContentAnalyzerConfig, ContentAnalyzer
+from .config import FieldRepresentationPipeline, FieldConfig, ContentAnalyzerConfig
+from .content_analyzer_main import ContentAnalyzer

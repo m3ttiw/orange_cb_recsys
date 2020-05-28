@@ -240,7 +240,6 @@ class EmbeddingTechnique(SingleContentTechnique):
 
         if self.__granularity == "word":
             doc_matrix = self.__embedding_source.load(field_data)
-            print(doc_matrix)
             return EmbeddingField(field_representation_name, doc_matrix)
         elif self.__granularity == "sentence":
             try:

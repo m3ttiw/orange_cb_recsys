@@ -1,204 +1,17 @@
-from typing import List, Dict, Set
+from typing import Dict
 import time
 import os
 from os import path
+
+from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
-    FieldContentProductionTechnique, CollectionBasedTechnique, SingleContentTechnique
-from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
-from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
-from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import CollectionBasedTechnique, SingleContentTechnique
 from orange_cb_recsys.utils.id_merger import id_merger
 
 parent_dir = '../../contents'
 if not path.exists(parent_dir):
     parent_dir = 'contents'
-
-
-class FieldRepresentationPipeline:
-    """
-    Pipeline which specifies how to produce one of the representations of a field.
-
-    Args:
-        content_technique (FieldContentProductionTechnique):
-            used to produce complex representation of the field given pre-processed information
-        preprocessor_list (InformationProcessor):
-            list of information processors that will be applied to the original text, in a pipeline way
-    """
-
-    instance_counter: int = 0
-
-    def __init__(self, content_technique: FieldContentProductionTechnique,
-                 preprocessor_list: List[InformationProcessor] = None):
-        if preprocessor_list is None:
-            preprocessor_list = []
-        self.__preprocessor_list: List[InformationProcessor] = preprocessor_list
-        self.__content_technique: FieldContentProductionTechnique = content_technique
-        self.__id: str = str(FieldRepresentationPipeline.instance_counter)
-        FieldRepresentationPipeline.instance_counter += 1
-
-    def append_preprocessor(self, preprocessor: InformationProcessor):
-        """
-        Add a new preprocessor to the preprocessor list
-        Args:
-            preprocessor (InformationProcessor): The preprocessor to add
-        """
-        self.__preprocessor_list.append(preprocessor)
-
-    def set_content_technique(self, content_technique: FieldContentProductionTechnique):
-        self.__content_technique = content_technique
-
-    def get_preprocessor_list(self) -> List[InformationProcessor]:
-        return self.__preprocessor_list
-
-    def get_content_technique(self) -> FieldContentProductionTechnique:
-        return self.__content_technique
-
-    def __str__(self):
-        return self.__id
-
-    def __repr__(self):
-        msg = "< " + "FieldRepresentationPipeline: " + "" \
-            "preprocessor_list = " + str(self.__preprocessor_list) + "; " \
-            "content_technique = " + str(self.__content_technique) + ">"
-        return msg
-
-
-class FieldConfig:
-    """
-    Class that represents the configuration of a single field.
-    Args:
-        pipelines_list (List<FieldRepresentationPipeline>):
-            list of the pipelines that will be used to produce different field's representations,
-            one pipeline for each representation
-    """
-
-    def __init__(self, memory_interface: InformationInterface = None,
-                 pipelines_list: List[FieldRepresentationPipeline] = None):
-        if pipelines_list is None:
-            pipelines_list = []
-        self.__memory_interface: InformationInterface = memory_interface
-        self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
-
-    def get_memory_interface(self) -> InformationInterface:
-        return self.__memory_interface
-
-    def set_memory_interface(self, memory_interface: InformationInterface):
-        self.__memory_interface = memory_interface
-
-    def append_pipeline(self, pipeline: FieldRepresentationPipeline):
-        self.__pipelines_list.append(pipeline)
-
-    def get_pipeline_list(self) -> List[FieldRepresentationPipeline]:
-        return self.__pipelines_list
-
-    def __str__(self):
-        return "FieldConfig"
-
-    def __repr__(self):
-        return "< " + "FieldConfig: " + "" \
-                "pipelines_list = " + str(self.__pipelines_list) + " >"
-
-
-class ContentAnalyzerConfig:
-    """
-    Class that represents the Configuration for the content analyzer.
-    Args:
-        source (RawInformationSource):
-            raw data source to iterate on for extracting the contents
-        id_field_name (str): list of the fields names containing the content's id,
-            it's a list instead of single value for handling complex id
-            composed of multiple fields
-        field_config_dict (Dict<str, FieldConfig>):
-            store the config for each field_name
-    """
-
-    def __init__(self, content_type: str,
-                 source: RawInformationSource,
-                 id_field_name,
-                 output_directory: str,
-                 field_config_dict: Dict[str, FieldConfig] = None):
-        if field_config_dict is None:
-            field_config_dict = {}
-        self.__output_directory: str = output_directory + str(time.time())
-        self.__content_type = content_type
-        self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
-        self.__source: RawInformationSource = source
-        self.__id_field_name: str = id_field_name
-
-    def get_output_directory(self):
-        return self.__output_directory
-
-    def get_content_type(self):
-        return self.__content_type
-
-    def get_id_field_name(self):
-        return self.__id_field_name
-
-    def get_source(self) -> RawInformationSource:
-        return self.__source
-
-    def get_memory_interface(self, field_name: str) -> InformationInterface:
-        return self.__field_config_dict[field_name].get_memory_interface()
-
-    def get_pipeline_list(self, field_name: str) -> List[FieldRepresentationPipeline]:
-        """
-        Get the list of the pipelines specified for the input field
-        Args:
-            field_name (str): name of the field
-
-        Returns:
-            List<FieldRepresentationPipeline>:
-                the list of pipelines specified for the input field
-        """
-        return self.__field_config_dict[field_name].get_pipeline_list()
-
-    def get_field_name_list(self) -> List[str]:
-        """
-        Get the list of the field names
-        Returns:
-            List<str>: list of config dictionary keys
-        """
-        return self.__field_config_dict.keys()
-
-    def get_interfaces(self) -> Set[InformationInterface]:
-        """
-        get the list of field interfaces
-
-        Returns:
-            List<InformationInterface>: list of config dict values
-        """
-        interfaces = set()
-        for key in self.__field_config_dict.keys():
-            if self.__field_config_dict[key].get_memory_interface() is not None:
-                interfaces.add(self.__field_config_dict[key].get_memory_interface())
-        return interfaces
-
-    def append_field_config(self, field_name: str, field_config: FieldConfig):
-        self.__field_config_dict[field_name] = field_config
-
-    def get_collection_based_techniques(self) -> Set[CollectionBasedTechnique]:
-        techniques = set()
-        for field_config in self.__field_config_dict.values():
-            for pipeline in field_config.get_pipeline_list():
-                if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
-                    techniques.add(pipeline.get_content_technique())
-
-        return techniques
-
-    def __str__(self):
-        return str(self.__id_field_name)
-
-    def __repr__(self):
-        msg = "< " + "ContentAnalyzerConfig: " + "" \
-                                                 "id_field_name = " + str(self.__id_field_name) + "; " \
-                                                                                                  "source = " + str(
-            self.__source) + "; " \
-                             "field_config_dict = " + str(self.__field_config_dict) + "; " \
-                                                                                      "content_type = " + str(
-            self.__content_type) + ">"
-        return msg
 
 
 class ContentAnalyzer:
@@ -226,8 +39,8 @@ class ContentAnalyzer:
                 list which elements are the produced content instances
         """
 
-        path = os.path.join(parent_dir, self.__config.get_output_directory())
-        os.mkdir(path)
+        output_path = os.path.join(parent_dir, self.__config.get_output_directory())
+        os.mkdir(output_path)
 
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
@@ -247,7 +60,7 @@ class ContentAnalyzer:
 
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
-            content.serialize(path)
+            content.serialize(output_path)
 
         for interface in interfaces:
             interface.stop_writing()
@@ -326,8 +139,6 @@ class ContentsProducer:
             # produce
             content = Content(content_id)
             for field_name in self.__config.get_field_name_list():
-                pipeline_list = self.__config.get_pipeline_list(field_name)
-
                 # search for timestamp override on specific field
                 if type(raw_content[field_name]) == list:
                     timestamp = raw_content[field_name][1]
@@ -343,7 +154,7 @@ class ContentsProducer:
                 # produce representations
                 field = ContentField(field_name, timestamp)
 
-                for i, pipeline in enumerate(pipeline_list):
+                for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
                     content_technique = pipeline.get_content_technique()
                     if isinstance(content_technique, CollectionBasedTechnique):
                         field.append(str(i), content_technique.produce_content(str(i), content_id, field_name, str(pipeline)))

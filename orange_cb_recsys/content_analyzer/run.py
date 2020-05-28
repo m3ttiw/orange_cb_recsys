@@ -5,8 +5,9 @@ from typing import List, Dict
 
 import lucene
 
-from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzerConfig, FieldConfig, \
-    FieldRepresentationPipeline, ContentAnalyzer
+from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldConfig, \
+    FieldRepresentationPipeline
+from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzer
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.combining_technique import \
     Centroid
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.embedding_source import \
