@@ -3,7 +3,7 @@ from typing import Dict
 import pandas as pd
 
 
-def perform_ranking_metrics() -> Dict[str, object]:
+def perform_ranking_metrics(predictions: pd.DataFrame, truth: pd.DataFrame) -> Dict[str, object]:
     def perform_precision():
         return
 

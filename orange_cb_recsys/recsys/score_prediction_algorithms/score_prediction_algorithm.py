@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-
+import pandas as pd
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 
 
@@ -15,7 +15,7 @@ class RatingsSPA(ScorePredictionAlgorithm):
         self.__item_field: str = item_field
 
     @abstractmethod
-    def predict(self, user: Content, item: Content, ratings_field: str, items_directory: str) -> float:
+    def predict(self, user: Content, item: Content, ratings: pd.DataFrame, items_directory: str) -> float:
         raise NotImplementedError
 
 
