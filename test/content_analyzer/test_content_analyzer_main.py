@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from orange_cb_recsys import ContentAnalyzer, ContentAnalyzerConfig, FieldConfig, FieldRepresentationPipeline
+from orange_cb_recsys.content_analyzer import ContentAnalyzer, ContentAnalyzerConfig, FieldConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
