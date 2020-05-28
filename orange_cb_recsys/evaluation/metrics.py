@@ -49,17 +49,10 @@ def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict
     def perform_MAE():
         pass
 
-    def perform_globalRMSE():
-        pass
-
-    def perform_globalMAE():
-        pass
-
     results = {}
 
     results["RMSE"] = perform_RMSE()
     results["MAE"] = perform_MAE()
-    results["globalRMSE"] = perform_globalRMSE()
-    results["globalMAE"] = perform_globalMAE()
+
 
     return results

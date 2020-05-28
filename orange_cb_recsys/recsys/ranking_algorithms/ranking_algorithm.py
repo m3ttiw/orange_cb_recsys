@@ -1,5 +1,6 @@
 from abc import ABC
 from typing import Dict
+import pandas as pd
 
 
 class RankingAlgorithm(ABC):
@@ -11,5 +12,5 @@ class TopNRanking(RankingAlgorithm):
     def __init__(self, n: int):
         self.__n = n
 
-    def rank(self, score_dict: Dict[str, float]):
-        return {item_id: score for item_id, score in sorted(score_dict.items(), key=lambda item: item[1])}
+    def rank(self, score_frame: pd.DataFrame):
+        return score_frame.sort_values('rating')[:self.__n]

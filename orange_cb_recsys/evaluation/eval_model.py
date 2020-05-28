@@ -7,7 +7,9 @@ from orange_cb_recsys.content_analyzer.content_representation.content import Con
 from orange_cb_recsys.evaluation.metrics import perform_prediction_metrics, perform_ranking_metrics
 from orange_cb_recsys.evaluation.partitioning import Partitioning
 from orange_cb_recsys.recsys.config import RecSysConfig
+from orange_cb_recsys.recsys.ranking_algorithms.ranking_algorithm import TopNRanking
 from orange_cb_recsys.recsys.recsys import RecSys
+from orange_cb_recsys.recsys.score_prediction_algorithms.ratings_based import CentroidVector
 
 
 class EvalModel:
@@ -62,8 +64,6 @@ class EvalModel:
                 prediction_metric_results.groupby('user').mean()
 
         if self.__ranking_metric:
-            results = pd.DataFrame(columns=["user", "precision", "recall", "F1", "NDCG"])
-
             for user in user_filename_list:
                 ratings = self.__create_ratings_dataframe(user)
                 self.__partitioning.set_dataframe(ratings)
@@ -82,4 +82,11 @@ class EvalModel:
 
                 ranking_metric_results.groupby('user').mean()
 
-# risultato del ranking algorithm dataframe
+        return prediction_metric_results, ranking_metric_results
+
+
+
+SPA = CentroidVector("Plot")
+recsys_config = RecSysConfig("users", "items", SPA, TopNRanking(15), "ratings")
+model = EvalModel(recsys_config, True, True, False)
+frame, frame2 = model.fit()

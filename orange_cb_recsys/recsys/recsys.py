@@ -66,3 +66,4 @@ class RecSys:
             return self.__config.get_ranking_algorithm().rank(score_frame)
         else:
             return score_frame
+
