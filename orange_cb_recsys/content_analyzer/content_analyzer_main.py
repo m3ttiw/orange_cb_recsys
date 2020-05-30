@@ -3,10 +3,11 @@ import time
 import os
 from os import path
 
-from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig
+from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import CollectionBasedTechnique, SingleContentTechnique
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import CollectionBasedTechnique, \
+    SingleContentTechnique
 from orange_cb_recsys.utils.id_merger import id_merger
 
 parent_dir = '../../contents'
@@ -30,6 +31,16 @@ class ContentAnalyzer:
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
+    def __dataset_refactor(self):
+        for field_name in self.__config.get_field_name_list():
+            for pipeline in self.__config.get_pipeline_list(field_name):
+                if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
+                    pipeline.get_content_technique(). \
+                        append_field_need_refactor(field_name, str(pipeline), pipeline.get_preprocessor_list())
+
+        for technique in self.__config.get_collection_based_techniques():
+            technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
+
     def fit(self):
         """
         Begins to process the creation of the contents
@@ -49,14 +60,7 @@ class ContentAnalyzer:
         for interface in interfaces:
             interface.init_writing()
 
-        for field_name in self.__config.get_field_name_list():
-            for pipeline in self.__config.get_pipeline_list(field_name):
-                if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
-                    pipeline.get_content_technique(). \
-                        append_field_need_refactor(field_name, str(pipeline), pipeline.get_preprocessor_list())
-
-        for technique in self.__config.get_collection_based_techniques():
-            technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
+        self.__dataset_refactor()
 
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
@@ -104,6 +108,55 @@ class ContentsProducer:
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
 
+    def __get_timestamp(self, raw_content: Dict) -> str:
+        # search for timestamp as dataset field, no timestamp needed for items
+        timestamp = None
+        if self.__config.get_content_type() != "ITEM":
+            if "timestamp" in raw_content.keys():
+                timestamp = raw_content["timestamp"]
+            else:
+                timestamp = time.time()
+
+        return timestamp
+
+    def __create_field(self, raw_content: Dict, field_name: str, content_id: str, timestamp: str):
+        if type(raw_content[field_name]) == list:
+            timestamp = raw_content[field_name][1]
+            field_data = raw_content[field_name][0]
+        else:
+            field_data = raw_content[field_name]
+
+        # serialize for explanation
+        memory_interface = self.__config.get_memory_interface(field_name)
+        if memory_interface is not None:
+            memory_interface.new_field(field_name, field_data)
+
+        # produce representations
+        field = ContentField(field_name, timestamp)
+
+        for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
+            if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
+                field.append(str(i), self.__create_representation_CBT(str(i), field_name, content_id, pipeline))
+            elif isinstance(pipeline.get_content_technique(), SingleContentTechnique):
+                field.append(str(i), self.__create_representation(str(i), field_data, pipeline))
+
+        return field
+
+    @staticmethod
+    def __create_representation_CBT(field_representation_name: str, field_name: str, content_id: str, pipeline: FieldRepresentationPipeline):
+        return pipeline.get_content_technique().\
+            produce_content(field_representation_name, content_id, field_name, str(pipeline))
+
+    @staticmethod
+    def __create_representation(field_representation_name: str, field_data, pipeline: FieldRepresentationPipeline):
+        preprocessor_list = pipeline.get_preprocessor_list()
+        processed_field_data = field_data
+        for preprocessor in preprocessor_list:
+            processed_field_data = preprocessor.process(processed_field_data)
+
+        return pipeline.get_content_technique().\
+            produce_content(field_representation_name, processed_field_data)
+
     def create_content(self, raw_content: Dict):
         """
         Creates a content processing every field in the specified way.
@@ -120,13 +173,8 @@ class ContentsProducer:
             raise Exception("You must set a config with set_config()")
         else:
             CONTENT_ID = "content_id"
-            # search for timestamp as dataset field, no timestamp needed for items
-            timestamp = None
-            if self.__config.get_content_type() != "ITEM":
-                if "timestamp" in raw_content.keys():
-                    timestamp = raw_content["timestamp"]
-                else:
-                    timestamp = time.time()
+
+            timestamp = self.__get_timestamp(raw_content)
 
             # construct id from the list of the fields that compound id
             content_id = id_merger(raw_content, self.__config.get_id_field_name())
@@ -140,33 +188,7 @@ class ContentsProducer:
             content = Content(content_id)
             for field_name in self.__config.get_field_name_list():
                 # search for timestamp override on specific field
-                if type(raw_content[field_name]) == list:
-                    timestamp = raw_content[field_name][1]
-                    field_data = raw_content[field_name][0]
-                else:
-                    field_data = raw_content[field_name]
-
-                # serialize for explanation
-                memory_interface = self.__config.get_memory_interface(field_name)
-                if memory_interface is not None:
-                    memory_interface.new_field(field_name, field_data)
-
-                # produce representations
-                field = ContentField(field_name, timestamp)
-
-                for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
-                    content_technique = pipeline.get_content_technique()
-                    if isinstance(content_technique, CollectionBasedTechnique):
-                        field.append(str(i), content_technique.produce_content(str(i), content_id, field_name, str(pipeline)))
-                    elif isinstance(content_technique, SingleContentTechnique):
-                        preprocessor_list = pipeline.get_preprocessor_list()
-                        processed_field_data = field_data
-                        for preprocessor in preprocessor_list:
-                            processed_field_data = preprocessor.process(processed_field_data)
-
-                        field.append(str(i), content_technique.produce_content(str(i), processed_field_data))
-
-                content.append(field_name, field)
+                content.append(field_name, self.__create_field(raw_content, field_name, content_id, timestamp))
 
             for interface in interfaces:
                 interface.serialize_content()
