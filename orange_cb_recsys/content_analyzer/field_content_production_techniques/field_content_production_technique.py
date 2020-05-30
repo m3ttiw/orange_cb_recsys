@@ -24,6 +24,10 @@ class FieldContentProductionTechnique(ABC):
 
 
 class SentimentalAnalysis(FieldContentProductionTechnique):
+    """
+    Abstract Class that generalizes the sentimental analysis technique
+    """
+
     def __init__(self):
         super().__init__()
 
@@ -31,10 +35,12 @@ class SentimentalAnalysis(FieldContentProductionTechnique):
     def calculate_score(self):
         pass
 
+
 class CollectionBasedTechnique(FieldContentProductionTechnique):
     """
     This class generalizes the techniques that work on the entire content collection, like the tf-idf technique
     """
+
     def __init__(self):
         super().__init__()
         self.__need_refactor: Dict[Tuple[str, str], List[InformationProcessor]] = {}
