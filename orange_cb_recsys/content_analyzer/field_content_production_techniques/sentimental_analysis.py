@@ -18,7 +18,7 @@ class TextBlobSentimentalAnalysis(SentimentalAnalysis):
         return "TextBlobSentimentalAnalysis"
 
     def __repr__(self):
-        return "< GensimWord2Vec :" + \
+        return "< TextBlobSentimentalAnalysis :" + \
                "source = " + str(self.get_source())
 
     def calculate_score(self):
