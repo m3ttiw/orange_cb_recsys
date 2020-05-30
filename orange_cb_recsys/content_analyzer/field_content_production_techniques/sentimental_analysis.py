@@ -12,12 +12,14 @@ class TextBlobSentimentalAnalysis(SentimentalAnalysis):
 
     def __init__(self, field_name: str,
                  source: RawInformationSource):
-        super().__init__()
-        self.__field_name = field_name
-        self.__source = source
+        super().__init__(field_name, source)
 
     def __str__(self):
         return "TextBlobSentimentalAnalysis"
+
+    def __repr__(self):
+        return "< GensimWord2Vec :" + \
+               "source = " + str(self.get_source())
 
     def calculate_score(self):
         pass
