@@ -23,6 +23,14 @@ class FieldContentProductionTechnique(ABC):
         pass
 
 
+class SentimentalAnalysis(FieldContentProductionTechnique):
+    def __init__(self):
+        super().__init__()
+
+    @abstractmethod
+    def calculate_score(self):
+        pass
+
 class CollectionBasedTechnique(FieldContentProductionTechnique):
     """
     This class generalizes the techniques that work on the entire content collection, like the tf-idf technique
