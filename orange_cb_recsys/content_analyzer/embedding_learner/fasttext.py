@@ -105,7 +105,7 @@ class GensimFastText(EmbeddingLearner):
         return "FastText"
 
     def __repr__(self):
-        return "< GensimDoc2Vec :" + \
+        return "< FastText :" + \
                "source = " + str(self.get_source()) + \
                "preprocessor = " + str(self.get_preprocessor()) + " >"
 
