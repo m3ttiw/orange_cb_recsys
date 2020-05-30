@@ -5,6 +5,9 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.field
 
 
 class TextBlobSentimentalAnalysis(SentimentalAnalysis):
+    """
+    Interface for the textblob library that does sentimental analysis on text.
+    """
     def __init__(self):
         super().__init__()
 
