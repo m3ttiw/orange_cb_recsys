@@ -15,7 +15,7 @@ class GensimWord2Vec(EmbeddingLearner):
 
     def __init__(self, source: RawInformationSource,
                  preprocessor: TextProcessor,
-                 field_list=List[str],
+                 field_list: List[str],
                  **kwargs):
         super().__init__(source, preprocessor, field_list)
 
