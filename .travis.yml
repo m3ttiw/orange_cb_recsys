@@ -16,12 +16,13 @@ services:
   - docker
 
 before_script:
-    filename=docker-cache/saved_docker_images.tar
+  - |
+    filename=docker-cache/saved_images.tar
     if [[ -f "$filename" ]]; then docker load < "$filename"; fi
     mkdir -p docker-cache
     docker pull rbarile17/framework_dependencies
     docker save -o "$filename" rbarile17/framework_dependencies
-
+    
 script:
   - container_id=$(docker run -d -it -v $(pwd):/usr/src rbarile17/framework_dependencies)
   - docker exec -it $container_id pip install coverage coveralls
