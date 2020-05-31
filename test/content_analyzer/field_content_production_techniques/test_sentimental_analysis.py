@@ -15,5 +15,5 @@ class TestTextBlobSentimentalAnalysis(TestCase):
             file_path = 'datasets/test_sentiment_analysis.json'
 
         confront_list = [1.0, 0.9, -0.6999999999999998]
-        test_list = TextBlobSentimentalAnalysis(source=JSONFile(file_path), field_name="rating")
+        test_list: list = TextBlobSentimentalAnalysis(source=JSONFile(file_path), field_name="rating").calculate_score()
         self.assertEqual(test_list, confront_list)

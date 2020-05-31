@@ -21,7 +21,7 @@ class TextBlobSentimentalAnalysis(SentimentalAnalysis):
         return "< TextBlobSentimentalAnalysis :" + \
                "source = " + str(self.get_source())
 
-    def calculate_score(self):
+    def calculate_score(self) -> list:
         sentiment_data = []
         for line in self.get_source():
             if type(self.get_field_name()) == str:
