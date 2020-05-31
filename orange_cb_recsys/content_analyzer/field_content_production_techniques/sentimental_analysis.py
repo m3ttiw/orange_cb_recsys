@@ -22,10 +22,9 @@ class TextBlobSentimentalAnalysis(SentimentalAnalysis):
                "source = " + str(self.get_source())
 
     def calculate_score(self) -> list:
-        sentiment_data = []
+        sentiment_data = list()
         for line in self.get_source():
             if type(self.get_field_name()) == str:
                 text = TextBlob(line[self.get_field_name()]).sentiment.polarity
                 sentiment_data.append(text)
-                return sentiment_data
-            raise TypeError("field_name should contain a string")
+        return sentiment_data
