@@ -60,10 +60,10 @@ class RecSys:
             else:
                 predicted_rating = self.__config.get_score_prediction_algorithm().predict(user, item)
 
-            score_frame = pd.concat(pd.DataFrame.from_records([(item_filename, predicted_rating)]), score_frame, ignore_index=True)
+            score_frame = pd.concat(pd.DataFrame.from_records([(item_filename, predicted_rating)]), score_frame,
+                                    ignore_index=True)
 
         if rank:
             return self.__config.get_ranking_algorithm().rank(score_frame)
         else:
             return score_frame
-
