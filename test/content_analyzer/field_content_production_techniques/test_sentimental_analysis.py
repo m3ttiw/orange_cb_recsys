@@ -14,6 +14,6 @@ class TestTextBlobSentimentalAnalysis(TestCase):
         except FileNotFoundError:
             file_path = 'datasets/test_sentiment_analysis.json'
 
-        confront_list = [1.0, 0.9, -0.6999999999999998]
+        confront_list = [0.9, -0.6999999999999998, 1.0]
         test_list: list = TextBlobSentimentalAnalysis(source=JSONFile(file_path), field_name="rating").calculate_score()
         self.assertEqual(test_list, confront_list)
