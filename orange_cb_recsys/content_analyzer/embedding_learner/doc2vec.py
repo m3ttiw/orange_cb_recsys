@@ -10,7 +10,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 
 class GensimDoc2Vec(EmbeddingLearner):
     """"
-    Class that implements the Abstract Class Word2Vec.
+    Class that implements the Abstract Class Dord2Vec.
     Implementation of Word2Vec using the Gensim library.
     """
 
