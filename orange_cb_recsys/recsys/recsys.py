@@ -33,12 +33,13 @@ class RecSys:
             if isinstance(self.__config.get_score_prediction_algorithm(), RatingsSPA):
                 assert (self.__config.get_rating_field() is not None), "You must specify where to find ratings if you use ratings based algorithm"
                 ratings = pd.DataFrame(user.get_field(self.__config.get_rating_field()).get_representation(str(0)).items(), columns=["item", "rating"])
-                predicted_rating = self.__config.get_score_prediction_algorithm().predict(user, item, ratings, self.__config.get_items_directory())
+                predicted_rating = self.__config.get_score_prediction_algorithm().predict(item, ratings, self.__config.get_items_directory())
 
             else:
                 predicted_rating = self.__config.get_score_prediction_algorithm().predict(user, item)
 
-            score_frame = pd.concat(pd.DataFrame.from_records([(item_filename, predicted_rating)]), score_frame, ignore_index=True)
+            score_frame = pd.concat(pd.DataFrame.from_records([(item_filename, predicted_rating)]), score_frame,
+                                    ignore_index=True)
 
         if rank:
             return self.__config.get_ranking_algorithm().rank(score_frame)
@@ -56,7 +57,7 @@ class RecSys:
 
             if isinstance(self.__config.get_score_prediction_algorithm(), RatingsSPA):
                 predicted_rating = self.__config.get_score_prediction_algorithm(). \
-                    predict(user, item, user_ratings, self.__config.get_items_directory())
+                    predict(item, user_ratings, self.__config.get_items_directory())
             else:
                 predicted_rating = self.__config.get_score_prediction_algorithm().predict(user, item)
 
