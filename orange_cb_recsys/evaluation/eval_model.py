@@ -58,7 +58,8 @@ class EvalModel:
                     truth = pd.Series(test.rating)
 
                     result_dict = perform_prediction_metrics(predictions, truth)
-                    prediction_metric_results = pd.concat(pd.DataFrame.from_records([(user, result_dict["rmse"], result_dict["mae"])]),
+                    prediction_metric_results = pd.concat(pd.DataFrame.from_records([(user, result_dict["rmse"],
+                                                                                      result_dict["mae"])]),
                                                           prediction_metric_results, ignore_index=True)
 
                 prediction_metric_results.groupby('user').mean()
@@ -77,7 +78,8 @@ class EvalModel:
 
                     result_dict = perform_ranking_metrics(predictions, truth)
                     ranking_metric_results = pd.concat(
-                        pd.DataFrame.from_records([(user, result_dict["precision"], result_dict["recall"], result_dict["F1"], result_dict["NDCG"])]),
+                        pd.DataFrame.from_records([(user, result_dict["precision"], result_dict["recall"],
+                                                    result_dict["F1"], result_dict["NDCG"])]),
                         ranking_metric_results, ignore_index=True)
 
                 ranking_metric_results.groupby('user').mean()

@@ -1,8 +1,7 @@
+from abc import ABC
 from typing import Dict
 import numpy as np
 import pandas as pd
-from sklearn.metrics import ndcg_score
-
 
 def perform_ranking_metrics(predictions: pd.DataFrame,
                             truth: pd.DataFrame,
@@ -89,31 +88,70 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
+def perform_gini_index():
+    pass
+
+
+def perform_pop_recs_correlation():
+    pass
+
+
 def perform_fairness_metrics() -> Dict[str, object]:
-    def perform_gini_index():
-        pass
 
-    def perform_pop_recs_correlation():
-        pass
-
-    results = {}
-
-    results["precision"] = perform_gini_index()
-    results["pop_recs_correlation"] = perform_pop_recs_correlation()
-
+    results = {
+        "precision": perform_gini_index(),
+        "pop_recs_correlation": perform_pop_recs_correlation()
+    }
     return results
 
 
+def perform_rmse(predictions: pd.Series, truth: pd.Series) -> float:
+    """
+    Compute the RMSE
+
+    Args:
+        predictions (pd.Series): Series containing the predicted ratings
+        truth (pd.Series): Series containing the truth rating values
+
+    Returns:
+        float: The Root Mean Squared Error
+    """
+    assert len(predictions) == len(truth), "The predictions series and the truth series must have the same size"
+    diff = predictions - truth
+    sq = np.square(diff)
+    return np.sqrt(np.mean(sq))
+
+
+def perform_mae(predictions: pd.Series, truth: pd.Series) -> float:
+    """
+    Compute the RMSE
+
+    Args:
+        predictions (pd.Series): Series containing the predicted ratings
+        truth (pd.Series): Series containing the truth rating values
+
+    Returns:
+        float: The Mean Average Error
+    """
+    assert len(predictions) == len(truth), "The predictions series and the truth series must have the same size"
+    abs_diff = (predictions - truth).apply(abs)
+    return np.mean(abs_diff)
+
+
 def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict[str, object]:
-    def perform_RMSE():
-        pass
+    """
+    Performs the metrics for evaluating the rating prediction phase and returns their values
 
-    def perform_MAE():
-        pass
+    Args:
+        predictions (pd.Series): Series containing the predicted ratings
+        truth (pd.Series): Series containing the truth rating values
 
-    results = {}
-
-    results["RMSE"] = perform_RMSE()
-    results["MAE"] = perform_MAE()
-
+    Returns:
+        results (Dict[str, object]): Python dictionary where the keys are the names of the metrics and the
+        values are the corresponding values
+    """
+    results = {
+        "RMSE": perform_rmse(predictions, truth),
+        "MAE": perform_mae(predictions, truth)
+    }
     return results

@@ -10,9 +10,10 @@ class ScorePredictionAlgorithm(ABC):
 
 
 class RatingsSPA(ScorePredictionAlgorithm):
-    def __init__(self, item_field: str):
+    def __init__(self, item_field: str, field_representation: str):
         super().__init__()
         self.__item_field: str = item_field
+        self.__field_representation: str = field_representation
 
     @abstractmethod
     def predict(self, user: Content, item: Content, ratings: pd.DataFrame, items_directory: str) -> float:
