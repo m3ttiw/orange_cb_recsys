@@ -9,8 +9,7 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
                             **options) -> Dict[str, float]:
     content_prediction = pd.Series(predictions['item'].values)
     if "relevant_threshold" in options.keys():
-        relevant_rank = truth[truth['score'] >= options["relevant_threshold"]]
-        print(relevant_rank)
+        relevant_rank = truth[truth['rating'] >= options["relevant_threshold"]]
     else:
         relevant_rank = truth
 
@@ -39,33 +38,46 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
         r = recall if recall is not None else perform_recall()
         return (1 + (n ** 2)) * ((p * r) / ((n ** 2) * p + r))
 
-    def perform_DCG(scores: pd.Series):
+    def perform_DCG(gains: pd.Series):
         """
-        Returns the DCG measure of the given ranking (predictions)
-        based on the truth ranking
+        Returns the DCG array of a gain vector
         """
-        dcg = 0
-        for score, i in enumerate(scores):
-            dcg += score / np.log2(i)
+        dcg = []
+        for i, gain in enumerate(gains):
+            if i == 0:
+                dcg.append(gain)
+            else:
+                dcg.append((gain / np.log2(i+1)) + dcg[i - 1])
         return dcg
 
     def perform_NDCG():
         """
-        Returns the NDCG measure of the given ranking (predictions)
-        based on the Ideal DCG of truth ranking
+        Returns the NDCG measure using Truth rank as ideal DCG
         """
-        return perform_DCG(pd.Series(predictions['score'].values)) / perform_DCG(pd.Series(predictions['score'].values))
 
-    def perform_NDCG_scikit():
-        """
-        Returns the NDCG measure with scickit learn
-        """
-        return ndcg_score(truth, predictions, k=len(truth) if len(truth) < len(predictions) else len(predictions))
+        idcg = perform_DCG(pd.Series(truth['rating'].values))
+
+        col = ["item", "rating"]
+        new_predicted = pd.DataFrame(columns=col)
+        for index, predicted_row in predictions.iterrows():
+            predicted_item = predicted_row['item']
+            truth_row = truth.loc[truth['item'] == predicted_item]
+            truth_score = truth_row['rating'].values[0]
+            new_predicted = new_predicted.append({'item': predicted_item, 'rating': truth_score}, ignore_index=True)
+
+        dcg = perform_DCG(pd.Series(new_predicted['rating'].values))
+        ndcg = []
+        for i, ideal in enumerate(idcg):
+            try:
+                ndcg.append(dcg[i] / ideal)
+            except IndexError:
+                break
+        return ndcg
 
     results = {
         "Precision": perform_precision(),
         "Recall": perform_recall(),
-        # "NDCG": perform_NDCG(),
+        "NDCG": perform_NDCG(),
     }
 
     if "fn" in options.keys() and options["fn"] > 1:
