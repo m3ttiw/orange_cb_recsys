@@ -9,4 +9,4 @@ class CentroidVector(RatingsSPA):
         super().__init__(item_field, field_representation)
 
     def predict(self, user: Content, item: Content, ratings: pd.DataFrame, items_directory: str):
-        pass
+        return 0
