@@ -3,34 +3,30 @@ import pandas as pd
 import numpy as np
 
 
-def perform_precision(predictions: pd.Series, truth: pd.Series) -> float:
+def perform_precision(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
     """
     Calculates the precision of the recommendations provided
 
     Args:
-        predictions (pd.Series): Series containing the predicted ratings
-        truth (pd.Series): Series containing the truth values
+        predictions (pd.DataFrame): Series containing the predicted ratings
+        truth (pd.DataFrame): Series containing the truth values
 
     Returns:
         float: precision
     """
-    ncorrect = predictions.isin(truth).sum
-    return ncorrect/len(predictions)
 
 
-def perform_recall(predictions: pd.Series, truth: pd.Series) -> float:
+def perform_recall(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
     """
     Calculates the recall of the recommendations provided
 
     Args:
-        predictions (pd.Series): Series containing the predicted ratings
-        truth (pd.Series): Series containing the truth values
+        predictions (pd.DataFrame): Series containing the predicted ratings
+        truth (pd.DataFrame): Series containing the truth values
 
     Returns:
         float: recall
     """
-    ncorrect = predictions.isin(truth).sum
-    return ncorrect/len(truth)
 
 
 def perform_f1(precision, recall) -> float:
@@ -47,42 +43,33 @@ def perform_f1(precision, recall) -> float:
     return 2 * ((precision * recall) / (precision + recall))
 
 
-def perform_dcg(scores: pd.Series):
+def perform_dcg(scores: pd.DataFrame):
     """
     Calculates the DCG of a given Series of scores
 
     Args:
-        scores (pd.Series): Series of scores of which the function will find the DCG
+        scores (pd.DataFrame): Series of scores of which the function will find the DCG
 
     Returns:
         dcg (float): value of the DCG
     """
-    dcg = 0
-    i = 0
-    for s in scores:
-        i += 1
-        dcg += s / np.log2(i)
-    return dcg
 
 
-def perform_ndcg(predictions: pd.Series, truth: pd.Series) -> float:
+def perform_ndcg(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
     """
     Calculates the NDCG, given by the ratio between the DCG of the recommendations provided and the
     Ideal-DCG, represented by the DCG of the truth base
 
     Args:
-        predictions (pd.Series): Series containing the predicted ratings
-        truth (pd.Series): Series containing the truth values
+        predictions (pd.DataFrame): Series containing the predicted ratings
+        truth (pd.DataFrame): Series containing the truth values
 
     Returns:
         float: value of the ndcg
     """
-    dcg = perform_dcg(predictions)
-    ideal_dcg = perform_dcg(truth)
-    return dcg / ideal_dcg
 
 
-def perform_ranking_metrics(predictions: pd.Series, truth: pd.Series) -> Dict[str, object]:
+def perform_ranking_metrics(predictions: pd.DataFrame, truth: pd.DataFrame) -> Dict[str, object]:
     """
     Performs the metrics for evaluating the ranking phase and returns their values
 
