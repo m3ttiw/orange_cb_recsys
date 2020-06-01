@@ -6,23 +6,29 @@ from sklearn.metrics import ndcg_score
 
 def perform_ranking_metrics(predictions: pd.DataFrame,
                             truth: pd.DataFrame,
-                            **options) -> Dict[str, object]:
-    content_prediction = predictions.iloc[0]
-    content_truth = truth.iloc[0]
+                            **options) -> Dict[str, float]:
+    content_prediction = pd.Series(predictions['item'].values)
+    if "relevant_threshold" in options.keys():
+        relevant_rank = truth[truth['score'] >= options["relevant_threshold"]]
+        print(relevant_rank)
+    else:
+        relevant_rank = truth
+
+    content_truth = pd.Series(relevant_rank['item'].values)
 
     def perform_precision():
         """
         Returns the precision of the given ranking (predictions)
         based on the truth ranking
         """
-        return len(content_prediction.intersection(content_truth)) / len(content_prediction)
+        return content_prediction.isin(content_truth).sum() / len(content_prediction)
 
     def perform_recall():
         """
         Returns the recall of the given ranking (predictions)
         based on the truth ranking
         """
-        return len(content_prediction.intersection(content_truth)) / len(content_truth)
+        return content_prediction.isin(content_truth).sum() / len(content_truth)
 
     def perform_Fn(n: int = 1, precision: float = None, recall: float = None):
         """
@@ -31,7 +37,7 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
         """
         p = precision if precision is not None else perform_precision()
         r = recall if recall is not None else perform_recall()
-        return (1 + n ** 2) * ((p * r) / (n ** 2 * p + r))
+        return (1 + (n ** 2)) * ((p * r) / ((n ** 2) * p + r))
 
     def perform_DCG(scores: pd.Series):
         """
@@ -48,20 +54,21 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
         Returns the NDCG measure of the given ranking (predictions)
         based on the Ideal DCG of truth ranking
         """
-        return perform_DCG(predictions.iloc[1]) / perform_DCG(truth.iloc[1])
+        return perform_DCG(pd.Series(predictions['score'].values)) / perform_DCG(pd.Series(predictions['score'].values))
 
     def perform_NDCG_scikit():
         """
         Returns the NDCG measure with scickit learn
         """
-        return ndcg_score(truth.iloc[1], predictions.iloc[1], k=len(truth))
+        return ndcg_score(truth, predictions, k=len(truth) if len(truth) < len(predictions) else len(predictions))
 
     results = {
-        "precision": perform_precision(),
-        "recall": perform_recall(),
-        "NDCG": perform_NDCG_scikit()}
+        "Precision": perform_precision(),
+        "Recall": perform_recall(),
+        # "NDCG": perform_NDCG(),
+    }
 
-    if options["fn"] is not None and options["fn"] > 1:
+    if "fn" in options.keys() and options["fn"] > 1:
         results["F{}".format(options["fn"])] = perform_Fn(n=options["fn"], precision=results["Precision"],
                                                           recall=results["Recall"])
     else:

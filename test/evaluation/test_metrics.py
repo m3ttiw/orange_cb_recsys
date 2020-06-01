@@ -18,7 +18,7 @@ class Test(TestCase):
             "item9": 0.2,
         }
 
-        relevant_rank = {item: score for i, (item, score) in enumerate(truth_rank.items()) if score > 0.75}
+        # relevant_rank = {item: score for i, (item, score) in enumerate(truth_rank.items()) if score > 0.75}
 
         predicted_rank = {
             "item2": 0.9,
@@ -35,13 +35,15 @@ class Test(TestCase):
 
         results = perform_ranking_metrics(
             pd.DataFrame(predicted_rank.items(), columns=col),
-            pd.DataFrame(relevant_rank.items(), columns=col)
+            pd.DataFrame(truth_rank.items(), columns=col),
+            relevant_threshold=0.75,
         )
 
         results_2 = perform_ranking_metrics(
             pd.DataFrame(predicted_rank.items(), columns=col),
-            pd.DataFrame(relevant_rank.items(), columns=col),
-            fn=2, ndcg_scikit=True
+            pd.DataFrame(truth_rank.items(), columns=col),
+            relevant_threshold=0.75,
+            fn=2
         )
 
         results["F2"] = results_2["F2"]
@@ -50,12 +52,13 @@ class Test(TestCase):
             "Precision": 0.375,
             "Recall": 0.75,
             "F1": 0.5,
-            "F2": 0.417,
-            "NDCG": 0,
+            "F2": 0.625,
+            # "NDCG": 0,
         }
 
-        tolerance = 0.5
-        for metric, real_score in real_results:
-            error = abs(results[metric] - real_score)
-            self.assertLessEqual(error, tolerance,
-                                 "{} tolerance overtaking: error = {}, tolerance = {}".format(metric, error, tolerance))
+        tolerance = 0.0
+        for metric in real_results.keys():
+            error = abs(results[metric] - real_results[metric])
+            print("{}: {}".format(metric, results[metric]))
+            self.assertLessEqual(error, tolerance, "{} tolerance overtaking: error = {}, tolerance = {}".
+                                 format(metric, error, tolerance))
