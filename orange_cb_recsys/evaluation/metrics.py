@@ -1,13 +1,14 @@
-import numpy as np
 from typing import Dict
+import numpy as np
 import pandas as pd
+from sklearn.metrics import ndcg_score
 
 
 def perform_ranking_metrics(predictions: pd.DataFrame,
                             truth: pd.DataFrame,
                             **options) -> Dict[str, object]:
-    content_prediction = set(predictions.loc[:, 0])
-    content_truth = set(truth.loc[:, 0])
+    content_prediction = predictions.iloc[0]
+    content_truth = truth.iloc[0]
 
     def perform_precision():
         """
@@ -47,12 +48,18 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
         Returns the NDCG measure of the given ranking (predictions)
         based on the Ideal DCG of truth ranking
         """
-        return perform_DCG(predictions.loc[:, 1]) / perform_DCG(truth.loc[:, 1])
+        return perform_DCG(predictions.iloc[1]) / perform_DCG(truth.iloc[1])
+
+    def perform_NDCG_scikit():
+        """
+        Returns the NDCG measure with scickit learn
+        """
+        return ndcg_score(truth.iloc[1], predictions.iloc[1], k=len(truth))
 
     results = {
         "precision": perform_precision(),
         "recall": perform_recall(),
-        "NDCG": perform_NDCG()}
+        "NDCG": perform_NDCG_scikit()}
 
     if options["fn"] is not None and options["fn"] > 1:
         results["F{}".format(options["fn"])] = perform_Fn(n=options["fn"], precision=results["Precision"],
