@@ -5,8 +5,8 @@ import pandas as pd
 
 
 class CentroidVector(RatingsSPA):
-    def __init__(self, item_field: str):
-        super().__init__(item_field)
+    def __init__(self, item_field: str, field_representation: str):
+        super().__init__(item_field, field_representation)
 
     def predict(self, user: Content, item: Content, ratings: pd.DataFrame, items_directory: str):
         pass
