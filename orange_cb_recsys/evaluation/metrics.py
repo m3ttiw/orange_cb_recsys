@@ -12,7 +12,11 @@ def perform_ranking_metrics(predictions: pd.DataFrame, truth: pd.DataFrame) -> D
         return predictions.isin(truth.index).sum()/len(predictions)
 
     def perform_recall():
-        return
+        """
+        Returns the recall of the given ranking (predictions)
+        based on the truth ranking
+        """
+        return predictions.isin(truth.index).sum()/len(truth)
 
     def perform_F1():
         return
