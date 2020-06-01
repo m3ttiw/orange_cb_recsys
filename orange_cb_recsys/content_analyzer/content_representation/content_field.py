@@ -136,7 +136,7 @@ class ContentField:
             representation_dict = {}
         self.__timestamp = timestamp
         self.__field_name: str = field_name
-        self.__representation_dict: Dict[str, FieldRepresentation] = representation_dict
+        self.__representation_dict: Dict[str, object] = representation_dict
 
     def __eq__(self, other) -> bool:
         """
@@ -159,7 +159,7 @@ class ContentField:
 
         return field_string + '\n\n' + rep_string + "------------------------------"
 
-    def append(self, representation_id: str, representation: FieldRepresentation):
+    def append(self, representation_id: str, representation):
         self.__representation_dict[representation_id] = representation
 
     def get_representation(self, representation_id: str):

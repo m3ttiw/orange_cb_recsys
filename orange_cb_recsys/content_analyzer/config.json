@@ -1,4 +1,5 @@
-[{
+[
+  {
   "content_type": "ITEM",
   "output_directory": "movielens_test",
   "raw_source_path": "../../datasets/movies_info_reduced.json",
@@ -30,5 +31,14 @@
       ]
     }
   ]
-}
+  },
+  {
+    "content_type": "USER",
+    "output_directory": "users_test",
+    "raw_source_path": "../../datasets/movies_info_reduced.json",
+    "source_type": "json",
+    "id_field_name": ["Title", "imdbID"],
+    "start_from": "0",
+    "end_up_at": "all"
+  }
 ]
