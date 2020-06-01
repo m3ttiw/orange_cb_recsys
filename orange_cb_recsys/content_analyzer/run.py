@@ -116,7 +116,7 @@ def config_run(config_list: List[Dict]):
                     field_config.append_pipeline(
                         FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict), preprocessing_list))
                 else:
-                    field_config.append_pipeline(None, preprocessing_list)
+                    field_config.append_pipeline(FieldRepresentationPipeline(None, preprocessing_list))
             # verify that the memory interface is set
             if field_dict['memory_interface'] != "None":
                 field_config.set_memory_interface(runnable_instances[field_dict['memory_interface']](

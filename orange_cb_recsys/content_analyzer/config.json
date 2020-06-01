@@ -42,7 +42,7 @@
     "end_up_at": "all",
     "fields": [
     {
-      "field_name": "Name",
+      "field_name": "name",
       "memory_interface": "None",
       "memory_interface_path": "None",
       "pipeline_list": [
