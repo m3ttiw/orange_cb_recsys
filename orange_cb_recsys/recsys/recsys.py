@@ -12,12 +12,9 @@ class RecSys:
     def __init__(self, config: RecSysConfig):
         self.__config: RecSysConfig = config
 
-    def __get_item_filename_list(self) -> List[dir]:
-        return os.listdir(self.__config.get_items_directory())
-
     def __get_item_to_predict_id_list(self, item_to_predict_id_list, user_ratings):
         if item_to_predict_id_list is None:
-            item_list = self.__get_item_filename_list()
+            item_list = [os.path.splitext(filename)[0] for filename in os.listdir(self.__config.get_items_directory())]
             try:
                 # list of items without rating
                 item_to_predict_id_list = [item for item in item_list if not user_ratings['item_id'].str.contains(item).any()]
@@ -27,7 +24,8 @@ class RecSys:
         return item_to_predict_id_list
 
     def __predict_item_list(self, user, user_ratings, item_to_predict_id_list):
-        score_frame = pd.DataFrame(columns=["item", "rating"])
+        columns = ["item_id", "rating"]
+        score_frame = pd.DataFrame(columns=columns)
 
         for item_id in item_to_predict_id_list:
             # load item instance
@@ -35,8 +33,7 @@ class RecSys:
 
             predicted_rating = self.__predict_item(user, item, user_ratings)
 
-            score_frame = pd.concat([pd.DataFrame.from_records([(item_id, predicted_rating)],
-                                     columns=["item", "rating"]), score_frame], ignore_index=True)
+            score_frame = pd.concat([pd.DataFrame.from_records([(item_id, predicted_rating)], columns=columns), score_frame], ignore_index=True)
 
         return score_frame
 
@@ -46,7 +43,7 @@ class RecSys:
                 "You must specify where to find ratings if you use ratings based algorithm"
 
             predicted_rating = self.__config.get_score_prediction_algorithm(). \
-                predict(user, item, user_ratings, self.__config.get_items_directory())
+                predict(item, user_ratings, self.__config.get_items_directory())
 
         else:
             predicted_rating = self.__config.get_score_prediction_algorithm().predict(user, item)
@@ -54,9 +51,9 @@ class RecSys:
         return predicted_rating
 
     def __load_content_instance(self, directory, content_id):
-        content_id = directory + '/' + content_id + '.bin'
-        with open(content_id, "rb") as user_file:
-            content: Content = pickle.load(user_file)
+        content_filename = directory + '/' + content_id + '.bin'
+        with open(content_filename, "rb") as content_file:
+            content: Content = pickle.load(content_file)
 
         return content
 
@@ -80,9 +77,7 @@ class RecSys:
 
     def fit_eval(self, user_id: str, user_ratings: pd.DataFrame, test_set: pd.DataFrame, rank: bool = False):
         # load user instance
-        user_id = self.__config.get_users_directory() + '/' + user_id + '.bin'
-        with open(user_id, "rb") as user_file:
-            user: Content = pickle.load(user_file)
+        user = self.__load_content_instance(self.__config.get_users_directory(), user_id)
 
         # get test set items
         item_to_predict_id_list = [item for item in test_set.item_id]  # lista di item non valutati
