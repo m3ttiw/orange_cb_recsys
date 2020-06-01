@@ -6,19 +6,22 @@ import pandas as pd
 def perform_ranking_metrics(predictions: pd.DataFrame,
                             truth: pd.DataFrame,
                             **options) -> Dict[str, object]:
+    content_prediction = set(predictions.loc[:, 0])
+    content_truth = set(truth.loc[:, 0])
+
     def perform_precision():
         """
         Returns the precision of the given ranking (predictions)
         based on the truth ranking
         """
-        return predictions.isin(truth.index).sum() / len(predictions)
+        return len(content_prediction.intersection(content_truth)) / len(content_prediction)
 
     def perform_recall():
         """
         Returns the recall of the given ranking (predictions)
         based on the truth ranking
         """
-        return predictions.isin(truth.index).sum() / len(truth)
+        return len(content_prediction.intersection(content_truth)) / len(content_truth)
 
     def perform_Fn(n: int = 1, precision: float = None, recall: float = None):
         """
@@ -44,7 +47,7 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
         Returns the NDCG measure of the given ranking (predictions)
         based on the Ideal DCG of truth ranking
         """
-        return perform_DCG(predictions.ix[:, 0]) / perform_DCG(truth.ix[:, 0])
+        return perform_DCG(predictions.loc[:, 1]) / perform_DCG(truth.loc[:, 1])
 
     results = {
         "precision": perform_precision(),
