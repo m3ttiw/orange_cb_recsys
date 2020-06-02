@@ -37,7 +37,7 @@ class TextBlobSentimentalAnalysis(SentimentalAnalysis):
         return sentiment_data
         """
         try:
-            self.type_check(field_data)
+            self.__type_check(field_data)
             score = TextBlob(field_data).sentiment.polarity
         except TypeError:
             print("TypeError: Sentiment analisys does not work on this field_data={}".format(field_data))

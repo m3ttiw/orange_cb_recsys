@@ -10,7 +10,7 @@ class RatingProcessor(ABC):
         return self.__field_name
 
     @abstractmethod
-    def type_check(self, field_data: object):
+    def __type_check(self, field_data: object):
         raise NotImplementedError
 
     @abstractmethod
@@ -27,7 +27,7 @@ class SentimentalAnalysis(RatingProcessor):
     def __init__(self, field_name: str):
         super().__init__(field_name)
 
-    def type_check(self, field_data: object):
+    def __type_check(self, field_data: object):
         if type(field_data) is not str:
             raise TypeError("Sentiment Analisys works only in textual fields")
 
