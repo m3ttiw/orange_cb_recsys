@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.sentimental_analysis import \
+from orange_cb_recsys.content_analyzer.ratings_manager.sentimental_analysis import \
     TextBlobSentimentalAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
