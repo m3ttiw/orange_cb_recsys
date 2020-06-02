@@ -88,7 +88,6 @@ def dict_detector(technique_dict):
 
 def config_run(config_list: List[Dict]):
     for content_config in config_list:
-        print("conf")
         # content production
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
