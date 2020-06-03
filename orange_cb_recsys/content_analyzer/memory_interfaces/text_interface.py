@@ -24,7 +24,6 @@ class IndexInterface(TextInterface):
 
     def __init__(self, directory: str):
         super().__init__(directory)
-        self.__vocabulary = None
         self.__doc = None
         self.__writer = None
         self.__field_type = None
