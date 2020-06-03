@@ -64,9 +64,15 @@ def check_for_available(content_config: Dict):
     # check runnable_instances
     if content_config['source_type'] not in ['json', 'csv', 'sql']:
         return False
-    if config_dict['content_type'].lower() == 'ratings':
-        for field in config_dict['fields']:
+    if content_config['content_type'].lower() == 'ratings':
+        if "from" not in content_config.keys() \
+                or "to" not in content_config.keys() \
+                or "timestamp" not in content_config.keys()\
+                or "output_directory" not in content_config.keys():
+            return False
+        for field in content_config['fields']:
             if field['rating_processor']['class'] not in implemented_rating_proc:
+
                 return False
         return True
     for field_dict in content_config['fields']:
