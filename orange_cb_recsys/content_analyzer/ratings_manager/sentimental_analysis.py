@@ -21,7 +21,7 @@ class TextBlobSentimentalAnalysis(SentimentalAnalysis):
     def __repr__(self):
         return "< TextBlobSentimentalAnalysis: field_name = {}>".format(self.get_field_name())
 
-    def fit(self, field_data: object) -> float:
+    def fit(self, field_data: str) -> float:
         """
         This method calculate the sentiment analysis score on textual reviews
         Returns:
@@ -36,10 +36,4 @@ class TextBlobSentimentalAnalysis(SentimentalAnalysis):
                 sentiment_data.append(text)
         return sentiment_data
         """
-        try:
-            self.__type_check(field_data)
-            score = TextBlob(field_data).sentiment.polarity
-        except TypeError:
-            print("TypeError: Sentiment analisys does not work on this field_data={}".format(field_data))
-            score = None
-        return score
+        return TextBlob(field_data).sentiment.polarity
