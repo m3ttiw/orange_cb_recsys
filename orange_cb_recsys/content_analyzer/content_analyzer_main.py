@@ -64,7 +64,6 @@ class ContentAnalyzer:
 
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
-            print(content)
             content.serialize(output_path)
 
         for interface in interfaces:
