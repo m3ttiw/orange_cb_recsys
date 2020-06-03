@@ -39,3 +39,16 @@
       - class: "nltk"
         stopwords_removal: 'True'
         lemmatization: 'True'
+- content_type: "RATING"
+  output_directory: "movielens_test"
+  raw_source_path: "../../datasets/movies_info_reduced.json"
+  source_type: "json"
+  from_field_name: "user_id"
+  to_field_name: "item_id"
+  timestamp_field_name: "timestamp"
+  fields:
+   - preference_field_name: "Text"
+     rating_processor: {class: "text_blob_sentiment"}
+   - preference_field_name: "Stars"
+     rating_processor: {class: "number_normalizer", min: "0.0", max: "5.0"}
+

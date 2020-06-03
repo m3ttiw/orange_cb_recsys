@@ -43,4 +43,4 @@ class RatingsImporter:
                 self.__columns[4]: timestamp
             }, ignore_index=True)
 
-        return ratings_frame
+        return ratings_frame            # si potrebbe memorizzare in un output_dierctory a scelta dell'utente

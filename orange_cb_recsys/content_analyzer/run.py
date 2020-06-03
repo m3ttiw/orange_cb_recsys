@@ -49,14 +49,13 @@ runnable_instances = {
 }
 
 
-def check_for_available(config_list: List[Dict]):
+def check_for_available(content_config: Dict):
     # check if need_interface is respected
     # check runnable_instances
     check_pass = True
-    for content_config in config_list:
-        if content_config['source_type'] not in ['json', 'csv', 'sql']:
-            check_pass = False
-            break
+    if content_config['source_type'] not in ['json', 'csv', 'sql']:
+        check_pass = False
+    else:
         for field_dict in content_config['fields']:
             if field_dict['memory_interface'] not in ['index', 'None']:
                 check_pass = False
@@ -85,7 +84,7 @@ def dict_detector(technique_dict):
     return technique_dict
 
 
-def config_run(config_list: List[Dict]):
+def content_config_run(config_list: List[Dict]):
     for content_config in config_list:
 
         # content production
@@ -125,6 +124,9 @@ def config_run(config_list: List[Dict]):
 
         return 0
 
+def rating_config_run(config_dict: Dict):
+    pass
+
 
 if __name__ == "__main__":
     config_path = sys.argv[0]
@@ -137,7 +139,11 @@ if __name__ == "__main__":
     else:
         raise Exception("Wrong file extension")
 
-    if check_for_available(config_list_dict):
-        config_run(config_list_dict)
-    else:
-        raise Exception("Check for available instances failed.")
+    for config_dict in config_list_dict:
+        if check_for_available(config_dict):
+            if config_dict["content_type"] == "USER" or config_dict["content_type"] == "ITEM":
+                content_config_run([config_dict])
+            elif config_dict["content_type"] == "RATING":
+                rating_config_run(config_dict)
+        else:
+            raise Exception("Check for available instances failed.")
