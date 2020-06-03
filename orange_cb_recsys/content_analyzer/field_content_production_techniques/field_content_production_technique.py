@@ -6,7 +6,7 @@ import numpy as np
 
 from nltk.tokenize import sent_tokenize
 from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation, \
-    FeaturesBagField, EmbeddingField, GraphField
+    FeaturesBagField, EmbeddingField
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
@@ -67,23 +67,6 @@ class SingleContentTechnique(FieldContentProductionTechnique):
             FieldRepresentation: an instance of FieldRepresentation,
                  the particular type of representation depends from the technique
         """
-
-
-class FieldToGraph(SingleContentTechnique):
-    """
-    Abstract class that generalizes techniques
-    that use ontologies or LOD for producing the semantic description
-    """
-
-    @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
-        raise NotImplementedError
-
-    def __str__(self):
-        return "FieldToGraph"
-
-    def __repr__(self):
-        return "FieldToGraph " + "graph content"
 
 
 class TfIdfTechnique(CollectionBasedTechnique):
