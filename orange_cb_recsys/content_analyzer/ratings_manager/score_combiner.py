@@ -2,15 +2,16 @@ from typing import List
 
 
 def avg(score_list: List[float]) -> float:
-    score = 0
-    for s in score_list:
-        score += s
-    return score/len(score_list)
+    return sum(score_list) / len(score_list)
+
+
+def mode(score_list: List[float]) -> float:
+    return max(set(score_list), key=score_list.count)
 
 
 class ScoreCombiner:
-    def __init__(self, function):
-        self.__function = function
+    def __init__(self, function: str):
+        self.__function = eval(function)
 
-    def combine(self, score_list: List[float]) -> float:
-        return self.__function(score_list)
+    def combine(self, score_list: List[float], **kwargs) -> float:
+        return self.__function(score_list, **kwargs)

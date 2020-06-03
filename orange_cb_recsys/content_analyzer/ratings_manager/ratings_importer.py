@@ -35,7 +35,7 @@ class RatingsImporter:
         self.__from_field_name: str = from_field_name
         self.__to_field_name: str = to_field_name
         self.__timestamp_field_name: str = timestamp_field_name
-        self.__score_combiner = ScoreCombiner(eval(score_combiner))
+        self.__score_combiner = ScoreCombiner(score_combiner)
 
         self.__columns: dict = {
             "from_id": self.__from_field_name,
