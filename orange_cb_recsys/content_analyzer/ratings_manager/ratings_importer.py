@@ -1,7 +1,9 @@
+from abc import ABC, abstractmethod
 from typing import List
 import time
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import RatingProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import ScoreCombiner
 import pandas as pd
 
 
@@ -24,7 +26,8 @@ class RatingsImporter:
                  rating_configs: List[RatingsFieldConfig],
                  from_field_name: str,
                  to_field_name: str,
-                 timestamp_field_name: str):
+                 timestamp_field_name: str,
+                 score_combiner: str = "avg"):
 
         self.__source: RawInformationSource = source
         self.__output_directory: str = output_directory
@@ -32,6 +35,8 @@ class RatingsImporter:
         self.__from_field_name: str = from_field_name
         self.__to_field_name: str = to_field_name
         self.__timestamp_field_name: str = timestamp_field_name
+        self.__score_combiner = ScoreCombiner(eval(score_combiner))
+
         self.__columns: dict = {
             "from_id": self.__from_field_name,
             "to_id": self.__to_field_name,
@@ -51,7 +56,7 @@ class RatingsImporter:
         """
         ratings_frame = pd.Dataframe(columns=self.__columns.values())
         for raw_rating in self.__source:
-            score = 0
+            score_list = []
             row_dict = {
                 self.__columns["from_id"]: raw_rating[self.__from_field_name],
                 self.__columns["to_id"]: raw_rating[self.__to_field_name],
@@ -59,9 +64,9 @@ class RatingsImporter:
             }
             for i, preference in enumerate(self.__rating_configs):
                 row_dict["original_rating_{}".format(i)] = raw_rating[preference.get_field_name()]
-                score += preference.get_processor().fit(row_dict["original_rating_{}".format(i)])
+                score_list.append(preference.get_processor().fit(row_dict["original_rating_{}".format(i)]))
 
-            row_dict[self.__columns["score"]] = score / len(self.__rating_configs)
+            row_dict[self.__columns["score"]] = self.__score_combiner.combine(score_list)
             ratings_frame = ratings_frame.append(row_dict, ignore_index=True)
 
         ratings_frame.to_csv("{}/ratings_{}".format(self.__output_directory, time.time), index=False, header=False)
