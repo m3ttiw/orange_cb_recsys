@@ -4,11 +4,9 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_id
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
-import lucene
+
 class TestLuceneTfIdf(TestCase):
     def test_produce_content(self):
-        lucene.initVM(vmargs=['-Djava.awt.headless=true'])
-
         file_path = '../../../datasets/movies_info_reduced.json'
         try:
             with open(file_path):

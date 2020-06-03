@@ -113,12 +113,6 @@ class EmbeddingField(FieldRepresentation):
         return self.__embedding_array == other.__embedding_array
 
 
-class GraphField(FieldRepresentation):
-    """
-    Class for field representation using a graph.
-    """
-
-
 class ContentField:
     """
     Class that represents a field,
