@@ -24,6 +24,7 @@ class IndexInterface(TextInterface):
 
     def __init__(self, directory: str):
         super().__init__(directory)
+        self.__vocabulary = None
         self.__doc = None
         self.__writer = None
         self.__field_type = None
@@ -74,7 +75,6 @@ class IndexInterface(TextInterface):
              words_bag (Dict <str, float>): Dictionary whose keys are the words contained in the field,
                 and the corresponding values are the tf-idf values.
         """
-        print(field_name)
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
         query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:\"" + content_id + "\"")
         score_docs = searcher.search(query, 1).scoreDocs
@@ -95,4 +95,10 @@ class IndexInterface(TextInterface):
             tf_idf = term_frequency * inverse_document_frequency
             words_bag[term_text] = tf_idf
 
+        reader.close()
         return words_bag
+
+    def delete_index(self):
+        import shutil
+
+        print(shutil.rmtree(self.get_directory(), ignore_errors=True))

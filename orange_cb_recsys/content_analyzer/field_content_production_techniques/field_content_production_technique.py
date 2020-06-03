@@ -75,11 +75,15 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
-                        field_name: str, pipeline_id: str) -> FieldRepresentation:
+                        field_name: str) -> FieldRepresentation:
         raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_refactored(self):
         raise NotImplementedError
 
     def __str__(self):
@@ -115,11 +119,15 @@ class TfIdfTechnique(CollectionBasedTechnique):
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
-                        field_name: str, pipeline_id: str) -> FeaturesBagField:
+                        field_name: str) -> FeaturesBagField:
         raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_refactored(self):
         raise NotImplementedError
 
     def __str__(self):

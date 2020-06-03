@@ -173,7 +173,6 @@ class ContentAnalyzerConfig:
     def append_field_config(self, field_name: str, field_config: FieldConfig):
         self.__field_config_dict[field_name] = field_config
 
-
     def __str__(self):
         return str(self.__id_field_name)
 
