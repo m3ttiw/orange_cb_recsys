@@ -1,6 +1,5 @@
-from abc import ABC, abstractmethod
 from typing import List
-import time
+from time import ctime
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import RatingProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import ScoreCombiner
@@ -22,11 +21,11 @@ class RatingsFieldConfig:
 
 class RatingsImporter:
     def __init__(self, source: RawInformationSource,
-                 output_directory: str,
                  rating_configs: List[RatingsFieldConfig],
                  from_field_name: str,
                  to_field_name: str,
                  timestamp_field_name: str,
+                 output_directory: str = None,
                  score_combiner: str = "avg"):
 
         self.__source: RawInformationSource = source
@@ -37,16 +36,21 @@ class RatingsImporter:
         self.__timestamp_field_name: str = timestamp_field_name
         self.__score_combiner = ScoreCombiner(score_combiner)
 
-        self.__columns: dict = {
-            "from_id": self.__from_field_name,
-            "to_id": self.__to_field_name,
-            "score": "score",
-            "timestamp": self.__timestamp_field_name}
+        self.__columns: list = ["from_id", "to_id", "score", "timestamp"]
         for i, field in enumerate(self.__rating_configs):
-            self.__columns["original_rating_{}".format(i)] = field.get_field_name()
+            self.__columns.append(field.get_field_name())
 
-    def get_frame_columns(self) -> dict:
+    def get_frame_columns(self) -> list:
         return self.__columns
+
+    def get_from_field_name(self) -> str:
+        return self.__from_field_name
+
+    def get_to_field_name(self) -> str:
+        return self.__to_field_name
+
+    def get_timestamp_field_name(self) -> str:
+        return self.__timestamp_field_name
 
     def import_ratings(self) -> pd.DataFrame:
         """
@@ -54,21 +58,27 @@ class RatingsImporter:
         Returns:
             ratings_frame: pd.DataFrame
         """
-        ratings_frame = pd.Dataframe(columns=self.__columns.values())
+        ratings_frame = pd.DataFrame(columns=list(self.__columns))
         for raw_rating in self.__source:
             score_list = []
             row_dict = {
-                self.__columns["from_id"]: raw_rating[self.__from_field_name],
-                self.__columns["to_id"]: raw_rating[self.__to_field_name],
-                self.__columns["timestamp"]: raw_rating[self.__timestamp_field_name],
+                "from_id": raw_rating[self.__from_field_name],
+                "to_id": raw_rating[self.__to_field_name],
+                "timestamp": raw_rating[self.__timestamp_field_name],
             }
             for i, preference in enumerate(self.__rating_configs):
-                row_dict["original_rating_{}".format(i)] = raw_rating[preference.get_field_name()]
-                score_list.append(preference.get_processor().fit(row_dict["original_rating_{}".format(i)]))
+                row_dict[preference.get_field_name()] = raw_rating[preference.get_field_name()]
+                score_list.append(preference.get_processor().fit(row_dict[preference.get_field_name()]))
 
-            row_dict[self.__columns["score"]] = self.__score_combiner.combine(score_list)
+            row_dict["score"] = self.__score_combiner.combine(score_list)
             ratings_frame = ratings_frame.append(row_dict, ignore_index=True)
 
-        ratings_frame.to_csv("{}/ratings_{}".format(self.__output_directory, time.time), index=False, header=False)
+        if self.__output_directory is not None:
+            try:
+                ratings_frame.to_csv("../../../datasets/{}/ratings_{}.csv".format(self.__output_directory,
+                                                                                  ctime()), index=False, header=False)
+            except FileNotFoundError:
+                ratings_frame.to_csv("datasets/{}/ratings_{}.csv".format(self.__output_directory,
+                                                                         ctime()), index=False, header=False)
 
         return ratings_frame
