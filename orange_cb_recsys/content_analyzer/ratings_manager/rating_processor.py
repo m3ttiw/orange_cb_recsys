@@ -3,11 +3,6 @@ from abc import ABC, abstractmethod
 
 class RatingProcessor(ABC):
     ### COMMENTI
-    def __init__(self, field_name: str):
-        self.__field_name = field_name
-
-    def get_field_name(self):
-        return self.__field_name
 
     @abstractmethod
     def __type_check(self, field_data: object):
@@ -22,9 +17,6 @@ class SentimentalAnalysis(RatingProcessor):
     """
     Abstract Class that generalizes the sentimental analysis technique
     """
-    def __init__(self, field_name: str):
-        super().__init__(field_name)
-
     def __type_check(self, field_data: object):
         if type(field_data) is not str:
             raise TypeError("Sentiment Analysis works only in textual fields")
@@ -39,7 +31,6 @@ class NumberNormalizer(RatingProcessor):
     Class that scale ratings in a numeric scale in the range [-1.0,1.0]
     """
     def __init__(self, field_name: str, min: float, max: float):
-        super().__init__(field_name=field_name)
         self.__scale_factor = abs(max - min)
 
     def __type_check(self, field_data: object):

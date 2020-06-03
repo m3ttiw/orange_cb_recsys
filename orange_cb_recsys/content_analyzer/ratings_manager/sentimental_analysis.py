@@ -7,19 +7,13 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 class TextBlobSentimentalAnalysis(SentimentalAnalysis):
     """
     Interface for the textblob library that does sentimental analysis on text.
-
-    Args:
-        field_name (str): the name of the field with the textual reviews
     """
-
-    def __init__(self, field_name: str):
-        super().__init__(field_name)
 
     def __str__(self):
         return "TextBlobSentimentalAnalysis"
 
     def __repr__(self):
-        return "< TextBlobSentimentalAnalysis: field_name = {}>".format(self.get_field_name())
+        return "< TextBlobSentimentalAnalysis >"
 
     def fit(self, field_data: str) -> float:
         """
