@@ -2,7 +2,10 @@ from abc import ABC, abstractmethod
 
 
 class RatingProcessor(ABC):
-    ### COMMENTI
+    """
+    Abstract class that process a rating with the personalized fit method
+    that returns a score in the range [-1.0,1.0]
+    """
 
     @abstractmethod
     def fit(self, field_data: object):
@@ -23,8 +26,10 @@ class NumberNormalizer(RatingProcessor):
     """
     Class that scale ratings in a numeric scale in the range [-1.0,1.0]
     """
-    def __init__(self, field_name: str, min: float, max: float):
-        self.__scale_factor = abs(max - min)
+    def __init__(self, min_: float, max_: float):
+        self.__min = min_
+        self.__max = max_
+        self.__scale_span = min_ - max_
 
     def fit(self, field_data: float):
-        return (field_data / self.__scale_factor) * 2 - 1
+        return (float(field_data - self.__min) / float(self.__scale_span)) * 2 - 1
