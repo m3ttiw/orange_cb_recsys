@@ -71,9 +71,10 @@ def check_for_available(content_config: Dict):
                 check_pass = False
                 break
             for pipeline_dict in field_dict['pipeline_list']:
-                if pipeline_dict['field_content_production']['class'] not in implemented_content_prod:
-                    check_pass = False
-                    break
+                if pipeline_dict['field_content_production'] != "None":
+                    if pipeline_dict['field_content_production']['class'] not in implemented_content_prod:
+                        check_pass = False
+                        break
                 for preprocessing in pipeline_dict['preprocessing_list']:
                     if preprocessing['class'] not in implemented_preprocessing:
                         check_pass = False
@@ -96,7 +97,6 @@ def dict_detector(technique_dict):
 
 def content_config_run(config_list: List[Dict]):
     for content_config in config_list:
-
         # content production
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
@@ -116,12 +116,15 @@ def content_config_run(config_list: List[Dict]):
                     preprocessing = dict_detector(preprocessing)
                     preprocessing_list.append(runnable_instances[class_name](**preprocessing))  # params for the class
                 # content production settings
-                class_name = pipeline_dict['field_content_production'].pop('class')  # extract the class acronyms
-                # append each field representation pipeline to the field config
-                technique_dict = pipeline_dict["field_content_production"]
-                technique_dict = dict_detector(technique_dict)
-                field_config.append_pipeline(
-                    FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict), preprocessing_list))
+                if type(pipeline_dict['field_content_production']) is dict:
+                    class_name = pipeline_dict['field_content_production'].pop('class')  # extract the class acronyms
+                    # append each field representation pipeline to the field config
+                    technique_dict = pipeline_dict["field_content_production"]
+                    technique_dict = dict_detector(technique_dict)
+                    field_config.append_pipeline(
+                        FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict), preprocessing_list))
+                else:
+                    field_config.append_pipeline(FieldRepresentationPipeline(None, preprocessing_list))
             # verify that the memory interface is set
             if field_dict['memory_interface'] != "None":
                 field_config.set_memory_interface(runnable_instances[field_dict['memory_interface']](
@@ -131,8 +134,6 @@ def content_config_run(config_list: List[Dict]):
         # fitting the data for each
         content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
         content_analyzer.fit()
-
-        return 0
 
 
 def rating_config_run(config_dict: Dict):

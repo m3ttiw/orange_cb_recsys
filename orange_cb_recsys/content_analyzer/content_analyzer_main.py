@@ -111,7 +111,7 @@ class ContentsProducer:
     def __get_timestamp(self, raw_content: Dict) -> str:
         # search for timestamp as dataset field, no timestamp needed for items
         timestamp = None
-        if self.__config.get_content_type() != "ITEM":
+        if self.__config.get_content_type() != "item":
             if "timestamp" in raw_content.keys():
                 timestamp = raw_content["timestamp"]
             else:
@@ -139,6 +139,8 @@ class ContentsProducer:
                 field.append(str(i), self.__create_representation_CBT(str(i), field_name, content_id, pipeline))
             elif isinstance(pipeline.get_content_technique(), SingleContentTechnique):
                 field.append(str(i), self.__create_representation(str(i), field_data, pipeline))
+            elif pipeline.get_content_technique() is None:
+                field.append(str(i), field_data)
 
         return field
 

@@ -7,12 +7,12 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 class TestLuceneTfIdf(TestCase):
     def test_produce_content(self):
-        file_path = '../../../datasets/movies_info_test.json'
+        file_path = '../../../datasets/movies_info_reduced.json'
         try:
             with open(file_path):
                 pass
         except FileNotFoundError:
-            file_path = 'datasets/movies_info_test.json'
+            file_path = 'datasets/movies_info_reduced.json'
 
         technique = LuceneTfIdf()
         technique.append_field_need_refactor("Plot", str(1), [NLTK()])
@@ -20,5 +20,5 @@ class TestLuceneTfIdf(TestCase):
         features_bag_test = technique.produce_content("test", "tt0113497", "Plot", str(1))
         features = features_bag_test.get_value()
 
-        self.assertEqual(features['years'], 0)
+        self.assertEqual(features['years'], 0.6989700043360189)
 

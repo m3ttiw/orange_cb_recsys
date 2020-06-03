@@ -1,5 +1,6 @@
 from orange_cb_recsys.recsys.ranking_algorithms.ranking_algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import ScorePredictionAlgorithm
+import pandas as pd
 
 
 class RecSysConfig:
@@ -7,12 +8,12 @@ class RecSysConfig:
                  items_directory: str,
                  score_prediction_algorithm: ScorePredictionAlgorithm,
                  ranking_algorithm: RankingAlgorithm,
-                 rating_field: str = None):
+                 rating_frame: pd.DataFrame = None):
         self.__users_directory: str = users_directory
         self.__items_directory: str = items_directory
         self.__score_prediction_algorithm: ScorePredictionAlgorithm = score_prediction_algorithm
         self.__ranking_algorithm: RankingAlgorithm = ranking_algorithm
-        self.__rating_field = rating_field
+        self.__rating_frame = rating_frame
 
     def get_users_directory(self):
         return self.__users_directory
@@ -26,8 +27,8 @@ class RecSysConfig:
     def get_ranking_algorithm(self):
         return self.__ranking_algorithm
 
-    def get_rating_field(self):
-        return self.__rating_field
+    def get_rating_frame(self):
+        return self.__rating_frame
 
     def set_users_directory(self, users_directory: str):
         self.__users_directory = users_directory
@@ -41,5 +42,5 @@ class RecSysConfig:
     def set_score_prediction_algorithm(self, score_prediction_algorithm: str):
         self.__score_prediction_algorithm = score_prediction_algorithm
 
-    def set_rating_field(self, rating_field: str):
-        self.__rating_field = rating_field
+    def set_rating_frame(self, rating_frame: str):
+        self.__rating_frame = rating_frame

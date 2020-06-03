@@ -116,7 +116,7 @@ class ContentAnalyzerConfig:
         if field_config_dict is None:
             field_config_dict = {}
         self.__output_directory: str = output_directory + str(time.time())
-        self.__content_type = content_type
+        self.__content_type = content_type.lower()
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
         self.__id_field_name: str = id_field_name
