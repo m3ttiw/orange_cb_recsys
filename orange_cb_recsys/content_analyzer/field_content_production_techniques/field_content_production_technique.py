@@ -51,28 +51,46 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
 
     def __init__(self):
         super().__init__()
-        self.__need_refactor: Dict[Tuple[str, str], List[InformationProcessor]] = {}
+        self.__field_need_refactor: str = None
+        self.__pipeline_need_refactor: str = None
+        self.__processor_list: List[InformationProcessor] = None
 
-    def append_field_need_refactor(self, field_name: str, pipeline_id, processor_list: List[InformationProcessor]):
-        self.__need_refactor[(field_name, pipeline_id)] = processor_list
+    def set_field_need_refactor(self, field_name: str):
+        self.__field_need_refactor = field_name
 
-    def get_need_refactor(self):
-        return self.__need_refactor
+    def set_pipeline_need_refactor(self, pipeline_id: str):
+        self.__pipeline_need_refactor = pipeline_id
+
+    def set_processor_list(self, processor_list: List[InformationProcessor]):
+        self.__processor_list = processor_list
+
+    def get_field_need_refactor(self):
+        return self.__field_need_refactor
+
+    def get_pipeline_need_refactor(self):
+        return self.__pipeline_need_refactor
+
+    def get_processor_list(self):
+        return self.__processor_list
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
-                        field_name: str, pipeline_id: str) -> FieldRepresentation:
+                        field_name: str) -> FieldRepresentation:
         raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
         raise NotImplementedError
 
+    @abstractmethod
+    def delete_refactored(self):
+        raise NotImplementedError
+
     def __str__(self):
         return "CollectionBasedTechnique"
 
     def __repr__(self):
-        return "CollectionBasedTechnique " + str(self.__need_refactor)
+        return "CollectionBasedTechnique "
 
 
 class SingleContentTechnique(FieldContentProductionTechnique):
@@ -101,11 +119,15 @@ class TfIdfTechnique(CollectionBasedTechnique):
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
-                        field_name: str, pipeline_id: str) -> FeaturesBagField:
+                        field_name: str) -> FeaturesBagField:
         raise NotImplementedError
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_refactored(self):
         raise NotImplementedError
 
     def __str__(self):

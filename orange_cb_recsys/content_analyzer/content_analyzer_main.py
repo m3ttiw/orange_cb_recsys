@@ -34,12 +34,12 @@ class ContentAnalyzer:
     def __dataset_refactor(self):
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
-                if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
-                    pipeline.get_content_technique(). \
-                        append_field_need_refactor(field_name, str(pipeline), pipeline.get_preprocessor_list())
-
-        for technique in self.__config.get_collection_based_techniques():
-            technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
+                technique = pipeline.get_content_technique()
+                if isinstance(technique, CollectionBasedTechnique):
+                    technique.set_field_need_refactor(field_name)
+                    technique.set_pipeline_need_refactor(str(pipeline))
+                    technique.set_processor_list(pipeline.get_preprocessor_list())
+                    technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
 
     def fit(self):
         """
@@ -68,6 +68,12 @@ class ContentAnalyzer:
 
         for interface in interfaces:
             interface.stop_writing()
+
+        for field_name in self.__config.get_field_name_list():
+            for pipeline in self.__config.get_pipeline_list(field_name):
+                technique = pipeline.get_content_technique()
+                if isinstance(technique, CollectionBasedTechnique):
+                    technique.delete_refactored()
 
     def __str__(self):
         return "ContentAnalyzer"
@@ -147,7 +153,7 @@ class ContentsProducer:
     @staticmethod
     def __create_representation_CBT(field_representation_name: str, field_name: str, content_id: str, pipeline: FieldRepresentationPipeline):
         return pipeline.get_content_technique().\
-            produce_content(field_representation_name, content_id, field_name, str(pipeline))
+            produce_content(field_representation_name, content_id, field_name)
 
     @staticmethod
     def __create_representation(field_representation_name: str, field_data, pipeline: FieldRepresentationPipeline):
