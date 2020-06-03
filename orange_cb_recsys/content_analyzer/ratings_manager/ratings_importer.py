@@ -1,5 +1,5 @@
 from typing import List
-
+import time
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import RatingProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 import pandas as pd
@@ -24,8 +24,7 @@ class RatingsImporter:
                  rating_configs: List[RatingsFieldConfig],
                  from_field_name: str,
                  to_field_name: str,
-                 timestamp_field_name: str
-                 ):
+                 timestamp_field_name: str):
 
         self.__source: RawInformationSource = source
         self.__output_directory: str = output_directory
@@ -65,6 +64,6 @@ class RatingsImporter:
             row_dict[self.__columns["score"]] = score / len(self.__rating_configs)
             ratings_frame = ratings_frame.append(row_dict, ignore_index=True)
 
-        ratings_frame.to_csv(self.__output_directory, index=False, header=False)
+        ratings_frame.to_csv("{}/ratings_{}".format(self.__output_directory, time.time), index=False, header=False)
 
-        return ratings_frame  # si potrebbe memorizzare in un output_dierctory a scelta dell'utente
+        return ratings_frame

@@ -62,24 +62,24 @@ runnable_instances = {
 def check_for_available(content_config: Dict):
     # check if need_interface is respected
     # check runnable_instances
-    check_pass = True
     if content_config['source_type'] not in ['json', 'csv', 'sql']:
-        check_pass = False
-    else:
-        for field_dict in content_config['fields']:
-            if field_dict['memory_interface'] not in ['index', 'None']:
-                check_pass = False
-                break
-            for pipeline_dict in field_dict['pipeline_list']:
-                if pipeline_dict['field_content_production'] != "None":
-                    if pipeline_dict['field_content_production']['class'] not in implemented_content_prod:
-                        check_pass = False
-                        break
-                for preprocessing in pipeline_dict['preprocessing_list']:
-                    if preprocessing['class'] not in implemented_preprocessing:
-                        check_pass = False
-                        break
-    return check_pass
+        return False
+    if config_dict['content_type'].lower() == 'ratings':
+        for field in config_dict['fields']:
+            if field['rating_processor']['class'] not in implemented_rating_proc:
+                return False
+        return True
+    for field_dict in content_config['fields']:
+        if field_dict['memory_interface'] not in ['index', 'None']:
+            return False
+        for pipeline_dict in field_dict['pipeline_list']:
+            if pipeline_dict['field_content_production'] != "None":
+                if pipeline_dict['field_content_production']['class'] not in implemented_content_prod:
+                    return False
+            for preprocessing in pipeline_dict['preprocessing_list']:
+                if preprocessing['class'] not in implemented_preprocessing:
+                    return False
+    return True
 
 
 def dict_detector(technique_dict):
@@ -143,14 +143,14 @@ def rating_config_run(config_dict: Dict):
             RatingsFieldConfig(preference_field_name=field["preference_field_name"],
                                processor=dict_detector(field["processor"]))
         )
-    ratings_frame = RatingsImporter(
+    RatingsImporter(
         source=runnable_instances[config_dict["source_type"]],
+        output_directory=config_dict["output_directory"],
         rating_configs=rating_configs,
         from_field_name=config_dict["from_field_name"],
         to_field_name=config_dict["to_field_name"],
         timestamp_field_name=config_dict["timestamp"]
     ).import_ratings()
-    print(ratings_frame)  # potremmo memorizzarlo qui
 
 
 if __name__ == "__main__":
@@ -166,9 +166,9 @@ if __name__ == "__main__":
 
     for config_dict in config_list_dict:
         if check_for_available(config_dict):
-            if config_dict["content_type"] == "USER" or config_dict["content_type"] == "ITEM":
-                content_config_run([config_dict])
-            elif config_dict["content_type"] == "RATING":
+            if config_dict["content_type"].lower() == "rating":
                 rating_config_run(config_dict)
+            else:
+                content_config_run([config_dict])
         else:
             raise Exception("Check for available instances failed.")
