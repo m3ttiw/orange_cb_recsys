@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from orange_cb_recsys.content_analyzer.ratings_manager.sentimental_analysis import TextBlobSentimentalAnalysis
+from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 
-class TestTextBlobSentimentalAnalysis(TestCase):
+class TestTextBlobSentimentAnalysis(TestCase):
     def test_fit(self):
         file_path = '../../../datasets/test_sentiment_analysis.json'
         try:
@@ -19,5 +19,5 @@ class TestTextBlobSentimentalAnalysis(TestCase):
         test_list = []
         source = JSONFile(file_path)
         for test_field in source:
-            test_list.append(TextBlobSentimentalAnalysis().fit(field_data=test_field["rating"]))
+            test_list.append(TextBlobSentimentAnalysis().fit(field_data=test_field["rating"]))
         self.assertEqual(test_list, confront_list)

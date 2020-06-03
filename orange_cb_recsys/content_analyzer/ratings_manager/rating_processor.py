@@ -12,9 +12,9 @@ class RatingProcessor(ABC):
         raise NotImplementedError
 
 
-class SentimentalAnalysis(RatingProcessor):
+class SentimentAnalysis(RatingProcessor):
     """
-    Abstract Class that generalizes the sentimental analysis technique
+    Abstract Class that generalizes the sentiment analysis technique
     """
 
     @abstractmethod

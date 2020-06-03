@@ -1,9 +1,9 @@
 from textblob import TextBlob
 
-from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import SentimentalAnalysis
+from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import SentimentAnalysis
 
 
-class TextBlobSentimentalAnalysis(SentimentalAnalysis):
+class TextBlobSentimentAnalysis(SentimentAnalysis):
     """
     Interface for the textblob library that does sentimental analysis on text.
     """

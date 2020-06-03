@@ -20,7 +20,7 @@ from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsImporter, RatingsFieldConfig
-from orange_cb_recsys.content_analyzer.ratings_manager.sentimental_analysis import TextBlobSentimentalAnalysis
+from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, SQLDatabase, CSVFile
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
@@ -54,7 +54,7 @@ runnable_instances = {
     "gensim_downloader": GensimDownloader,
     "centroid": Centroid,
     "embedding": EmbeddingTechnique,
-    "text_blob_sentiment": TextBlobSentimentalAnalysis,
+    "text_blob_sentiment": TextBlobSentimentAnalysis,
     "number_normalizer": NumberNormalizer,
 }
 
