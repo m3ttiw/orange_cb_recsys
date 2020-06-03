@@ -1,7 +1,6 @@
 from textblob import TextBlob
 
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import SentimentalAnalysis
-from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
 
 class TextBlobSentimentalAnalysis(SentimentalAnalysis):

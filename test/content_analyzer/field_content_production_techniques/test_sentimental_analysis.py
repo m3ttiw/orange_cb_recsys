@@ -1,12 +1,11 @@
 from unittest import TestCase
 
-from orange_cb_recsys.content_analyzer.ratings_manager.sentimental_analysis import \
-    TextBlobSentimentalAnalysis
+from orange_cb_recsys.content_analyzer.ratings_manager.sentimental_analysis import TextBlobSentimentalAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
 
 class TestTextBlobSentimentalAnalysis(TestCase):
-    def test_calculate_score(self):
+    def test_fit(self):
         file_path = '../../../datasets/test_sentiment_analysis.json'
         try:
             with open(file_path):
