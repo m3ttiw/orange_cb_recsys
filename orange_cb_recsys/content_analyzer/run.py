@@ -106,7 +106,8 @@ def content_config_run(config_list: List[Dict]):
         # content production
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
-            runnable_instances[content_config['source_type']](content_config['raw_source_path']),
+            runnable_instances[content_config['source_type']](file_path=config_dict["raw_source_path"],
+                                                              **content_config),
             content_config['id_field_name'],
             content_config['output_directory'])
 
@@ -128,7 +129,8 @@ def content_config_run(config_list: List[Dict]):
                     technique_dict = pipeline_dict["field_content_production"]
                     technique_dict = dict_detector(technique_dict)
                     field_config.append_pipeline(
-                        FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict), preprocessing_list))
+                        FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict),
+                                                    preprocessing_list))
                 else:
                     field_config.append_pipeline(FieldRepresentationPipeline(None, preprocessing_list))
             # verify that the memory interface is set
@@ -150,7 +152,7 @@ def rating_config_run(config_dict: Dict):
                                processor=dict_detector(field["processor"]))
         )
     RatingsImporter(
-        source=runnable_instances[config_dict["source_type"]],
+        source=runnable_instances[config_dict["source_type"]](file_path=config_dict["raw_source_path"], **config_dict),
         output_directory=config_dict["output_directory"],
         rating_configs=rating_configs,
         from_field_name=config_dict["from_field_name"],
