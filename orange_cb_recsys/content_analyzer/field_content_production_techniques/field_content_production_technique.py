@@ -6,7 +6,7 @@ import numpy as np
 
 from nltk.tokenize import sent_tokenize
 from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation, \
-    FeaturesBagField, EmbeddingField, GraphField
+    FeaturesBagField, EmbeddingField
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
@@ -51,13 +51,27 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
 
     def __init__(self):
         super().__init__()
-        self.__need_refactor: Dict[Tuple[str, str], List[InformationProcessor]] = {}
+        self.__field_need_refactor: str = None
+        self.__pipeline_need_refactor: str = None
+        self.__processor_list: List[InformationProcessor] = None
 
-    def append_field_need_refactor(self, field_name: str, pipeline_id, processor_list: List[InformationProcessor]):
-        self.__need_refactor[(field_name, pipeline_id)] = processor_list
+    def set_field_need_refactor(self, field_name: str):
+        self.__field_need_refactor = field_name
 
-    def get_need_refactor(self):
-        return self.__need_refactor
+    def set_pipeline_need_refactor(self, pipeline_id: str):
+        self.__pipeline_need_refactor = pipeline_id
+
+    def set_processor_list(self, processor_list: List[InformationProcessor]):
+        self.__processor_list = processor_list
+
+    def get_field_need_refactor(self):
+        return self.__field_need_refactor
+
+    def get_pipeline_need_refactor(self):
+        return self.__pipeline_need_refactor
+
+    def get_processor_list(self):
+        return self.__processor_list
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
@@ -72,7 +86,7 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
         return "CollectionBasedTechnique"
 
     def __repr__(self):
-        return "CollectionBasedTechnique " + str(self.__need_refactor)
+        return "CollectionBasedTechnique "
 
 
 class SingleContentTechnique(FieldContentProductionTechnique):
@@ -88,23 +102,6 @@ class SingleContentTechnique(FieldContentProductionTechnique):
             FieldRepresentation: an instance of FieldRepresentation,
                  the particular type of representation depends from the technique
         """
-
-
-class FieldToGraph(SingleContentTechnique):
-    """
-    Abstract class that generalizes techniques
-    that use ontologies or LOD for producing the semantic description
-    """
-
-    @abstractmethod
-    def produce_content(self, field_representation_name: str, field_data: str) -> GraphField:
-        raise NotImplementedError
-
-    def __str__(self):
-        return "FieldToGraph"
-
-    def __repr__(self):
-        return "FieldToGraph " + "graph content"
 
 
 class TfIdfTechnique(CollectionBasedTechnique):

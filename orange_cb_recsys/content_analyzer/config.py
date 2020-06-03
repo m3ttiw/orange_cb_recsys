@@ -173,14 +173,6 @@ class ContentAnalyzerConfig:
     def append_field_config(self, field_name: str, field_config: FieldConfig):
         self.__field_config_dict[field_name] = field_config
 
-    def get_collection_based_techniques(self) -> Set[CollectionBasedTechnique]:
-        techniques = set()
-        for field_config in self.__field_config_dict.values():
-            for pipeline in field_config.get_pipeline_list():
-                if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
-                    techniques.add(pipeline.get_content_technique())
-
-        return techniques
 
     def __str__(self):
         return str(self.__id_field_name)

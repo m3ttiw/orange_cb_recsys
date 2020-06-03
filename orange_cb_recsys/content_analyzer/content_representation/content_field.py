@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Dict
 import numpy as np
 
+from scipy.sparse import csr_matrix
 
 class FieldRepresentation(ABC):
     """
@@ -111,6 +112,19 @@ class EmbeddingField(FieldRepresentation):
 
     def __eq__(self, other):
         return self.__embedding_array == other.__embedding_array
+
+
+class SparseMatrixField(FieldRepresentation):
+    def __init__(self, name: str, matrix: csr_matrix):
+        super().__init__(name)
+        self.__matrix: csr_matrix = matrix
+
+    def __str__(self):
+        representation_string = "Representation: " + self.get_name() + "\n\n"
+        return representation_string + str(self.__matrix)
+
+    def get_value(self) -> csr_matrix:
+        return self.__matrix
 
 
 class ContentField:

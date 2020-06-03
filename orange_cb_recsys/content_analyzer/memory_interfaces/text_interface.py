@@ -74,7 +74,7 @@ class IndexInterface(TextInterface):
              words_bag (Dict <str, float>): Dictionary whose keys are the words contained in the field,
                 and the corresponding values are the tf-idf values.
         """
-
+        print(field_name)
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
         query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:\"" + content_id + "\"")
         score_docs = searcher.search(query, 1).scoreDocs

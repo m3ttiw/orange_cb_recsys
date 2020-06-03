@@ -1,4 +1,4 @@
-from orange_cb_recsys.content_analyzer.content_representation.content_field import FeaturesBagField
+from orange_cb_recsys.content_analyzer.content_representation.content_field import FeaturesBagField, SparseMatrixField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     TfIdfTechnique
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
@@ -24,7 +24,7 @@ class LuceneTfIdf(TfIdfTechnique):
 
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str, pipeline_id: str) -> FeaturesBagField:
-        return FeaturesBagField(field_representation_name, self.__index.get_tf_idf(field_name + pipeline_id, content_id))
+        return SparseMatrixField(field_representation_name, self.__index.get_tf_idf(field_name + pipeline_id, content_id))
 
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
         """
@@ -35,22 +35,23 @@ class LuceneTfIdf(TfIdfTechnique):
             id_field_names:
 
         """
-        if len(self.get_need_refactor().keys()) != 0:
-            self.__index = IndexInterface('./frequency-index')
-            self.__index.init_writing()
-            for raw_content in information_source:
-                self.__index.new_content()
-                content_id = id_merger(raw_content, id_field_names)
-                self.__index.new_field("content_id", content_id)
 
-                for (field_name, pipeline_id) in self.get_need_refactor().keys():
-                    preprocessor_list = self.get_need_refactor()[(field_name, pipeline_id)]
-                    processed_field_data = raw_content[field_name]
-                    for preprocessor in preprocessor_list:
-                        processed_field_data = preprocessor.process(processed_field_data)
+        field_name = self.get_field_need_refactor()
+        preprocessor_list = self.get_processor_list()
+        pipeline_id = self.get_pipeline_need_refactor()
 
-                    processed_field_data = check_tokenized(processed_field_data)
-                    self.__index.new_field(field_name + pipeline_id, processed_field_data)
-                self.__index.serialize_content()
+        self.__index = IndexInterface('./' + field_name + pipeline_id)
+        self.__index.init_writing()
+        for raw_content in information_source:
+            self.__index.new_content()
+            content_id = id_merger(raw_content, id_field_names)
+            self.__index.new_field("content_id", content_id)
+            processed_field_data = raw_content[field_name]
+            for preprocessor in preprocessor_list:
+                processed_field_data = preprocessor.process(processed_field_data)
 
-            self.__index.stop_writing()
+            processed_field_data = check_tokenized(processed_field_data)
+            self.__index.new_field(field_name + pipeline_id, processed_field_data)
+            self.__index.serialize_content()
+
+        self.__index.stop_writing()
