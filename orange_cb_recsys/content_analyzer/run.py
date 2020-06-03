@@ -18,6 +18,9 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.field
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
+from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsImporter, RatingsFieldConfig
+from orange_cb_recsys.content_analyzer.ratings_manager.sentimental_analysis import TextBlobSentimentalAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, SQLDatabase, CSVFile
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
@@ -34,6 +37,11 @@ implemented_content_prod = [
     "lucene_tf-idf",
 ]
 
+implemented_rating_proc = [
+    "text_blob_sentiment",
+    "number_normalizer",
+]
+
 runnable_instances = {
     "json": JSONFile,
     "csv": CSVFile,
@@ -46,6 +54,8 @@ runnable_instances = {
     "gensim_downloader": GensimDownloader,
     "centroid": Centroid,
     "embedding": EmbeddingTechnique,
+    "text_blob_sentiment": TextBlobSentimentalAnalysis,
+    "number_normalizer": NumberNormalizer,
 }
 
 
@@ -124,8 +134,22 @@ def content_config_run(config_list: List[Dict]):
 
         return 0
 
+
 def rating_config_run(config_dict: Dict):
-    pass
+    rating_configs = []
+    for field in config_dict["fields"]:
+        rating_configs.append(
+            RatingsFieldConfig(preference_field_name=field["preference_field_name"],
+                               processor=dict_detector(field["processor"]))
+        )
+    ratings_frame = RatingsImporter(
+        source=runnable_instances[config_dict["source_type"]],
+        rating_configs=rating_configs,
+        from_field_name=config_dict["from_field_name"],
+        to_field_name=config_dict["to_field_name"],
+        timestamp_field_name=config_dict["timestamp"]
+    ).import_ratings()
+    print(ratings_frame)  # potremmo memorizzarlo qui
 
 
 if __name__ == "__main__":

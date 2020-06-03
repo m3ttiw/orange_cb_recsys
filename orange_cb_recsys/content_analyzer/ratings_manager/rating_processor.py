@@ -27,7 +27,7 @@ class SentimentalAnalysis(RatingProcessor):
 
     def __type_check(self, field_data: object):
         if type(field_data) is not str:
-            raise TypeError("Sentiment Analisys works only in textual fields")
+            raise TypeError("Sentiment Analysis works only in textual fields")
 
     @abstractmethod
     def fit(self, field_data: str):

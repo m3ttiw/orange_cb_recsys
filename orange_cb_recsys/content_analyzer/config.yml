@@ -48,7 +48,11 @@
   timestamp_field_name: "timestamp"
   fields:
    - preference_field_name: "Text"
-     rating_processor: {class: "text_blob_sentiment"}
+     rating_processor:
+      - class: "text_blob_sentiment"
    - preference_field_name: "Stars"
-     rating_processor: {class: "number_normalizer", min: "0.0", max: "5.0"}
+     rating_processor:
+      - class: "number_normalizer"
+        min: "0.0"
+        max: "5.0"
 
