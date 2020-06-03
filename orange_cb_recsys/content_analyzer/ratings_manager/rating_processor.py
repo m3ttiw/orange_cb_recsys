@@ -19,11 +19,9 @@ class RatingProcessor(ABC):
 
 
 class SentimentalAnalysis(RatingProcessor):
-    ### COMMENTI
     """
     Abstract Class that generalizes the sentimental analysis technique
     """
-
     def __init__(self, field_name: str):
         super().__init__(field_name)
 
