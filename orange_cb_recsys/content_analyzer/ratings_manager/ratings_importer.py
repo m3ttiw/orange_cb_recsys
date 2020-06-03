@@ -22,11 +22,11 @@ class RatingsImporter:
     def get_frame_columns(self) -> list:
         return self.__columns
 
-    def import_ratings(self):
+    def import_ratings(self) -> pd.DataFrame:
         """
         Imports the ratings from the source and stores in a dataframe
         Returns:
-
+            ratings_frame: pd.DataFrame
         """
         ratings_frame = pd.Dataframe(columns=self.__columns)
         for raw_rating in self.__source:
