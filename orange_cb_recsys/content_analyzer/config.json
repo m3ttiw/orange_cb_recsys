@@ -25,7 +25,7 @@
         {
         "field_content_production": {"class": "lucene_tf-idf"},
         "preprocessing_list": [
-          {"class": "nltk", "stopwords_removal":"False", "lemmatization":"True"}
+          {"class": "nltk", "stopwords_removal":"True", "lemmatization":"True"}
           ]
         }
       ]
