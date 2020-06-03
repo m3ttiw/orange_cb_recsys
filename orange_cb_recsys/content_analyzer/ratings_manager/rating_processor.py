@@ -32,5 +32,21 @@ class SentimentalAnalysis(RatingProcessor):
             raise TypeError("Sentiment Analisys works only in textual fields")
 
     @abstractmethod
-    def fit(self, field_data: object):
+    def fit(self, field_data: str):
         raise NotImplementedError
+
+
+class NumberNormalizer(RatingProcessor):
+    """
+    Class that scale ratings in a numeric scale in the range [-1.0,1.0]
+    """
+    def __init__(self, field_name: str, min: float, max: float):
+        super().__init__(field_name=field_name)
+        self.__scale_factor = abs(max - min)
+
+    def __type_check(self, field_data: object):
+        if type(field_data) is not float:
+            raise TypeError("Type check fail")
+
+    def fit(self, field_data: float):
+        return (field_data / self.__scale_factor) * 2 - 1
