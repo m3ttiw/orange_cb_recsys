@@ -17,7 +17,7 @@ rating_frame = pd.DataFrame.from_records([
     ("A000", "Money Train_tt0113845", "sdfgd", 1.0, "54654675")
 ], columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
 
-config = RecSysConfig('users_test1591285008.134619',
+config = RecSysConfig('contents/users_test1591285008.134619',
                       'movielens_test1591028175.9454775',
                       spa,
                       top_n,

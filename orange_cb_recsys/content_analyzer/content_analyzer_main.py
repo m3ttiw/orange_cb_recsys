@@ -55,7 +55,7 @@ class ContentAnalyzer:
         """
 
         if DEVELOPING:
-            output_path = os.path.join('../../contents', self.__config.get_output_directory())
+            output_path = self.__config.get_output_directory()
         else:
             output_path = os.path.join(home_path, self.__config.get_output_directory())
         os.mkdir(output_path)

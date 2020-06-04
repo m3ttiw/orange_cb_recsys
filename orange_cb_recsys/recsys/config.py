@@ -15,8 +15,8 @@ class RecSysConfig:
                  ranking_algorithm: RankingAlgorithm,
                  rating_frame=None):
         if DEVELOPING:
-            self.__users_directory: str = os.path.join('contents', users_directory)
-            self.__items_directory: str = os.path.join('contents', items_directory)
+            self.__users_directory: str = users_directory
+            self.__items_directory: str = items_directory
         else:
             self.__users_directory: str = os.path.join(home_path, users_directory)
             self.__items_directory: str = os.path.join(home_path, items_directory)
