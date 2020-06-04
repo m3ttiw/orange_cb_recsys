@@ -68,6 +68,18 @@ class Test(TestCase):
                 self.assertLessEqual(error, tolerance, "{} tolerance overtaking: error = {}, tolerance = {}".
                                      format(metric, error, tolerance))
 
+    def test_perform_fairness_metrics(self):
+        perform_fairness_metrics(pd.DataFrame.from_dict({'user_id': ["001", "001", "002", "002", "002"],
+                                     'item_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
+                                     'rating': [1.0, 0.5, 0.0, 0.5, 0.6]}))
+
+    def test_perform_gini(self):
+        df = pd.DataFrame.from_dict({'user_id': ["001", "001", "002", "002", "002"],
+                                     'item_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
+                                     'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
+        print(df)
+        print(perform_gini_index(df))
+
     def test_perform_rmse(self):
         predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
         truth = pd.Series([5, 4, 3, 3, 1, 2, 1])

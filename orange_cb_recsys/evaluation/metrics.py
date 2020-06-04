@@ -49,11 +49,19 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
-def perform_fairness_metrics(score_frame) -> pd.DataFrame:
-    results = {
-        "gini_index": perform_gini_index(),
-        "pop_recs_correlation": perform_pop_recs_correlation()
-    }
+def perform_fairness_metrics(score_frame: pd.DataFrame) -> pd.DataFrame:
+    # results = {
+    #    "gini_index": perform_gini_index(score_frame=score_frame),
+    #    "pop_recs_correlation": perform_pop_recs_correlation()
+    # }
+    columns = ["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs",
+                                    "pop_recs_correlation", "recs_long_tail_distr"]
+    # results = pd.concat([results, perform_gini_index(score_frame=score_frame)], ignore_index=True, axis=1)
+    df_gini = perform_gini_index(score_frame=score_frame)
+
+    results = pd.concat([df_gini, ], axis=1)
+
+    print(results)
     return results
 
 
