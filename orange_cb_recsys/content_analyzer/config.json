@@ -1,4 +1,5 @@
-[{
+[
+  {
   "content_type": "ITEM",
   "output_directory": "movielens_test",
   "raw_source_path": "../../datasets/movies_info_reduced.json",
@@ -30,5 +31,29 @@
       ]
     }
   ]
-}
+  },
+  {
+    "content_type": "USER",
+    "output_directory": "users_test",
+    "raw_source_path": "../../datasets/users_info.json",
+    "source_type": "json",
+    "id_field_name": ["user_id"],
+    "start_from": "0",
+    "end_up_at": "all",
+    "fields": [
+    {
+      "field_name": "name",
+      "memory_interface": "None",
+      "memory_interface_path": "None",
+      "pipeline_list": [
+        {
+        "field_content_production": "None",
+        "preprocessing_list": [
+          {"class": "nltk", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
+          ]
+        }
+      ]
+    }
+  ]
+  }
 ]
