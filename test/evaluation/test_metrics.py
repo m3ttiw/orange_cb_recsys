@@ -31,7 +31,7 @@ class Test(TestCase):
             "item7": 0.2,
         }
 
-        col = ["item", "rating"]
+        col = ["item_id", "rating"]
 
         results = perform_ranking_metrics(
             pd.DataFrame(predicted_rank.items(), columns=col),
