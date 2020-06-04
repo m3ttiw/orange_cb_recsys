@@ -76,9 +76,9 @@ class RatingsImporter:
         if self.__output_directory is not None:
             try:
                 ratings_frame.to_csv("../../../datasets/{}/ratings_{}.csv".format(self.__output_directory,
-                                                                                  time.time()), index=False, header=False)
+                                                                                  int(time.time())), index=False, header=False)
             except FileNotFoundError:
                 ratings_frame.to_csv("datasets/{}/ratings_{}.csv".format(self.__output_directory,
-                                                                         time.time()), index=False, header=False)
+                                                                         int(time.time())), index=False, header=False)
 
         return ratings_frame
