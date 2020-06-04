@@ -7,11 +7,14 @@
   "id_field_name": ["Title", "imdbID"],
   "start_from": "0",
   "end_up_at": "all",
+  "search_index": "True",
   "fields": [
     {
       "field_name": "Plot",
       "explanation_memory_interface": "None",
       "explanation_directory": "None",
+      "search_index": "True",
+      "indexing_preprocessing": [],
       "pipeline_list": [
         {
         "field_content_production": {"class": "embedding",
@@ -38,13 +41,15 @@
     "raw_source_path": "../../datasets/users_info.json",
     "source_type": "json",
     "id_field_name": ["user_id"],
+    "search_index": "False",
     "start_from": "0",
     "end_up_at": "all",
     "fields": [
     {
       "field_name": "name",
-      "memory_interface": "None",
-      "memory_interface_path": "None",
+      "search_index": "False",
+      "explanation_memory_interface": "None",
+      "explanation_directory": "None",
       "pipeline_list": [
         {
         "field_content_production": "None",

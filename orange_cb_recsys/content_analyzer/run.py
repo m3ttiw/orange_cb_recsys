@@ -6,7 +6,7 @@ from typing import List, Dict
 import lucene
 
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldConfig, \
-    FieldRepresentationPipeline
+    FieldRepresentationPipeline, SearchIndexConfig
 from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzer
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.combining_technique import \
     Centroid
@@ -108,10 +108,14 @@ def content_config_run(config_list: List[Dict]):
             content_config["content_type"],
             runnable_instances[content_config['source_type']](file_path=config_dict["raw_source_path"]),
             content_config['id_field_name'],
-            content_config['output_directory'])
+            content_config['output_directory'],
+            content_config['search_index'])
 
         for field_dict in content_config['fields']:
-            field_config = FieldConfig()
+            if field_dict['search_index'] == "True":
+                field_config = FieldConfig(search_index_config=SearchIndexConfig(field_dict['indexing_preprocessing']))
+            else:
+                field_config = FieldConfig()
             # setting the content analyzer config
 
             for pipeline_dict in field_dict['pipeline_list']:

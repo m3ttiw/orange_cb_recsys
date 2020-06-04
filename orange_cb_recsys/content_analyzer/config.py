@@ -58,7 +58,7 @@ class FieldRepresentationPipeline:
         return msg
 
 
-class IndexToSearchConfig:
+class SearchIndexConfig:
     def __init__(self, preprocessor_list: List[InformationProcessor] = None):
         if preprocessor_list is None:
             preprocessor_list = []
@@ -72,6 +72,10 @@ class IndexToSearchConfig:
         """
         self.__preprocessor_list.append(preprocessor)
 
+    def get_processor_list(self):
+        for processor in self.__preprocessor_list:
+            yield processor
+
 
 class FieldConfig:
     """
@@ -84,18 +88,19 @@ class FieldConfig:
 
     def __init__(self, memory_interface: InformationInterface = None,
                  pipelines_list: List[FieldRepresentationPipeline] = None,
-                 index_to_search_config: IndexToSearchConfig = None):
+                 search_index_config: SearchIndexConfig = None):
         if pipelines_list is None:
             pipelines_list = []
-        self.__index_to_search_config = index_to_search_config
+
+        self.__search_index_config = search_index_config
         self.__memory_interface: InformationInterface = memory_interface
         self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
 
+    def get_search_index_config(self):
+        return self.__search_index_config
+
     def get_memory_interface(self) -> InformationInterface:
         return self.__memory_interface
-
-    def get_index_to_search_config(self):
-        return self.__index_to_search_config
 
     def set_memory_interface(self, memory_interface: InformationInterface):
         self.__memory_interface = memory_interface
@@ -132,11 +137,16 @@ class ContentAnalyzerConfig:
                  source: RawInformationSource,
                  id_field_name,
                  output_directory: str,
-                 index_to_search_folder_name: str = None,
+                 search_index=False,
                  field_config_dict: Dict[str, FieldConfig] = None):
         if field_config_dict is None:
             field_config_dict = {}
-        self.__index_to_search_folder_name = index_to_search_folder_name
+
+        if type(search_index) is str:
+            self.__search_index = search_index.lower() == 'true'
+        else:
+            self.__search_index = search_index
+
         self.__output_directory: str = output_directory + str(time.time())
         self.__content_type = content_type.lower()
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
@@ -145,8 +155,8 @@ class ContentAnalyzerConfig:
 
         FieldRepresentationPipeline.instance_counter = 0
 
-    def get_index_to_search_folder(self):
-        return self.__index_to_search_folder_name
+    def get_search_index(self):
+        return self.__search_index
 
     def get_output_directory(self):
         return self.__output_directory
@@ -159,6 +169,9 @@ class ContentAnalyzerConfig:
 
     def get_source(self) -> RawInformationSource:
         return self.__source
+
+    def get_field_config(self, field_name: str):
+        return self.__field_config_dict[field_name]
 
     def get_memory_interface(self, field_name: str) -> InformationInterface:
         return self.__field_config_dict[field_name].get_memory_interface()
