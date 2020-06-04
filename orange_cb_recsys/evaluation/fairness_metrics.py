@@ -18,7 +18,7 @@ def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
 
         array = array.flatten()  # all values are treated equally, arrays must be 1d
         if np.amin(array) < 0:
-            array -= np.amin(array)  # values cannot be negative
+            array += 1
         array += 0.0000001  # values cannot be 0
         array = np.sort(array)  # values must be sorted
         index = np.arange(1, array.shape[0] + 1)  # index per array element
