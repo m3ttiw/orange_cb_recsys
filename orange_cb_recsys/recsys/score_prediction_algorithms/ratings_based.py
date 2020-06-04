@@ -1,12 +1,19 @@
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import RatingsSPA
-
+import os
 import pandas as pd
-
+import pickle
 
 class CentroidVector(RatingsSPA):
     def __init__(self, item_field: str, field_representation: str):
         super().__init__(item_field, field_representation)
+
+    def get_arrays(self, items_directory: str):
+        os.chdir(items_directory)
+        for file in os.listdir():
+            with open(file, "rb") as content_file:
+                content: Content = pickle.load(content_file)
+
 
     def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str):
         """
@@ -25,4 +32,4 @@ class CentroidVector(RatingsSPA):
         Returns:
              ----- similarity (float): The similarity between the item and the other items
         """
-        return 5.0
+        return
