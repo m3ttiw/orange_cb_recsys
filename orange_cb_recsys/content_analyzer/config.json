@@ -10,8 +10,8 @@
   "fields": [
     {
       "field_name": "Plot",
-      "memory_interface": "None",
-      "memory_interface_path": "None",
+      "explanation_memory_interface": "None",
+      "explanation_directory": "None",
       "pipeline_list": [
         {
         "field_content_production": {"class": "embedding",

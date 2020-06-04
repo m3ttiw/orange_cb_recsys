@@ -76,7 +76,7 @@ def check_for_available(content_config: Dict):
                 return False
         return True
     for field_dict in content_config['fields']:
-        if field_dict['memory_interface'] not in ['index', 'None']:
+        if field_dict['explanation_memory_interface'] not in ['index', 'None']:
             return False
         for pipeline_dict in field_dict['pipeline_list']:
             if pipeline_dict['field_content_production'] != "None":
@@ -133,9 +133,9 @@ def content_config_run(config_list: List[Dict]):
                 else:
                     field_config.append_pipeline(FieldRepresentationPipeline(None, preprocessing_list))
             # verify that the memory interface is set
-            if field_dict['memory_interface'] != "None":
-                field_config.set_memory_interface(runnable_instances[field_dict['memory_interface']](
-                    field_dict['memory_interface_path']))
+            if field_dict['explanation_memory_interface'] != "None":
+                field_config.set_memory_interface(runnable_instances[field_dict['explanation_memory_interface']](
+                    field_dict['explanation_directory']))
             content_analyzer_config.append_field_config(field_dict["field_name"], field_config)
 
         # fitting the data for each

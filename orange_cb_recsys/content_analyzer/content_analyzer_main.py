@@ -7,6 +7,7 @@ from orange_cb_recsys.content_analyzer.content_representation.content import Con
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import CollectionBasedTechnique, \
     SingleContentTechnique
+from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
 from orange_cb_recsys.utils.const import home_path, DEVELOPING
 from orange_cb_recsys.utils.id_merger import id_merger
 
@@ -54,12 +55,10 @@ class ContentAnalyzer:
                 list which elements are the produced content instances
         """
 
-        if DEVELOPING:
-            output_path = self.__config.get_output_directory()
-        else:
+        output_path = self.__config.get_output_directory()
+        if not DEVELOPING:
             output_path = os.path.join(home_path, self.__config.get_output_directory())
         os.mkdir(output_path)
-        print(output_path)
 
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
@@ -68,12 +67,25 @@ class ContentAnalyzer:
         for interface in interfaces:
             interface.init_writing()
 
+        index_to_search_folder = self.__config.get_index_to_search_folder()
+        if index_to_search_folder is not None:
+            if not DEVELOPING:
+                index_to_search_folder = os.path.join(home_path, index_to_search_folder)
+            index_to_search = IndexInterface(index_to_search_folder)
+            index_to_search.init_writing()
+        else:
+            index_to_search = None
+
+        contents_producer.set_indexer(index_to_search)
+
         self.__dataset_refactor()
 
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
             content.serialize(output_path)
 
+        if index_to_search is not None:
+            index_to_search.stop_writing()
         for interface in interfaces:
             interface.stop_writing()
 
@@ -116,6 +128,7 @@ class ContentsProducer:
 
     def __init__(self):
         self.__config: ContentAnalyzerConfig = None
+        self.__indexer: IndexInterface = None
         # Virtually private constructor.
         if ContentsProducer.__instance is not None:
             raise Exception("This class is a singleton!")
@@ -123,6 +136,9 @@ class ContentsProducer:
 
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
+
+    def set_indexer(self, indexer: IndexInterface):
+        self.__indexer = indexer
 
     def __get_timestamp(self, raw_content: Dict) -> str:
         # search for timestamp as dataset field, no timestamp needed for items
@@ -196,6 +212,11 @@ class ContentsProducer:
 
             # construct id from the list of the fields that compound id
             content_id = id_merger(raw_content, self.__config.get_id_field_name())
+            content = Content(content_id)
+
+            if self.__indexer is not None:
+                self.__indexer.new_content()
+                self.__indexer.new_field(CONTENT_ID, content_id)
 
             interfaces = self.__config.get_interfaces()
             for interface in interfaces:
@@ -203,13 +224,18 @@ class ContentsProducer:
                 interface.new_field(CONTENT_ID, content_id)
 
             # produce
-            content = Content(content_id)
             for field_name in self.__config.get_field_name_list():
+                if self.__indexer is not None:
+                    self.__indexer.new_field(field_name, raw_content[field_name])
+
                 # search for timestamp override on specific field
                 content.append(field_name, self.__create_field(raw_content, field_name, content_id, timestamp))
 
             for interface in interfaces:
                 interface.serialize_content()
+
+            if self.__indexer is not None:
+                self.__indexer.serialize_content()
 
             return content
 
