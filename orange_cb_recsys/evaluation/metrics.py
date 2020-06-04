@@ -9,14 +9,16 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
                             truth: pd.DataFrame,
                             **options) -> Dict[str, float]:
     """
+    Perform the computation of all ranking metrics
 
     Args:
-        predictions:
-        truth:
-        **options:
+        predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
+        truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
+        **options : you can specify some option parameters like:
+         - fn (int): the n of the Fn metric, default = 1
 
     Returns:
-
+        results (Dict[str, object]): results of the computations of all ranking metrics
     """
     content_prediction = pd.Series(predictions['item'].values)
     if "relevant_threshold" in options.keys():
@@ -29,7 +31,7 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     results = {
         "Precision": perform_precision(prediction_labels=content_prediction, truth_labels=content_truth),
         "Recall": perform_recall(prediction_labels=content_prediction, truth_labels=content_truth),
-        "MRR": perform_MRR(predictions_labels=content_prediction, truth_labels=content_truth),
+        "MRR": perform_MRR(prediction_labels=content_prediction, truth_labels=content_truth),
         "NDCG": perform_NDCG(predictions=predictions, truth=truth),
     }
 

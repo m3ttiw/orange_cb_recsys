@@ -7,12 +7,13 @@ def perform_precision(prediction_labels: pd.Series, truth_labels: pd.Series) -> 
     """
     Returns the precision of the given ranking (predictions)
     based on the truth ranking
+
     Args:
-        prediction_labels:
-        truth_labels:
+        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
+        truth_labels (pd.Series): pandas Series wich contains truth "labels"
 
     Returns:
-
+        score (float): precision
     """
     return prediction_labels.isin(truth_labels).sum() / len(prediction_labels)
 
@@ -21,12 +22,13 @@ def perform_recall(prediction_labels: pd.Series, truth_labels: pd.Series) -> flo
     """
     Compute the recall of the given ranking (predictions)
     based on the truth ranking
+
     Args:
-        prediction_labels:
-        truth_labels:
+        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
+        truth_labels (pd.Series): pandas Series wich contains truth "labels"
 
     Returns:
-
+        score (float): recall
     """
     return prediction_labels.isin(truth_labels).sum() / len(truth_labels)
 
@@ -35,25 +37,26 @@ def perform_Fn(precision: float, recall: float, n: int = 1) -> float:
     """
     Compute the Fn measure of the given ranking (predictions)
     based on the truth ranking
+
     Args:
-        precision:
-        recall:
-        n:
+        precision (float): precision of the rank
+        recall (float): recall of the rank
+        n (int): multiplier
 
     Returns:
-
+        score (float): Fn value
     """
     return (1 + (n ** 2)) * ((precision * recall) / ((n ** 2) * precision + recall))
 
 
 def perform_DCG(gain_values: pd.Series) -> List[float]:
     """
-    Compute the DCG array of a gain vector
+    Compute the Discounted Cumulative Gain array of a gain vector
     Args:
-        gain_values:
+        gain_values (pd.Series): array of gains
 
     Returns:
-
+        dcg (List[float]): array of dcg
     """
     dcg = []
     for i, gain in enumerate(gain_values):
@@ -66,13 +69,13 @@ def perform_DCG(gain_values: pd.Series) -> List[float]:
 
 def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
     """
-    Compute the NDCG measure using Truth rank as ideal DCG
+    Compute the Normalized DCG measure using Truth rank as ideal DCG
     Args:
-        predictions:
-        truth:
+        predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
+        truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
 
     Returns:
-
+        ndcg (List[float]): array of ndcg
     """
     idcg = perform_DCG(pd.Series(truth['rating'].values))
 
@@ -94,19 +97,20 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
     return ndcg
 
 
-def perform_MRR(predictions_labels: pd.Series, truth_labels: pd.Series) -> float:
+def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
     """
+    Compute the Mean Reciprocal Rank metric
 
     Args:
-        predictions_labels:
-        truth_labels:
+        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
+        truth_labels (pd.Series): pandas Series wich contains truth "labels"
 
     Returns:
-
+        score (float): the mrr value
     """
     mrr = 0
     for t_index, t_value in truth_labels.iteritems():
-        for p_index, p_value in predictions_labels.iteritems():
+        for p_index, p_value in prediction_labels.iteritems():
             if t_value == p_value:
-                mrr += (t_index + 1) / (t_value + 1)
+                mrr += (int(t_index) + 1) / (int(p_index) + 1)
     return mrr / len(truth_labels)
