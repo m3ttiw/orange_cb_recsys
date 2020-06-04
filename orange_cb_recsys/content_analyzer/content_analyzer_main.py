@@ -1,14 +1,13 @@
 from typing import Dict
 import time
 import os
-from os import path
 
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.content_representation.content import Content, RepresentedContentsRecap
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import CollectionBasedTechnique, \
     SingleContentTechnique
-from orange_cb_recsys.utils.const import home_path
+from orange_cb_recsys.utils.const import home_path, DEVELOPING
 from orange_cb_recsys.utils.id_merger import id_merger
 
 
@@ -55,7 +54,10 @@ class ContentAnalyzer:
                 list which elements are the produced content instances
         """
 
-        output_path = os.path.join(home_path, self.__config.get_output_directory())
+        if DEVELOPING:
+            output_path = os.path.join('../../contents', self.__config.get_output_directory())
+        else:
+            output_path = os.path.join(home_path, self.__config.get_output_directory())
         os.mkdir(output_path)
         print(output_path)
 

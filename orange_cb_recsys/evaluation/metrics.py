@@ -20,13 +20,13 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     Returns:
         results (Dict[str, object]): results of the computations of all ranking metrics
     """
-    content_prediction = pd.Series(predictions['item'].values)
+    content_prediction = pd.Series(predictions['item_id'].values)
     if "relevant_threshold" in options.keys():
         relevant_rank = truth[truth['rating'] >= options["relevant_threshold"]]
     else:
         relevant_rank = truth
 
-    content_truth = pd.Series(relevant_rank['item'].values)
+    content_truth = pd.Series(relevant_rank['item_id'].values)
 
     results = {
         "Precision": perform_precision(prediction_labels=content_prediction, truth_labels=content_truth),
@@ -49,9 +49,9 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
-def perform_fairness_metrics() -> Dict[str, object]:
+def perform_fairness_metrics(score_frame) -> pd.DataFrame:
     results = {
-        "precision": perform_gini_index(),
+        "gini_index": perform_gini_index(),
         "pop_recs_correlation": perform_pop_recs_correlation()
     }
     return results
