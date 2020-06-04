@@ -114,3 +114,22 @@ def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
             if t_value == p_value:
                 mrr += (int(t_index) + 1) / (int(p_index) + 1)
     return mrr / len(truth_labels)
+
+
+"""
+def perform_spearman(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
+    D = []
+    N = len(prediction_labels) if len(prediction_labels) < len(truth_labels) else len(truth_labels)
+    for index_t, value_t in truth_labels.iteritems():
+        for index_p, value_p in prediction_labels.iteritems():
+            if value_t == value_p:
+                D.append(int(index_t) - int(index_p))
+    return 1 - (6 * sum([x ** 2 for x in D])) / (N * ((N ** 2) - 1))
+"""
+
+
+def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, method: str = 'pearson') -> float:
+    if method not in ['pearson', 'kendall', 'spearman']:
+        print('{} Correlation metric not implemented'.format(method))
+        return 0.0
+    return prediction_labels.corr(other=truth_labels, method=method)

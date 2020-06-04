@@ -33,6 +33,11 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
         "Recall": perform_recall(prediction_labels=content_prediction, truth_labels=content_truth),
         "MRR": perform_MRR(prediction_labels=content_prediction, truth_labels=content_truth),
         "NDCG": perform_NDCG(predictions=predictions, truth=truth),
+        "pearson": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth),
+        "kendall": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth,
+                                       method='kendall'),
+        "spearman": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth,
+                                        method='spearman'),
     }
 
     if "fn" in options.keys() and options["fn"] > 1:
