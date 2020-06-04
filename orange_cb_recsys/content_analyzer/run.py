@@ -25,7 +25,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, S
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config.yml"
+DEFAULT_CONFIG_PATH = "config.json"
 
 implemented_preprocessing = [
     "nltk",
@@ -106,8 +106,7 @@ def content_config_run(config_list: List[Dict]):
         # content production
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
-            runnable_instances[content_config['source_type']](file_path=config_dict["raw_source_path"],
-                                                              **content_config),
+            runnable_instances[content_config['source_type']](file_path=config_dict["raw_source_path"]),
             content_config['id_field_name'],
             content_config['output_directory'])
 

@@ -4,15 +4,12 @@ import os
 from os import path
 
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldRepresentationPipeline
-from orange_cb_recsys.content_analyzer.content_representation.content import Content
+from orange_cb_recsys.content_analyzer.content_representation.content import Content, RepresentedContentsRecap
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import CollectionBasedTechnique, \
     SingleContentTechnique
+from orange_cb_recsys.utils.const import home_path
 from orange_cb_recsys.utils.id_merger import id_merger
-
-parent_dir = '../../contents'
-if not path.exists(parent_dir):
-    parent_dir = 'contents'
 
 
 class ContentAnalyzer:
@@ -50,7 +47,8 @@ class ContentAnalyzer:
                 list which elements are the produced content instances
         """
 
-        output_path = os.path.join(parent_dir, self.__config.get_output_directory())
+        output_path = os.path.join(home_path, self.__config.get_output_directory())
+        print(output_path)
         os.mkdir(output_path)
 
         contents_producer = ContentsProducer.get_instance()
@@ -62,9 +60,13 @@ class ContentAnalyzer:
 
         self.__dataset_refactor()
 
+        recap = RepresentedContentsRecap()
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
             content.serialize(output_path)
+            recap.append(str(content))
+
+        print(recap)
 
         for interface in interfaces:
             interface.stop_writing()
