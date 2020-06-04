@@ -132,4 +132,12 @@ def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, m
     if method not in ['pearson', 'kendall', 'spearman']:
         print('{} Correlation metric not implemented'.format(method))
         return 0.0
-    return prediction_labels.corr(other=truth_labels, method=method)
+    t_series = pd.Series()
+    p_series = pd.Series()
+    for t_index, t_value in truth_labels.iteritems():
+        t_series = t_series.append(pd.Series(int(t_index)))
+        for p_index, p_value in prediction_labels.iteritems():
+            if t_value == p_value:
+                p_series = p_series.append(pd.Series(int(p_index)))
+
+    return t_series.corr(other=p_series, method=method)
