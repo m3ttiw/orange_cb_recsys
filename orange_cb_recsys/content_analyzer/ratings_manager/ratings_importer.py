@@ -1,9 +1,9 @@
 from typing import List
-from time import ctime
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import RatingProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import ScoreCombiner
 import pandas as pd
+import time
 
 
 class RatingsFieldConfig:
@@ -76,9 +76,9 @@ class RatingsImporter:
         if self.__output_directory is not None:
             try:
                 ratings_frame.to_csv("../../../datasets/{}/ratings_{}.csv".format(self.__output_directory,
-                                                                                  ctime()), index=False, header=False)
+                                                                                  time.time()), index=False, header=False)
             except FileNotFoundError:
                 ratings_frame.to_csv("datasets/{}/ratings_{}.csv".format(self.__output_directory,
-                                                                         ctime()), index=False, header=False)
+                                                                         time.time()), index=False, header=False)
 
         return ratings_frame
