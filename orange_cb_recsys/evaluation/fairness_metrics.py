@@ -4,12 +4,17 @@ import numpy as np
 # fairness_metrics_results = pd.DataFrame(columns=["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
 
 
-def perform_gini_index(score_frame: pd.DataFrame):
+def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
+    """
+    Calculate Gini index score for each user in the DataFrame
+    Args:
+        score_frame (pd.DataFrame): frame wich stores ('user_id', 'item_id', 'rating')
 
+    Returns:
+        results (pd.DataFrame): each row contains ('user_id', 'gini_index')
+    """
     def gini(array: np.array):
         """Calculate the Gini coefficient of a numpy array."""
-        # based on bottom eq: http://www.statsdirect.com/help/content/image/stat0206_wmf.gif
-        # from: http://www.statsdirect.com/help/default.htm#nonparametric_methods/gini.htm
 
         array = array.flatten()  # all values are treated equally, arrays must be 1d
         if np.amin(array) < 0:
@@ -31,5 +36,17 @@ def perform_gini_index(score_frame: pd.DataFrame):
     return results
 
 
+def perform_delta_gaps(score_frame: pd.DataFrame):
+    pass
+
+
+def perform_pop_ratio_profile_vs_recs():
+    pass
+
+
 def perform_pop_recs_correlation():
+    pass
+
+
+def recs_long_tail_distr():
     pass
