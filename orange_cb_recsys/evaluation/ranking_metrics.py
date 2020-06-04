@@ -128,10 +128,18 @@ def perform_spearman(prediction_labels: pd.Series, truth_labels: pd.Series) -> f
 """
 
 
-def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, method: str = 'pearson') -> float:
-    if method not in ['pearson', 'kendall', 'spearman']:
-        print('{} Correlation metric not implemented'.format(method))
-        return 0.0
+def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, method='pearson') -> float:
+    """
+    Compute the correlation between the two ranks of labels
+
+    Args:
+        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
+        truth_labels (pd.Series): pandas Series wich contains truth "labels"
+        method: {'pearson, 'kendall', 'spearman'} or callable
+
+    Returns:
+        score (float): value of the specified correlation metric
+    """
     t_series = pd.Series()
     p_series = pd.Series()
     for t_index, t_value in truth_labels.iteritems():

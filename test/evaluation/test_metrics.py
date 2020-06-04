@@ -62,7 +62,7 @@ class Test(TestCase):
 
         tolerance = 0.5
         for metric in real_results.keys():
-            # print("{}: {}".format(metric, results[metric]))
+            print("{}: {}".format(metric, results[metric]))
             if metric != "NDCG":
                 error = abs(results[metric] - real_results[metric])
                 self.assertLessEqual(error, tolerance, "{} tolerance overtaking: error = {}, tolerance = {}".
