@@ -1,17 +1,35 @@
 import json
 from unittest import TestCase
 
-from orange_cb_recsys.content_analyzer.run import config_run, check_for_available
+from orange_cb_recsys.content_analyzer.run import content_config_run, check_for_available, rating_config_run
 
-config_dict = '[{"content_type": "ITEM", "output_directory": "movielens_test", "raw_source_path": "datasets/movies_info_reduced.json", ' \
-              '"source_type": "json", "id_field_name": ["imdbID"], "start_from": "0", "end_up_at": "all", ' \
-              '"fields": [{' \
-              '"field_name": "Title", "memory_interface": "None", "memory_interface_path": "./test-index-plot",' \
-              '"pipeline_list": [' \
-              '{"field_content_production": {"class": "babelpy", "api_key": "bd7835be-12f7-4717-8c5f-429e3e968998"}, "preprocessing_list": []}]}]}]'
+content_config_dict = '[{"content_type": "ITEM", ' \
+                      '"output_directory": "movielens_test", ' \
+                      '"raw_source_path": "datasets/movies_info_reduced.json", ' \
+                      '"source_type": "json", ' \
+                      '"id_field_name": ["imdbID"], ' \
+                      '"start_from": "0", ' \
+                      '"end_up_at": "all", ' \
+                      '"fields": [{' \
+                      '"field_name": "Title", ' \
+                      '"memory_interface": "None", ' \
+                      '"memory_interface_path": "./test-index-plot",' \
+                      '"pipeline_list": [' \
+                      '{"field_content_production": {"class": "babelpy", ' \
+                      '"api_key": "bd7835be-12f7-4717-8c5f-429e3e968998"}, "preprocessing_list": []}]}]}]'
+
+rating_config_dict = '[{"content_type": "ratings", ' \
+                     '"source_type": "csv", ' \
+                     '"from": "user_id", ' \
+                     '"to": "user_id", ' \
+                     '"output_directory": "datasets/test_ratings",' \
+                     '"timestamp": "timestamp", ' \
+                     '"raw_source_path": "datasets/test_import_ratings.json",' \
+                     '"fields": [{"preference_field_name": "text", ' \
+                     '"rating_processor": {"class": "number_normalizer"}}]}]'
 
 
-class Test(TestCase):
+class TestRun(TestCase):
     def test_config(self):
         # test only if the key in the config.json are valid
         try:
@@ -42,24 +60,35 @@ class Test(TestCase):
 
     def test_run(self):
         # self.skipTest("test in the submodules.")
-        global config_dict
+        global content_config_dict, rating_config_dict
         try:
-            self.assertEqual(config_run(json.loads(config_dict)), 0, "The configuration should run without problems ok")
+            content_config_run(json.loads(content_config_dict))
+            rating_config_run(json.loads(rating_config_dict))
         except:
             self.skipTest("LOCAL MACHINE")
 
-
     def test_check_for_available(self):
-        in_dict = [{"source_type": "text"}]
+        in_dict = {"content_type": "item", "source_type": "text"}
         self.assertFalse(check_for_available(in_dict))
-        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "not-index"}]}]
+        in_dict = {"content_type": "item", "source_type": "json", "fields": [{"memory_interface": "not-index"}]}
         self.assertFalse(check_for_available(in_dict))
-        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
-            "field_content_production": {"class": "no-class"}}]}]}]
+        in_dict = {"content_type": "item", "source_type": "json", "fields": [
+            {"memory_interface": "index", "pipeline_list": [{"field_content_production": {"class": "no-class"}}]}]}
         self.assertFalse(check_for_available(in_dict))
-        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
-            "field_content_production": {"class": "babelpy"}, "preprocessing_list": [{"class": "no-class"}]}]}]}]
+        in_dict = {"content_type": "item", "source_type": "json", "fields": [
+            {"memory_interface": "index", "pipeline_list": [{"field_content_production": {"class": "babelpy"},
+                                                             "preprocessing_list": [{"class": "no-class"}]}]}]}
         self.assertFalse(check_for_available(in_dict))
-        in_dict = [{"source_type": "json", "fields": [{"memory_interface": "index", "pipeline_list": [{
-            "field_content_production": {"class": "babelpy"}, "preprocessing_list": [{"class": "nltk"}]}]}]}]
+        in_dict = {"content_type": "item", "source_type": "json", "fields": [
+            {"memory_interface": "index", "pipeline_list": [{"field_content_production": {"class": "babelpy"},
+                                                             "preprocessing_list": [{"class": "nltk"}]}]}]}
+        self.assertTrue(check_for_available(in_dict))
+        in_dict = {"content_type": "ratings", "source_type": "csv"}
+        self.assertFalse(check_for_available(in_dict))
+        in_dict = {"content_type": "ratings", "source_type": "csv",
+                   "fields": [{"preference_field_name": "_", "rating_processor": {"class": "text_blob"}}]}
+        self.assertFalse(check_for_available(in_dict))
+        in_dict = {"content_type": "ratings", "source_type": "csv", "from": "_", "to": "_", "output_directory": "_",
+                   "timestamp": "_",
+                   "fields": [{"preference_field_name": "_", "rating_processor": {"class": "text_blob_sentiment"}}]}
         self.assertTrue(check_for_available(in_dict))
