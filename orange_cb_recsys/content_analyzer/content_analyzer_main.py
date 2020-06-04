@@ -56,8 +56,8 @@ class ContentAnalyzer:
         """
 
         output_path = os.path.join(home_path, self.__config.get_output_directory())
-        print(output_path)
         os.mkdir(output_path)
+        print(output_path)
 
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
