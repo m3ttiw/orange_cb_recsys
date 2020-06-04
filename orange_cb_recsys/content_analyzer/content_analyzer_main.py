@@ -38,6 +38,14 @@ class ContentAnalyzer:
                     technique.set_processor_list(pipeline.get_preprocessor_list())
                     technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
 
+    def __config_recap(self):
+        recap = RepresentedContentsRecap()
+        for field_name in self.__config.get_field_name_list():
+            for pipeline in self.__config.get_pipeline_list(field_name):
+                recap.append("Field: " + field_name + "; pipeline_id: " + str(pipeline))
+
+        return recap
+
     def fit(self):
         """
         Begins to process the creation of the contents
@@ -60,13 +68,9 @@ class ContentAnalyzer:
 
         self.__dataset_refactor()
 
-        recap = RepresentedContentsRecap()
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
             content.serialize(output_path)
-            recap.append(str(content))
-
-        print(recap)
 
         for interface in interfaces:
             interface.stop_writing()
@@ -76,6 +80,8 @@ class ContentAnalyzer:
                 technique = pipeline.get_content_technique()
                 if isinstance(technique, CollectionBasedTechnique):
                     technique.delete_refactored()
+
+        print(self.__config_recap())
 
     def __str__(self):
         return "ContentAnalyzer"
