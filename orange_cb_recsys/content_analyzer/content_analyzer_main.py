@@ -43,7 +43,7 @@ class ContentAnalyzer:
         recap = RepresentedContentsRecap()
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
-                recap.append("Field: " + field_name + "; pipeline_id: " + str(pipeline))
+                recap.append("Field: " + field_name + "; pipeline_id: " + str(pipeline) + "; technique: " + str(pipeline.get_content_technique()))
 
         return recap
 
@@ -62,7 +62,6 @@ class ContentAnalyzer:
         os.mkdir(output_path)
 
         indexer = None
-        print(self.__config.get_search_index())
         if self.__config.get_search_index():
             index_path = os.path.join(self.__config.get_output_directory(), 'search_index')
             if not DEVELOPING:

@@ -10,6 +10,8 @@ from org.apache.lucene.document import Document, Field, StringField, FieldType
 from org.apache.lucene.store import SimpleFSDirectory
 from org.apache.lucene.util import BytesRefIterator
 from org.apache.lucene.index import DirectoryReader, Term
+from org.apache.lucene.search.similarities import ClassicSimilarity
+
 
 from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import TextInterface
 
@@ -96,6 +98,10 @@ class IndexInterface(TextInterface):
 
         reader.close()
         return words_bag
+
+    def query(self, query):
+        searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
+        searcher.setSimilarity(ClassicSimilarity())
 
     def delete_index(self):
         import shutil

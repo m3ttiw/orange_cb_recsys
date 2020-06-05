@@ -62,7 +62,7 @@ class RecSys:
         user = self.__load_content_instance(self.__config.get_users_directory(), user_id)
 
         # load user ratings
-        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['user_id'].str.match(user_id)]
+        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
 
         # define for which items calculate the prediction
         item_to_predict_id_list = self.__get_item_to_predict_id_list(item_to_predict_id_list, user_ratings)
