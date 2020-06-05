@@ -45,8 +45,8 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, **op
     """
     Compute the Delta - GAP (Group Average Popularity) metric
     Args:
-        truth_frame:
-        score_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating')
+        truth_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating') of user profiles
+        score_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating') recommended
     Returns:
         results (pd.DataFrame): each row contains ('from_id', 'delta-gap')
     """
@@ -67,29 +67,17 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, **op
     print("bb_focused_users {}".format(bb_focused_users))
 
     niche_delta_gap = calculate_delta_gap(recs_gap=calculate_gap(group=niche_users.intersection(recommended_users),
-                                                                 avg_pop_by_users=recs_avg_pop_by_users,
-                                                                 pop_by_items=pop_by_items,
-                                                                 data=score_frame),
+                                                                 avg_pop_by_users=recs_avg_pop_by_users),
                                           profile_gap=calculate_gap(group=niche_users,
-                                                                    avg_pop_by_users=avg_pop_by_users_profiles,
-                                                                    pop_by_items=pop_by_items,
-                                                                    data=truth_frame))
+                                                                    avg_pop_by_users=avg_pop_by_users_profiles))
     diverse_delta_gap = calculate_delta_gap(recs_gap=calculate_gap(group=diverse_users.intersection(recommended_users),
-                                                                   avg_pop_by_users=recs_avg_pop_by_users,
-                                                                   pop_by_items=pop_by_items,
-                                                                   data=score_frame),
+                                                                   avg_pop_by_users=recs_avg_pop_by_users),
                                             profile_gap=calculate_gap(group=diverse_users,
-                                                                      avg_pop_by_users=avg_pop_by_users_profiles,
-                                                                      pop_by_items=pop_by_items,
-                                                                      data=truth_frame))
+                                                                      avg_pop_by_users=avg_pop_by_users_profiles))
     bb_delta_gap = calculate_delta_gap(recs_gap=calculate_gap(group=bb_focused_users.intersection(recommended_users),
-                                                              avg_pop_by_users=recs_avg_pop_by_users,
-                                                              pop_by_items=pop_by_items,
-                                                              data=score_frame),
+                                                              avg_pop_by_users=recs_avg_pop_by_users),
                                        profile_gap=calculate_gap(group=bb_focused_users,
-                                                                 avg_pop_by_users=avg_pop_by_users_profiles,
-                                                                 pop_by_items=pop_by_items,
-                                                                 data=truth_frame))
+                                                                 avg_pop_by_users=avg_pop_by_users_profiles))
 
     return {"niche": niche_delta_gap, "diverse": diverse_delta_gap, "bb_focused": bb_delta_gap}
 
