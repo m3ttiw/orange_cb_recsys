@@ -1,3 +1,4 @@
+import os
 import time
 from abc import ABC, abstractmethod
 from typing import List
@@ -5,6 +6,7 @@ from typing import List
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import TextProcessor
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.utils.const import DEVELOPING, home_path
 
 
 class EmbeddingLearner(ABC):
@@ -58,4 +60,7 @@ class EmbeddingLearner(ABC):
         return corpus
 
     def save(self):
-        self.__model.save("../../embeddings/model_" + str(time.time()) + ".model")
+        embeddings_path = './'
+        if not DEVELOPING:
+            embeddings_path = home_path
+        self.__model.save(embeddings_path + str(time.time()) + ".model")
