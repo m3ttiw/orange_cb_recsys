@@ -58,6 +58,8 @@ def perform_fairness_metrics(score_frame: pd.DataFrame) -> pd.DataFrame:
                "recs_long_tail_distr"]
     # results = pd.concat([results, perform_gini_index(score_frame=score_frame)], ignore_index=True, axis=1)
     df_gini = perform_gini_index(score_frame=score_frame)
+    delta_gap_score = perform_delta_gap(score_frame=score_frame)
+    print(delta_gap_score)
 
     results = pd.concat([df_gini, ], axis=1)
 
