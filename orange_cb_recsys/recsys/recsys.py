@@ -17,7 +17,7 @@ class RecSys:
             item_list = [os.path.splitext(filename)[0] for filename in os.listdir(self.__config.get_items_directory())]
             try:
                 # list of items without rating
-                item_to_predict_id_list = [item for item in item_list if not user_ratings['item_id'].str.contains(item).any()]
+                item_to_predict_id_list = [item for item in item_list if not user_ratings['to_id'].str.contains(item).any()]
             except KeyError:
                 item_to_predict_id_list = item_list
 
@@ -62,7 +62,7 @@ class RecSys:
         user = self.__load_content_instance(self.__config.get_users_directory(), user_id)
 
         # load user ratings
-        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['user_id'].str.match(user_id)]
+        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
 
         # define for which items calculate the prediction
         item_to_predict_id_list = self.__get_item_to_predict_id_list(item_to_predict_id_list, user_ratings)
