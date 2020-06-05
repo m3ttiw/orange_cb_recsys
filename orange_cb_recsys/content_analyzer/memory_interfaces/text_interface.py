@@ -56,7 +56,7 @@ class IndexInterface(TextInterface):
             self.__doc.add(Field(field_name, field_data, self.__field_type))
 
     def serialize_content(self):
-        self.__writer.addDocument(self.__doc)
+        return self.__writer.addDocument(self.__doc)
 
     def stop_writing(self):
         self.__writer.commit()

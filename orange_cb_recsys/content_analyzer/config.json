@@ -13,9 +13,12 @@
       "field_name": "Plot",
       "explanation_memory_interface": "None",
       "explanation_directory": "None",
-      "search_index": "True",
-      "indexing_preprocessing": [],
       "pipeline_list": [
+        {
+        "field_content_production": {"class": "search_index"},
+        "preprocessing_list": [
+          ]
+        },
         {
         "field_content_production": {"class": "embedding",
           "combining_technique": {"class":  "centroid"},

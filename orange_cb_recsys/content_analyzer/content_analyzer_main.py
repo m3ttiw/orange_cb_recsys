@@ -7,7 +7,7 @@ from orange_cb_recsys.content_analyzer.content_representation.content import Con
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     CollectionBasedTechnique, \
-    SingleContentTechnique
+    SingleContentTechnique, SearchIndexing
 from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
 from orange_cb_recsys.utils.const import home_path, DEVELOPING
 from orange_cb_recsys.utils.id_merger import id_merger
@@ -168,10 +168,21 @@ class ContentsProducer:
                 field.append(str(i), self.__create_representation_CBT(str(i), field_name, content_id, pipeline))
             elif isinstance(pipeline.get_content_technique(), SingleContentTechnique):
                 field.append(str(i), self.__create_representation(str(i), field_data, pipeline))
+            elif isinstance(pipeline.get_content_technique(), SearchIndexing):
+                self.__invoke_indexing_technique(field_name, field_data, pipeline)
             elif pipeline.get_content_technique() is None:
                 field.append(str(i), field_data)
 
         return field
+
+    @staticmethod
+    def __invoke_indexing_technique(field_name: str, field_data: str, pipeline: FieldRepresentationPipeline):
+        preprocessor_list = pipeline.get_preprocessor_list()
+        processed_field_data = field_data
+        for preprocessor in preprocessor_list:
+            processed_field_data = preprocessor.process(processed_field_data)
+
+        pipeline.get_content_technique().produce_content(field_name, str(pipeline), processed_field_data)
 
     @staticmethod
     def __create_representation_CBT(field_representation_name: str, field_name: str, content_id: str,
@@ -223,19 +234,11 @@ class ContentsProducer:
 
             # produce
             for field_name in self.__config.get_field_name_list():
-                if self.__config.get_field_config(field_name).get_search_index_config() is not None:
-                    field_data = raw_content[field_name]
-
-                    for preprocessor in self.__config.get_field_config(field_name). \
-                            get_search_index_config().get_processor_list():
-                        field_data = preprocessor.process(field_data)
-
-                    indexer.new_field(field_name, field_data)
                 # search for timestamp override on specific field
                 content.append(field_name, self.__create_field(raw_content, field_name, content_id, timestamp))
 
             if indexer is not None:
-                indexer.serialize_content()
+                content.set_index_document_id(indexer.serialize_content())
 
             for interface in interfaces:
                 interface.serialize_content()

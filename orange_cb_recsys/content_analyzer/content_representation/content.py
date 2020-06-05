@@ -17,8 +17,12 @@ class Content:
                  field_dict: Dict[str, ContentField] = None):
         if field_dict is None:
             field_dict = {}       # list o dict
+        self.__index_document_id: int = None
         self.__content_id: str = content_id
         self.__field_dict: Dict[str, ContentField] = field_dict
+
+    def set_index_document_id(self, index_document_id: int):
+        self.__index_document_id = index_document_id
 
     def get_field_list(self):
         return self.__field_dict

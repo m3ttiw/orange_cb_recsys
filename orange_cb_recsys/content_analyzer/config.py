@@ -58,25 +58,6 @@ class FieldRepresentationPipeline:
         return msg
 
 
-class SearchIndexConfig:
-    def __init__(self, preprocessor_list: List[InformationProcessor] = None):
-        if preprocessor_list is None:
-            preprocessor_list = []
-        self.__preprocessor_list: List[InformationProcessor] = preprocessor_list
-
-    def append_preprocessor(self, preprocessor: InformationProcessor):
-        """
-        Add a new preprocessor to the preprocessor list
-        Args:
-            preprocessor (InformationProcessor): The preprocessor to add
-        """
-        self.__preprocessor_list.append(preprocessor)
-
-    def get_processor_list(self):
-        for processor in self.__preprocessor_list:
-            yield processor
-
-
 class FieldConfig:
     """
     Class that represents the configuration of a single field.
@@ -87,17 +68,12 @@ class FieldConfig:
     """
 
     def __init__(self, memory_interface: InformationInterface = None,
-                 pipelines_list: List[FieldRepresentationPipeline] = None,
-                 search_index_config: SearchIndexConfig = None):
+                 pipelines_list: List[FieldRepresentationPipeline] = None):
         if pipelines_list is None:
             pipelines_list = []
 
-        self.__search_index_config = search_index_config
         self.__memory_interface: InformationInterface = memory_interface
         self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
-
-    def get_search_index_config(self):
-        return self.__search_index_config
 
     def get_memory_interface(self) -> InformationInterface:
         return self.__memory_interface

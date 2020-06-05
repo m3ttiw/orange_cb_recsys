@@ -6,7 +6,7 @@ from typing import List, Dict
 import lucene
 
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldConfig, \
-    FieldRepresentationPipeline, SearchIndexConfig
+    FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzer
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.embedding_technique.combining_technique import \
     Centroid
@@ -14,7 +14,7 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.embed
     BinaryFile, GensimDownloader
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
-    EmbeddingTechnique
+    EmbeddingTechnique, SearchIndexing
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
@@ -56,6 +56,7 @@ runnable_instances = {
     "embedding": EmbeddingTechnique,
     "text_blob_sentiment": TextBlobSentimentAnalysis,
     "number_normalizer": NumberNormalizer,
+    "search_index": SearchIndexing
 }
 
 
@@ -112,10 +113,7 @@ def content_config_run(config_list: List[Dict]):
             content_config['search_index'])
 
         for field_dict in content_config['fields']:
-            if field_dict['search_index'] == "True":
-                field_config = FieldConfig(search_index_config=SearchIndexConfig(field_dict['indexing_preprocessing']))
-            else:
-                field_config = FieldConfig()
+            field_config = FieldConfig()
             # setting the content analyzer config
 
             for pipeline_dict in field_dict['pipeline_list']:
