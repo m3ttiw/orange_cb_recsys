@@ -31,7 +31,7 @@ class Test(TestCase):
             "item7": 0.2,
         }
 
-        col = ["item_id", "rating"]
+        col = ["from_id", "rating"]
 
         results = perform_ranking_metrics(
             pd.DataFrame(predicted_rank.items(), columns=col),
@@ -68,13 +68,17 @@ class Test(TestCase):
                                      format(metric, error, tolerance))
 
     def test_perform_fairness_metrics(self):
-        perform_fairness_metrics(pd.DataFrame.from_dict({'user_id': ["001", "001", "002", "002", "002"],
-                                     'item_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
-                                     'rating': [1.0, 0.5, 0.0, 0.5, 0.6]}))
+        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
+                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
+        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame)
 
     def test_perform_gini(self):
-        df = pd.DataFrame.from_dict({'user_id': ["001", "001", "002", "002", "002"],
-                                     'item_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
+        df = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],
+                                     'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
                                      'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
         print(df)
         print(perform_gini_index(df))

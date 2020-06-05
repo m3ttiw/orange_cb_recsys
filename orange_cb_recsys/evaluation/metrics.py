@@ -20,13 +20,13 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     Returns:
         results (Dict[str, object]): results of the computations of all ranking metrics
     """
-    content_prediction = pd.Series(predictions['item_id'].values)
+    content_prediction = pd.Series(predictions['to_id'].values)
     if "relevant_threshold" in options.keys():
         relevant_rank = truth[truth['rating'] >= options["relevant_threshold"]]
     else:
         relevant_rank = truth
 
-    content_truth = pd.Series(relevant_rank['item_id'].values)
+    content_truth = pd.Series(relevant_rank['to_id'].values)
 
     results = {
         "Precision": perform_precision(prediction_labels=content_prediction, truth_labels=content_truth),
@@ -49,16 +49,16 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
-def perform_fairness_metrics(score_frame: pd.DataFrame) -> pd.DataFrame:
+def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame) -> pd.DataFrame:
     # results = {
     #    "gini_index": perform_gini_index(score_frame=score_frame),
     #    "pop_recs_correlation": perform_pop_recs_correlation()
     # }
-    columns = ["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs","pop_recs_correlation",
+    columns = ["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs","pop_recs_correlation",
                "recs_long_tail_distr"]
     # results = pd.concat([results, perform_gini_index(score_frame=score_frame)], ignore_index=True, axis=1)
     df_gini = perform_gini_index(score_frame=score_frame)
-    delta_gap_score = perform_delta_gap(score_frame=score_frame)
+    delta_gap_score = perform_delta_gap(score_frame=score_frame, truth_frame=truth_frame)
     print(delta_gap_score)
 
     results = pd.concat([df_gini, ], axis=1)
