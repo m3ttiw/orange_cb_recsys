@@ -39,9 +39,6 @@ class RecSys:
 
     def __predict_item(self, user, item, user_ratings):
         if isinstance(self.__config.get_score_prediction_algorithm(), RatingsSPA):
-            assert (self.__config.get_rating_frame() is not None), \
-                "You must specify where to find ratings if you use ratings based algorithm"
-
             predicted_rating = self.__config.get_score_prediction_algorithm(). \
                 predict(item, user_ratings, self.__config.get_items_directory())
 
@@ -53,6 +50,12 @@ class RecSys:
     def fit(self, user_id: str, item_to_predict_id_list: List[str] = None, rank: bool = False):
         # load user instance
         user = load_content_instance(self.__config.get_users_directory(), user_id)
+
+        if isinstance(self.__config.get_score_prediction_algorithm(), RatingsSPA) or \
+                isinstance(self.__config.get_score_prediction_algorithm(), IndexQuery):
+            if self.__config.get_rating_frame() is None:
+                raise ValueError("You must set ratings frame if you want to use "
+                                 "ratings based algorithm")
 
         # load user ratings
         user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
