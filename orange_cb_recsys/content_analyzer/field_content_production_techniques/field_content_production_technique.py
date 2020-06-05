@@ -27,7 +27,6 @@ class SearchIndexing(FieldContentProductionTechnique):
     def __init__(self):
         super().__init__()
 
-    @abstractmethod
     def produce_content(self, field_name: str, pipeline_id, field_data, indexer: IndexInterface):
         indexer.new_field(field_name + pipeline_id, field_data)
 

@@ -78,9 +78,9 @@ class ContentAnalyzer:
             interface.init_writing()
 
         self.__dataset_refactor()
-
+        contents_producer.set_indexer(indexer)
         for raw_content in self.__config.get_source():
-            content = contents_producer.create_content(raw_content, indexer)
+            content = contents_producer.create_content(raw_content)
 
             content.serialize(output_path)
 
@@ -129,10 +129,14 @@ class ContentsProducer:
 
     def __init__(self):
         self.__config: ContentAnalyzerConfig = None
+        self.__indexer = None
         # Virtually private constructor.
         if ContentsProducer.__instance is not None:
             raise Exception("This class is a singleton!")
         ContentsProducer.__instance = self
+
+    def set_indexer(self, indexer: IndexInterface):
+        self.__indexer = indexer
 
     def set_config(self, config: ContentAnalyzerConfig):
         self.__config = config
@@ -175,14 +179,13 @@ class ContentsProducer:
 
         return field
 
-    @staticmethod
-    def __invoke_indexing_technique(field_name: str, field_data: str, pipeline: FieldRepresentationPipeline):
+    def __invoke_indexing_technique(self, field_name: str, field_data: str, pipeline: FieldRepresentationPipeline):
         preprocessor_list = pipeline.get_preprocessor_list()
         processed_field_data = field_data
         for preprocessor in preprocessor_list:
             processed_field_data = preprocessor.process(processed_field_data)
 
-        pipeline.get_content_technique().produce_content(field_name, str(pipeline), processed_field_data)
+        pipeline.get_content_technique().produce_content(field_name, str(pipeline), processed_field_data, self.__indexer)
 
     @staticmethod
     def __create_representation_CBT(field_representation_name: str, field_name: str, content_id: str,
@@ -200,7 +203,7 @@ class ContentsProducer:
         return pipeline.get_content_technique(). \
             produce_content(field_representation_name, processed_field_data)
 
-    def create_content(self, raw_content: Dict, indexer: IndexInterface):
+    def create_content(self, raw_content: Dict):
         """
         Creates a content processing every field in the specified way.
         This class is iteratively invoked by the fit method.
@@ -223,9 +226,9 @@ class ContentsProducer:
             content_id = id_merger(raw_content, self.__config.get_id_field_name())
             content = Content(content_id)
 
-            if indexer is not None:
-                indexer.new_content()
-                indexer.new_field(CONTENT_ID, content_id)
+            if self.__indexer is not None:
+                self.__indexer.new_content()
+                self.__indexer.new_field(CONTENT_ID, content_id)
 
             interfaces = self.__config.get_interfaces()
             for interface in interfaces:
@@ -237,8 +240,8 @@ class ContentsProducer:
                 # search for timestamp override on specific field
                 content.append(field_name, self.__create_field(raw_content, field_name, content_id, timestamp))
 
-            if indexer is not None:
-                content.set_index_document_id(indexer.serialize_content())
+            if self.__indexer is not None:
+                content.set_index_document_id(self.__indexer.serialize_content())
 
             for interface in interfaces:
                 interface.serialize_content()

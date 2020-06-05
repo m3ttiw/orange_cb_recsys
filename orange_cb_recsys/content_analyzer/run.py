@@ -35,6 +35,7 @@ implemented_content_prod = [
     "embedding",
     "babelpy",
     "lucene_tf-idf",
+    "search_index"
 ]
 
 implemented_rating_proc = [
