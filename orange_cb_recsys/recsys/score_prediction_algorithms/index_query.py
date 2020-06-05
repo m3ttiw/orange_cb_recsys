@@ -11,7 +11,7 @@ from orange_cb_recsys.utils.load_content import load_content_instance
 from java.nio.file import Paths
 
 from org.apache.lucene.queryparser.classic import QueryParser
-from org.apache.lucene.search import IndexSearcher, BooleanQuery, BooleanClause
+from org.apache.lucene.search import IndexSearcher, BooleanQuery, BooleanClause, BoostQuery
 from org.apache.lucene.store import SimpleFSDirectory
 from org.apache.lucene.index import DirectoryReader, Term
 from org.apache.lucene.search.similarities import ClassicSimilarity
@@ -19,12 +19,12 @@ from org.apache.lucene.analysis.en import EnglishAnalyzer
 
 
 class IndexQuery(ScorePredictionAlgorithm):
-    def __recs_query(self, rated_document_list, scores, recs_number, items_directory):
+    def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory):
         BooleanQuery.setMaxClauseCount(2000000)
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(items_directory))))
         searcher.setSimilarity(ClassicSimilarity())
 
-        field_list = searcher.doc(rated_document_list[0]).getFields()
+        field_list = searcher.doc(positive_rated_document_list[0]).getFields()
         user_fields = {}
         field_parsers = {}
         analyzer = EnglishAnalyzer()
@@ -34,28 +34,28 @@ class IndexQuery(ScorePredictionAlgorithm):
             user_fields[field.name()] = field.stringValue()
             field_parsers[field.name()] = QueryParser(field.name(), analyzer)
 
-        for parser in field_parsers.values():
-            parser.setDefaultOperator(QueryParser.Operator.OR)
+        positive_rated_document_list.remove(positive_rated_document_list[0])
 
-        rated_document_list.remove(rated_document_list[0])
-
-        for _ in rated_document_list:
+        for _ in positive_rated_document_list:
             for field in field_list:
                 if field.name() == 'content_id':
                     continue
                 user_fields[field.name()] += field.stringValue()
 
         query_builder = BooleanQuery.Builder()
-        for field_name in user_fields.keys():
-            if field_name == 'content_id':
-                continue
-            field_query = field_parsers[field_name].escape(user_fields[field_name])
-            field_query = field_parsers[field_name].parse(field_query)
-            field_query.set_boost()
-            query_builder.add(field_query, BooleanClause.Occur.SHOULD)
+        for score in scores:
+            for field_name in user_fields.keys():
+                if field_name == 'content_id':
+                    continue
+                field_parsers[field_name].setDefaultOperator(QueryParser.Operator.OR)
+
+                field_query = field_parsers[field_name].escape(user_fields[field_name])
+                field_query = field_parsers[field_name].parse(field_query)
+                field_query = BoostQuery(field_query, score)
+                query_builder.add(field_query, BooleanClause.Occur.SHOULD)
 
         query = query_builder.build()
-        docs_to_search = len(rated_document_list) + recs_number
+        docs_to_search = len(positive_rated_document_list) + recs_number
         scoreDocs = searcher.search(query, docs_to_search).scoreDocs
 
         recorded_items = 0
@@ -64,7 +64,7 @@ class IndexQuery(ScorePredictionAlgorithm):
         for scoreDoc in scoreDocs:
             if recorded_items >= recs_number:
                 break
-            if scoreDoc.doc not in rated_document_list:
+            if scoreDoc.doc not in positive_rated_document_list:
                 doc = searcher.doc(scoreDoc.doc)
                 item_id = doc.getField("content_id").stringValue()
                 recorded_items += 1
@@ -83,8 +83,9 @@ class IndexQuery(ScorePredictionAlgorithm):
         for item_id, score in zip(ratings.to_id, ratings.score):
             item = load_content_instance(items_directory, item_id)
 
-            rated_document_list.append(item.get_index_document_id())
-            scores.append(score)
+            if score > 0:
+                rated_document_list.append(item.get_index_document_id())
+                scores.append(score)
 
         return self.__recs_query(rated_document_list,
                                  scores,
