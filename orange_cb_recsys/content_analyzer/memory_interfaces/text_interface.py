@@ -5,13 +5,11 @@ from java.nio.file import Paths
 from org.apache.lucene.index import IndexWriter, IndexWriterConfig, IndexOptions
 from org.apache.lucene.analysis.core import KeywordAnalyzer
 from org.apache.lucene.queryparser.classic import QueryParser
-from org.apache.lucene.search import IndexSearcher
-from org.apache.lucene.document import Document, Field, StringField, FieldType
+from org.apache.lucene.search import IndexSearcher, BooleanQuery, BooleanClause
+from org.apache.lucene.document import Document, Field, StringField, FieldType, TextField
 from org.apache.lucene.store import SimpleFSDirectory
 from org.apache.lucene.util import BytesRefIterator
 from org.apache.lucene.index import DirectoryReader, Term
-from org.apache.lucene.search.similarities import ClassicSimilarity
-
 
 from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import TextInterface
 
@@ -28,18 +26,20 @@ class IndexInterface(TextInterface):
         super().__init__(directory)
         self.__doc = None
         self.__writer = None
-        self.__field_type = None
+        self.__field_type_frequency = None
+        self.__field_type_searching = None
 
     def __str__(self):
         return "IndexInterface"
 
     def init_writing(self):
-        self.__field_type = FieldType(StringField.TYPE_STORED)
-        self.__field_type.setStored(True)
-        self.__field_type.setTokenized(False)
-        self.__field_type.setStoreTermVectors(True)
-        self.__field_type.setStoreTermVectorPositions(True)
-        self.__field_type.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
+        self.__field_type_searching = FieldType(TextField.TYPE_STORED)
+        self.__field_type_frequency = FieldType(StringField.TYPE_STORED)
+        self.__field_type_frequency.setStored(True)
+        self.__field_type_frequency.setTokenized(False)
+        self.__field_type_frequency.setStoreTermVectors(True)
+        self.__field_type_frequency.setStoreTermVectorPositions(True)
+        self.__field_type_frequency.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
         fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
         self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
 
@@ -53,9 +53,12 @@ class IndexInterface(TextInterface):
     def new_field(self, field_name: str, field_data):
         if type(field_data) == list:
             for word in field_data:
-                self.__doc.add(Field(field_name, word, self.__field_type))
+                self.__doc.add(Field(field_name, word, self.__field_type_frequency))
         else:
-            self.__doc.add(Field(field_name, field_data, self.__field_type))
+            self.__doc.add(Field(field_name, field_data, self.__field_type_frequency))
+
+    def new_searching_field(self, field_name, field_data):
+        self.__doc.add(Field(field_name, field_data, self.__field_type_searching))
 
     def serialize_content(self):
         return self.__writer.addDocument(self.__doc)
@@ -99,9 +102,6 @@ class IndexInterface(TextInterface):
         reader.close()
         return words_bag
 
-    def query(self, query):
-        searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
-        searcher.setSimilarity(ClassicSimilarity())
 
     def delete_index(self):
         import shutil

@@ -30,6 +30,9 @@ class Content:
     def get_field(self, field_name: str):
         return self.__field_dict[field_name]
 
+    def get_index_document_id(self):
+        return self.__index_document_id
+
     def append(self, field_name: str, field: ContentField):
         self.__field_dict[field_name] = field
 
