@@ -11,8 +11,8 @@
   "fields": [
     {
       "field_name": "Plot",
-      "explanation_memory_interface": "None",
-      "explanation_directory": "None",
+      "memory_interface": "None",
+      "memory_interface_path": "None",
       "pipeline_list": [
         {
         "field_content_production": {"class": "search_index"},

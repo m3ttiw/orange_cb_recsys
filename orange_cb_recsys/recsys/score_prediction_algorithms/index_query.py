@@ -19,7 +19,7 @@ from org.apache.lucene.analysis.en import EnglishAnalyzer
 
 
 class IndexQuery(ScorePredictionAlgorithm):
-    def __recs_query(self, rated_document_list, recs_number, items_directory):
+    def __recs_query(self, rated_document_list, scores, recs_number, items_directory):
         BooleanQuery.setMaxClauseCount(2000000)
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(items_directory))))
         searcher.setSimilarity(ClassicSimilarity())
@@ -51,6 +51,7 @@ class IndexQuery(ScorePredictionAlgorithm):
                 continue
             field_query = field_parsers[field_name].escape(user_fields[field_name])
             field_query = field_parsers[field_name].parse(field_query)
+            field_query.set_boost()
             query_builder.add(field_query, BooleanClause.Occur.SHOULD)
 
         query = query_builder.build()
@@ -77,12 +78,15 @@ class IndexQuery(ScorePredictionAlgorithm):
         if not DEVELOPING:
             index_path = os.path.join(home_path, items_directory, 'search_index')
 
+        scores = []
         rated_document_list = []
-        for item_id in ratings.to_id:
+        for item_id, score in zip(ratings.to_id, ratings.score):
             item = load_content_instance(items_directory, item_id)
 
             rated_document_list.append(item.get_index_document_id())
+            scores.append(score)
 
         return self.__recs_query(rated_document_list,
+                                 scores,
                                  len([filename for filename in os.listdir(items_directory) if filename != 'search_index']),
                                  index_path)
