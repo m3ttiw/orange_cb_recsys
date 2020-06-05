@@ -79,13 +79,13 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
     """
     idcg = perform_DCG(pd.Series(truth['rating'].values))
 
-    col = ["item_id", "rating"]
+    col = ["to_id", "rating"]
     new_predicted = pd.DataFrame(columns=col)
     for index, predicted_row in predictions.iterrows():
-        predicted_item = predicted_row['item_id']
-        truth_row = truth.loc[truth['item_id'] == predicted_item]
+        predicted_item = predicted_row['to_id']
+        truth_row = truth.loc[truth['to_id'] == predicted_item]
         truth_score = truth_row['rating'].values[0]
-        new_predicted = new_predicted.append({'item_id': predicted_item, 'rating': truth_score}, ignore_index=True)
+        new_predicted = new_predicted.append({'to_id': predicted_item, 'rating': truth_score}, ignore_index=True)
 
     dcg = perform_DCG(gain_values=pd.Series(new_predicted['rating'].values))
     ndcg = []
