@@ -174,17 +174,20 @@ class ClassifierRecommender(RatingsSPA):
 
         features_bag_list = []
         rated_item_index_list = []
+        content_id_list = []
         for item in items:
             item_filename = items_directory + '/' + item
             with open(item_filename, "rb") as content_file:
                 content = pickle.load(content_file)
-
+                content_id = content.get_content_id()
+                content_id_list.append(content_id)
                 features_bag_list.append(content.get_field("Plot").get_representation("1").get_value())
         features_bag_list.append(content.get_field("Plot").get_representation("1").get_value())
         v = DictVectorizer(sparse=False)
 
-        for i in features_bag_list:
-            if features_bag_list[i].get_content_id() in ratings.item_id:
+        for i in range(0, len(features_bag_list)):
+            print(features_bag_list[i])
+            if features_bag_list[i].get_content_id in ratings.item_id:
                 rated_item_index_list.append(features_bag_list[i])
 
         X_tmp = v.fit_transform(rated_item_index_list)

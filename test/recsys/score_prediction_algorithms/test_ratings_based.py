@@ -33,7 +33,7 @@ class TestCentroidVector(TestCase):
                 items.append(pickle.load(content_file))
 
             self.assertEqual(alg.predict(items, ratings, path), {
-                'Sudden Death_tt0114576': 0.7279127875850923,
+                'Sudden Death_tt0114576': 0.9279127875850923,
                 'Toy Story_tt0114709': 0.9319356325129486
             }
                              )
@@ -43,7 +43,7 @@ class TestCentroidVector(TestCase):
             with open(file, "rb") as content_file:
                 item = pickle.load(content_file)
             self.assertEqual(alg.predict(item, ratings, path),
-                             0.7279127875850923)
+                             0.9279127875850923)
 
 
 class TestClassifierRecommender(TestCase):
