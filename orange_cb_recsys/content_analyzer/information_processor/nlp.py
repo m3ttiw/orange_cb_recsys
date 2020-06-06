@@ -105,7 +105,7 @@ class NLTK(NLP):
 
         filtered_sentence = []
         for word_token in text:
-            if word_token.lower() not in stop_words:
+            if word_token not in stop_words:
                 filtered_sentence.append(word_token)
 
         return filtered_sentence
