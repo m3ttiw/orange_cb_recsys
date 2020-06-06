@@ -88,11 +88,15 @@ class RecSys:
         # load user instance
         user = load_content_instance(self.__config.get_users_directory(), user_id)
 
-        # get test set items
-        item_to_predict_id_list = [item for item in test_set.item_id]  # lista di item non valutati
+        if isinstance(self.__config.get_score_prediction_algorithm(), IndexQuery):
+            score_frame = self.__config.get_score_prediction_algorithm(). \
+                predict(user_ratings, self.__config.get_items_directory())
+        else:
+            # get test set items
+            item_to_predict_id_list = [item for item in test_set.item_id]  # lista di item non valutati
 
-        # calculate predictions
-        score_frame = self.__predict_item_list(user, user_ratings, item_to_predict_id_list)
+            # calculate predictions
+            score_frame = self.__predict_item_list(user, user_ratings, item_to_predict_id_list)
 
         if rank:
             return self.__config.get_ranking_algorithm().rank(score_frame)
