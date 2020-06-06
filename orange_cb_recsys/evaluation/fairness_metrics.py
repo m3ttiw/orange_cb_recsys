@@ -43,7 +43,7 @@ def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
 
 
 def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
-                      users_groups: Dict[str, Set[str]]) -> Dict[str, float]:
+                      users_groups: Dict[str, Set[str]]) -> pd.DataFrame:
     """
     Compute the Delta - GAP (Group Average Popularity) metric
     Args:
@@ -54,23 +54,21 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
         results (pd.DataFrame): each row contains ('from_id', 'delta-gap')
     """
 
-    # results = pd.DataFrame(columns=['from', 'delta-gap-category']) # scrivi per ogni utente a che categoria appartiene
     items = score_frame[['to_id']].values.flatten()
     pop_by_items = Counter(items)
     avg_pop_by_users_profiles = get_avg_pop_by_users(truth_frame, pop_by_items)  # truth?
     recs_avg_pop_by_users = get_avg_pop_by_users(score_frame, pop_by_items)
 
     recommended_users = set(truth_frame[['from_id']].values.flatten())
-    # recommended_users = set(score_frame.query(expr='rating > 0.0')[['from_id']].values.flatten())
 
-    #niche_users, diverse_users, bb_focused_users = split_user_in_groups(score_frame=score_frame, **options)
-    score_dict = {}
+    score_frame = pd.DataFrame(columns=['user_group', 'delta-gap'])
     for group_name in users_groups:
         recs_gap = calculate_gap(group=users_groups[group_name].intersection(recommended_users), avg_pop_by_users=recs_avg_pop_by_users)
         profile_gap = calculate_gap(group=users_groups[group_name], avg_pop_by_users=avg_pop_by_users_profiles)
         group_delta_gap = calculate_delta_gap(recs_gap=recs_gap, profile_gap=profile_gap)
-        score_dict[group_name] = group_delta_gap
-    return score_dict
+        score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name], 'delta-gap': [group_delta_gap]}),
+                                         ignore_index=True)
+    return score_frame
 
 
 def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_frame: pd.DataFrame,

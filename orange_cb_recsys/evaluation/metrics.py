@@ -49,7 +49,7 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
-def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame) -> pd.DataFrame:
+def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
     # results = {
     #    "gini_index": perform_gini_index(score_frame=score_frame),
     #    "pop_recs_correlation": perform_pop_recs_correlation()
@@ -67,13 +67,16 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     profile_vs_recs_pop_ratio = perform_pop_ratio_profile_vs_recs(user_groups=user_groups, truth_frame=truth_frame,
                                                                   most_popular_items=pop_items,
                                                                   pop_ratio_by_users=pop_ratio_user)
-    print(delta_gap_score)
-    print(profile_vs_recs_pop_ratio)
+    #print(delta_gap_score)
+    #print(profile_vs_recs_pop_ratio)
 
-    results = pd.concat([df_gini, ], axis=1)
+    #results_by_user = pd.merge(df_gini, on='from_id')
+    results_by_user = df_gini
+    results_by_user_group = pd.merge(delta_gap_score, profile_vs_recs_pop_ratio, on='user_group')
 
-    print(results)
-    return results
+    print(results_by_user)
+    print(results_by_user_group)
+    return results_by_user, results_by_user_group
 
 
 def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict[str, object]:
