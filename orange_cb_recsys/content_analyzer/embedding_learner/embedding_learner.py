@@ -26,6 +26,7 @@ class EmbeddingLearner(ABC):
             self.__preprocessor: TextProcessor = NLTK()
         else:
             self.__preprocessor: TextProcessor = preprocessor
+        self.__preprocessor.set_lang("")
         self.__field_list = field_list
         self.__model = None
 

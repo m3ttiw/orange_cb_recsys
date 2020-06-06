@@ -102,7 +102,6 @@ class IndexInterface(TextInterface):
         reader.close()
         return words_bag
 
-
     def delete_index(self):
         import shutil
 
