@@ -22,12 +22,21 @@ class TestCentroidVector(TestCase):
         ], columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
 
         path = "../../../contents/movielens_test1591028175.9454775"
+        items = []
         try:
-            file = os.path.join(path, "Sudden Death_tt0114576.bin")
-            with open(file, "rb") as content_file:
-                item = pickle.load(content_file)
-            self.assertEqual(alg.predict(item, ratings, path),
-                             0.9279127875850923)
+            file1 = os.path.join(path, "Sudden Death_tt0114576.bin")
+            with open(file1, "rb") as content_file:
+                items.append(pickle.load(content_file))
+
+            file2 = os.path.join(path, "Toy Story_tt0114709.bin")
+            with open(file2, "rb") as content_file:
+                items.append(pickle.load(content_file))
+
+            self.assertEqual(alg.predict(items, ratings, path), {
+                                    'Sudden Death_tt0114576': 0.9279127875850923,
+                                    'Toy Story_tt0114709': 0.9319356325129486
+                                }
+                             )
         except FileNotFoundError:
             path = "contents/movielens_test1591028175.9454775"
             file = os.path.join(path, "Sudden Death_tt0114576.bin")

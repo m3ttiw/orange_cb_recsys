@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import RatingsSPA
@@ -105,26 +105,35 @@ class CentroidVector(RatingsSPA):
         """
         return np.average(matrix, axis=0)
 
-    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str) -> float:
+    def predict(self, items: List[Content], ratings: pd.DataFrame, items_directory: str) -> Dict[str, float]:
         """
+        For each item:
         1) Takes the embedding arrays
         2) Computes the weighted centroid between the representations. In order to do that, field_representation must
         be a representation that allows the computation of a centroid, otherwise the method will raise an exception;
         3) Determines the similarity between the centroid and the field_representation of the item_field in item.
         Args:
-            item (Content): Item for which the similarity will be computed
+            items (list[Content]): Items for which the similarity will be computed
             ratings (pd.DataFrame): Ratings
             items_directory (str): Name of the directory where the items are stored.
 
         Returns:
-             ----- similarity (float): The similarity between the item and the other items
+             scores (Dict[str, float]): Dictionary whose keys are the ids of the items, and the values are the
+             similarities between the items and the centroid
         """
         try:
             arrays = self.__get_arrays(items_directory, list(ratings.item_id))
             matrix = self.__build_matrix(ratings, arrays)
             centroid = self.__centroid(matrix)
-            item_field_representation = item.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value()
-            similarity = self.__similarity.perform(centroid, item_field_representation)
-            return similarity * 2 - 1
         except ValueError as v:
             print(str(v))
+
+        scores = {}
+        for item in items:
+            item_id = item.get_content_id()
+            item_field_representation = item.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value()
+            similarity = self.__similarity.perform(centroid, item_field_representation)
+            score = similarity * 2 - 1
+            scores[item_id] = score
+
+        return scores
