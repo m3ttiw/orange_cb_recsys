@@ -50,14 +50,8 @@ class TestClassifierRecommender(TestCase):
     def test_predict(self):
         alg = ClassifierRecommender("Plot", "1")
         ratings = pd.DataFrame.from_records([
-            ("A000", "Ace Ventura: When Nature Calls_tt0112281", "sdfgd", 2.0, "54654675"),
-            ("A000", "Balto_tt0112453", "sdfgd", 3.0, "54654675"),
-            ("A000", "Casino_tt0112641", "sdfgd", 4.0, "54654675"),
-            ("A000", "Cutthroat Island_tt0112760", "sdfgd", 2.0, "54654675"),
-            ("A000", "Dracula: Dead and Loving It_tt0112896", "sdfgd", 5.0, "54654675"),
-            ("A000", "Father of the Bride Part II_tt0113041", "sdfgd", 1.0, "54654675"),
-            ("A000", "Four Rooms_tt0113101", "sdfgd", 3.0, "54654675")
-        ], columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
+            ("A000", "Sudden Death_tt0114576", "sdfgd", 2.0, "54654675")],
+            columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
 
         path = "../../../contents/movielens_test1591028175.9454775"
         try:
