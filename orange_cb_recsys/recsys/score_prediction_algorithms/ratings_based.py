@@ -34,6 +34,12 @@ class CentroidVector(RatingsSPA):
 
 
 class ClassifierRecommender(RatingsSPA):
+    """
+       Class that implements a decisiontreeclassifier.
+       Args:
+           item_field (str): Name of the field that contains the content to use
+           field_representation (str): Id of the field_representation content
+       """
     def __init__(self, item_field: str, field_representation: str):
         super().__init__(item_field, field_representation)
 
