@@ -47,21 +47,21 @@ class RecSys:
 
         return predicted_rating
 
-    def fit(self, user_id: str, item_to_predict_id_list: List[str] = None, rank: bool = False):
-        # load user instance
-        user = load_content_instance(self.__config.get_users_directory(), user_id)
-
+    def __fit(self, user_id, item_to_predict_id_list, rank):
         if isinstance(self.__config.get_score_prediction_algorithm(), RatingsSPA) or \
                 isinstance(self.__config.get_score_prediction_algorithm(), IndexQuery):
             if self.__config.get_rating_frame() is None:
                 raise ValueError("You must set ratings frame if you want to use "
                                  "ratings based algorithm")
 
+        # load user instance
+        user = load_content_instance(self.__config.get_users_directory(), user_id)
+
         # load user ratings
         user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
 
         if isinstance(self.__config.get_score_prediction_algorithm(), IndexQuery):
-            score_frame = self.__config.get_score_prediction_algorithm().\
+            score_frame = self.__config.get_score_prediction_algorithm(). \
                 predict(user_ratings, self.__config.get_items_directory())
         else:
             # define for which items calculate the prediction
@@ -74,6 +74,15 @@ class RecSys:
             return self.__config.get_ranking_algorithm().rank(score_frame)
         else:
             return score_frame
+
+    def fit_specific_items(self, user_id: str, item_to_predict_id_list: List[str] = None, rank: bool = False):
+        if isinstance(self.__config.get_score_prediction_algorithm(), IndexQuery):
+            raise ValueError("You can't use this recommender for predict score of specific items")
+
+        return self.__fit(user_id, item_to_predict_id_list, rank)
+
+    def fit(self, user_id: str, rank: bool = False):
+        return self.__fit(user_id, [], rank)
 
     def fit_eval(self, user_id: str, user_ratings: pd.DataFrame, test_set: pd.DataFrame, rank: bool = False):
         # load user instance
