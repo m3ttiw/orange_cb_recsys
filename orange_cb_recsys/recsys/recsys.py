@@ -17,7 +17,7 @@ class RecSys:
             item_list = [os.path.splitext(filename)[0] for filename in os.listdir(self.__config.get_items_directory())]
             try:
                 # list of items without rating
-                item_to_predict_id_list = [item for item in item_list if not user_ratings['item_id'].str.contains(item).any()]
+                item_to_predict_id_list = [item for item in item_list if not user_ratings['to_id'].str.contains(item).any()]
             except KeyError:
                 item_to_predict_id_list = item_list
 
