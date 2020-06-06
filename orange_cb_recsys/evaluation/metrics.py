@@ -1,5 +1,8 @@
+import time
 from typing import Dict
 import pandas as pd
+import os
+
 from orange_cb_recsys.evaluation.ranking_metrics import *
 from orange_cb_recsys.evaluation.prediction_metrics import *
 from orange_cb_recsys.evaluation.fairness_metrics import *
@@ -49,14 +52,23 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
-def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
-    # results = {
-    #    "gini_index": perform_gini_index(score_frame=score_frame),
-    #    "pop_recs_correlation": perform_pop_recs_correlation()
-    # }
-    columns = ["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs","pop_recs_correlation",
-               "recs_long_tail_distr"]
-    # results = pd.concat([results, perform_gini_index(score_frame=score_frame)], ignore_index=True, axis=1)
+def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, file_output_directory: str = None,
+                             algorithm_name: str = None) -> (pd.DataFrame, pd.DataFrame):
+    if file_output_directory is None:
+        file_output_directory = 'datasets/evaluation'
+    path = "{}/{}/{}_{}".format(os.getcwd(), file_output_directory, algorithm_name, str(int(time.time())))
+    try:
+        os.mkdir(path)
+    except OSError:
+        path = "../../{}/{}_{}".format(file_output_directory, algorithm_name, str(int(time.time())))
+        try:
+            with open(path):
+                pass
+
+        except FileNotFoundError:
+            path = "{}/{}_{}".format(file_output_directory, algorithm_name, str(int(time.time())))
+    print("working in dir: {}".format(path))
+
     pop_items = popular_items(score_frame=score_frame)
     pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, pop_items=pop_items)
 
@@ -67,8 +79,6 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     profile_vs_recs_pop_ratio = perform_pop_ratio_profile_vs_recs(user_groups=user_groups, truth_frame=truth_frame,
                                                                   most_popular_items=pop_items,
                                                                   pop_ratio_by_users=pop_ratio_user)
-    #print(delta_gap_score)
-    #print(profile_vs_recs_pop_ratio)
 
     #results_by_user = pd.merge(df_gini, on='from_id')
     results_by_user = df_gini
