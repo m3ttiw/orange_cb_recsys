@@ -3,7 +3,7 @@ from collections import Counter
 import pandas as pd
 import numpy as np
 from orange_cb_recsys.evaluation.delta_gap import *
-from orange_cb_recsys.evaluation.utils import split_user_in_groups
+from orange_cb_recsys.evaluation.utils import *
 
 
 # fairness_metrics_results = pd.DataFrame(columns=["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
@@ -66,7 +66,6 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
     #niche_users, diverse_users, bb_focused_users = split_user_in_groups(score_frame=score_frame, **options)
     score_dict = {}
     for group_name in users_groups:
-        # print("{}: {}".format(group_name, group))
         recs_gap = calculate_gap(group=users_groups[group_name].intersection(recommended_users), avg_pop_by_users=recs_avg_pop_by_users)
         profile_gap = calculate_gap(group=users_groups[group_name], avg_pop_by_users=avg_pop_by_users_profiles)
         group_delta_gap = calculate_delta_gap(recs_gap=recs_gap, profile_gap=profile_gap)
@@ -74,26 +73,28 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
     return score_dict
 
 
-def perform_pop_ratio_profile_vs_recs():
-    # fetching pop_ratio_by_users, niche, diverse and bb-focused users
-    pop_ratio_by_users = pd.read_csv('../datasets/pop-ratio-by-user.csv')
-    niche = pd.read_csv('../datasets/niche.csv').values.flatten()
-    diverse = pd.read_csv('../datasets/diverse.csv').values.flatten()
-    bb_focused = pd.read_csv('../datasets/bb-focused.csv').values.flatten()
+def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_frame: pd.DataFrame,
+                                      most_popular_items: pd.Series, pop_ratio_by_users: pd.DataFrame) -> pd.DataFrame:
+    """
 
-    # fetching set of most popular items
-    most_popular_items = set(pd.read_csv('../datasets/most-popular-items.csv').values.flatten())
+    Args:
+        user_groups:
+        truth_frame:
+        most_popular_items:
+        pop_ratio_by_users:
 
-    # calculating ratios of popular items in niche, diverse and bb_focused profiles
-    niche_profile_pop_ratios = get_profile_pop_ratios(niche, pop_ratio_by_users)
-    diverse_profile_pop_ratios = get_profile_pop_ratios(diverse, pop_ratio_by_users)
-    bb_focused_profile_pop_ratios = get_profile_pop_ratios(bb_focused, pop_ratio_by_users)
+    Returns:
 
-    # calculating ratios of popular items in niche, diverse and bb_focused recommendations
-    recs = recs[['user', 'item']]
-    niche_recs_pop_ratios = get_recs_pop_ratios(niche, recs, most_popular_items)
-    diverse_recs_pop_ratios = get_recs_pop_ratios(diverse, recs, most_popular_items)
-    bb_focused_recs_pop_ratios = get_recs_pop_ratios(bb_focused, recs, most_popular_items)
+    """
+    truth_frame = truth_frame[['from_id', 'to_id']]
+    score_frame = pd.DataFrame(columns=['user_group', 'profile_pop_ratio', 'recs_pop_ratio'])
+    for group_name in user_groups:
+        profile_pop_ratios = get_profile_pop_ratios(user_groups[group_name], pop_ratio_by_users)
+        recs_pop_ratios = get_recs_pop_ratios(user_groups[group_name], truth_frame, most_popular_items)
+        score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name],
+                                                       'profile_pop_ratio': [profile_pop_ratios],
+                                                       'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
+    return score_frame
 
 
 def perform_pop_recs_correlation():

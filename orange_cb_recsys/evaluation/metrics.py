@@ -57,11 +57,18 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     columns = ["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs","pop_recs_correlation",
                "recs_long_tail_distr"]
     # results = pd.concat([results, perform_gini_index(score_frame=score_frame)], ignore_index=True, axis=1)
+    pop_items = popular_items(score_frame=score_frame)
+    pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, pop_items=pop_items)
+
     user_groups = split_user_in_groups(score_frame=score_frame, groups={'niche': 0.2, 'diverse': 0.6,
-                                                                        'bb_focused': 0.2})
+                                                                        'bb_focused': 0.2}, pop_items=pop_items)
     df_gini = perform_gini_index(score_frame=score_frame)
     delta_gap_score = perform_delta_gap(score_frame=score_frame, truth_frame=truth_frame, users_groups=user_groups)
+    profile_vs_recs_pop_ratio = perform_pop_ratio_profile_vs_recs(user_groups=user_groups, truth_frame=truth_frame,
+                                                                  most_popular_items=pop_items,
+                                                                  pop_ratio_by_users=pop_ratio_user)
     print(delta_gap_score)
+    print(profile_vs_recs_pop_ratio)
 
     results = pd.concat([df_gini, ], axis=1)
 
