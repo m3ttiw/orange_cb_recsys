@@ -38,6 +38,22 @@ class ClassifierRecommender(RatingsSPA):
         super().__init__(item_field, field_representation)
 
     def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str):
+        """
+        1) Goes into items_directory and for each item takes the values corresponding to the field_representation of
+        the item_field. For example, if item_field == "Plot" and field_representation == "tf-idf", the function will
+        take the "tf-idf" representation of each  "Plot" field for every item;
+        2) Takes a list of ratings that are in the dataframe (rated_item_index_list) and does a trasformation on that
+        list with the dictvectorizer;
+        3) Creates an object DecisionTreeClassifier, uses the method fit and predicts the class of the item
+
+                Args:
+                    item (Content): Item for which the similarity will be computed
+                    ratings (pd.DataFrame): Ratings
+                    items_directory (str): Name of the directory where the items are stored.
+
+                Returns:
+                     The predicted classes, or the predict values.
+                """
         items = [filename for filename in os.listdir(items_directory)]
 
         features_bag_list = []
