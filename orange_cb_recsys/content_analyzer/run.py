@@ -18,6 +18,9 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.field
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
+from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
+from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsImporter, RatingsFieldConfig
+from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, SQLDatabase, CSVFile
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
@@ -34,6 +37,11 @@ implemented_content_prod = [
     "lucene_tf-idf",
 ]
 
+implemented_rating_proc = [
+    "text_blob_sentiment",
+    "number_normalizer",
+]
+
 runnable_instances = {
     "json": JSONFile,
     "csv": CSVFile,
@@ -46,30 +54,38 @@ runnable_instances = {
     "gensim_downloader": GensimDownloader,
     "centroid": Centroid,
     "embedding": EmbeddingTechnique,
+    "text_blob_sentiment": TextBlobSentimentAnalysis,
+    "number_normalizer": NumberNormalizer,
 }
 
 
-def check_for_available(config_list: List[Dict]):
+def check_for_available(content_config: Dict):
     # check if need_interface is respected
     # check runnable_instances
-    check_pass = True
-    for content_config in config_list:
-        if content_config['source_type'] not in ['json', 'csv', 'sql']:
-            check_pass = False
-            break
-        for field_dict in content_config['fields']:
-            if field_dict['memory_interface'] not in ['index', 'None']:
-                check_pass = False
-                break
-            for pipeline_dict in field_dict['pipeline_list']:
+    if content_config['source_type'] not in ['json', 'csv', 'sql']:
+        return False
+    if content_config['content_type'].lower() == 'ratings':
+        if "from" not in content_config.keys() \
+                or "to" not in content_config.keys() \
+                or "timestamp" not in content_config.keys()\
+                or "output_directory" not in content_config.keys():
+            return False
+        for field in content_config['fields']:
+            if field['rating_processor']['class'] not in implemented_rating_proc:
+
+                return False
+        return True
+    for field_dict in content_config['fields']:
+        if field_dict['memory_interface'] not in ['index', 'None']:
+            return False
+        for pipeline_dict in field_dict['pipeline_list']:
+            if pipeline_dict['field_content_production'] != "None":
                 if pipeline_dict['field_content_production']['class'] not in implemented_content_prod:
-                    check_pass = False
-                    break
-                for preprocessing in pipeline_dict['preprocessing_list']:
-                    if preprocessing['class'] not in implemented_preprocessing:
-                        check_pass = False
-                        break
-    return check_pass
+                    return False
+            for preprocessing in pipeline_dict['preprocessing_list']:
+                if preprocessing['class'] not in implemented_preprocessing:
+                    return False
+    return True
 
 
 def dict_detector(technique_dict):
@@ -85,13 +101,12 @@ def dict_detector(technique_dict):
     return technique_dict
 
 
-def config_run(config_list: List[Dict]):
+def content_config_run(config_list: List[Dict]):
     for content_config in config_list:
-
         # content production
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
-            runnable_instances[content_config['source_type']](content_config['raw_source_path']),
+            runnable_instances[content_config['source_type']](file_path=config_dict["raw_source_path"]),
             content_config['id_field_name'],
             content_config['output_directory'])
 
@@ -107,12 +122,16 @@ def config_run(config_list: List[Dict]):
                     preprocessing = dict_detector(preprocessing)
                     preprocessing_list.append(runnable_instances[class_name](**preprocessing))  # params for the class
                 # content production settings
-                class_name = pipeline_dict['field_content_production'].pop('class')  # extract the class acronyms
-                # append each field representation pipeline to the field config
-                technique_dict = pipeline_dict["field_content_production"]
-                technique_dict = dict_detector(technique_dict)
-                field_config.append_pipeline(
-                    FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict), preprocessing_list))
+                if type(pipeline_dict['field_content_production']) is dict:
+                    class_name = pipeline_dict['field_content_production'].pop('class')  # extract the class acronyms
+                    # append each field representation pipeline to the field config
+                    technique_dict = pipeline_dict["field_content_production"]
+                    technique_dict = dict_detector(technique_dict)
+                    field_config.append_pipeline(
+                        FieldRepresentationPipeline(runnable_instances[class_name](**technique_dict),
+                                                    preprocessing_list))
+                else:
+                    field_config.append_pipeline(FieldRepresentationPipeline(None, preprocessing_list))
             # verify that the memory interface is set
             if field_dict['memory_interface'] != "None":
                 field_config.set_memory_interface(runnable_instances[field_dict['memory_interface']](
@@ -123,7 +142,22 @@ def config_run(config_list: List[Dict]):
         content_analyzer = ContentAnalyzer(content_analyzer_config)  # need the id list (id configuration)
         content_analyzer.fit()
 
-        return 0
+
+def rating_config_run(config_dict: Dict):
+    rating_configs = []
+    for field in config_dict["fields"]:
+        rating_configs.append(
+            RatingsFieldConfig(preference_field_name=field["preference_field_name"],
+                               processor=dict_detector(field["processor"]))
+        )
+    RatingsImporter(
+        source=runnable_instances[config_dict["source_type"]](file_path=config_dict["raw_source_path"], **config_dict),
+        output_directory=config_dict["output_directory"],
+        rating_configs=rating_configs,
+        from_field_name=config_dict["from_field_name"],
+        to_field_name=config_dict["to_field_name"],
+        timestamp_field_name=config_dict["timestamp"]
+    ).import_ratings()
 
 
 if __name__ == "__main__":
@@ -137,7 +171,11 @@ if __name__ == "__main__":
     else:
         raise Exception("Wrong file extension")
 
-    if check_for_available(config_list_dict):
-        config_run(config_list_dict)
-    else:
-        raise Exception("Check for available instances failed.")
+    for config_dict in config_list_dict:
+        if check_for_available(config_dict):
+            if config_dict["content_type"].lower() == "rating":
+                rating_config_run(config_dict)
+            else:
+                content_config_run([config_dict])
+        else:
+            raise Exception("Check for available instances failed.")

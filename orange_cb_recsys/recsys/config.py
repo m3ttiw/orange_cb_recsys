@@ -1,5 +1,11 @@
+import os
+
 from orange_cb_recsys.recsys.ranking_algorithms.ranking_algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import ScorePredictionAlgorithm
+import pandas as pd
+
+from orange_cb_recsys.utils.const import home_path, DEVELOPING
+from orange_cb_recsys.utils.load_ratings import load_ratings
 
 
 class RecSysConfig:
@@ -7,12 +13,20 @@ class RecSysConfig:
                  items_directory: str,
                  score_prediction_algorithm: ScorePredictionAlgorithm,
                  ranking_algorithm: RankingAlgorithm,
-                 rating_field: str = None):
-        self.__users_directory: str = users_directory
-        self.__items_directory: str = items_directory
+                 rating_frame=None):
+        if DEVELOPING:
+            self.__users_directory: str = users_directory
+            self.__items_directory: str = items_directory
+        else:
+            self.__users_directory: str = os.path.join(home_path, users_directory)
+            self.__items_directory: str = os.path.join(home_path, items_directory)
+
         self.__score_prediction_algorithm: ScorePredictionAlgorithm = score_prediction_algorithm
         self.__ranking_algorithm: RankingAlgorithm = ranking_algorithm
-        self.__rating_field = rating_field
+        if type(rating_frame) is str:
+            self.__rating_frame = load_ratings(rating_frame)
+        else:
+            self.__rating_frame = rating_frame
 
     def get_users_directory(self):
         return self.__users_directory
@@ -26,8 +40,8 @@ class RecSysConfig:
     def get_ranking_algorithm(self):
         return self.__ranking_algorithm
 
-    def get_rating_field(self):
-        return self.__rating_field
+    def get_rating_frame(self):
+        return self.__rating_frame
 
     def set_users_directory(self, users_directory: str):
         self.__users_directory = users_directory
@@ -41,5 +55,5 @@ class RecSysConfig:
     def set_score_prediction_algorithm(self, score_prediction_algorithm: str):
         self.__score_prediction_algorithm = score_prediction_algorithm
 
-    def set_rating_field(self, rating_field: str):
-        self.__rating_field = rating_field
+    def set_rating_frame(self, rating_frame: str):
+        self.__rating_frame = rating_frame

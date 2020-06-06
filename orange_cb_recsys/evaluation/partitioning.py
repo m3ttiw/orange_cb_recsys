@@ -23,6 +23,11 @@ class KFoldPartioning(Partitioning):
         self.__n_splits = n_splits
         self.__random_state = random_state
 
+    def set_dataframe(self, dataframe: pd.DataFrame):
+        if len(dataframe) < self.__n_splits:
+            raise ValueError("Number of splits larger than number of frame rows")
+        super().set_dataframe(dataframe)
+
     def __iter__(self):
         kf = KFold(n_splits=self.__n_splits, shuffle=True, random_state=self.__random_state)
         split_result = kf.split(self.get_dataframe())
