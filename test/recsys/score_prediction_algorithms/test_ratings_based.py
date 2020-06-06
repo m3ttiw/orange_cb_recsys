@@ -60,11 +60,11 @@ class TestClassifierRecommender(TestCase):
                 item = pickle.load(content_file)
 
             self.assertEqual(alg.predict(item=item, ratings=ratings, items_directory=path),
-                             alg.predict(item=item, ratings=ratings, items_directory=path))
+                             "aa")
         except FileNotFoundError:
             path = "contents/movielens_test1591028175.9454775"
             file = os.path.join(path, "Sudden Death_tt0114576.bin")
             with open(file, "rb") as content_file:
                 item = pickle.load(content_file)
             self.assertEqual(alg.predict(item=item, ratings=ratings, items_directory=path),
-                             alg.predict(item=item, ratings=ratings, items_directory=path))
+                             "aa")
