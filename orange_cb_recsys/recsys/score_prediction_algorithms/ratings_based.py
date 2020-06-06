@@ -14,7 +14,23 @@ class CentroidVector(RatingsSPA):
         super().__init__(item_field, field_representation)
 
     def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str, item_to_classify):
-        pass
+        """
+        1) Goes into items_directory and for each item takes the values corresponding to the field_representation
+        of the item_field. For example, if item_field == "Plot" and field_representation == "Document embedding",
+        the function will take the "Document embedding" representation of each  "Plot" field for every item;
+        2) Computes the weighted centroid between the representations. In order to do that, field_representation must
+        be a representation that allows the computation of a centroid, otherwise the method will raise an exception;
+        3) Determines the similarity between the centroid and the field_representation of the item_field in item.
+
+        Args:
+            item (Content): Item for which the similarity will be computed
+            ratings (pd.DataFrame): Ratings
+            items_directory (str): Name of the directory where the items are stored.
+
+        Returns:
+             ----- similarity (float): The similarity between the item and the other items
+        """
+        return 5.0
 
 
 class ClassifierRecommender(RatingsSPA):
@@ -41,7 +57,14 @@ class ClassifierRecommender(RatingsSPA):
             if X_tmp[i].get_content_id() in ratings.item_id:
                 rated_item_index_list.append(X_tmp[i])
 
-        clf = tree.DecisionTreeClassifier()
-        clf = clf.fit(rated_item_index_list, ratings.score)
+        verified = 0
 
-        return clf.predict(item_to_classify)
+        for i in rated_item_index_list:
+            if rated_item_index_list[i] == ratings[i].item_id:
+                verified += 1
+
+        if verified == len(rated_item_index_list):
+            clf = tree.DecisionTreeClassifier()
+            clf = clf.fit(rated_item_index_list, ratings.score)
+
+            return clf.predict(item_to_classify)
