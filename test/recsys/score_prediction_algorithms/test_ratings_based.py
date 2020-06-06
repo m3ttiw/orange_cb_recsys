@@ -33,7 +33,7 @@ class TestCentroidVector(TestCase):
                 items.append(pickle.load(content_file))
 
             self.assertEqual(alg.predict(items, ratings, path), {
-                'Sudden Death_tt0114576': 0.9279127875850923,
+                'Sudden Death_tt0114576': 0.7279127875850923,
                 'Toy Story_tt0114709': 0.9319356325129486
             }
                              )
@@ -43,11 +43,12 @@ class TestCentroidVector(TestCase):
             with open(file, "rb") as content_file:
                 item = pickle.load(content_file)
             self.assertEqual(alg.predict(item, ratings, path),
-                             0.9279127875850923)
+                             0.7279127875850923)
 
 
 class TestClassifierRecommender(TestCase):
     def test_predict(self):
+
         alg = ClassifierRecommender("Plot", "1")
         ratings = pd.DataFrame.from_records([
             ("A000", "Sudden Death_tt0114576", "sdfgd", 2.0, "54654675")],
@@ -61,10 +62,13 @@ class TestClassifierRecommender(TestCase):
 
             self.assertEqual(alg.predict(item=item, ratings=ratings, items_directory=path),
                              "aa")
+
         except FileNotFoundError:
             path = "contents/movielens_test1591028175.9454775"
             file = os.path.join(path, "Sudden Death_tt0114576.bin")
+
             with open(file, "rb") as content_file:
                 item = pickle.load(content_file)
+
             self.assertEqual(alg.predict(item=item, ratings=ratings, items_directory=path),
                              "aa")
