@@ -15,7 +15,7 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.embed
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.entity_linking import BabelPyEntityLinking
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     EmbeddingTechnique, SearchIndexing
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf, SkLearnTfIdf
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
@@ -35,7 +35,8 @@ implemented_content_prod = [
     "embedding",
     "babelpy",
     "lucene_tf-idf",
-    "search_index"
+    "search_index",
+    "sk_learn_tf-idf"
 ]
 
 implemented_rating_proc = [
@@ -57,7 +58,8 @@ runnable_instances = {
     "embedding": EmbeddingTechnique,
     "text_blob_sentiment": TextBlobSentimentAnalysis,
     "number_normalizer": NumberNormalizer,
-    "search_index": SearchIndexing
+    "search_index": SearchIndexing,
+    "sk_learn_tf-idf": SkLearnTfIdf
 }
 
 

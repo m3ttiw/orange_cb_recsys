@@ -74,6 +74,14 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
+        """
+        This method restructures the raw data in a way functional to the final representation.
+        This is done only for those field representations that require this phase to be done
+        Args:
+            information_source (RawInformationSource):
+            id_field_names: fields where to find data that compound content's id
+
+        """
         raise NotImplementedError
 
     @abstractmethod
