@@ -68,6 +68,7 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
         group_delta_gap = calculate_delta_gap(recs_gap=recs_gap, profile_gap=profile_gap)
         score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name], 'delta-gap': [group_delta_gap]}),
                                          ignore_index=True)
+    # plot
     return score_frame
 
 
@@ -92,16 +93,39 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
         score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name],
                                                        'profile_pop_ratio': [profile_pop_ratios],
                                                        'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
+    # plot
     return score_frame
 
 
 def perform_pop_recs_correlation():
+    # plot
     pass
 
 
-def recs_long_tail_distr():
-    pass
+def perform_recs_long_tail_distr(recs: pd.DataFrame):
+    counts_by_item = Counter(recs[['item']].values.flatten())
+    ordered_item_count_pairs = counts_by_item.most_common()
+
+    ordered_counts = list()
+    for item_count_pair in ordered_item_count_pairs:
+        ordered_counts.append(item_count_pair[1])
+    # plot
 
 
-def catalog_coverage():
-    pass
+# va aggiunto aglorithm name a tutti
+def catalog_coverage(score_frame: pd.DataFrame, truth_frame: pd.DataFrame):
+    """
+
+    Args:
+        score_frame:
+        truth_frame:
+
+    Returns:
+
+    """
+    items = set(truth_frame[['to_id']].values.flatten())
+    covered_items = set(score_frame[['to_id']].values.flatten())
+    coverage_percentage = len(covered_items) / len(items) * 100
+
+    print('Covered items: ', len(covered_items), ' ({}%)'.format(coverage_percentage))
+    return coverage_percentage

@@ -77,11 +77,9 @@ class Test(TestCase):
         perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame)
 
     def test_perform_gini(self):
-        df = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],
-                                     'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
-                                     'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
-        print(df)
-        print(perform_gini_index(df))
+        pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],
+                                'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
+                                'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
 
     def test_perform_rmse(self):
         predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])

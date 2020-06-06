@@ -76,6 +76,7 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
 
     print(results_by_user)
     print(results_by_user_group)
+    catalog_coverage(score_frame=score_frame, truth_frame=truth_frame)
     return results_by_user, results_by_user_group
 
 
