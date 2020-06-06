@@ -100,4 +100,4 @@ class IndexInterface(TextInterface):
     def delete_index(self):
         import shutil
 
-        print(shutil.rmtree(self.get_directory(), ignore_errors=True))
+        shutil.rmtree(self.get_directory(), ignore_errors=True)

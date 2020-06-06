@@ -2,7 +2,7 @@ from typing import List
 from gensim.models.fasttext import FastText
 
 from orange_cb_recsys.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
-from orange_cb_recsys.content_analyzer.information_processor.information_processor import NLP
+from orange_cb_recsys.content_analyzer.information_processor.information_processor import TextProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
 
@@ -13,7 +13,7 @@ class GensimFastText(EmbeddingLearner):
     """
 
     def __init__(self, source: RawInformationSource,
-                 preprocessor: NLP,
+                 preprocessor: TextProcessor,
                  field_list: List[str],
                  **kwargs):
         super().__init__(source, preprocessor, field_list)

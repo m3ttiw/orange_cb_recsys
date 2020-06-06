@@ -1,145 +1,60 @@
 from typing import Dict
 import pandas as pd
-import numpy as np
+from orange_cb_recsys.evaluation.ranking_metrics import *
+from orange_cb_recsys.evaluation.prediction_metrics import *
+from orange_cb_recsys.evaluation.fairness_metrics import *
 
 
-def perform_precision(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
+def perform_ranking_metrics(predictions: pd.DataFrame,
+                            truth: pd.DataFrame,
+                            **options) -> Dict[str, float]:
     """
-    Calculates the precision of the recommendations provided
+    Perform the computation of all ranking metrics
 
     Args:
-        predictions (pd.DataFrame): Series containing the predicted ratings
-        truth (pd.DataFrame): Series containing the truth values
+        predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
+        truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
+        **options : you can specify some option parameters like:
+         - fn (int): the n of the Fn metric, default = 1
 
     Returns:
-        float: precision
+        results (Dict[str, object]): results of the computations of all ranking metrics
     """
+    content_prediction = pd.Series(predictions['item_id'].values)
+    if "relevant_threshold" in options.keys():
+        relevant_rank = truth[truth['rating'] >= options["relevant_threshold"]]
+    else:
+        relevant_rank = truth
 
+    content_truth = pd.Series(relevant_rank['item_id'].values)
 
-def perform_recall(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
-    """
-    Calculates the recall of the recommendations provided
-
-    Args:
-        predictions (pd.DataFrame): Series containing the predicted ratings
-        truth (pd.DataFrame): Series containing the truth values
-
-    Returns:
-        float: recall
-    """
-
-
-def perform_f1(precision, recall) -> float:
-    """
-    Calculates the f1-measure of the recommendations provided
-
-    Args:
-        precision (float): Precision of the recommendations
-        recall (float): Recall of the recommendations
-
-    Returns:
-        float: f1 measure
-    """
-    return 2 * ((precision * recall) / (precision + recall))
-
-
-def perform_dcg(scores: pd.DataFrame):
-    """
-    Calculates the DCG of a given Series of scores
-
-    Args:
-        scores (pd.DataFrame): Series of scores of which the function will find the DCG
-
-    Returns:
-        dcg (float): value of the DCG
-    """
-
-
-def perform_ndcg(predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
-    """
-    Calculates the NDCG, given by the ratio between the DCG of the recommendations provided and the
-    Ideal-DCG, represented by the DCG of the truth base
-
-    Args:
-        predictions (pd.DataFrame): Series containing the predicted ratings
-        truth (pd.DataFrame): Series containing the truth values
-
-    Returns:
-        float: value of the ndcg
-    """
-
-
-def perform_ranking_metrics(predictions: pd.DataFrame, truth: pd.DataFrame) -> Dict[str, object]:
-    """
-    Performs the metrics for evaluating the ranking phase and returns their values
-
-    Args:
-        predictions (pd.Series): Series containing the predicted ratings
-        truth (pd.Series): Series containing the truth values
-
-    Returns:
-        results (Dict[str, object]): Python dictionary where the keys are the names of the metrics and the
-        values are the corresponding values
-    """
-    precision = perform_precision(predictions, truth)
-    recall = perform_recall(predictions, truth)
     results = {
-        "precision": precision,
-        "recall": recall,
-        "F1": perform_f1(precision, recall),
-        "NDCG": perform_ndcg(predictions, truth)
+        "Precision": perform_precision(prediction_labels=content_prediction, truth_labels=content_truth),
+        "Recall": perform_recall(prediction_labels=content_prediction, truth_labels=content_truth),
+        "MRR": perform_MRR(prediction_labels=content_prediction, truth_labels=content_truth),
+        "NDCG": perform_NDCG(predictions=predictions, truth=truth),
+        "pearson": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth),
+        "kendall": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth,
+                                       method='kendall'),
+        "spearman": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth,
+                                        method='spearman'),
     }
+
+    if "fn" in options.keys() and options["fn"] > 1:
+        results["F{}".format(options["fn"])] = perform_Fn(n=options["fn"], precision=results["Precision"],
+                                                          recall=results["Recall"])
+    else:
+        results["F1"] = perform_Fn(precision=results["Precision"], recall=results["Recall"])
+
     return results
 
 
-def perform_gini_index():
-    pass
-
-
-def perform_pop_recs_correlation():
-    pass
-
-
-def perform_fairness_metrics() -> Dict[str, object]:
-
+def perform_fairness_metrics(score_frame) -> pd.DataFrame:
     results = {
-        "precision": perform_gini_index(),
+        "gini_index": perform_gini_index(),
         "pop_recs_correlation": perform_pop_recs_correlation()
     }
     return results
-
-
-def perform_rmse(predictions: pd.Series, truth: pd.Series) -> float:
-    """
-    Compute the RMSE
-
-    Args:
-        predictions (pd.Series): Series containing the predicted ratings
-        truth (pd.Series): Series containing the truth rating values
-
-    Returns:
-        float: The Root Mean Squared Error
-    """
-    assert len(predictions) == len(truth), "The predictions series and the truth series must have the same size"
-    diff = predictions - truth
-    sq = np.square(diff)
-    return np.sqrt(np.mean(sq))
-
-
-def perform_mae(predictions: pd.Series, truth: pd.Series) -> float:
-    """
-    Compute the RMSE
-
-    Args:
-        predictions (pd.Series): Series containing the predicted ratings
-        truth (pd.Series): Series containing the truth rating values
-
-    Returns:
-        float: The Mean Average Error
-    """
-    assert len(predictions) == len(truth), "The predictions series and the truth series must have the same size"
-    abs_diff = (predictions - truth).apply(abs)
-    return np.mean(abs_diff)
 
 
 def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict[str, object]:

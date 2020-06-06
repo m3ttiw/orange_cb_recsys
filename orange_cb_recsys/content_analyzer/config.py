@@ -121,6 +121,8 @@ class ContentAnalyzerConfig:
         self.__source: RawInformationSource = source
         self.__id_field_name: str = id_field_name
 
+        FieldRepresentationPipeline.instance_counter = 0
+
     def get_output_directory(self):
         return self.__output_directory
 

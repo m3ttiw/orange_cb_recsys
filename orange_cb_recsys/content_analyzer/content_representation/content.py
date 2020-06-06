@@ -61,30 +61,29 @@ class Content:
         return self.__content_id == other.__content_id and self.__field_dict == other.__field_dict
 
 
-class RepresentedContents:
+class RepresentedContentsRecap:
     """
     Class that collects the Contents instance created,
     the whole collection can be serialized.
     Args:
-        length: number of contents
-        content_list (list<Content>): list of content's instances
-    """
-    def __init__(self, length: int = 0,
-                 content_list: List[Content] = None):
-        if content_list is None:
-            content_list = []
-        self.__content_list: List[Content] = content_list
-        self.__length: int = length
 
-    def append(self, content: Content):
-        self.__content_list.append(content)
+    """
+    def __init__(self, representation_list: str = None):
+        if representation_list is None:
+            representation_list = []
+
+        self.__representation_list = representation_list
+
+    def append(self, representation: str):
+        self.__representation_list.append(representation)
 
     def serialize(self):
         """
         Serialize the entire collection
         Returns:
-
         """
 
+        raise NotImplementedError
+
     def __str__(self):
-        return str(self.__content_list)
+        return '\n\n'.join(self.__representation_list)

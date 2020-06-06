@@ -1,18 +1,14 @@
 from typing import Dict
 import time
 import os
-from os import path
 
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldRepresentationPipeline
-from orange_cb_recsys.content_analyzer.content_representation.content import Content
+from orange_cb_recsys.content_analyzer.content_representation.content import Content, RepresentedContentsRecap
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import CollectionBasedTechnique, \
     SingleContentTechnique
+from orange_cb_recsys.utils.const import home_path, DEVELOPING
 from orange_cb_recsys.utils.id_merger import id_merger
-
-parent_dir = '../../contents'
-if not path.exists(parent_dir):
-    parent_dir = 'contents'
 
 
 class ContentAnalyzer:
@@ -41,6 +37,14 @@ class ContentAnalyzer:
                     technique.set_processor_list(pipeline.get_preprocessor_list())
                     technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
 
+    def __config_recap(self):
+        recap = RepresentedContentsRecap()
+        for field_name in self.__config.get_field_name_list():
+            for pipeline in self.__config.get_pipeline_list(field_name):
+                recap.append("Field: " + field_name + "; pipeline_id: " + str(pipeline))
+
+        return recap
+
     def fit(self):
         """
         Begins to process the creation of the contents
@@ -50,8 +54,12 @@ class ContentAnalyzer:
                 list which elements are the produced content instances
         """
 
-        output_path = os.path.join(parent_dir, self.__config.get_output_directory())
+        if DEVELOPING:
+            output_path = self.__config.get_output_directory()
+        else:
+            output_path = os.path.join(home_path, self.__config.get_output_directory())
         os.mkdir(output_path)
+        print(output_path)
 
         contents_producer = ContentsProducer.get_instance()
         contents_producer.set_config(self.__config)
@@ -74,6 +82,8 @@ class ContentAnalyzer:
                 technique = pipeline.get_content_technique()
                 if isinstance(technique, CollectionBasedTechnique):
                     technique.delete_refactored()
+
+        print(self.__config_recap())
 
     def __str__(self):
         return "ContentAnalyzer"
