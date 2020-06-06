@@ -20,7 +20,7 @@ class ClassifierRecommender(RatingsSPA):
     def __init__(self, item_field: str, field_representation: str):
         super().__init__(item_field, field_representation)
 
-    def predict(self, user: Content, item: Content, ratings: pd.DataFrame, items_directory: str):
+    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str):
         items = [filename for filename in os.listdir(items_directory)]
 
         features_bag_list = []
@@ -35,3 +35,9 @@ class ClassifierRecommender(RatingsSPA):
         v = DictVectorizer(sparse=False)
 
         X_tmp = v.fit_transform(features_bag_list)
+
+        for i in X_tmp:
+            if X_tmp[i].get_content_id() in ratings.item_id:
+                rated_item_index_list.append(X_tmp[i])
+
+        return rated_item_index_list

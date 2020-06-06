@@ -16,7 +16,7 @@ class RatingsSPA(ScorePredictionAlgorithm):
         self.__field_representation: str = field_representation
 
     @abstractmethod
-    def predict(self, user: Content, item: Content, ratings: pd.DataFrame, items_directory: str) -> float:
+    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str) -> float:
         raise NotImplementedError
 
 
