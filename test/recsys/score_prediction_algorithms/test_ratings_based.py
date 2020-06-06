@@ -33,9 +33,9 @@ class TestCentroidVector(TestCase):
                 items.append(pickle.load(content_file))
 
             self.assertEqual(alg.predict(items, ratings, path), {
-                                    'Sudden Death_tt0114576': 0.9279127875850923,
-                                    'Toy Story_tt0114709': 0.9319356325129486
-                                }
+                'Sudden Death_tt0114576': 0.9279127875850923,
+                'Toy Story_tt0114709': 0.9319356325129486
+            }
                              )
         except FileNotFoundError:
             path = "contents/movielens_test1591028175.9454775"
@@ -44,3 +44,8 @@ class TestCentroidVector(TestCase):
                 item = pickle.load(content_file)
             self.assertEqual(alg.predict(item, ratings, path),
                              0.9279127875850923)
+
+
+class TestClassifierRecommender(TestCase):
+    def test_predict(self):
+        self.fail()
