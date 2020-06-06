@@ -153,7 +153,7 @@ class ClassifierRecommender(RatingsSPA):
     def __init__(self, item_field: str, field_representation: str):
         super().__init__(item_field, field_representation)
 
-    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str):
+    def predict(self, item_name: Content, ratings: pd.DataFrame, items_directory: str):
         """
         1) Goes into items_directory and for each item takes the values corresponding to the field_representation of
         the item_field. For example, if item_field == "Plot" and field_representation == "tf-idf", the function will
@@ -163,7 +163,7 @@ class ClassifierRecommender(RatingsSPA):
         3) Creates an object DecisionTreeClassifier, uses the method fit and predicts the class of the item
 
                 Args:
-                    item (Content): Item for which the similarity will be computed
+                    item_name (Content): Item for which the similarity will be computed
                     ratings (pd.DataFrame): Ratings
                     items_directory (str): Name of the directory where the items are stored.
 
@@ -177,6 +177,10 @@ class ClassifierRecommender(RatingsSPA):
         content_id_list = []
         for item in items:
             item_filename = items_directory + '/' + item
+            if item_name.get_content_id()+".bin" == item:
+                with open(item_filename, "rb") as content_file:
+                    content = pickle.load(content_file)
+                    item_to_classify = content.get_field("Plot").get_representation("1").get_value()
             with open(item_filename, "rb") as content_file:
                 content = pickle.load(content_file)
                 content_id = content.get_content_id()
@@ -185,14 +189,16 @@ class ClassifierRecommender(RatingsSPA):
         features_bag_list.append(content.get_field("Plot").get_representation("1").get_value())
         v = DictVectorizer(sparse=False)
 
-        for i in range(0, len(features_bag_list)):
-            print(features_bag_list[i])
-            if features_bag_list[i].get_content_id in ratings.item_id:
+        for i in range(0, len(features_bag_list)-1):
+            if content_id_list[i] in ratings.item_id[0]:
                 rated_item_index_list.append(features_bag_list[i])
-
+        score = []
+        for i in range(0, len(ratings)-1):
+            score.append(ratings.derived_score)
         X_tmp = v.fit_transform(rated_item_index_list)
-
+        item_dense = v.fit_transform(item_to_classify)
         clf = tree.DecisionTreeClassifier()
-        clf = clf.fit(X_tmp, ratings.score)
+        clf = clf.fit(X_tmp, score)
+        return_value = clf.predict(item_dense)
 
-        return clf.predict(item)
+        return str(return_value)

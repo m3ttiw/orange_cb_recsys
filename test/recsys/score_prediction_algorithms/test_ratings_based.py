@@ -51,7 +51,8 @@ class TestClassifierRecommender(TestCase):
 
         alg = ClassifierRecommender("Plot", "1")
         ratings = pd.DataFrame.from_records([
-            ("A000", "Sudden Death_tt0114576", "sdfgd", 2.0, "54654675")],
+            ("A000", "Sudden Death_tt0114576", "sdfgd", 2.0, "54654675"),
+            ("A000", "Balto_tt0112453", "sdfgd", 4.0, "54654675")],
             columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
 
         path = "../../../contents/movielens_test1591028175.9454775"
@@ -60,8 +61,8 @@ class TestClassifierRecommender(TestCase):
             with open(file1, "rb") as content_file:
                 item = pickle.load(content_file)
 
-            self.assertEqual(alg.predict(item=item, ratings=ratings, items_directory=path),
-                             "aa")
+            self.assertEqual(alg.predict(item, ratings=ratings, items_directory=path),
+                             "[[2. 4.]]")
 
         except FileNotFoundError:
             path = "contents/movielens_test1591028175.9454775"
@@ -70,5 +71,5 @@ class TestClassifierRecommender(TestCase):
             with open(file, "rb") as content_file:
                 item = pickle.load(content_file)
 
-            self.assertEqual(alg.predict(item=item, ratings=ratings, items_directory=path),
-                             "aa")
+            self.assertEqual(alg.predict(item, ratings=ratings, items_directory=path),
+                             "[[2. 4.]]")
