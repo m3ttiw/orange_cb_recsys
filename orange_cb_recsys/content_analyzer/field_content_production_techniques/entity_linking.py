@@ -11,10 +11,10 @@ class BabelPyEntityLinking(EntityLinking):
     Interface for the Babelpy library that wraps some feature of Babelfy entity Linking.
     """
 
-    def __init__(self, lang: str = "EN", api_key: str = None):
+    def __init__(self, api_key: str = None):
         super().__init__()
         params = dict()
-        params['lang'] = lang
+        params['lang'] = self.get_lang()
         self.__babel_client = BabelfyClient(api_key, params)
 
     def __str__(self):

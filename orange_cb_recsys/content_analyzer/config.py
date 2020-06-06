@@ -36,10 +36,10 @@ class FieldRepresentationPipeline:
         Args:
             preprocessor (InformationProcessor): The preprocessor to add
         """
-        self.__preprocessor_list.append(preprocessor)
+        self.__preprocessor_list.append(preprocessor.set_lang())
 
     def set_content_technique(self, content_technique: FieldContentProductionTechnique):
-        self.__content_technique = content_technique
+        self.__content_technique = content_technique.set_lang()
 
     def get_preprocessor_list(self) -> List[InformationProcessor]:
         for preprocessor in self.__preprocessor_list:
@@ -47,6 +47,12 @@ class FieldRepresentationPipeline:
 
     def get_content_technique(self) -> FieldContentProductionTechnique:
         return self.__content_technique
+
+    def set_lang(self, lang: str):
+        for preprocessor in self.__preprocessor_list:
+            preprocessor.set_lang(lang)
+
+        self.__content_technique.set_lang(lang)
 
     def __str__(self):
         return self.__id
@@ -67,13 +73,18 @@ class FieldConfig:
             one pipeline for each representation
     """
 
-    def __init__(self, memory_interface: InformationInterface = None,
+    def __init__(self, lang: str = "EN",
+                 memory_interface: InformationInterface = None,
                  pipelines_list: List[FieldRepresentationPipeline] = None):
         if pipelines_list is None:
             pipelines_list = []
 
+        self.__lang = lang
         self.__memory_interface: InformationInterface = memory_interface
         self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
+
+    def get_lang(self):
+        return self.__lang
 
     def get_memory_interface(self) -> InformationInterface:
         return self.__memory_interface
@@ -82,6 +93,7 @@ class FieldConfig:
         self.__memory_interface = memory_interface
 
     def append_pipeline(self, pipeline: FieldRepresentationPipeline):
+        pipeline.set_lang(self.__lang)
         self.__pipelines_list.append(pipeline)
 
     def get_pipeline_list(self) -> List[FieldRepresentationPipeline]:

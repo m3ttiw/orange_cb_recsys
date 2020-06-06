@@ -80,7 +80,6 @@ class ContentAnalyzer:
         contents_producer.set_indexer(indexer)
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
-
             content.serialize(output_path)
 
         if self.__config.get_search_index():

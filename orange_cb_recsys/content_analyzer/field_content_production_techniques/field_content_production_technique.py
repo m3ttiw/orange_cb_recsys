@@ -20,13 +20,22 @@ class FieldContentProductionTechnique(ABC):
     """
 
     def __init__(self):
-        pass
+        self.__lang = "EN"
+
+    def set_lang(self, lang: str):
+        self.__lang = lang
+
+    def get_lang(self):
+        return self.__lang
 
 
 class SearchIndexing(FieldContentProductionTechnique):
     def produce_content(self, field_name: str, pipeline_id, field_data, indexer: IndexInterface):
         field_data = check_not_tokenized(field_data)
         indexer.new_searching_field(field_name + pipeline_id, field_data)
+
+    def __str__(self):
+        return "Indexing for search-engine recommender"
 
 
 class CollectionBasedTechnique(FieldContentProductionTechnique):

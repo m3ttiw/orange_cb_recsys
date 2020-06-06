@@ -31,12 +31,11 @@ class NLTK(NLP):
                  lemmatization: bool = False,
                  strip_multiple_whitespaces: bool = True,
                  url_tagging: bool = False,
-                 lan: str = "english"):
+                 lang='english'):
 
         super().__init__(stopwords_removal,
                          stemming, lemmatization,
                          strip_multiple_whitespaces, url_tagging)
-        self.__lan: str = lan
         try:
             nltk.data.find('corpora/stopwords')
         except LookupError:
@@ -62,6 +61,8 @@ class NLTK(NLP):
         except LookupError:
             nltk.download('words')
 
+        self.__full_lang_code = lang
+
     def __str__(self):
         return "NLTK"
 
@@ -74,22 +75,8 @@ class NLTK(NLP):
                  "strip_multiple_whitespaces = " + str(self.__strip_multiple_whitespaces) + ";" + \
                  "url_tagging = " + str(self.__url_tagging) + " >"
 
-    def __str__(self):
-        return "NLTK"
-
-    def __repr__(self):
-        return "< NLTK: " + "" \
-                "stopwords_removal = " + str(self.__stopwords_removal) + ";" + \
-                 "stemming = " + str(self.__stemming) + ";" + \
-                 "lemmatization = " + str(self.__lemmatization) + ";" + \
-                 "strip_multiple_whitespaces = " + str(self.__strip_multiple_whitespaces) + ";" + \
-                 "url_tagging = " + str(self.__url_tagging) + " >"
-
-    def get_lan(self) -> str:
-        return self.__lan
-
-    def set_lan(self, lan: str):
-        self.__lan = lan
+    def set_lang(self, lang: str):
+        super().set_lang(self.__full_lang_code)
 
     def __tokenization_operation(self, text) -> List[str]:
         """
@@ -114,11 +101,11 @@ class NLTK(NLP):
         Returns:
             filtered_sentence (List<str>): list of words from the text, without the stopwords
         """
-        stop_words = set(stopwords.words(self.get_lan()))
+        stop_words = set(stopwords.words(self.get_lang()))
 
         filtered_sentence = []
         for word_token in text:
-            if word_token not in stop_words:
+            if word_token.lower() not in stop_words:
                 filtered_sentence.append(word_token)
 
         return filtered_sentence
@@ -134,7 +121,7 @@ class NLTK(NLP):
             stemmed_text (List<str>): List of the fords from the text, reduced to their stem version
         """
         from nltk.stem.snowball import SnowballStemmer
-        stemmer = SnowballStemmer(language=self.get_lan())
+        stemmer = SnowballStemmer(language=self.get_lang())
 
         stemmed_text = []
         for word in text:
