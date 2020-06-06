@@ -1,6 +1,5 @@
 import os
 
-from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import ScorePredictionAlgorithm
 
 import pandas as pd
@@ -19,10 +18,16 @@ from org.apache.lucene.analysis.en import EnglishAnalyzer
 
 
 class IndexQuery(ScorePredictionAlgorithm):
+    def __init__(self, classic_similarity: bool = True, positive_treshold: float = 0):
+        super().__init__()
+        self.__classic_similarity: bool = classic_similarity
+        self.__positive_treshold: float = positive_treshold
+
     def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory):
         BooleanQuery.setMaxClauseCount(2000000)
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(items_directory))))
-        searcher.setSimilarity(ClassicSimilarity())
+        if self.__classic_similarity:
+            searcher.setSimilarity(ClassicSimilarity())
 
         field_list = searcher.doc(positive_rated_document_list[0]).getFields()
         user_fields = {}
@@ -83,7 +88,7 @@ class IndexQuery(ScorePredictionAlgorithm):
         for item_id, score in zip(ratings.to_id, ratings.score):
             item = load_content_instance(items_directory, item_id)
 
-            if score > 0:
+            if score > self.__positive_treshold:
                 rated_document_list.append(item.get_index_document_id())
                 scores.append(score)
 
