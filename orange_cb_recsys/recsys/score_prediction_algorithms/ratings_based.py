@@ -13,7 +13,7 @@ class CentroidVector(RatingsSPA):
     def __init__(self, item_field: str, field_representation: str):
         super().__init__(item_field, field_representation)
 
-    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str, item_to_classify):
+    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str):
         """
         1) Goes into items_directory and for each item takes the values corresponding to the field_representation
         of the item_field. For example, if item_field == "Plot" and field_representation == "Document embedding",
@@ -37,7 +37,7 @@ class ClassifierRecommender(RatingsSPA):
     def __init__(self, item_field: str, field_representation: str):
         super().__init__(item_field, field_representation)
 
-    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str, item_to_classify):
+    def predict(self, item: Content, ratings: pd.DataFrame, items_directory: str):
         items = [filename for filename in os.listdir(items_directory)]
 
         features_bag_list = []
@@ -51,20 +51,13 @@ class ClassifierRecommender(RatingsSPA):
         features_bag_list.append(content.get_field("Plot").get_representation("1").get_value())
         v = DictVectorizer(sparse=False)
 
-        X_tmp = v.fit_transform(features_bag_list)
+        for i in features_bag_list:
+            if features_bag_list[i].get_content_id() in ratings.item_id:
+                rated_item_index_list.append(features_bag_list[i])
 
-        for i in X_tmp:
-            if X_tmp[i].get_content_id() in ratings.item_id:
-                rated_item_index_list.append(X_tmp[i])
+        X_tmp = v.fit_transform(rated_item_index_list)
 
-        verified = 0
+        clf = tree.DecisionTreeClassifier()
+        clf = clf.fit(X_tmp, ratings.score)
 
-        for i in rated_item_index_list:
-            if rated_item_index_list[i] == ratings[i].item_id:
-                verified += 1
-
-        if verified == len(rated_item_index_list):
-            clf = tree.DecisionTreeClassifier()
-            clf = clf.fit(rated_item_index_list, ratings.score)
-
-            return clf.predict(item_to_classify)
+        return clf.predict(item)
