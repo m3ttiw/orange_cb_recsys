@@ -3,6 +3,7 @@ from collections import Counter
 import pandas as pd
 import numpy as np
 from orange_cb_recsys.evaluation.delta_gap import *
+from orange_cb_recsys.evaluation.utils import split_user_in_groups
 
 
 # fairness_metrics_results = pd.DataFrame(columns=["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
@@ -41,12 +42,14 @@ def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
     return results
 
 
-def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, **options) -> Dict[str, float]:
+def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
+                      users_groups: Dict[str, Set[str]]) -> Dict[str, float]:
     """
     Compute the Delta - GAP (Group Average Popularity) metric
     Args:
         truth_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating') of user profiles
         score_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating') recommended
+        users_groups (Dict[str, Set[str]]): each key contains the name of the group and each value the set of 'from_id'
     Returns:
         results (pd.DataFrame): each row contains ('from_id', 'delta-gap')
     """
@@ -60,35 +63,37 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, **op
     recommended_users = set(truth_frame[['from_id']].values.flatten())
     # recommended_users = set(score_frame.query(expr='rating > 0.0')[['from_id']].values.flatten())
 
-    niche_users, diverse_users, bb_focused_users = split_user_in_groups(score_frame=score_frame, **options)
-
-    print("niche_users {}".format(niche_users))
-    print("diverse_users {}".format(diverse_users))
-    print("bb_focused_users {}".format(bb_focused_users))
-
-    niche_delta_gap = calculate_delta_gap(recs_gap=calculate_gap(group=niche_users.intersection(recommended_users),
-                                                                 avg_pop_by_users=recs_avg_pop_by_users),
-                                          profile_gap=calculate_gap(group=niche_users,
-                                                                    avg_pop_by_users=avg_pop_by_users_profiles))
-    diverse_delta_gap = calculate_delta_gap(recs_gap=calculate_gap(group=diverse_users.intersection(recommended_users),
-                                                                   avg_pop_by_users=recs_avg_pop_by_users),
-                                            profile_gap=calculate_gap(group=diverse_users,
-                                                                      avg_pop_by_users=avg_pop_by_users_profiles))
-    bb_delta_gap = calculate_delta_gap(recs_gap=calculate_gap(group=bb_focused_users.intersection(recommended_users),
-                                                              avg_pop_by_users=recs_avg_pop_by_users),
-                                       profile_gap=calculate_gap(group=bb_focused_users,
-                                                                 avg_pop_by_users=avg_pop_by_users_profiles))
-
-    return {"niche": niche_delta_gap, "diverse": diverse_delta_gap, "bb_focused": bb_delta_gap}
-
-    # for group in split_user_in_groups(score_frame=score_frame, **options):
-    #    profile_gap = calculate_gap(group=niche_users, pop_by_items=avg_pop_by_users_profiles)
-    #    recs_gap = calculate_gap(group=group_recommended_users, pop_by_items=recs_avg_pop_by_users)
-    #    delta_gap = calculate_delta_gap(profile_gap=profile_gap, recs_gap=recs_gap)
+    #niche_users, diverse_users, bb_focused_users = split_user_in_groups(score_frame=score_frame, **options)
+    score_dict = {}
+    for group_name in users_groups:
+        # print("{}: {}".format(group_name, group))
+        recs_gap = calculate_gap(group=users_groups[group_name].intersection(recommended_users), avg_pop_by_users=recs_avg_pop_by_users)
+        profile_gap = calculate_gap(group=users_groups[group_name], avg_pop_by_users=avg_pop_by_users_profiles)
+        group_delta_gap = calculate_delta_gap(recs_gap=recs_gap, profile_gap=profile_gap)
+        score_dict[group_name] = group_delta_gap
+    return score_dict
 
 
 def perform_pop_ratio_profile_vs_recs():
-    pass
+    # fetching pop_ratio_by_users, niche, diverse and bb-focused users
+    pop_ratio_by_users = pd.read_csv('../datasets/pop-ratio-by-user.csv')
+    niche = pd.read_csv('../datasets/niche.csv').values.flatten()
+    diverse = pd.read_csv('../datasets/diverse.csv').values.flatten()
+    bb_focused = pd.read_csv('../datasets/bb-focused.csv').values.flatten()
+
+    # fetching set of most popular items
+    most_popular_items = set(pd.read_csv('../datasets/most-popular-items.csv').values.flatten())
+
+    # calculating ratios of popular items in niche, diverse and bb_focused profiles
+    niche_profile_pop_ratios = get_profile_pop_ratios(niche, pop_ratio_by_users)
+    diverse_profile_pop_ratios = get_profile_pop_ratios(diverse, pop_ratio_by_users)
+    bb_focused_profile_pop_ratios = get_profile_pop_ratios(bb_focused, pop_ratio_by_users)
+
+    # calculating ratios of popular items in niche, diverse and bb_focused recommendations
+    recs = recs[['user', 'item']]
+    niche_recs_pop_ratios = get_recs_pop_ratios(niche, recs, most_popular_items)
+    diverse_recs_pop_ratios = get_recs_pop_ratios(diverse, recs, most_popular_items)
+    bb_focused_recs_pop_ratios = get_recs_pop_ratios(bb_focused, recs, most_popular_items)
 
 
 def perform_pop_recs_correlation():
