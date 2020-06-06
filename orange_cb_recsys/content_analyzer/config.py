@@ -52,7 +52,10 @@ class FieldRepresentationPipeline:
         for preprocessor in self.__preprocessor_list:
             preprocessor.set_lang(lang)
 
-        self.__content_technique.set_lang(lang)
+        try:
+            self.__content_technique.set_lang(lang)
+        except AttributeError:
+            pass
 
     def __str__(self):
         return self.__id

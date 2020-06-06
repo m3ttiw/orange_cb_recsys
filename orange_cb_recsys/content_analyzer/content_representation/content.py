@@ -1,3 +1,4 @@
+import lzma
 from typing import List, Dict
 import pickle
 import re
@@ -49,9 +50,9 @@ class Content:
         """
         Serialize a content instance
         """
-        file_name = re.sub(r'[^\w\s]','', self.__content_id)
-        with open(output_directory + '/' + file_name + '.bin', 'wb') as file:
-            pickle.dump(self, file)
+        file_name = re.sub(r'[^\w\s]', '', self.__content_id)
+        with lzma.open(output_directory + '/' + file_name + '.xz', 'wb') as f:
+            pickle.dump(self, f)
 
     def __str__(self):
         content_string = "Content:" + self.__content_id
