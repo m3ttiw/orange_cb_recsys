@@ -74,7 +74,7 @@ class Test(TestCase):
         truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
                                               'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
                                               'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
-        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame)
+        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test')
 
     def test_perform_gini(self):
         pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],

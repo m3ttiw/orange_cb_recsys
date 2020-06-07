@@ -57,7 +57,7 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
 
     items = score_frame[['to_id']].values.flatten()
     pop_by_items = Counter(items)
-    avg_pop_by_users_profiles = get_avg_pop_by_users(truth_frame, pop_by_items)  # truth?
+    avg_pop_by_users_profiles = get_avg_pop_by_users(truth_frame, pop_by_items)
     recs_avg_pop_by_users = get_avg_pop_by_users(score_frame, pop_by_items)
 
     recommended_users = set(truth_frame[['from_id']].values.flatten())
@@ -69,16 +69,17 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
         group_delta_gap = calculate_delta_gap(recs_gap=recs_gap, profile_gap=profile_gap)
         score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name], 'delta-gap': [group_delta_gap]}),
                                          ignore_index=True)
-    # plot
     return score_frame
 
 
 def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_frame: pd.DataFrame,
                                       most_popular_items: pd.Series, pop_ratio_by_users: pd.DataFrame,
-                                      algorithm_name: str, out_dir: str, store_frame: bool = False) -> pd.DataFrame:
+                                      algorithm_name: str, out_dir: str, store_frame: bool = False,
+                                      plot_file_name: str = None) -> pd.DataFrame:
     """
 
     Args:
+        plot_file_name:
         store_frame:
         out_dir:
         algorithm_name:
@@ -90,27 +91,95 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
     Returns:
 
     """
+
+    def set_box_color(bp, color):
+        plt.setp(bp['boxes'], color=color)
+        plt.setp(bp['whiskers'], color=color)
+        plt.setp(bp['caps'], color=color)
+        plt.setp(bp['medians'], color=color)
+
+    if plot_file_name is None:
+        plot_file_name = algorithm_name
+
     truth_frame = truth_frame[['from_id', 'to_id']]
     score_frame = pd.DataFrame(columns=['user_group', 'profile_pop_ratio', 'recs_pop_ratio'])
+    profile_data = []
+    recs_data = []
     for group_name in user_groups:
         profile_pop_ratios = get_profile_pop_ratios(user_groups[group_name], pop_ratio_by_users)
         recs_pop_ratios = get_recs_pop_ratios(user_groups[group_name], truth_frame, most_popular_items)
         score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name],
                                                        'profile_pop_ratio': [profile_pop_ratios],
                                                        'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
-    if store_frame:
-        pass
+        profile_data.append(profile_pop_ratios)
+        recs_data.append(recs_pop_ratios)
 
-    # plot
+    if store_frame:
+        score_frame.to_csv('{}/pop_ratio_profile_vs_recs.csv'.format(out_dir))
+
+    data_to_plot = [profile_data, recs_data]
+    # Create a figure instance
+    fig = plt.figure(1, figsize=(9, 6))
+
+    # Create an axes instance
+    ax = fig.add_subplot(111)
+
+    # Create the boxplot
+    bp = ax.boxplot(data_to_plot)
+
+    # Save the figure
+    fig.savefig('fig1.png', bbox_inches='tight')
+
+    ## add patch_artist=True option to ax.boxplot()
+    ## to get fill color
+    bp = ax.boxplot(data_to_plot, patch_artist=True)
+
+    ## change outline color, fill color and linewidth of the boxes
+    for i, box in enumerate(bp['boxes']):
+        # change outline color
+        box.set(color='#7570b3', linewidth=2)
+        # change fill color
+        box.set(facecolor='#fcba03')
+        if i == 0:
+            box.set(facecolor='#1b9e77')
+
+    ## change color and linewidth of the whiskers
+    for whisker in bp['whiskers']:
+        whisker.set(color='#7570b3', linewidth=2)
+
+    ## change color and linewidth of the caps
+    for cap in bp['caps']:
+        cap.set(color='#7570b3', linewidth=2)
+
+    ## change color and linewidth of the medians
+    for median in bp['medians']:
+        median.set(color='#b2df8a', linewidth=2)
+
+    ## change the style of fliers and their fill
+    for flier in bp['fliers']:
+        flier.set(marker='o', color='#e7298a', alpha=0.5)
+
+    ax.set_xticklabels([group_name for group_name in user_groups])
+
+    ## Remove top axes and right axes ticks
+    ax.get_xaxis().tick_bottom()
+    ax.get_yaxis().tick_left()
+
+    plt.title('{}'.format(algorithm_name))
+    plt.ylabel('Ratio of popular items')
+    plt.show()
+    #plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+    plt.clf()
 
     return score_frame
 
 
-def perform_pop_recs_correlation(recs: pd.DataFrame, algorithm_name: str, ratings: pd.DataFrame,
+def perform_pop_recs_correlation(recs: pd.DataFrame, ratings: pd.DataFrame, algorithm_name: str, out_dir: str,
                                  plot_file_name: str = None):
     """
 
     Args:
+        out_dir:
         recs:
         algorithm_name:
         ratings:
@@ -119,20 +188,20 @@ def perform_pop_recs_correlation(recs: pd.DataFrame, algorithm_name: str, rating
     Returns:
 
     """
-    def build_plot(popularities, recommendations, algorithm_name, plot_file_name):
+    def build_plot(popularities_, recommendations_, algorithm_name_, plot_file_name_, out_dir_):
         """ """
-        plt.scatter(popularities, recommendations, marker='o', s=20, c='orange', edgecolors='black', linewidths=0.05)
-        plt.title('{}'.format(algorithm_name))
+        plt.scatter(popularities_, recommendations_, marker='o', s=20, c='orange', edgecolors='black', linewidths=0.05)
+        plt.title('{}'.format(algorithm_name_))
         plt.xlabel('Popularity')
         plt.ylabel('Recommendation frequency')
-        plt.savefig('results/plots/pop-recs/{}.svg'.format(plot_file_name))
+        plt.savefig('{}/pop-recs/{}.svg'.format(out_dir_, plot_file_name_))
         plt.clf()
 
-    ####################### Calculating popularity by item ########################
+    # Calculating popularity by item
     items = ratings[['item']].values.flatten()
     pop_by_items = Counter(items)
 
-    #################### Calculating num of recommendations by item ###############
+    # Calculating num of recommendations by item
     pop_by_items = pop_by_items.most_common()
     recs_by_item = Counter(recs[['item']].values.flatten())
     popularities = list()
@@ -154,14 +223,14 @@ def perform_pop_recs_correlation(recs: pd.DataFrame, algorithm_name: str, rating
             at_least_one_zero = True
 
     build_plot(popularities, recommendations,
-               algorithm_name, plot_file_name)
+               algorithm_name, plot_file_name, out_dir)
 
     if at_least_one_zero:
         build_plot(popularities_no_zeros, recommendations_no_zeros,
-                   algorithm_name, plot_file_name + '-no-zeros')
+                   algorithm_name, plot_file_name + '-no-zeros', out_dir)
 
 
-def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output_dir: str ,plot_file_name: str = None):
+def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output_dir: str, plot_file_name: str = None):
     """
 
     Args:
@@ -173,7 +242,7 @@ def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output
     Returns:
 
     """
-    counts_by_item = Counter(recs[['item']].values.flatten())
+    counts_by_item = Counter(recs[['to_id']].values.flatten())
     ordered_item_count_pairs = counts_by_item.most_common()
 
     ordered_counts = list()
@@ -191,7 +260,6 @@ def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output
     plt.clf()
 
 
-# va aggiunto algorithm name a tutti
 def catalog_coverage(score_frame: pd.DataFrame, truth_frame: pd.DataFrame):
     """
 
