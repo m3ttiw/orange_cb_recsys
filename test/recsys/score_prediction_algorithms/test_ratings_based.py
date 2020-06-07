@@ -1,3 +1,4 @@
+import lzma
 from unittest import TestCase
 from orange_cb_recsys.recsys.score_prediction_algorithms.ratings_based import CentroidVector, ClassifierRecommender
 from orange_cb_recsys.recsys.score_prediction_algorithms.similarities import CosineSimilarity
@@ -49,27 +50,23 @@ class TestCentroidVector(TestCase):
 class TestClassifierRecommender(TestCase):
     def test_predict(self):
 
-        alg = ClassifierRecommender("Plot", "1")
+        alg = ClassifierRecommender("Plot", "2")
         ratings = pd.DataFrame.from_records([
-            ("A000", "Sudden Death_tt0114576", "sdfgd", 2.0, "54654675"),
-            ("A000", "Balto_tt0112453", "sdfgd", 4.0, "54654675")],
-            columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
+            ("A000", "Sudden Death_tt0114576", 0.5, "54654675"),
+            ("A000", "Balto_tt0112453", -0.5, "54654675")],
+            columns=["from_id", "to_id", "score", "timestamp"])
 
-        path = "../../../contents/movielens_test1591028175.9454775"
         try:
-            file1 = os.path.join(path, "Sudden Death_tt0114576.bin")
-            with open(file1, "rb") as content_file:
-                item = pickle.load(content_file)
-
-            self.assertEqual(alg.predict(item, ratings=ratings, items_directory=path),
-                             "[[2. 4.]]")
-
+            path = "../../../contents/movielens_test1591453035.7551947"
+            file = os.path.join(path, "Sudden Death_tt0114576.xz")
+            with lzma.open(file, "r") as content_file:
+                pass
         except FileNotFoundError:
             path = "contents/movielens_test1591028175.9454775"
-            file = os.path.join(path, "Sudden Death_tt0114576.bin")
+            file = os.path.join(path, "Sudden Death_tt0114576.xz")
 
-            with open(file, "rb") as content_file:
-                item = pickle.load(content_file)
+        with lzma.open(file, "r") as content_file:
+            item = pickle.load(content_file)
 
-            self.assertEqual(alg.predict(item, ratings=ratings, items_directory=path),
-                             "[[2. 4.]]")
+        print(alg.predict([item], ratings=ratings, items_directory=path))
+        self.assertGreater(alg.predict([item], ratings=ratings, items_directory=path).rating[0], 0)
