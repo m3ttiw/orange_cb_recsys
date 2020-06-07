@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from sklearn.feature_extraction import DictVectorizer
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
 
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import RatingsSPA
@@ -185,25 +185,24 @@ class ClassifierRecommender(RatingsSPA):
             if item.get_content_id() in to_classify_item_dict.keys():
                 to_classify_item_dict[item.get_content_id()] = i
 
-        print(to_classify_item_dict)
         v = DictVectorizer(sparse=False)
 
-        score = list(ratings.score)
+        score = [1 if rating > 0 else 0 for rating in list(ratings.score)]
 
         X_tmp = v.fit_transform(features_bag_list)
         X = []
         for item_id in rated_item_index_list:
             X.append(X_tmp[item_id])
 
-        clf = LinearRegression()
+        clf = LogisticRegression()
         clf = clf.fit(X, score)
 
         columns = ["item_id", "rating"]
         score_frame = pd.DataFrame(columns=columns)
         new_items = [X_tmp[to_classify_item_dict[item.get_content_id()]] for item in items]
-        scores = clf.predict(new_items)
+        scores = clf.predict_proba(new_items)
 
         for score, item in zip(scores, items):
-            score_frame = pd.concat([score_frame, pd.DataFrame.from_records([(item.get_content_id(), score)], columns=columns)], ignore_index=True)
+            score_frame = pd.concat([score_frame, pd.DataFrame.from_records([(item.get_content_id(), score[1])], columns=columns)], ignore_index=True)
 
         return score_frame
