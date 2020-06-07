@@ -79,9 +79,12 @@ class ContentAnalyzer:
 
         self.__dataset_refactor()
         contents_producer.set_indexer(indexer)
+        i = 0
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
             content.serialize(output_path)
+            print(i)
+            i += 1
 
         if self.__config.get_search_index():
             indexer.stop_writing()

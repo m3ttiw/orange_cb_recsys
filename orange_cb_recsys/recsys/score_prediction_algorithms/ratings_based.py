@@ -1,9 +1,7 @@
 from typing import Dict, List
 
-
-import pickle
 from sklearn.feature_extraction import DictVectorizer
-from sklearn import tree
+from sklearn.linear_model import LinearRegression
 
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import RatingsSPA
@@ -154,7 +152,7 @@ class ClassifierRecommender(RatingsSPA):
     def __init__(self, item_field: str, field_representation: str):
         super().__init__(item_field, field_representation)
 
-    def predict(self, item_name: Content, ratings: pd.DataFrame, items_directory: str):
+    def predict(self, items: List[Content], ratings: pd.DataFrame, items_directory: str):
         """
         1) Goes into items_directory and for each item takes the values corresponding to the field_representation of
         the item_field. For example, if item_field == "Plot" and field_representation == "tf-idf", the function will
@@ -164,40 +162,48 @@ class ClassifierRecommender(RatingsSPA):
         3) Creates an object DecisionTreeClassifier, uses the method fit and predicts the class of the item
 
                 Args:
-                    item_name (Content): Item for which the similarity will be computed
+                    items (List<Content>): Items for which the similarity will be computed
                     ratings (pd.DataFrame): Ratings
                     items_directory (str): Name of the directory where the items are stored.
 
                 Returns:
                      The predicted classes, or the predict values.
                 """
-        items = [os.path.splitext(filename)[0] for filename in os.listdir(items_directory)]
 
         features_bag_list = []
         rated_item_index_list = []
-        content_id_list = []
-        item_to_classify = None
-        for item in items:
-            if item_name.get_content_id() == item:
-                item_to_classify = item_name.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value()
-            else:
-                content = load_content_instance(items_directory, item)
-                content_id = content.get_content_id()
-                content_id_list.append(content_id)
-                features_bag_list.append(content.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value())
+        to_classify_item_dict = {item.get_content_id(): None for item in items}
 
+        directory_filename_list = [os.path.splitext(filename)[0] for filename in os.listdir(items_directory) if filename != 'search_index']
+        for i, item_filename in enumerate(directory_filename_list):
+            item = load_content_instance(items_directory, item_filename)
+            features_bag_list.append(item.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value())
+
+            if ratings['to_id'].str.contains(item.get_content_id()).any():
+                rated_item_index_list.append(i)
+
+            if item.get_content_id() in to_classify_item_dict.keys():
+                to_classify_item_dict[item.get_content_id()] = i
+
+        print(to_classify_item_dict)
         v = DictVectorizer(sparse=False)
 
-        for i in range(0, len(features_bag_list)):
-            if content_id_list[i] in list(ratings.item_id):
-                rated_item_index_list.append(features_bag_list[i])
-        score = []
-        for i in range(0, ratings):
-            score.append(ratings.score)
-        X_tmp = v.fit_transform(rated_item_index_list)
-        item_dense = v.fit_transform(item_to_classify)
-        clf = tree.DecisionTreeClassifier()
-        clf = clf.fit(X_tmp, score)
-        return_value = clf.predict(item_dense)
+        score = list(ratings.score)
 
-        return str(return_value)
+        X_tmp = v.fit_transform(features_bag_list)
+        X = []
+        for item_id in rated_item_index_list:
+            X.append(X_tmp[item_id])
+
+        clf = LinearRegression()
+        clf = clf.fit(X, score)
+
+        columns = ["item_id", "rating"]
+        score_frame = pd.DataFrame(columns=columns)
+        new_items = [X_tmp[to_classify_item_dict[item.get_content_id()]] for item in items]
+        scores = clf.predict(new_items)
+
+        for score, item in zip(scores, items):
+            score_frame = pd.concat([score_frame, pd.DataFrame.from_records([(item.get_content_id(), score)], columns=columns)], ignore_index=True)
+
+        return score_frame
