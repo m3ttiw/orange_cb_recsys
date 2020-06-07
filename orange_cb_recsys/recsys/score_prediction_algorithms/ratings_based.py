@@ -60,7 +60,7 @@ class CentroidVector(RatingsSPA):
         for item in directory_item_list:
             content = load_content_instance(items_directory, item)
             content_id = content.get_content_id()
-            rating = ratings.loc[ratings['item_id'] == content_id].derived_score
+            rating = ratings.loc[ratings['to_id'] == content_id].score
             if not rating.empty and rating.item() > self.__threshold:
                 if self.get_item_field() not in content.get_field_list():
                     raise ValueError("The field name specified could not be found!")

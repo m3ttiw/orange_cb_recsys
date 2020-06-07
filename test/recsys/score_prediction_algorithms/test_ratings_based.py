@@ -20,7 +20,7 @@ class TestCentroidVector(TestCase):
             ("A000", "Dracula: Dead and Loving It_tt0112896", "sdfgd", -0.32, "54654675"),
             ("A000", "Father of the Bride Part II_tt0113041", "sdfgd", 0.1, "54654675"),
             ("A000", "Four Rooms_tt0113101", "sdfgd", -0.87, "54654675")
-        ], columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
+        ], columns=["from_id", "to_id", "original_rating", "score", "timestamp"])
 
         path = "../../../contents/movielens_test1591453035.7551947"
         items = []
