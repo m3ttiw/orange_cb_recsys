@@ -1,9 +1,7 @@
 from typing import Dict, List
 
-
-import pickle
 from sklearn.feature_extraction import DictVectorizer
-from sklearn import tree
+from sklearn.linear_model import LogisticRegression
 
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import RatingsSPA
@@ -201,4 +199,4 @@ class ClassifierRecommender(RatingsSPA):
         for score, item in zip(scores, items):
             score_frame = pd.concat([score_frame, pd.DataFrame.from_records([(item.get_content_id(), score[1])], columns=columns)], ignore_index=True)
 
-        return score_frame
+return score_frame

@@ -1,3 +1,4 @@
+import lzma
 from unittest import TestCase
 from orange_cb_recsys.recsys.score_prediction_algorithms.ratings_based import CentroidVector, ClassifierRecommender
 from orange_cb_recsys.recsys.score_prediction_algorithms.similarities import CosineSimilarity
@@ -52,11 +53,11 @@ class TestCentroidVector(TestCase):
 class TestClassifierRecommender(TestCase):
     def test_predict(self):
 
-        alg = ClassifierRecommender("Plot", "1")
+        alg = ClassifierRecommender("Plot", "2")
         ratings = pd.DataFrame.from_records([
-            ("A000", "Sudden Death_tt0114576", "sdfgd", 2.0, "54654675"),
-            ("A000", "Balto_tt0112453", "sdfgd", 4.0, "54654675")],
-            columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
+            ("A000", "Sudden Death_tt0114576", 0.5, "54654675"),
+            ("A000", "Balto_tt0112453", -0.5, "54654675")],
+            columns=["from_id", "to_id", "score", "timestamp"])
 
         path = "../../../contents/movielens_test1591453035.7551947"
         try:
