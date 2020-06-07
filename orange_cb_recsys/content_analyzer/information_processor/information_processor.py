@@ -6,6 +6,15 @@ class InformationProcessor(ABC):
     """
     Abstract class that generalize the data processing.
     """
+    def __init__(self):
+        self.__lang = "EN"
+
+    def set_lang(self, lang: str):
+        self.__lang = lang
+
+    def get_lang(self):
+        return self.__lang
+
     @abstractmethod
     def process(self, field_data):
         raise NotImplementedError

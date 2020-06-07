@@ -10,7 +10,7 @@ from orange_cb_recsys.content_analyzer.content_representation.content_field impo
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
-from orange_cb_recsys.utils.check_tokenization import check_tokenized
+from orange_cb_recsys.utils.check_tokenization import check_tokenized, check_not_tokenized
 
 
 class FieldContentProductionTechnique(ABC):
@@ -20,7 +20,22 @@ class FieldContentProductionTechnique(ABC):
     """
 
     def __init__(self):
-        pass
+        self.__lang = "EN"
+
+    def set_lang(self, lang: str):
+        self.__lang = lang
+
+    def get_lang(self):
+        return self.__lang
+
+
+class SearchIndexing(FieldContentProductionTechnique):
+    def produce_content(self, field_name: str, pipeline_id, field_data, indexer: IndexInterface):
+        field_data = check_not_tokenized(field_data)
+        indexer.new_searching_field(field_name + pipeline_id, field_data)
+
+    def __str__(self):
+        return "Indexing for search-engine recommender"
 
 
 class CollectionBasedTechnique(FieldContentProductionTechnique):
@@ -59,6 +74,14 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
 
     @abstractmethod
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names):
+        """
+        This method restructures the raw data in a way functional to the final representation.
+        This is done only for those field representations that require this phase to be done
+        Args:
+            information_source (RawInformationSource):
+            id_field_names: fields where to find data that compound content's id
+
+        """
         raise NotImplementedError
 
     @abstractmethod

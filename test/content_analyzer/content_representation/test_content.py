@@ -1,3 +1,4 @@
+import lzma
 import pickle
 from unittest import TestCase
 
@@ -18,7 +19,7 @@ class TestContent(TestCase):
         except:
             pass
 
-        with open('001.bin', 'rb') as file:
+        with lzma.open('001.xz', 'r') as file:
             self.assertEqual(content, pickle.load(file))
 
     def test_append_remove(self):

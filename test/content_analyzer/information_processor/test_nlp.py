@@ -17,6 +17,7 @@ class TestNLTK(TestCase):
     def test_process(self):
         #Test for only stop words removal
         nltka = NLTK(stopwords_removal=True, url_tagging=True)
+        nltka.set_lang("")
         self.assertEqual(nltka.process(
                 "The striped bats are hanging on their feet for the best"),
                 ["The", "striped", "bats", "hanging", "feet", "best"])

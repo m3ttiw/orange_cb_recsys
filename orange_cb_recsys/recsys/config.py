@@ -2,7 +2,6 @@ import os
 
 from orange_cb_recsys.recsys.ranking_algorithms.ranking_algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import ScorePredictionAlgorithm
-import pandas as pd
 
 from orange_cb_recsys.utils.const import home_path, DEVELOPING
 from orange_cb_recsys.utils.load_ratings import load_ratings

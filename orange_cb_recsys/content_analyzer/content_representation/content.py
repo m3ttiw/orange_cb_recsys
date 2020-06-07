@@ -1,3 +1,4 @@
+import lzma
 from typing import List, Dict
 import pickle
 import re
@@ -17,14 +18,21 @@ class Content:
                  field_dict: Dict[str, ContentField] = None):
         if field_dict is None:
             field_dict = {}       # list o dict
+        self.__index_document_id: int = None
         self.__content_id: str = content_id
         self.__field_dict: Dict[str, ContentField] = field_dict
+
+    def set_index_document_id(self, index_document_id: int):
+        self.__index_document_id = index_document_id
 
     def get_field_list(self):
         return self.__field_dict
 
     def get_field(self, field_name: str):
         return self.__field_dict[field_name]
+
+    def get_index_document_id(self):
+        return self.__index_document_id
 
     def append(self, field_name: str, field: ContentField):
         self.__field_dict[field_name] = field
@@ -42,9 +50,9 @@ class Content:
         """
         Serialize a content instance
         """
-        file_name = re.sub(r'[^\w\s]','', self.__content_id)
-        with open(output_directory + '/' + file_name + '.bin', 'wb') as file:
-            pickle.dump(self, file)
+        file_name = re.sub(r'[^\w\s]', '', self.__content_id)
+        with lzma.open(output_directory + '/' + file_name + '.xz', 'wb') as f:
+            pickle.dump(self, f)
 
     def __str__(self):
         content_string = "Content:" + self.__content_id

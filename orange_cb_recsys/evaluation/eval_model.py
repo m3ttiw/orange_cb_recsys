@@ -95,7 +95,7 @@ class EvalModel:
                 user_ratings = self.__config.get_rating_frame()[
                     self.__config.get_rating_frame()['user_id'].str.match(user_id)]
 
-                fit_result = recsys.fit(user_id)
+                fit_result = recsys.fit_specific_items(user_id)
                 fit_result_with_user = pd.DataFrame(columns=columns)
 
                 for i, row in fit_result.iterrows():
