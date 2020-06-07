@@ -13,6 +13,8 @@ import os
 import pandas as pd
 import numpy as np
 
+from orange_cb_recsys.utils.load_content import load_content_instance
+
 
 class CentroidVector(RatingsSPA):
     """
@@ -50,25 +52,23 @@ class CentroidVector(RatingsSPA):
             the embedding arrays corresponding to the requested field
 
         """
-        os.chdir(items_directory)
+        directory_item_list = [os.path.splitext(filename)[0] for filename in os.listdir(items_directory) if filename != 'search_index']
         arrays: dict = {}
-        for file in os.listdir():
-            with open(file, "rb") as content_file:
-                content: Content = pickle.load(content_file)
-                content_id = content.get_content_id()
-                if content_id in rated_items:
-                    if self.get_item_field() not in content.get_field_list():
-                        raise ValueError("The field name specified could not be found!")
+        for item in directory_item_list:
+            content = load_content_instance(items_directory, item)
+            content_id = content.get_content_id()
+            if content_id in rated_items:
+                if self.get_item_field() not in content.get_field_list():
+                    raise ValueError("The field name specified could not be found!")
+                else:
+                    representation = content.get_field(self.get_item_field()).get_representation(self.get_field_representation())
+                    if representation is None:
+                        raise ValueError("The given representation id wasn't found for the specified field")
+                    elif len(representation.get_value().shape) != 1:
+                        raise ValueError("The specified representation is not a document embedding, so the centroid"
+                                         " can not be calculated")
                     else:
-                        representation = content.get_field(self.get_item_field()).get_representation(self.get_field_representation())
-                        if representation is None:
-                            raise ValueError("The given representation id wasn't found for the specified field")
-                        elif len(representation.get_value().shape) != 1:
-                            raise ValueError("The specified representation is not a document embedding, so the centroid"
-                                             " can not be calculated")
-                        else:
-                            arrays[content_id] = representation.get_value()
-            content_file.close()
+                        arrays[content_id] = representation.get_value()
         return arrays
 
     @staticmethod
@@ -91,8 +91,8 @@ class CentroidVector(RatingsSPA):
             matrix.append(rating * arrays[item_id])
         else:
             for i in range(len(ratings) - 1):
-                item_id = ratings.iloc[i].item_id
-                rating = ratings.iloc[i].derived_score
+                item_id = ratings.iloc[i].to_id
+                rating = ratings.iloc[i].score
                 matrix.append(rating * arrays[item_id])
         return np.array(matrix)
 
@@ -126,19 +126,19 @@ class CentroidVector(RatingsSPA):
              similarities between the items and the centroid
         """
         try:
-            arrays = self.__get_arrays(items_directory, list(ratings.item_id))
+            arrays = self.__get_arrays(items_directory, list(ratings.to_id))
             matrix = self.__build_matrix(ratings, arrays)
             centroid = self.__centroid(matrix)
         except ValueError as v:
             print(str(v))
 
-        scores = {}
+        columns = ["item_id", "rating"]
+        scores = pd.DataFrame(columns=columns)
         for item in items:
             item_id = item.get_content_id()
             item_field_representation = item.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value()
             similarity = self.__similarity.perform(centroid, item_field_representation)
-            score = similarity * 2 - 1
-            scores[item_id] = score
+            scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)], ignore_index=True)
 
         return scores
 
@@ -170,31 +170,29 @@ class ClassifierRecommender(RatingsSPA):
                 Returns:
                      The predicted classes, or the predict values.
                 """
-        items = [filename for filename in os.listdir(items_directory)]
+        items = [os.path.splitext(filename)[0] for filename in os.listdir(items_directory)]
 
         features_bag_list = []
         rated_item_index_list = []
         content_id_list = []
+        item_to_classify = None
         for item in items:
-            item_filename = items_directory + '/' + item
-            if item_name.get_content_id()+".bin" == item:
-                with open(item_filename, "rb") as content_file:
-                    content = pickle.load(content_file)
-                    item_to_classify = content.get_field("Plot").get_representation("1").get_value()
-            with open(item_filename, "rb") as content_file:
-                content = pickle.load(content_file)
+            if item_name.get_content_id() == item:
+                item_to_classify = item_name.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value()
+            else:
+                content = load_content_instance(items_directory, item)
                 content_id = content.get_content_id()
                 content_id_list.append(content_id)
-                features_bag_list.append(content.get_field("Plot").get_representation("1").get_value())
-        features_bag_list.append(content.get_field("Plot").get_representation("1").get_value())
+                features_bag_list.append(content.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value())
+
         v = DictVectorizer(sparse=False)
 
-        for i in range(0, len(features_bag_list)-1):
-            if content_id_list[i] in ratings.item_id[0]:
+        for i in range(0, len(features_bag_list)):
+            if content_id_list[i] in list(ratings.item_id):
                 rated_item_index_list.append(features_bag_list[i])
         score = []
-        for i in range(0, len(ratings)-1):
-            score.append(ratings.derived_score)
+        for i in range(0, ratings):
+            score.append(ratings.score)
         X_tmp = v.fit_transform(rated_item_index_list)
         item_dense = v.fit_transform(item_to_classify)
         clf = tree.DecisionTreeClassifier()
