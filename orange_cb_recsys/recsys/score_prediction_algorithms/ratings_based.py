@@ -138,7 +138,8 @@ class CentroidVector(RatingsSPA):
             item_id = item.get_content_id()
             item_field_representation = item.get_field(self.get_item_field()).get_representation(self.get_field_representation()).get_value()
             similarity = self.__similarity.perform(centroid, item_field_representation)
-            scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)], ignore_index=True)
+            score = similarity * 2 - 1
+            scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, score)], columns=columns)], ignore_index=True)
 
         return scores
 
