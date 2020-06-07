@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from orange_cb_recsys.evaluation.delta_gap import *
 from orange_cb_recsys.evaluation.utils import *
+import matplotlib.pyplot as plt
 
 
 # fairness_metrics_results = pd.DataFrame(columns=["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
@@ -73,10 +74,14 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
 
 
 def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_frame: pd.DataFrame,
-                                      most_popular_items: pd.Series, pop_ratio_by_users: pd.DataFrame) -> pd.DataFrame:
+                                      most_popular_items: pd.Series, pop_ratio_by_users: pd.DataFrame,
+                                      algorithm_name: str, out_dir: str, store_frame: bool = False) -> pd.DataFrame:
     """
 
     Args:
+        store_frame:
+        out_dir:
+        algorithm_name:
         user_groups:
         truth_frame:
         most_popular_items:
@@ -93,26 +98,100 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
         score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name],
                                                        'profile_pop_ratio': [profile_pop_ratios],
                                                        'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
+    if store_frame:
+        pass
+
     # plot
+
     return score_frame
 
 
-def perform_pop_recs_correlation():
-    # plot
-    pass
+def perform_pop_recs_correlation(recs: pd.DataFrame, algorithm_name: str, ratings: pd.DataFrame,
+                                 plot_file_name: str = None):
+    """
+
+    Args:
+        recs:
+        algorithm_name:
+        ratings:
+        plot_file_name:
+
+    Returns:
+
+    """
+    def build_plot(popularities, recommendations, algorithm_name, plot_file_name):
+        """ """
+        plt.scatter(popularities, recommendations, marker='o', s=20, c='orange', edgecolors='black', linewidths=0.05)
+        plt.title('{}'.format(algorithm_name))
+        plt.xlabel('Popularity')
+        plt.ylabel('Recommendation frequency')
+        plt.savefig('results/plots/pop-recs/{}.svg'.format(plot_file_name))
+        plt.clf()
+
+    ####################### Calculating popularity by item ########################
+    items = ratings[['item']].values.flatten()
+    pop_by_items = Counter(items)
+
+    #################### Calculating num of recommendations by item ###############
+    pop_by_items = pop_by_items.most_common()
+    recs_by_item = Counter(recs[['item']].values.flatten())
+    popularities = list()
+    recommendations = list()
+    popularities_no_zeros = list()
+    recommendations_no_zeros = list()
+
+    at_least_one_zero = False
+    for item, pop in pop_by_items:
+        num_of_recs = recs_by_item[item]
+
+        popularities.append(pop)
+        recommendations.append(num_of_recs)
+
+        if num_of_recs != 0:
+            popularities_no_zeros.append(pop)
+            recommendations_no_zeros.append(num_of_recs)
+        else:
+            at_least_one_zero = True
+
+    build_plot(popularities, recommendations,
+               algorithm_name, plot_file_name)
+
+    if at_least_one_zero:
+        build_plot(popularities_no_zeros, recommendations_no_zeros,
+                   algorithm_name, plot_file_name + '-no-zeros')
 
 
-def perform_recs_long_tail_distr(recs: pd.DataFrame):
+def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output_dir: str ,plot_file_name: str = None):
+    """
+
+    Args:
+        recs:
+        algorithm_name:
+        output_dir:
+        plot_file_name:
+
+    Returns:
+
+    """
     counts_by_item = Counter(recs[['item']].values.flatten())
     ordered_item_count_pairs = counts_by_item.most_common()
 
     ordered_counts = list()
     for item_count_pair in ordered_item_count_pairs:
         ordered_counts.append(item_count_pair[1])
-    # plot
+
+    if plot_file_name is None:
+        plot_file_name = algorithm_name
+
+    plt.plot(ordered_counts)
+    plt.title('{}'.format(algorithm_name))
+    plt.ylabel('Num of recommendations')
+    plt.xlabel('Recommended items')
+    plt.savefig('{}/recs-long-tail-distr/{}.svg'.format(output_dir, plot_file_name))
+    plt.clf()
 
 
-# va aggiunto aglorithm name a tutti
+# va aggiunto algorithm name a tutti
 def catalog_coverage(score_frame: pd.DataFrame, truth_frame: pd.DataFrame):
     """
 

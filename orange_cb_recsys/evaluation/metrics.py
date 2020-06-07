@@ -6,6 +6,7 @@ import os
 from orange_cb_recsys.evaluation.ranking_metrics import *
 from orange_cb_recsys.evaluation.prediction_metrics import *
 from orange_cb_recsys.evaluation.fairness_metrics import *
+from orange_cb_recsys.utils.const import *
 
 
 def perform_ranking_metrics(predictions: pd.DataFrame,
@@ -52,22 +53,14 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
-def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, file_output_directory: str = None,
-                             algorithm_name: str = None) -> (pd.DataFrame, pd.DataFrame):
-    if file_output_directory is None:
-        file_output_directory = 'datasets/evaluation'
-    path = "{}/{}/{}_{}".format(os.getcwd(), file_output_directory, algorithm_name, str(int(time.time())))
-    try:
-        os.mkdir(path)
-    except OSError:
-        path = "../../{}/{}_{}".format(file_output_directory, algorithm_name, str(int(time.time())))
-        try:
-            with open(path):
-                pass
-
-        except FileNotFoundError:
-            path = "{}/{}_{}".format(file_output_directory, algorithm_name, str(int(time.time())))
-    print("working in dir: {}".format(path))
+def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
+                             file_output_directory: str = '/datasets/evaluation/',
+                             algorithm_name: str = None) -> (pd.DataFrame, pd.DataFrame, float):
+    if DEVELOPING:
+        output_path = file_output_directory
+    else:
+        output_path = os.path.join(home_path, file_output_directory)
+    print("working in dir: {}".format(output_path))
 
     pop_items = popular_items(score_frame=score_frame)
     pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, pop_items=pop_items)
@@ -79,15 +72,16 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     profile_vs_recs_pop_ratio = perform_pop_ratio_profile_vs_recs(user_groups=user_groups, truth_frame=truth_frame,
                                                                   most_popular_items=pop_items,
                                                                   pop_ratio_by_users=pop_ratio_user)
+    perform_recs_long_tail_distr(recs=score_frame, algorithm_name=algorithm_name, output_dir=output_path)
 
-    #results_by_user = pd.merge(df_gini, on='from_id')
+    # results_by_user = pd.merge(df_gini, other_frame, on='from_id')
     results_by_user = df_gini
     results_by_user_group = pd.merge(delta_gap_score, profile_vs_recs_pop_ratio, on='user_group')
 
     print(results_by_user)
     print(results_by_user_group)
-    catalog_coverage(score_frame=score_frame, truth_frame=truth_frame)
-    return results_by_user, results_by_user_group
+    cat_cov = catalog_coverage(score_frame=score_frame, truth_frame=truth_frame)
+    return results_by_user, results_by_user_group, cat_cov
 
 
 def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict[str, object]:
