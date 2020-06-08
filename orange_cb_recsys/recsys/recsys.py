@@ -9,6 +9,10 @@ from orange_cb_recsys.utils.load_content import load_content_instance, get_unrat
 
 
 class RecSys:
+    """
+    Class that represent a recommender system, to isntatiate
+    this class a config object must be provided
+    """
     def __init__(self, config: RecSysConfig):
         self.__config: RecSysConfig = config
 
@@ -24,6 +28,21 @@ class RecSys:
         return item_to_predict_list
 
     def fit_predict(self, user_id: str, item_to_predict_id_list: List[str] = None):
+        """
+        Computes the predicted rating for specified user and items,
+        should be used when a score prediction algorithm (instead of a ranking algorithm)
+        was chosen in the config
+
+        Args
+            user_id: user for which calculate the predictions
+            item_to_predict_id_list: item for which the prediction will be computed,
+                if None all unrated items will be used
+        Returns:
+            (DataFrame): result frame whose columns are: to_id, rating
+
+        Raises:
+             ValueError: if the algorithm is a ranking algorithm
+        """
         if isinstance(self.__config.get_algorithm(), RankingAlgorithm):
             raise ValueError("You can't use ranking algorithms for predict score of specific items")
 
@@ -41,6 +60,21 @@ class RecSys:
         return score_frame
 
     def fit_ranking(self, user_id: str, recs_number: int):
+        """
+        Computes the predicted rating for specified user and items,
+        should be used when a score prediction algorithm (instead of a ranking algorithm)
+        was chosen in the config
+
+        Args
+            user_id: user for which calculate the predictions
+            recs_number: how many items should the returned ranking contain,
+            the ranking length can be lower
+        Returns:
+            (DataFrame): result frame whose columns are: to_id, rating
+
+        Raises:
+             ValueError: if the algorithm is a score prediction algorithm
+        """
         if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
             raise ValueError("You can't use rating prediction algorithms for this method")
 
@@ -54,6 +88,18 @@ class RecSys:
         return score_frame
 
     def fit_eval(self, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
+        """
+        Computes predicted ratings, or ranking (according to algorithm chosed in the config)
+        user ratings will be used as train set to fit the algorithm.
+        If the algorithm is score_prediction the rating for the item in the test set will
+        be predicted, else a ranking with recs_number = len(test_set) will be computed
+
+        Args
+            user_ratings: train set
+            test_set:
+        Returns:
+            (DataFrame): result frame whose columns are: to_id, rating
+        """
         score_frame = None
         if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
             # get test set items

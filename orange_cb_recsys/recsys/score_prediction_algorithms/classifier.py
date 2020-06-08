@@ -26,10 +26,12 @@ class ClassifierRecommender(ScorePredictionAlgorithm):
         """
         1) Goes into items_directory and for each item takes the values corresponding to the field_representation of
         the item_field. For example, if item_field == "Plot" and field_representation == "tf-idf", the function will
-        take the "tf-idf" representation of each  "Plot" field for every item;
-        2) Takes a list of ratings that are in the dataframe (rated_item_index_list) and does a trasformation on that
-        list with the dictvectorizer;
-        3) Creates an object DecisionTreeClassifier, uses the method fit and predicts the class of the item
+        take the "tf-idf" representation of each  "Plot" field for every item, the tf-idf representation will
+        be parsed to dense arrays;
+        2) Takes a list of ratings that are in the dataframe (rated_item_index_list) and retrieves the corresponding
+        dense vectors, items with rating greater (lower) than treshold
+        will be used as positive(negative) examples;
+        3) Creates an object Classifier, uses the method fit and predicts the class of the item
 
                 Args:
                     items (List<Content>): Items for which the similarity will be computed

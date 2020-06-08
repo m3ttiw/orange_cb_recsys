@@ -63,5 +63,5 @@ class EmbeddingLearner(ABC):
     def save(self):
         embeddings_path = './'
         if not DEVELOPING:
-            embeddings_path = home_path
+            embeddings_path = os.path.join(home_path, 'embeddings')
         self.__model.save(embeddings_path + str(time.time()) + ".model")

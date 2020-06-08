@@ -60,12 +60,10 @@ class Content:
             pickle.dump(self, f)
 
     def __str__(self):
-        content_string = "Content:" + self.__content_id
-        field_string = ""
-        for field in self.__field_dict.values():
-            field_string += str(field) + "\n"
+        content_string = "Content: %s" % self.__content_id
+        field_string = '\n'.join(str(field) for field in self.__field_dict.values())
 
-        return content_string + '\n\n' + field_string + "##############################"
+        return "%s \n\n %s ##############################" % (content_string, field_string)
 
     def get_content_id(self):
         return self.__content_id
