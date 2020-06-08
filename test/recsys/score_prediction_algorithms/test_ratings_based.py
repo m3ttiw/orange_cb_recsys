@@ -50,8 +50,6 @@ class TestCentroidVector(TestCase):
                                            columns=columns)
         self.assertTrue(alg.predict(items, ratings, path).equals(scores))
 
-
-
 class TestClassifierRecommender(TestCase):
     def test_predict(self):
 
