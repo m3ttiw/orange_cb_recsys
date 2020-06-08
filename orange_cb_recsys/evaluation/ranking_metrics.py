@@ -116,18 +116,6 @@ def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
     return mrr / len(truth_labels)
 
 
-"""
-def perform_spearman(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
-    D = []
-    N = len(prediction_labels) if len(prediction_labels) < len(truth_labels) else len(truth_labels)
-    for index_t, value_t in truth_labels.iteritems():
-        for index_p, value_p in prediction_labels.iteritems():
-            if value_t == value_p:
-                D.append(int(index_t) - int(index_p))
-    return 1 - (6 * sum([x ** 2 for x in D])) / (N * ((N ** 2) - 1))
-"""
-
-
 def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, method='pearson') -> float:
     """
     Compute the correlation between the two ranks of labels
@@ -149,3 +137,6 @@ def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, m
                 p_series = p_series.append(pd.Series(int(p_index)))
 
     return t_series.corr(other=p_series, method=method)
+
+
+
