@@ -84,6 +84,8 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
                                                                   pop_ratio_by_users=pop_ratio_user,
                                                                   algorithm_name=algorithm_name,
                                                                   out_dir=file_output_directory)
+    perform_pop_recs_correlation(truth_frame=truth_frame, score_frame=score_frame, algorithm_name=algorithm_name,
+                                 out_dir=output_path)
     perform_recs_long_tail_distr(truth_frame=score_frame, algorithm_name=algorithm_name, out_dir=output_path)
     # results_by_user = pd.merge(df_gini, other_frame, on='from_id')
     results_by_user = df_gini

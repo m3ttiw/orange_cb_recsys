@@ -26,8 +26,7 @@ def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
         """Calculate the Gini coefficient of a numpy array."""
 
         array = array.flatten()  # all values are treated equally, arrays must be 1d
-        if np.amin(array) < 0:
-            array += 1
+        array += 1  # values shift, can't be negative
         array += 0.0000001  # values cannot be 0
         array = np.sort(array)  # values must be sorted
         index = np.arange(1, array.shape[0] + 1)  # index per array element
@@ -200,23 +199,22 @@ def perform_pop_recs_correlation(truth_frame: pd.DataFrame, score_frame: pd.Data
         plt.title('{}'.format(algorithm_name_))
         plt.xlabel('Popularity')
         plt.ylabel('Recommendation frequency')
-        plt.savefig('{}/pop-recs/{}.svg'.format(out_dir_, algorithm_name_))
         try:
-            plt.savefig('{}/pop-recs/{}.svg'.format(out_dir_, algorithm_name_))
+            plt.savefig('{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name_))
         except FileNotFoundError:
             try:
-                plt.savefig('../../{}/pop-recs/{}.svg'.format(out_dir_, algorithm_name_))
+                plt.savefig('../../{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name_))
             except FileNotFoundError:
-                plt.savefig('{}/pop-recs/{}.svg'.format(str(Path.home()), algorithm_name_))
+                plt.savefig('{}/pop-recs_{}.svg'.format(str(Path.home()), algorithm_name_))
         plt.clf()
 
     # Calculating popularity by item
-    items = truth_frame[['item']].values.flatten()
+    items = truth_frame[['to_id']].values.flatten()
     pop_by_items = Counter(items)
 
     # Calculating num of recommendations by item
     pop_by_items = pop_by_items.most_common()
-    recs_by_item = Counter(score_frame[['item']].values.flatten())
+    recs_by_item = Counter(score_frame[['to_id']].values.flatten())
     popularities = list()
     recommendations = list()
     popularities_no_zeros = list()
