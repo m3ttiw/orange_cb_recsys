@@ -7,6 +7,19 @@ import pandas as pd
 
 def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
                     algorithm_name: str, out_dir: str = None, num_of_recs: int = 10) -> float:
+    """
+    Calculates the novelty score
+
+    Args:
+        score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
+        truth_frame (pd.DataFrame): the real rank each row contains index(the rank position), label, value
+        algorithm_name (str): name of the algorithm that run these metrics
+        out_dir (str): output directory for saving the results
+        num_of_recs (int): avg number of recommendation per user
+
+    Returns:
+        novelty score (float)
+    """
     total_ratings = len(truth_frame.index)
     ratings_by_item = Counter(truth_frame[['to_id']].values.flatten())
     users = set(score_frame[['from_id']].values.flatten())

@@ -55,15 +55,16 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
                              algorithm_name: str, file_output_directory: str = '/datasets/evaluation'
                              ) -> (pd.DataFrame, pd.DataFrame, float):
     """
+    Perform all 'fairness' metrics
 
     Args:
-        score_frame:
-        truth_frame:
-        algorithm_name:
-        file_output_directory:
+        score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
+        truth_frame (pd.DataFrame): the real rank each row contains index(the rank position), label, value
+        algorithm_name (str): name of the algorithm that run these metrics
+        file_output_directory (str): output directory for saving the results
 
     Returns:
-
+        Tuple(pd.DataFrame, pd.DataFrame, float): results_by_user, results_by_user_groups, catalogue_coverage
     """
     if DEVELOPING:
         output_path = file_output_directory
@@ -72,7 +73,7 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     print("working in dir: {}".format(output_path))
 
     pop_items = popular_items(score_frame=score_frame)
-    pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, pop_items=pop_items)
+    pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, most_pop_items=pop_items)
 
     user_groups = split_user_in_groups(score_frame=score_frame, groups={'niche': 0.2, 'diverse': 0.6,
                                                                         'bb_focused': 0.2}, pop_items=pop_items)
@@ -83,7 +84,7 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
                                                                   pop_ratio_by_users=pop_ratio_user,
                                                                   algorithm_name=algorithm_name,
                                                                   out_dir=file_output_directory)
-    perform_recs_long_tail_distr(recs=score_frame, algorithm_name=algorithm_name, output_dir=output_path)
+    perform_recs_long_tail_distr(truth_frame=score_frame, algorithm_name=algorithm_name, out_dir=output_path)
     # results_by_user = pd.merge(df_gini, other_frame, on='from_id')
     results_by_user = df_gini
     results_by_user_group = pd.merge(delta_gap_score, profile_vs_recs_pop_ratio, on='user_group')

@@ -14,6 +14,7 @@ from pathlib import Path
 def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
     """
     Calculate Gini index score for each user in the DataFrame
+
     Args:
         score_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating')
 
@@ -48,9 +49,10 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
                       users_groups: Dict[str, Set[str]]) -> pd.DataFrame:
     """
     Compute the Delta - GAP (Group Average Popularity) metric
+
     Args:
-        truth_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating') of user profiles
-        score_frame (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating') recommended
+        truth_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') of user profiles
+        score_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') recommended
         users_groups (Dict[str, Set[str]]): each key contains the name of the group and each value the set of 'from_id'
     Returns:
         results (pd.DataFrame): each row contains ('from_id', 'delta-gap')
@@ -74,41 +76,31 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
 
 
 def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_frame: pd.DataFrame,
-                                      most_popular_items: pd.Series, pop_ratio_by_users: pd.DataFrame,
-                                      algorithm_name: str, out_dir: str, store_frame: bool = False,
-                                      plot_file_name: str = None) -> pd.DataFrame:
+                                      most_popular_items: Set[str], pop_ratio_by_users: pd.DataFrame,
+                                      algorithm_name: str, out_dir: str, store_frame: bool = False) -> pd.DataFrame:
     """
+    Perform the comparison between the profile popularity and recommendation popularity and build a boxplot
 
     Args:
-        plot_file_name:
-        store_frame:
-        out_dir:
-        algorithm_name:
-        user_groups:
-        truth_frame:
-        most_popular_items:
-        pop_ratio_by_users:
+        user_groups (Dict[str, Set[str]]): group_name, set of label of 'from_id'
+        truth_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') of user profiles
+        most_popular_items (Set[str]): contains the most popular label of 'to_id'
+        pop_ratio_by_users (pd.DataFrame): popularity ratio for each 'from_id'
+        algorithm_name (str): name of the algorithm that perform the metric (for plot)
+        out_dir (str): directory for saving the plot
+        store_frame (bool): store data in the same directory of the boxplot
 
     Returns:
-
+        score_frame (pd.DataFrame): contains 'user_group', 'profile_pop_ratio', 'recs_pop_ratio'
     """
-
-    def set_box_color(bp, color):
-        plt.setp(bp['boxes'], color=color)
-        plt.setp(bp['whiskers'], color=color)
-        plt.setp(bp['caps'], color=color)
-        plt.setp(bp['medians'], color=color)
-
-    if plot_file_name is None:
-        plot_file_name = algorithm_name
 
     truth_frame = truth_frame[['from_id', 'to_id']]
     score_frame = pd.DataFrame(columns=['user_group', 'profile_pop_ratio', 'recs_pop_ratio'])
     profile_data = []
     recs_data = []
     for group_name in user_groups:
-        profile_pop_ratios = get_profile_pop_ratios(user_groups[group_name], pop_ratio_by_users)
-        recs_pop_ratios = get_recs_pop_ratios(user_groups[group_name], truth_frame, most_popular_items)
+        profile_pop_ratios = get_profile_avg_pop_ratio(user_groups[group_name], pop_ratio_by_users)
+        recs_pop_ratios = get_recs_avg_pop_ratio(user_groups[group_name], truth_frame, most_popular_items)
         score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name],
                                                        'profile_pop_ratio': [profile_pop_ratios],
                                                        'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
@@ -116,7 +108,13 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
         recs_data.append(recs_pop_ratios)
 
     if store_frame:
-        score_frame.to_csv('{}/pop_ratio_profile_vs_recs.csv'.format(out_dir))
+        try:
+            score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(out_dir, algorithm_name))
+        except FileNotFoundError:
+            try:
+                score_frame.to_csv('../../{}/pop_ratio_profile_vs_recs_{}.csv'.format(out_dir, algorithm_name))
+            except FileNotFoundError:
+                score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(str(Path.home()), algorithm_name))
 
     data_to_plot = [profile_data, recs_data]
     # Create a figure instance
@@ -171,47 +169,54 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
     plt.show()
     #plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
     try:
-        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
     except FileNotFoundError:
         try:
-            plt.savefig('../../{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+            plt.savefig('../../{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
         except FileNotFoundError:
-            plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()), plot_file_name))
+            plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(str(Path.home()), algorithm_name))
     plt.clf()
 
     return score_frame
 
 
-def perform_pop_recs_correlation(recs: pd.DataFrame, ratings: pd.DataFrame, algorithm_name: str, out_dir: str,
-                                 plot_file_name: str = None):
+def perform_pop_recs_correlation(truth_frame: pd.DataFrame, score_frame: pd.DataFrame, algorithm_name: str,
+                                 out_dir: str):
     """
+    Calculates the correlation between the two frames
 
     Args:
-        out_dir:
-        recs:
-        algorithm_name:
-        ratings:
-        plot_file_name:
+        truth_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') of user profiles
+        score_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') recommended
+        algorithm_name (str): name of the algorithm that perform the metric (for plot)
+        out_dir (str): directory for saving the plot
 
     Returns:
 
     """
-    def build_plot(popularities_, recommendations_, algorithm_name_, plot_file_name_, out_dir_):
-        """ """
+    def build_plot(popularities_, recommendations_, algorithm_name_, out_dir_):
+        """ build and save the plot"""
         plt.scatter(popularities_, recommendations_, marker='o', s=20, c='orange', edgecolors='black', linewidths=0.05)
         plt.title('{}'.format(algorithm_name_))
         plt.xlabel('Popularity')
         plt.ylabel('Recommendation frequency')
-        plt.savefig('{}/pop-recs/{}.svg'.format(out_dir_, plot_file_name_))
+        plt.savefig('{}/pop-recs/{}.svg'.format(out_dir_, algorithm_name_))
+        try:
+            plt.savefig('{}/pop-recs/{}.svg'.format(out_dir_, algorithm_name_))
+        except FileNotFoundError:
+            try:
+                plt.savefig('../../{}/pop-recs/{}.svg'.format(out_dir_, algorithm_name_))
+            except FileNotFoundError:
+                plt.savefig('{}/pop-recs/{}.svg'.format(str(Path.home()), algorithm_name_))
         plt.clf()
 
     # Calculating popularity by item
-    items = ratings[['item']].values.flatten()
+    items = truth_frame[['item']].values.flatten()
     pop_by_items = Counter(items)
 
     # Calculating num of recommendations by item
     pop_by_items = pop_by_items.most_common()
-    recs_by_item = Counter(recs[['item']].values.flatten())
+    recs_by_item = Counter(score_frame[['item']].values.flatten())
     popularities = list()
     recommendations = list()
     popularities_no_zeros = list()
@@ -231,34 +236,31 @@ def perform_pop_recs_correlation(recs: pd.DataFrame, ratings: pd.DataFrame, algo
             at_least_one_zero = True
 
     build_plot(popularities, recommendations,
-               algorithm_name, plot_file_name, out_dir)
+               algorithm_name, out_dir)
 
     if at_least_one_zero:
         build_plot(popularities_no_zeros, recommendations_no_zeros,
-                   algorithm_name, plot_file_name + '-no-zeros', out_dir)
+                   algorithm_name + '-no-zeros', out_dir)
 
 
-def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output_dir: str, plot_file_name: str = None):
+def perform_recs_long_tail_distr(truth_frame: pd.DataFrame, algorithm_name: str, out_dir: str):
     """
+    Plot the long tail distribution for the truth frame
 
     Args:
-        recs:
-        algorithm_name:
-        output_dir:
-        plot_file_name:
+        truth_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') of user profiles
+        algorithm_name (str): name of the algorithm that perform the metric (for plot)
+        out_dir (str): directory for saving the plot
 
     Returns:
 
     """
-    counts_by_item = Counter(recs[['to_id']].values.flatten())
+    counts_by_item = Counter(truth_frame[['to_id']].values.flatten())
     ordered_item_count_pairs = counts_by_item.most_common()
 
     ordered_counts = list()
     for item_count_pair in ordered_item_count_pairs:
         ordered_counts.append(item_count_pair[1])
-
-    if plot_file_name is None:
-        plot_file_name = algorithm_name
 
     plt.plot(ordered_counts)
     plt.title('{}'.format(algorithm_name))
@@ -266,24 +268,25 @@ def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output
     plt.xlabel('Recommended items')
     plt.show()
     try:
-        plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(output_dir, plot_file_name))
+        plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(out_dir, algorithm_name))
     except FileNotFoundError:
         try:
-            plt.savefig('../../{}/recs-long-tail-distr_{}.svg'.format(output_dir, plot_file_name))
+            plt.savefig('../../{}/recs-long-tail-distr_{}.svg'.format(out_dir, algorithm_name))
         except FileNotFoundError:
-            plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()), plot_file_name))
+            plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()), algorithm_name))
     plt.clf()
 
 
-def catalog_coverage(score_frame: pd.DataFrame, truth_frame: pd.DataFrame):
+def catalog_coverage(score_frame: pd.DataFrame, truth_frame: pd.DataFrame) -> float:
     """
+    Calculates the catalog coverage
 
     Args:
-        score_frame:
-        truth_frame:
+        truth_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') of user profiles
+        score_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') recommended
 
     Returns:
-
+        score (float): coverage percentage
     """
     items = set(truth_frame[['to_id']].values.flatten())
     covered_items = set(score_frame[['to_id']].values.flatten())

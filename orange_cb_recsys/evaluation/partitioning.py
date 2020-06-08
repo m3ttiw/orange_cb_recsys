@@ -4,6 +4,12 @@ import pandas as pd
 
 
 class Partitioning(ABC):
+    """
+    Abstract Class for partitioning technique
+
+    Args:
+        dataframe (pd.DataFrame): the dataframe to split
+    """
     def __init__(self):
         self.__dataframe: pd.DataFrame = None
 
@@ -18,7 +24,15 @@ class Partitioning(ABC):
 
 
 class KFoldPartioning(Partitioning):
-    def __init__(self, n_splits: int = 2, random_state=2):
+    """
+    Class that perform K-Fold partitioning
+
+    Args:
+        n_splits (int): number of splits
+        random_state (int): random state
+        dataframe (pd.DataFrame): the dataframe to split
+    """
+    def __init__(self, n_splits: int = 2, random_state: int = 2):
         super().__init__()
         self.__n_splits = n_splits
         self.__random_state = random_state
