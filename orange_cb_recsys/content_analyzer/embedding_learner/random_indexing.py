@@ -1,5 +1,4 @@
 from typing import List
-import time
 
 from gensim.models import RpModel
 from gensim.corpora import Dictionary

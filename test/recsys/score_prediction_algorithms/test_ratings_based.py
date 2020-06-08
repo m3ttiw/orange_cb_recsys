@@ -1,11 +1,13 @@
 from unittest import TestCase
-from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector, ClassifierRecommender
+from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector
 from orange_cb_recsys.recsys.ranking_algorithms.similarities import CosineSimilarity
 
 import lzma
 import pandas as pd
 import os
 import pickle
+
+from orange_cb_recsys.recsys.score_prediction_algorithms.classifier import ClassifierRecommender
 
 
 class TestCentroidVector(TestCase):
@@ -42,11 +44,7 @@ class TestCentroidVector(TestCase):
             with lzma.open(file2, "rb") as content_file:
                 items.append(pickle.load(content_file))
 
-        columns = ["item_id", "rating"]
-        scores = pd.DataFrame.from_records([("Sudden Death_tt0114576", 0.922455443090693),
-                                            ("Toy Story_tt0114709", 0.9319401691396478)],
-                                           columns=columns)
-        self.assertGreater(alg.predict(items, ratings=ratings, items_directory=path).rating[0], 0)
+        self.assertGreater(alg.predict(ratings=ratings, recs_number=2, items_directory=path).rating[0], 0.9)
 
 
 class TestClassifierRecommender(TestCase):
