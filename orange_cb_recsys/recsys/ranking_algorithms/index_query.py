@@ -1,6 +1,6 @@
 import os
 
-from orange_cb_recsys.recsys.score_prediction_algorithms.score_prediction_algorithm import ScorePredictionAlgorithm
+from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 
 import pandas as pd
 
@@ -12,12 +12,12 @@ from java.nio.file import Paths
 from org.apache.lucene.queryparser.classic import QueryParser
 from org.apache.lucene.search import IndexSearcher, BooleanQuery, BooleanClause, BoostQuery
 from org.apache.lucene.store import SimpleFSDirectory
-from org.apache.lucene.index import DirectoryReader, Term
+from org.apache.lucene.index import DirectoryReader
 from org.apache.lucene.search.similarities import ClassicSimilarity
 from org.apache.lucene.analysis.core import SimpleAnalyzer
 
 
-class IndexQuery(ScorePredictionAlgorithm):
+class IndexQuery(RankingAlgorithm):
     def __init__(self, classic_similarity: bool = True, positive_treshold: float = 0):
         super().__init__()
         self.__classic_similarity: bool = classic_similarity

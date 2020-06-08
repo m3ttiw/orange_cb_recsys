@@ -23,6 +23,22 @@ class RawInformationSource(ABC):
         raise NotImplementedError
 
 
+class DATFile(RawInformationSource):
+    def __init__(self, file_path: str):
+        super().__init__()
+        self.__file_path: str = file_path
+
+    def __iter__(self) -> Dict:
+        with open(self.__file_path) as f:
+            line_dict = {}
+            for line in f:
+                fields = line.split('::')
+                for i, field in enumerate(fields):
+                    line_dict[str(i)] = field
+
+                yield line_dict
+
+
 class JSONFile(RawInformationSource):
     """
     Class for the data acquisition from a json file

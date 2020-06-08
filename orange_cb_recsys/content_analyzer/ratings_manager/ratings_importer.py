@@ -4,7 +4,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import ScoreCombiner
 import pandas as pd
 import time
-
+import logging
 from orange_cb_recsys.utils.const import home_path
 
 
@@ -60,8 +60,13 @@ class RatingsImporter:
         Returns:
             ratings_frame: pd.DataFrame
         """
+        logging.basicConfig(level=logging.INFO)
+
         ratings_frame = pd.DataFrame(columns=list(self.__columns))
+        j = 0
         for raw_rating in self.__source:
+            logging.info("Import rating %d" % j)
+            j += 1
             score_list = []
             row_dict = {
                 "from_id": raw_rating[self.__from_field_name],

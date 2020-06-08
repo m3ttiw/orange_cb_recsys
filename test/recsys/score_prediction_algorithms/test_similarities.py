@@ -1,5 +1,5 @@
 from unittest import TestCase
-from orange_cb_recsys.recsys.score_prediction_algorithms.similarities import CosineSimilarity
+from orange_cb_recsys.recsys.ranking_algorithms.similarities import CosineSimilarity
 
 
 class TestCosineSimilarity(TestCase):

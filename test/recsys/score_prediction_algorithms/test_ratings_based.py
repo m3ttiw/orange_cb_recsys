@@ -1,6 +1,6 @@
 from unittest import TestCase
-from orange_cb_recsys.recsys.score_prediction_algorithms.ratings_based import CentroidVector, ClassifierRecommender
-from orange_cb_recsys.recsys.score_prediction_algorithms.similarities import CosineSimilarity
+from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector, ClassifierRecommender
+from orange_cb_recsys.recsys.ranking_algorithms.similarities import CosineSimilarity
 
 import lzma
 import pandas as pd
