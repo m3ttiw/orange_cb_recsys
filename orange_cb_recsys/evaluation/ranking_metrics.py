@@ -77,23 +77,26 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
     Returns:
         ndcg (List[float]): array of ndcg
     """
-    idcg = perform_DCG(pd.Series(truth['rating'].values))
+    if set(predictions[['to_id']].values.flatten()) & set(truth[['to_id']].values.flatten()):
+        idcg = perform_DCG(pd.Series(truth['rating'].values))
 
-    col = ["to_id", "rating"]
-    new_predicted = pd.DataFrame(columns=col)
-    for index, predicted_row in predictions.iterrows():
-        predicted_item = predicted_row['to_id']
-        truth_row = truth.loc[truth['to_id'] == predicted_item]
-        truth_score = truth_row['rating'].values[0]
-        new_predicted = new_predicted.append({'to_id': predicted_item, 'rating': truth_score}, ignore_index=True)
+        col = ["to_id", "rating"]
+        new_predicted = pd.DataFrame(columns=col)
+        for index, predicted_row in predictions.iterrows():
+            predicted_item = predicted_row['to_id']
+            truth_row = truth.loc[truth['to_id'] == predicted_item]
+            truth_score = truth_row['rating'].values[0]
+            new_predicted = new_predicted.append({'to_id': predicted_item, 'rating': truth_score}, ignore_index=True)
 
-    dcg = perform_DCG(gain_values=pd.Series(new_predicted['rating'].values))
-    ndcg = []
-    for i, ideal in enumerate(idcg):
-        try:
-            ndcg.append(dcg[i] / ideal)
-        except IndexError:
-            break
+        dcg = perform_DCG(gain_values=pd.Series(new_predicted['rating'].values))
+        ndcg = []
+        for i, ideal in enumerate(idcg):
+            try:
+                ndcg.append(dcg[i] / ideal)
+            except IndexError:
+                break
+    else:  # if there is not a intersection
+        ndcg = []
     return ndcg
 
 

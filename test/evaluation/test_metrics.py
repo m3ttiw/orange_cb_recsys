@@ -68,6 +68,11 @@ class Test(TestCase):
                 error = abs(results[metric] - real_results[metric])
                 self.assertLessEqual(error, tolerance, "{} tolerance overtaking: error = {}, tolerance = {}".
                                      format(metric, error, tolerance))
+        print(results['NDCG'])
+
+    def test_NDCG(self):
+        self.assertEqual([], perform_NDCG(truth=pd.DataFrame({'to_id': ['aaa', 'bbb']}),
+                                          predictions=pd.DataFrame({'to_id': ['ccc', 'ddd']})), "null intersection")
 
     def test_perform_fairness_metrics(self):
         score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
