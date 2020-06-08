@@ -1,7 +1,6 @@
 from collections import Counter
 
 import pandas as pd
-import numpy as np
 from orange_cb_recsys.evaluation.delta_gap import *
 from orange_cb_recsys.evaluation.utils import *
 import matplotlib.pyplot as plt
@@ -126,7 +125,7 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
     bp = ax.boxplot(data_to_plot)
 
     # Save the figure
-    fig.savefig('fig1.png', bbox_inches='tight')
+    # fig.savefig('fig1.png', bbox_inches='tight')
 
     ## add patch_artist=True option to ax.boxplot()
     ## to get fill color
@@ -165,9 +164,10 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
 
     plt.title('{}'.format(algorithm_name))
     plt.ylabel('Ratio of popular items')
-    plt.show()
-    #plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+    # plt.show()
+    # plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
     try:
+        print('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
         plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
     except FileNotFoundError:
         try:
@@ -264,7 +264,7 @@ def perform_recs_long_tail_distr(truth_frame: pd.DataFrame, algorithm_name: str,
     plt.title('{}'.format(algorithm_name))
     plt.ylabel('Num of recommendations')
     plt.xlabel('Recommended items')
-    plt.show()
+    # plt.show()
     try:
         plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(out_dir, algorithm_name))
     except FileNotFoundError:

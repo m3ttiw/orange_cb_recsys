@@ -55,7 +55,7 @@ def calculate_gap(group: Set[str], avg_pop_by_users: Dict[str, object]) -> float
         score (float): gap score
     """
     total_pop = 0
-    #avg_pop_by_users: Dict[str, float] = get_avg_pop_by_users(group=group, data=data, pop_by_items=pop_by_items)
+    # avg_pop_by_users: Dict[str, float] = get_avg_pop_by_users(group=group, data=data, pop_by_items=pop_by_items)
     for element in group:
         try:
             total_pop += avg_pop_by_users[element]

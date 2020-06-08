@@ -124,6 +124,6 @@ class EvalModel:
             fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
                                                                 user_groups=self.__fairness_metric_config.get_user_groups(),
                                                                 truth_frame=self.__config.get_rating_frame(),
-                                                                algorithm_name=str(self.__config.get_algorithm()))
+                                                                algorithm_name='test')
 
         return prediction_metric_results, ranking_metric_results, fairness_metrics_results
