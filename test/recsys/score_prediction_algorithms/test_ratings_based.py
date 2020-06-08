@@ -25,11 +25,11 @@ class TestCentroidVector(TestCase):
         path = "../../../contents/movielens_test1591028175.9454775"
         items = []
         try:
-            file1 = os.path.join(path, "Sudden Death_tt0114576.bin")
+            file1 = os.path.join(path, "Sudden Death_tt0114576.xz")
             with open(file1, "rb") as content_file:
                 items.append(pickle.load(content_file))
 
-            file2 = os.path.join(path, "Toy Story_tt0114709.bin")
+            file2 = os.path.join(path, "Toy Story_tt0114709.xz")
             with open(file2, "rb") as content_file:
                 items.append(pickle.load(content_file))
 
@@ -40,7 +40,7 @@ class TestCentroidVector(TestCase):
                              )
         except FileNotFoundError:
             path = "contents/movielens_test1591028175.9454775"
-            file = os.path.join(path, "Sudden Death_tt0114576.bin")
+            file = os.path.join(path, "Sudden Death_tt0114576.xz")
             with open(file, "rb") as content_file:
                 item = pickle.load(content_file)
             self.assertEqual(alg.predict(item, ratings, path),
@@ -62,7 +62,7 @@ class TestClassifierRecommender(TestCase):
             with lzma.open(file, "r") as content_file:
                 pass
         except FileNotFoundError:
-            path = "contents/movielens_test1591028175.9454775"
+            path = "contents/movielens_test1591453035.7551947"
             file = os.path.join(path, "Sudden Death_tt0114576.xz")
 
         with lzma.open(file, "r") as content_file:
