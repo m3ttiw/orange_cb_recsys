@@ -13,6 +13,8 @@ class SkLearnTfIdf(TfIdfTechnique):
     def __init__(self):
         super().__init__()
         self.__corpus = []
+        self.__tfidf_matrix = None
+        self.__feature_names = None
         self.__matching = {}
 
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
@@ -38,19 +40,19 @@ class SkLearnTfIdf(TfIdfTechnique):
             self.__matching[content_id] = len(self.__corpus)
             self.__corpus.append(processed_field_data)
 
+        tf = TfidfVectorizer(sublinear_tf=True)
+        self.__tfidf_matrix = tf.fit_transform(self.__corpus)
+        self.__feature_names = tf.get_feature_names()
+
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str):
-        tf = TfidfVectorizer(sublinear_tf=True)
-        tfidf_matrix = tf.fit_transform(self.__corpus)
-
-        feature_names = tf.get_feature_names()
 
         doc = self.__matching[content_id]
-        feature_index = tfidf_matrix[doc, :].nonzero()[1]
-        tfidf_scores = zip(feature_index, [tfidf_matrix[doc, x] for x in feature_index])
+        feature_index = self.__tfidf_matrix[doc, :].nonzero()[1]
+        tfidf_scores = zip(feature_index, [self.__tfidf_matrix[doc, x] for x in feature_index])
 
         features = {}
-        for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
+        for w, s in [(self.__feature_names[i], s) for (i, s) in tfidf_scores]:
             features[w] = s
 
         return FeaturesBagField(field_representation_name,  features)
