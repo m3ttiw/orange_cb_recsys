@@ -5,6 +5,7 @@ import numpy as np
 from orange_cb_recsys.evaluation.delta_gap import *
 from orange_cb_recsys.evaluation.utils import *
 import matplotlib.pyplot as plt
+from pathlib import Path
 
 
 # fairness_metrics_results = pd.DataFrame(columns=["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
@@ -169,6 +170,13 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
     plt.ylabel('Ratio of popular items')
     plt.show()
     #plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+    try:
+        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+    except FileNotFoundError:
+        try:
+            plt.savefig('../../{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+        except FileNotFoundError:
+            plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()), plot_file_name))
     plt.clf()
 
     return score_frame
@@ -256,7 +264,14 @@ def perform_recs_long_tail_distr(recs: pd.DataFrame, algorithm_name: str, output
     plt.title('{}'.format(algorithm_name))
     plt.ylabel('Num of recommendations')
     plt.xlabel('Recommended items')
-    plt.savefig('{}/recs-long-tail-distr/{}.svg'.format(output_dir, plot_file_name))
+    plt.show()
+    try:
+        plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(output_dir, plot_file_name))
+    except FileNotFoundError:
+        try:
+            plt.savefig('../../{}/recs-long-tail-distr_{}.svg'.format(output_dir, plot_file_name))
+        except FileNotFoundError:
+            plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()), plot_file_name))
     plt.clf()
 
 
