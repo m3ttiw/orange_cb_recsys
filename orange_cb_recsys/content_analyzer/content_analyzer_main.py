@@ -1,7 +1,6 @@
 from typing import Dict
 import time
 import os
-import logging
 
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.content_representation.content import Content, RepresentedContentsRecap
@@ -10,7 +9,7 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.field
     CollectionBasedTechnique, \
     SingleContentTechnique, SearchIndexing
 from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
-from orange_cb_recsys.utils.const import home_path, DEVELOPING
+from orange_cb_recsys.utils.const import home_path, DEVELOPING, logger
 from orange_cb_recsys.utils.id_merger import id_merger
 
 
@@ -36,7 +35,7 @@ class ContentAnalyzer:
 
                 technique = pipeline.get_content_technique()
                 if isinstance(technique, CollectionBasedTechnique):
-                    logging.info("Creating collection for technique: %s on field %s, representation: %s" % (
+                    logger.info("Creating collection for technique: %s on field %s, representation: %s" % (
                         technique, field_name, pipeline))
                     technique.set_field_need_refactor(field_name)
                     technique.set_pipeline_need_refactor(str(pipeline))
@@ -52,7 +51,6 @@ class ContentAnalyzer:
         return RepresentedContentsRecap(recap_list)
 
     def fit(self):
-        logging.basicConfig(level=logging.INFO)
         """
         Begins to process the creation of the contents
 
@@ -85,8 +83,8 @@ class ContentAnalyzer:
         contents_producer.set_indexer(indexer)
         i = 0
         for raw_content in self.__config.get_source():
+            logger.info("Processing item %d" % i)
             content = contents_producer.create_content(raw_content)
-            logging.info("Processing item %d" % i)
             content.serialize(output_path)
             i += 1
 
@@ -174,7 +172,7 @@ class ContentsProducer:
         field = ContentField(field_name, timestamp)
 
         for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
-            logging.info("processing representation %d" % i)
+            logger.info("processing representation %d" % i)
             if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
                 field.append(str(i), self.__create_representation_CBT(str(i), field_name, content_id, pipeline))
             elif isinstance(pipeline.get_content_technique(), SingleContentTechnique):
@@ -245,7 +243,7 @@ class ContentsProducer:
 
             # produce
             for field_name in self.__config.get_field_name_list():
-                logging.info("Processing field: %s" % field_name)
+                logger.info("Processing field: %s" % field_name)
                 # search for timestamp override on specific field
                 content.append(field_name, self.__create_field(raw_content, field_name, content_id, timestamp))
 

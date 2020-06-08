@@ -290,5 +290,5 @@ def catalog_coverage(score_frame: pd.DataFrame, truth_frame: pd.DataFrame) -> fl
     covered_items = set(score_frame[['to_id']].values.flatten())
     coverage_percentage = len(covered_items) / len(items) * 100
 
-    print('Covered items: ', len(covered_items), ' ({}%)'.format(coverage_percentage))
+    # print('Covered items: ', len(covered_items), ' ({}%)'.format(coverage_percentage))
     return coverage_percentage

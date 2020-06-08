@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from orange_cb_recsys.utils.const import logger
+
 
 def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
                     algorithm_name: str, out_dir: str = None, num_of_recs: int = 10) -> float:
@@ -35,7 +37,6 @@ def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
 
     novelty = - (users_log_popularity / (len(users) * num_of_recs))
 
-    print('Novelty: {}'.format(novelty))
     try:
         file_path = '{}/novelty_{}.csv'.format(out_dir, algorithm_name)
         with open(file_path, 'a', newline='') as f:
@@ -49,5 +50,5 @@ def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
             file_path = '{}/novelty_{}.csv'.format(str(Path.home()), algorithm_name)
             with open(file_path, 'a', newline='') as f:
                 f.write("%s,%f\n" % ('novelty: ', novelty))
-    print('saved in: {}'.format(file_path))
+    logger.info('saved in: {}'.format(file_path))
     return novelty

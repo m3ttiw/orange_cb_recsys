@@ -5,7 +5,7 @@ from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import Sco
 import pandas as pd
 import time
 import logging
-from orange_cb_recsys.utils.const import home_path
+from orange_cb_recsys.utils.const import home_path, logger
 
 
 class RatingsFieldConfig:
@@ -65,7 +65,7 @@ class RatingsImporter:
         ratings_frame = pd.DataFrame(columns=list(self.__columns))
         j = 0
         for raw_rating in self.__source:
-            logging.info("Import rating %d" % j)
+            logger.info("Import rating %d" % j)
             j += 1
             score_list = []
             row_dict = {

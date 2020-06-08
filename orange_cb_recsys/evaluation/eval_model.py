@@ -83,8 +83,6 @@ class EvalModel:
                     truth = pd.DataFrame(test[test.columns[[1, 2]]]).reset_index(drop=True)
                     truth.columns = ["to_id", "rating"]
 
-                    print(predictions, truth)
-
                     result_dict = perform_ranking_metrics(predictions, truth)
                     result_dict["from"] = user_id
                     ranking_metric_results = ranking_metric_results.append(result_dict, ignore_index=True)
