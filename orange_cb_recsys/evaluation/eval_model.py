@@ -9,17 +9,27 @@ from orange_cb_recsys.recsys.config import RecSysConfig
 from orange_cb_recsys.recsys.recsys import RecSys
 
 
+class FairnessMetricsConfig:
+    def __init__(self, output_directory: str, user_groups):
+        # algorithm name automatically retrieved in eval model
+        self.__output_directory = output_directory
+        self.__user_groups = user_groups
+
+    def get_user_groups(self):
+        return self.__user_groups
+
+
 class EvalModel:
     def __init__(self, config: RecSysConfig,
                  partitioning: Partitioning,
                  prediction_metric: bool = True,
                  ranking_metric: bool = True,
-                 fairness_metric: bool = True):
+                 fairness_metric_config: FairnessMetricsConfig = None):
         self.__config: RecSysConfig = config
         self.__partitioning = partitioning
         self.__prediction_metric = prediction_metric
         self.__ranking_metric = ranking_metric
-        self.__fairness_metric = fairness_metric
+        self.__fairness_metric_config: FairnessMetricsConfig = fairness_metric_config
 
     def fit(self):
         # initialize recommender to call for prediction calcs
@@ -92,7 +102,7 @@ class EvalModel:
         # calculate fairness metrics
         fairness_metrics_results = \
             pd.DataFrame(columns=["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
-        if self.__fairness_metric:
+        if self.__fairness_metric_config is not None:
             columns = ["from_id", "to_id", "rating"]
             score_frame = pd.DataFrame(columns=columns)
             for user_id in user_id_list:
@@ -111,12 +121,8 @@ class EvalModel:
 
                 score_frame = pd.concat([fit_result_with_user, score_frame], ignore_index=True)
 
-                try:
-                    self.__partitioning.set_dataframe(user_ratings)
-                except ValueError:
-                    continue
-
             fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
+                                                                user_groups=self.__fairness_metric_config.get_user_groups(),
                                                                 truth_frame=self.__config.get_rating_frame(),
                                                                 algorithm_name=str(self.__config.get_algorithm()))
 

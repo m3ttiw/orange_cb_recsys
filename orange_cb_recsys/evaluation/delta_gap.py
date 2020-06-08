@@ -31,6 +31,7 @@ def get_avg_pop_by_users(data: pd.DataFrame, pop_by_items: Dict[str, object],
     Returns:
         score_dict (Dict[str, float]): average popularity by user
     """
+
     if group is None:
         group = data[['from_id']].values.flatten()
     avg_pop_by_users = {}
@@ -56,7 +57,10 @@ def calculate_gap(group: Set[str], avg_pop_by_users: Dict[str, object]) -> float
     total_pop = 0
     #avg_pop_by_users: Dict[str, float] = get_avg_pop_by_users(group=group, data=data, pop_by_items=pop_by_items)
     for element in group:
-        total_pop += avg_pop_by_users[element]
+        try:
+            total_pop += avg_pop_by_users[element]
+        except KeyError:
+            pass
     return total_pop / len(group)
 
 
