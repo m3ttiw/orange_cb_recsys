@@ -22,7 +22,7 @@ class TestCentroidVector(TestCase):
             ("A000", "Four Rooms_tt0113101", "sdfgd", 3.0, "54654675")
         ], columns=["user_id", "item_id", "original_rating", "derived_score", "timestamp"])
 
-        path = "../../../contents/movielens_test1591028175.9454775"
+        path = "../../../contents/movielens_test1591453035.7551947"
         items = []
         try:
             file1 = os.path.join(path, "Sudden Death_tt0114576.xz")
@@ -39,7 +39,7 @@ class TestCentroidVector(TestCase):
             }
                              )
         except FileNotFoundError:
-            path = "contents/movielens_test1591028175.9454775"
+            path = "contents/movielens_test1591453035.7551947"
             file = os.path.join(path, "Sudden Death_tt0114576.xz")
             with open(file, "rb") as content_file:
                 item = pickle.load(content_file)
