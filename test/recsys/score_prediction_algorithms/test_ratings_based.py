@@ -27,6 +27,7 @@ class TestCentroidVector(TestCase):
         items = []
         try:
             file1 = os.path.join(path, "Sudden Death_tt0114576.xz")
+
             with lzma.open(file1, "rb") as content_file:
                 items.append(pickle.load(content_file))
 
@@ -48,6 +49,7 @@ class TestCentroidVector(TestCase):
                                             ("Toy Story_tt0114709", 0.9319401691396478)],
                                            columns=columns)
         self.assertTrue(alg.predict(items, ratings, path).equals(scores))
+
 
 
 class TestClassifierRecommender(TestCase):
