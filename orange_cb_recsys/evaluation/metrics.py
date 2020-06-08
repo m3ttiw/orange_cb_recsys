@@ -51,7 +51,7 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     return results
 
 
-def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
+def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, user_groups: Dict[str, float],
                              algorithm_name: str, file_output_directory: str = '/datasets/evaluation'
                              ) -> (pd.DataFrame, pd.DataFrame, float):
     """
@@ -60,6 +60,9 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     Args:
         score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
         truth_frame (pd.DataFrame): the real rank each row contains index(the rank position), label, value
+        user_groups (Dict[str, float): each key contains the name of the group and each value contains the percentage
+                                       of the specified group. If the groups don't cover the entire user collection,
+                                       the rest of the users are considered in a 'default_diverse' group
         algorithm_name (str): name of the algorithm that run these metrics
         file_output_directory (str): output directory for saving the results
 
@@ -75,8 +78,7 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     pop_items = popular_items(score_frame=score_frame)
     pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, most_pop_items=pop_items)
 
-    user_groups = split_user_in_groups(score_frame=score_frame, groups={'niche': 0.2, 'diverse': 0.6,
-                                                                        'bb_focused': 0.2}, pop_items=pop_items)
+    user_groups = split_user_in_groups(score_frame=score_frame, groups=user_groups, pop_items=pop_items)
     df_gini = perform_gini_index(score_frame=score_frame)
     delta_gap_score = perform_delta_gap(score_frame=score_frame, truth_frame=truth_frame, users_groups=user_groups)
     profile_vs_recs_pop_ratio = perform_pop_ratio_profile_vs_recs(user_groups=user_groups, truth_frame=truth_frame,
