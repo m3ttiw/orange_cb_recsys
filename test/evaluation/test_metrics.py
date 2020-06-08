@@ -1,5 +1,7 @@
 from unittest import TestCase
 from orange_cb_recsys.evaluation.metrics import *
+from orange_cb_recsys.evaluation.novelty import perform_novelty
+from orange_cb_recsys.evaluation.serendipity import perform_serendipity
 
 
 class Test(TestCase):
@@ -31,7 +33,7 @@ class Test(TestCase):
             "item7": 0.2,
         }
 
-        col = ["item_id", "rating"]
+        col = ["to_id", "rating"]
 
         results = perform_ranking_metrics(
             pd.DataFrame(predicted_rank.items(), columns=col),
@@ -66,6 +68,35 @@ class Test(TestCase):
                 error = abs(results[metric] - real_results[metric])
                 self.assertLessEqual(error, tolerance, "{} tolerance overtaking: error = {}, tolerance = {}".
                                      format(metric, error, tolerance))
+
+    def test_perform_fairness_metrics(self):
+        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
+                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
+        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test')
+
+    def test_perform_gini(self):
+        pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],
+                                'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
+                                'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
+
+    def test_perform_serendipity(self):
+        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+        perform_serendipity(score_frame=score_frame, algorithm_name='test')
+
+    def test_perform_novelty(self):
+        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
+                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
+        perform_novelty(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test')
 
     def test_perform_rmse(self):
         predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
