@@ -71,8 +71,11 @@ class Test(TestCase):
         print(results['NDCG'])
 
     def test_NDCG(self):
-        self.assertEqual([], perform_NDCG(truth=pd.DataFrame({'to_id': ['aaa', 'bbb']}),
-                                          predictions=pd.DataFrame({'to_id': ['ccc', 'ddd']})), "null intersection")
+        self.assertEqual([], perform_NDCG(truth=pd.DataFrame({'to_id': ['aaa', 'bbb'], 'rating': [0.0, 1.0]}),
+                                          predictions=pd.DataFrame({'to_id': ['ccc', 'ddd'], 'rating': [0.0, 0.5]})),
+                         "null intersection")
+        perform_NDCG(truth=pd.DataFrame({'to_id': ['aaa', 'bbb', 'ccc'], 'rating': [0.1, 0.2, 0.3]}),
+                     predictions=pd.DataFrame({'to_id': ['ccc', 'ddd'], 'rating': [0.5, 0.6]}))
 
     def test_perform_fairness_metrics(self):
         score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
@@ -81,7 +84,8 @@ class Test(TestCase):
         truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
                                               'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
                                               'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
-        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test')
+        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test',
+                                 user_groups={'niche': 0.2, 'diverse': 0.6, 'bb_focused': 0.2})
 
     def test_perform_gini(self):
         pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],
