@@ -23,7 +23,7 @@ class RecSys:
 
         return item_to_predict_list
 
-    def fit_specific_items(self, user_id: str, item_to_predict_id_list: List[str] = None):
+    def fit_predict(self, user_id: str, item_to_predict_id_list: List[str] = None):
         if isinstance(self.__config.get_algorithm(), RankingAlgorithm):
             raise ValueError("You can't use ranking algorithms for predict score of specific items")
 
@@ -40,12 +40,9 @@ class RecSys:
 
         return score_frame
 
-    def fit(self, user_id: str, recs_number: int):
+    def fit_ranking(self, user_id: str, recs_number: int):
         if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
             raise ValueError("You can't use rating prediction algorithms for this method")
-
-        # load user instance
-        user = load_content_instance(self.__config.get_users_directory(), user_id)
 
         # load user ratings
         user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
@@ -56,10 +53,7 @@ class RecSys:
 
         return score_frame
 
-    def fit_eval(self, user_id: str, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
-        # load user instance
-        user = load_content_instance(self.__config.get_users_directory(), user_id)
-
+    def fit_eval(self, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
         score_frame = None
         if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
             # get test set items

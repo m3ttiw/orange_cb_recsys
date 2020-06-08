@@ -51,7 +51,7 @@ class EvalModel:
                     train = user_ratings.iloc[partition_index[0]]
                     test = user_ratings.iloc[partition_index[1]]
 
-                    predictions = pd.Series(recsys.fit_eval(user_id, train, test).rating, name="rating")
+                    predictions = pd.Series(recsys.fit_eval(train, test).rating, name="rating")
                     truth = pd.Series(test.score.values, name="rating")
 
                     result_dict = perform_prediction_metrics(predictions, truth)
@@ -79,7 +79,7 @@ class EvalModel:
                     train = user_ratings.iloc[partition_index[0]]
                     test = user_ratings.iloc[partition_index[1]]
 
-                    predictions = recsys.fit_eval(user_id, train, test)
+                    predictions = recsys.fit_eval(train, test)
                     truth = pd.DataFrame(test[test.columns[[1, 2]]]).reset_index(drop=True)
                     truth.columns = ["to_id", "rating"]
 
@@ -101,7 +101,10 @@ class EvalModel:
                 user_ratings = self.__config.get_rating_frame()[
                     self.__config.get_rating_frame()['from_id'].str.match(user_id)]
 
-                fit_result = recsys.fit_specific_items(user_id)
+                if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
+                    fit_result = recsys.fit_predict(user_id)
+                else:
+                    fit_result = recsys.fit_ranking(user_id, 20)
                 fit_result_with_user = pd.DataFrame(columns=columns)
 
                 for i, row in fit_result.iterrows():
