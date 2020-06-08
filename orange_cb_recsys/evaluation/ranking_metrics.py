@@ -84,6 +84,8 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
     for index, predicted_row in predictions.iterrows():
         predicted_item = predicted_row['to_id']
         truth_row = truth.loc[truth['to_id'] == predicted_item]
+        if truth_row.empty:
+            continue
         truth_score = truth_row['rating'].values[0]
         new_predicted = new_predicted.append({'to_id': predicted_item, 'rating': truth_score}, ignore_index=True)
 

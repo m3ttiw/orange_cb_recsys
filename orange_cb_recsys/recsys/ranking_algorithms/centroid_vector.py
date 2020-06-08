@@ -119,10 +119,12 @@ class CentroidVector(RankingAlgorithm):
             arrays = self.__get_arrays(items_directory, ratings)
             matrix = self.__build_matrix(arrays)
             centroid = self.__centroid(matrix)
-            columns = ["item_id", "rating"]
+            columns = ["to_id", "rating"]
             scores = pd.DataFrame(columns=columns)
             unrated_items = get_unrated_items(items_directory, ratings)
             for i, item in enumerate(unrated_items):
+                if i >= recs_number:
+                    break
                 item_id = item.get_content_id()
                 item_field_representation = item.get_field(self.get_item_field()).get_representation(
                     self.get_item_field_representation()).get_value()
@@ -130,8 +132,6 @@ class CentroidVector(RankingAlgorithm):
                 score = similarity * 2 - 1
                 scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, score)], columns=columns)],
                                    ignore_index=True)
-                if i > recs_number:
-                    break
 
             return scores
         except ValueError as v:

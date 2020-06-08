@@ -4,6 +4,7 @@ import pandas as pd
 from orange_cb_recsys.evaluation.metrics import perform_prediction_metrics, perform_ranking_metrics, \
     perform_fairness_metrics
 from orange_cb_recsys.evaluation.partitioning import Partitioning
+from orange_cb_recsys.recsys.algorithm import RankingAlgorithm, ScorePredictionAlgorithm
 from orange_cb_recsys.recsys.config import RecSysConfig
 from orange_cb_recsys.recsys.recsys import RecSys
 
@@ -29,10 +30,14 @@ class EvalModel:
 
         # define results structure
         prediction_metric_results = pd.DataFrame(columns=["from", "RMSE", "MAE", "serendipity", "novelty"])
-        ranking_metric_results = pd.DataFrame(columns=["from", "precision", "recall", "F1", "MAE"])
+        ranking_metric_results = \
+            pd.DataFrame(columns=["from", "Precision", "Recall", "F1", "NDCG", "pearson", "kendall", "spearman"])
 
         # calculate prediction metrics
         if self.__prediction_metric:
+            if isinstance(self.__config.get_algorithm(), RankingAlgorithm):
+                raise ValueError("Can't calculate predictions metrics for ranking algorithm results")
+
             for user_id in user_id_list:
                 user_ratings = self.__config.get_rating_frame()[
                     self.__config.get_rating_frame()['from_id'].str.match(user_id)]
@@ -47,18 +52,18 @@ class EvalModel:
                     test = user_ratings.iloc[partition_index[1]]
 
                     predictions = pd.Series(recsys.fit_eval(user_id, train, test).rating, name="rating")
-                    truth = pd.Series(test.derived_score.values, name="rating")
+                    truth = pd.Series(test.score.values, name="rating")
 
                     result_dict = perform_prediction_metrics(predictions, truth)
-                    prediction_metric_results = pd.concat([
-                        pd.DataFrame.from_records([(user_id, result_dict["RMSE"], result_dict["MAE"])],
-                                                  columns=["from", "RMSE", "MAE"]),
-                        prediction_metric_results], ignore_index=True)
+                    prediction_metric_results.append(result_dict)
 
                 prediction_metric_results = prediction_metric_results.groupby('from').mean()
 
         # calculate ranking metrics
         if self.__ranking_metric:
+            if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
+                raise ValueError("Can't calculate predictions metrics for ranking algorithm results")
+
             for user_id in user_id_list:
                 user_ratings = self.__config.get_rating_frame()[
                     self.__config.get_rating_frame()['from_id'].str.match(user_id)]
@@ -74,20 +79,21 @@ class EvalModel:
                     train = user_ratings.iloc[partition_index[0]]
                     test = user_ratings.iloc[partition_index[1]]
 
-                    predictions = recsys.fit_eval(user_id, train, test, True)
-                    truth = self.__config.get_ranking_algorithm().rank(test)
+                    predictions = recsys.fit_eval(user_id, train, test)
+                    truth = pd.DataFrame(test[test.columns[[1, 2]]]).reset_index(drop=True)
+                    truth.columns = ["to_id", "rating"]
+
+                    print(predictions, truth)
 
                     result_dict = perform_ranking_metrics(predictions, truth)
-                    ranking_metric_results = pd.concat([
-                        pd.DataFrame.from_records([(user_id, result_dict["precision"], result_dict["recall"],
-                                                    result_dict["F1"], result_dict["NDCG"])],
-                                                  columns=["from", "precision", "recall", "F1", "MAE"]),
-                        ranking_metric_results], ignore_index=True)
+                    result_dict["from"] = user_id
+                    ranking_metric_results = ranking_metric_results.append(result_dict, ignore_index=True)
 
                 ranking_metric_results.groupby('from').mean()
 
         # calculate fairness metrics
-        fairness_metrics_results = pd.DataFrame(columns=["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
+        fairness_metrics_results = \
+            pd.DataFrame(columns=["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
         if self.__fairness_metric:
             columns = ["from_id", "to_id", "rating"]
             score_frame = pd.DataFrame(columns=columns)
@@ -109,7 +115,8 @@ class EvalModel:
                 except ValueError:
                     continue
 
-            print(score_frame)
-            fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame, truth_frame=self.__config.get_rating_frame())
+            fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
+                                                                truth_frame=self.__config.get_rating_frame(),
+                                                                algorithm_name=str(self.__config.get_algorithm()))
 
         return prediction_metric_results, ranking_metric_results, fairness_metrics_results

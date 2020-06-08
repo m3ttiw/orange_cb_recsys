@@ -56,14 +56,14 @@ class RecSys:
 
         return score_frame
 
-    def fit_eval(self, user_id: str, user_ratings: pd.DataFrame, test_set: pd.DataFrame, rank: bool = False):
+    def fit_eval(self, user_id: str, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
         # load user instance
         user = load_content_instance(self.__config.get_users_directory(), user_id)
 
         score_frame = None
         if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
             # get test set items
-            item_to_predict_id_list = [item for item in test_set.item_id]  # lista di item non valutati
+            item_to_predict_id_list = [item for item in test_set.item_id]  # unrated items list
             items = [load_content_instance(self.__config.get_items_directory(), re.sub(r'[^\w\s]', '', item_id))
                      for item_id in item_to_predict_id_list]
 
