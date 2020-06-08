@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 
-def perform_novelty(score_frame: pd.Dataframe, truth_frame: pd.DataFrame,
+def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
                     algorithm_name: str, out_dir: str = None, num_of_recs: int = 10) -> float:
     total_ratings = len(truth_frame.index)
     ratings_by_item = Counter(truth_frame[['to_id']].values.flatten())

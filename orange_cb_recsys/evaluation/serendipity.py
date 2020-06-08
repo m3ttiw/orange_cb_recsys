@@ -1,10 +1,15 @@
 from pathlib import Path
+from typing import Set
 
 import pandas as pd
 
+from orange_cb_recsys.evaluation.utils import popular_items
 
-def perform_serendipity(score_frame: pd.DataFrame, algorithm_name: str, out_dir: str = None, num_of_recs: int = 10):
-    most_popular_items = set(pd.read_csv('../datasets/most-popular-items.csv').values.flatten())
+
+def perform_serendipity(score_frame: pd.DataFrame, algorithm_name: str, most_popular_items: Set[str] = None,
+                        out_dir: str = None, num_of_recs: int = 10) -> float:
+    if most_popular_items is None:
+        most_popular_items = popular_items(score_frame=score_frame)
     users = set(score_frame[['from_id']].values.flatten())
 
     pop_ratios_sum = 0

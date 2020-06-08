@@ -1,5 +1,7 @@
 from unittest import TestCase
 from orange_cb_recsys.evaluation.metrics import *
+from orange_cb_recsys.evaluation.novelty import perform_novelty
+from orange_cb_recsys.evaluation.serendipity import perform_serendipity
 
 
 class Test(TestCase):
@@ -82,10 +84,19 @@ class Test(TestCase):
                                 'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
 
     def test_perform_serendipity(self):
-        pass
+        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+        perform_serendipity(score_frame=score_frame, algorithm_name='test')
 
     def test_perform_novelty(self):
-        pass
+        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
+                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
+        perform_novelty(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test')
 
     def test_perform_rmse(self):
         predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
