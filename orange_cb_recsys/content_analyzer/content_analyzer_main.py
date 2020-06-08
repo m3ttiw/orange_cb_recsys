@@ -1,6 +1,7 @@
 from typing import Dict
 import time
 import os
+import logging
 
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.content_representation.content import Content, RepresentedContentsRecap
@@ -32,23 +33,26 @@ class ContentAnalyzer:
     def __dataset_refactor(self):
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
+
                 technique = pipeline.get_content_technique()
                 if isinstance(technique, CollectionBasedTechnique):
+                    logging.info("Creating collection for technique: %s on field %s, representation: %s" % (
+                        technique, field_name, pipeline))
                     technique.set_field_need_refactor(field_name)
                     technique.set_pipeline_need_refactor(str(pipeline))
                     technique.set_processor_list(pipeline.get_preprocessor_list())
                     technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
 
     def __config_recap(self):
-        recap = RepresentedContentsRecap()
-        for field_name in self.__config.get_field_name_list():
-            for pipeline in self.__config.get_pipeline_list(field_name):
-                recap.append("Field: " + field_name + "; representation id: " + str(pipeline) +
-                             "; technique: " + str(pipeline.get_content_technique()))
+        recap_list = [("Field: %s; representation id: %s: technique: %s"
+                       % (field_name, str(pipeline), str(pipeline.get_content_technique())))
+                      for field_name in self.__config.get_field_name_list()
+                      for pipeline in self.__config.get_pipeline_list(field_name)]
 
-        return recap
+        return RepresentedContentsRecap(recap_list)
 
     def fit(self):
+        logging.basicConfig(level=logging.INFO)
         """
         Begins to process the creation of the contents
 
@@ -82,8 +86,8 @@ class ContentAnalyzer:
         i = 0
         for raw_content in self.__config.get_source():
             content = contents_producer.create_content(raw_content)
+            logging.info("Processing item %d" % i)
             content.serialize(output_path)
-            print(i)
             i += 1
 
         if self.__config.get_search_index():
@@ -170,6 +174,7 @@ class ContentsProducer:
         field = ContentField(field_name, timestamp)
 
         for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
+            logging.info("processing representation %d" % i)
             if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
                 field.append(str(i), self.__create_representation_CBT(str(i), field_name, content_id, pipeline))
             elif isinstance(pipeline.get_content_technique(), SingleContentTechnique):
@@ -187,7 +192,8 @@ class ContentsProducer:
         for preprocessor in preprocessor_list:
             processed_field_data = preprocessor.process(processed_field_data)
 
-        pipeline.get_content_technique().produce_content(field_name, str(pipeline), processed_field_data, self.__indexer)
+        pipeline.get_content_technique().produce_content(field_name, str(pipeline), processed_field_data,
+                                                         self.__indexer)
 
     @staticmethod
     def __create_representation_CBT(field_representation_name: str, field_name: str, content_id: str,
@@ -239,6 +245,7 @@ class ContentsProducer:
 
             # produce
             for field_name in self.__config.get_field_name_list():
+                logging.info("Processing field: %s" % field_name)
                 # search for timestamp override on specific field
                 content.append(field_name, self.__create_field(raw_content, field_name, content_id, timestamp))
 
