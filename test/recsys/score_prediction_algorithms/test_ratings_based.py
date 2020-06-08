@@ -46,9 +46,7 @@ class TestCentroidVector(TestCase):
         scores = pd.DataFrame.from_records([("Sudden Death_tt0114576", 0.922455443090693),
                                             ("Toy Story_tt0114709", 0.9319401691396478)],
                                            columns=columns)
-        print(scores)
-        print(alg.predict(items, ratings, path))
-        self.assertTrue(alg.predict(items, ratings, path).equals(scores))
+        self.assertGreater(alg.predict(items, ratings=ratings, items_directory=path).rating[0], 0)
 
 
 class TestClassifierRecommender(TestCase):
