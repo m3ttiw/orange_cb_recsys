@@ -81,6 +81,12 @@ class Test(TestCase):
                                 'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
                                 'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
 
+    def test_perform_serendipity(self):
+        pass
+
+    def test_perform_novelty(self):
+        pass
+
     def test_perform_rmse(self):
         predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
         truth = pd.Series([5, 4, 3, 3, 1, 2, 1])

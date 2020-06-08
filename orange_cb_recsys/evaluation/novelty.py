@@ -6,7 +6,7 @@ import pandas as pd
 
 
 def perform_novelty(score_frame: pd.Dataframe, truth_frame: pd.DataFrame,
-                    algorithm_name: str, out_dir: str, num_of_recs: int = 10) -> float:
+                    algorithm_name: str, out_dir: str = None, num_of_recs: int = 10) -> float:
     total_ratings = len(truth_frame.index)
     ratings_by_item = Counter(truth_frame[['to_id']].values.flatten())
     users = set(score_frame[['from_id']].values.flatten())
@@ -29,7 +29,7 @@ def perform_novelty(score_frame: pd.Dataframe, truth_frame: pd.DataFrame,
             f.write("%s,%f\n" % ('novelty: ', novelty))
     except FileNotFoundError:
         try:
-            file_path = '../../{}/novelty.csv'.format(out_dir, algorithm_name)
+            file_path = '../../{}/novelty_{}.csv'.format(out_dir, algorithm_name)
             with open(file_path, 'a', newline='') as f:
                 f.write("%s,%f\n" % ('novelty: ', novelty))
         except FileNotFoundError:
