@@ -81,6 +81,6 @@ class RatingsImporter:
             ratings_frame = ratings_frame.append(row_dict, ignore_index=True)
 
         if self.__file_name is not None:
-            ratings_frame.to_csv("{}/{}_{}.csv".format(home_path, self.__file_name, int(time.time())), index=False, header=False)
+            ratings_frame.to_csv("{}/ratings/{}_{}.csv".format(home_path, self.__file_name, int(time.time())), index=False, header=False)
 
         return ratings_frame
