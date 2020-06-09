@@ -42,6 +42,9 @@ class SkLearnTfIdf(TfIdfTechnique):
 
         tf = TfidfVectorizer(sublinear_tf=True)
         self.__tfidf_matrix = tf.fit_transform(self.__corpus)
+
+        del self.__corpus
+
         self.__feature_names = tf.get_feature_names()
 
     def produce_content(self, field_representation_name: str, content_id: str,

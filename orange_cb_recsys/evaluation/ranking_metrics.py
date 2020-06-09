@@ -2,6 +2,8 @@ from typing import List
 import pandas as pd
 import numpy as np
 
+from orange_cb_recsys.utils.const import logger
+
 
 def perform_precision(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
     """
@@ -15,6 +17,8 @@ def perform_precision(prediction_labels: pd.Series, truth_labels: pd.Series) -> 
     Returns:
         score (float): precision
     """
+    logger.info("Computing precision")
+
     return prediction_labels.isin(truth_labels).sum() / len(prediction_labels)
 
 
@@ -30,6 +34,8 @@ def perform_recall(prediction_labels: pd.Series, truth_labels: pd.Series) -> flo
     Returns:
         score (float): recall
     """
+    logger.info("Computing recall")
+
     return prediction_labels.isin(truth_labels).sum() / len(truth_labels)
 
 
@@ -46,6 +52,8 @@ def perform_Fn(precision: float, recall: float, n: int = 1) -> float:
     Returns:
         score (float): Fn value
     """
+    logger.info("Computing FN")
+
     return (1 + (n ** 2)) * ((precision * recall) / ((n ** 2) * precision + recall))
 
 
@@ -79,6 +87,8 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
     Returns:
         ndcg (List[float]): array of ndcg
     """
+    logger.info("Computing NDCG")
+
     to_label_intersection = set(predictions[['to_id']].values.flatten()).intersection(
         set(truth[['to_id']].values.flatten()))
 
@@ -114,6 +124,8 @@ def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
     Returns:
         score (float): the mrr value
     """
+    logger.info("Computing MRR")
+
     mrr = 0
     for t_index, t_value in truth_labels.iteritems():
         for p_index, p_value in prediction_labels.iteritems():
@@ -134,6 +146,8 @@ def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, m
     Returns:
         score (float): value of the specified correlation metric
     """
+    logger.info("Computing correlation")
+
     t_series = pd.Series()
     p_series = pd.Series()
     for t_index, t_value in truth_labels.iteritems():
