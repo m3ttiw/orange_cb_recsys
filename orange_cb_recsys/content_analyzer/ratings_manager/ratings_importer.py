@@ -87,9 +87,9 @@ class RatingsImporter:
         if self.__file_name is not None:
             if not DEVELOPING:
                 ratings_frame.to_csv("{}/ratings/{}_{}.csv".format(home_path, self.__file_name, int(time.time())),
-                                     index=False, header=False)
+                                     index=False, header=True)
             else:
-                ratings_frame.to_csv("{}_{}.csv".format(self.__file_name, int(time.time())), index=False, header=False)
+                ratings_frame.to_csv("{}_{}.csv".format(self.__file_name, int(time.time())), index=False, header=True)
 
         return ratings_frame
 
