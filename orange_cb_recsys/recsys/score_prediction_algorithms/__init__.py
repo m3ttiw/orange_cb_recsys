@@ -1,1 +1,1 @@
-
+from .classifier import ClassifierRecommender
