@@ -5,7 +5,7 @@ from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import Sco
 import pandas as pd
 import time
 import logging
-from orange_cb_recsys.utils.const import home_path, logger
+from orange_cb_recsys.utils.const import home_path, logger, DEVELOPING
 
 
 class RatingsFieldConfig:
@@ -81,6 +81,9 @@ class RatingsImporter:
             ratings_frame = ratings_frame.append(row_dict, ignore_index=True)
 
         if self.__file_name is not None:
-            ratings_frame.to_csv("{}/ratings/{}_{}.csv".format(home_path, self.__file_name, int(time.time())), index=False, header=False)
+            if not DEVELOPING:
+                ratings_frame.to_csv("{}/ratings/{}_{}.csv".format(home_path, self.__file_name, int(time.time())), index=False, header=False)
+            else:
+                ratings_frame.to_csv("{}_{}.csv".format(self.__file_name, int(time.time())), index=False, header=False)
 
         return ratings_frame
