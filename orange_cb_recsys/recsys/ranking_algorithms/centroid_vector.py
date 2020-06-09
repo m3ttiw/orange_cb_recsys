@@ -8,6 +8,7 @@ import os
 import pandas as pd
 import numpy as np
 
+from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.load_content import load_content_instance, get_unrated_items
 
 
@@ -116,11 +117,16 @@ class CentroidVector(RankingAlgorithm):
               items and the centroid
         """
         try:
+            logger.info("Retrieving array and putting them in the matrix")
             arrays = self.__get_arrays(items_directory, ratings)
             matrix = self.__build_matrix(arrays)
+
+            logger.info("Computing centroid")
             centroid = self.__centroid(matrix)
             columns = ["to_id", "rating"]
             scores = pd.DataFrame(columns=columns)
+
+            logger.info("Computing similarities")
             unrated_items = get_unrated_items(items_directory, ratings)
             for i, item in enumerate(unrated_items):
                 if i >= recs_number:

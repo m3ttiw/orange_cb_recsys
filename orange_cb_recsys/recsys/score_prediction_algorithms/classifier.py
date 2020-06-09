@@ -8,6 +8,7 @@ from orange_cb_recsys.content_analyzer.content_representation.content import Con
 import pandas as pd
 
 from orange_cb_recsys.recsys.algorithm import ScorePredictionAlgorithm
+from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.load_content import get_rated_items
 
 
@@ -40,7 +41,7 @@ class ClassifierRecommender(ScorePredictionAlgorithm):
         """
 
         features_bag_list = []
-
+        logger.info("Retrieving rated items")
         item_instances = get_rated_items(items_directory, ratings)
         for i, item in enumerate(item_instances):
             features_bag_list.append(item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value())
@@ -48,8 +49,10 @@ class ClassifierRecommender(ScorePredictionAlgorithm):
         for item in items:
             features_bag_list.append(item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value())
 
+        logger.info("Parsing bag of words to dense vectors")
         v = DictVectorizer(sparse=False)
 
+        logger.info("Labeling examples")
         score = [1 if rating > 0 else 0 for rating in list(ratings.score)]
 
         X_tmp = v.fit_transform(features_bag_list)
@@ -61,6 +64,8 @@ class ClassifierRecommender(ScorePredictionAlgorithm):
         columns = ["to_id", "rating"]
         score_frame = pd.DataFrame(columns=columns)
         new_items = [X_tmp[i] for i in range(len(X), len(features_bag_list))]
+
+        logger.info("Predicting scores")
         scores = clf.predict_proba(new_items)
 
         for score, item in zip(scores, items):

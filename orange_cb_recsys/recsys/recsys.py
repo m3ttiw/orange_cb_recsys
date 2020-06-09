@@ -5,6 +5,7 @@ from typing import List
 
 from orange_cb_recsys.recsys.algorithm import ScorePredictionAlgorithm, RankingAlgorithm
 from orange_cb_recsys.recsys.config import RecSysConfig
+from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.load_content import load_content_instance, get_unrated_items
 
 
@@ -46,15 +47,16 @@ class RecSys:
         if isinstance(self.__config.get_algorithm(), RankingAlgorithm):
             raise ValueError("You can't use ranking algorithms for predict score of specific items")
 
-        # load user instance
-        user = load_content_instance(self.__config.get_users_directory(), user_id)
-
         # load user ratings
+        logger.info("Loading user ratings")
         user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
 
         # define for which items calculate the prediction
+        logger.info("Defining for which items the prediction will be computed")
         items = self.__get_item_list(item_to_predict_id_list, user_ratings)
+
         # calculate predictions
+        logger.info("Computing predicitons")
         score_frame = self.__config.get_algorithm().predict(items, user_ratings, self.__config.get_items_directory())
 
         return score_frame
@@ -79,9 +81,11 @@ class RecSys:
             raise ValueError("You can't use rating prediction algorithms for this method")
 
         # load user ratings
+        logger.info("Loading user ratings")
         user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
 
         # calculate predictions
+        logger.info("Computing ranking")
         score_frame = self.__config.get_algorithm().predict(user_ratings, recs_number,
                                                             self.__config.get_items_directory())
 

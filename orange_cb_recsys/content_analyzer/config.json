@@ -2,7 +2,7 @@
   {
   "content_type": "ITEM",
   "output_directory": "movielens_test",
-  "raw_source_path": "../../datasets/movies_info.json",
+  "raw_source_path": "../../non_vcs_datasets/movies_info.json",
   "source_type": "json",
   "id_field_name": ["Title", "imdbID"],
   "start_from": "0",
