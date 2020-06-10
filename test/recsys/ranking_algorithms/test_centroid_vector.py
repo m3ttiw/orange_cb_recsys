@@ -42,4 +42,4 @@ class TestCentroidVector(TestCase):
             with lzma.open(file2, "rb") as content_file:
                 items.append(pickle.load(content_file))
 
-        self.assertGreater(alg.predict(ratings=ratings, recs_number=2, items_directory=path).rating[0], 0.9)
+        self.assertGreater(alg.predict('A000', ratings=ratings, recs_number=2, items_directory=path).rating[0], 0.9)

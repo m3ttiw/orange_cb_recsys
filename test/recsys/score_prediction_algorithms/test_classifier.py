@@ -29,4 +29,4 @@ class TestClassifierRecommender(TestCase):
         with lzma.open(file, "r") as content_file:
             item = pickle.load(content_file)
 
-        self.assertGreater('A000', alg.predict([item], ratings=ratings, items_directory=path).rating[0], 0)
+        self.assertGreater(alg.predict('A000', [item], ratings=ratings, items_directory=path).rating[0], 0)
