@@ -25,7 +25,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, S
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config2.json"
+DEFAULT_CONFIG_PATH = "config.json"
 
 implemented_preprocessing = [
     "nltk",
