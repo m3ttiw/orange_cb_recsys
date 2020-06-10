@@ -13,18 +13,18 @@ class TestClassifierRecommender(TestCase):
 
         alg = ClassifierRecommender("Plot", "2")
         ratings = pd.DataFrame.from_records([
-            ("A000", "Sudden Death_tt0114576", 0.5, "54654675"),
-            ("A000", "Balto_tt0112453", -0.5, "54654675")],
+            ("A000", "tt0114576", 0.5, "54654675"),
+            ("A000", "tt0112453", -0.5, "54654675")],
             columns=["from_id", "to_id", "score", "timestamp"])
 
         try:
             path = "../../../contents/movielens_test1591814823.8405635"
-            file = os.path.join(path, "Sudden Death_tt0114576.xz")
+            file = os.path.join(path, "tt0114576.xz")
             with lzma.open(file, "r") as content_file:
                 pass
         except FileNotFoundError:
             path = "contents/movielens_test1591814823.8405635"
-            file = os.path.join(path, "Sudden Death_tt0114576.xz")
+            file = os.path.join(path, "tt0114576.xz")
 
         with lzma.open(file, "r") as content_file:
             item = pickle.load(content_file)
