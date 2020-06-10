@@ -9,7 +9,7 @@ import pandas as pd
 import numpy as np
 
 from orange_cb_recsys.utils.const import logger
-from orange_cb_recsys.utils.load_content import load_content_instance, get_unrated_items
+from orange_cb_recsys.utils.load_content import load_content_instance, get_unrated_items, get_rated_items
 
 
 class CentroidVector(RankingAlgorithm):
@@ -53,15 +53,14 @@ class CentroidVector(RankingAlgorithm):
         """
         directory_item_list = [os.path.splitext(filename)[0] for filename in os.listdir(items_directory) if filename != 'search_index']
         arrays = []
-        for item in directory_item_list:
-            content = load_content_instance(items_directory, item)
-            content_id = content.get_content_id()
-            rating = ratings.loc[ratings['to_id'] == content_id].score
-            if not rating.empty and rating.item() > self.__threshold:
-                if self.get_item_field() not in content.get_field_list():
+        rated_items = get_rated_items(items_directory, ratings)
+        for item in rated_items:
+            content_id = item.get_content_id()
+            if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold:
+                if self.get_item_field() not in item.get_field_list():
                     raise ValueError("The field name specified could not be found!")
                 else:
-                    representation = content.get_field(self.get_item_field()).get_representation(self.get_item_field_representation())
+                    representation = item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation())
                     if representation is None:
                         raise ValueError("The given representation id wasn't found for the specified field")
                     elif len(representation.get_value().shape) != 1:
@@ -120,7 +119,7 @@ class CentroidVector(RankingAlgorithm):
                 scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                    ignore_index=True)
 
-            scores = scores.sort_values(['similarity'], ascending=True)
+            scores = scores.sort_values(['similarity'], ascending=False)
             scores = scores[:recs_number]
 
             return scores

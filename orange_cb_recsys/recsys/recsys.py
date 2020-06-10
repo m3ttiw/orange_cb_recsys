@@ -85,7 +85,8 @@ class RecSys:
 
         # load user ratings
         logger.info("Loading user ratings")
-        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
+        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'] == user_id]
+        user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
 
         # calculate predictions
         logger.info("Computing ranking")

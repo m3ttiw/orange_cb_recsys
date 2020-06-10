@@ -1,13 +1,11 @@
-from unittest import TestCase
-from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector
-from orange_cb_recsys.recsys.ranking_algorithms.similarities import CosineSimilarity
-
 import lzma
-import pandas as pd
 import os
 import pickle
+from unittest import TestCase
 
-from orange_cb_recsys.recsys.score_prediction_algorithms.classifier import ClassifierRecommender
+from orange_cb_recsys.recsys import CosineSimilarity, CentroidVector
+
+import pandas as pd
 
 
 class TestCentroidVector(TestCase):
@@ -45,28 +43,3 @@ class TestCentroidVector(TestCase):
                 items.append(pickle.load(content_file))
 
         self.assertGreater(alg.predict(ratings=ratings, recs_number=2, items_directory=path).rating[0], 0.9)
-
-
-class TestClassifierRecommender(TestCase):
-    def test_predict(self):
-
-        alg = ClassifierRecommender("Plot", "2")
-        ratings = pd.DataFrame.from_records([
-            ("A000", "Sudden Death_tt0114576", 0.5, "54654675"),
-            ("A000", "Balto_tt0112453", -0.5, "54654675")],
-            columns=["from_id", "to_id", "score", "timestamp"])
-
-        try:
-            path = "../../../contents/movielens_test1591453035.7551947"
-            file = os.path.join(path, "Sudden Death_tt0114576.xz")
-            with lzma.open(file, "r") as content_file:
-                pass
-        except FileNotFoundError:
-            path = "contents/movielens_test1591453035.7551947"
-            file = os.path.join(path, "Sudden Death_tt0114576.xz")
-
-        with lzma.open(file, "r") as content_file:
-            item = pickle.load(content_file)
-
-        print(alg.predict([item], ratings=ratings, items_directory=path))
-        self.assertGreater(alg.predict([item], ratings=ratings, items_directory=path).rating[0], 0)
