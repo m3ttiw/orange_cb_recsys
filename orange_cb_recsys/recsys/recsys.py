@@ -14,6 +14,7 @@ class RecSys:
     Class that represent a recommender system, to isntatiate
     this class a config object must be provided
     """
+
     def __init__(self, config: RecSysConfig):
         self.__config: RecSysConfig = config
 
@@ -44,12 +45,13 @@ class RecSys:
         Raises:
              ValueError: if the algorithm is a ranking algorithm
         """
-        if isinstance(self.__config.get_algorithm(), RankingAlgorithm):
-            raise ValueError("You can't use ranking algorithms for predict score of specific items")
+        if self.__config.get_score_prediction_algorithm() is None:
+            raise ValueError("You must set score prediction algorithm to use this method")
 
         # load user ratings
         logger.info("Loading user ratings")
-        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'].str.match(user_id)]
+        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'] == user_id]
+        user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
 
         # define for which items calculate the prediction
         logger.info("Defining for which items the prediction will be computed")
@@ -57,7 +59,8 @@ class RecSys:
 
         # calculate predictions
         logger.info("Computing predicitons")
-        score_frame = self.__config.get_algorithm().predict(items, user_ratings, self.__config.get_items_directory())
+        score_frame = self.__config.get_score_prediction_algorithm().predict(user_id, items, user_ratings,
+                                                                             self.__config.get_items_directory())
 
         return score_frame
 
@@ -77,8 +80,8 @@ class RecSys:
         Raises:
              ValueError: if the algorithm is a score prediction algorithm
         """
-        if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
-            raise ValueError("You can't use rating prediction algorithms for this method")
+        if self.__config.get_ranking_algorithm() is None:
+            raise ValueError("You must set ranking algorithm to use this method")
 
         # load user ratings
         logger.info("Loading user ratings")
@@ -86,12 +89,12 @@ class RecSys:
 
         # calculate predictions
         logger.info("Computing ranking")
-        score_frame = self.__config.get_algorithm().predict(user_ratings, recs_number,
-                                                            self.__config.get_items_directory())
+        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
+                                                                    self.__config.get_items_directory())
 
         return score_frame
 
-    def fit_eval(self, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
+    def fit_eval_predict(self, user_id, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
         """
         Computes predicted ratings, or ranking (according to algorithm chosed in the config)
         user ratings will be used as train set to fit the algorithm.
@@ -105,17 +108,22 @@ class RecSys:
             (DataFrame): result frame whose columns are: to_id, rating
         """
         score_frame = None
-        if isinstance(self.__config.get_algorithm(), ScorePredictionAlgorithm):
-            # get test set items
-            item_to_predict_id_list = [item for item in test_set.item_id]  # unrated items list
-            items = [load_content_instance(self.__config.get_items_directory(), re.sub(r'[^\w\s]', '', item_id))
-                     for item_id in item_to_predict_id_list]
+        logger.info("Loading items")
+        item_to_predict_id_list = [item for item in test_set.to_id]  # unrated items list
+        items = [load_content_instance(self.__config.get_items_directory(), re.sub(r'[^\w\s]', '', item_id))
+                 for item_id in item_to_predict_id_list]
 
-            # calculate predictions
-            score_frame = self.__config.get_algorithm().predict(items, user_ratings,
-                                                                self.__config.get_items_directory())
-        elif isinstance(self.__config.get_algorithm(), RankingAlgorithm):
-            score_frame = self.__config.get_algorithm().predict(user_ratings, test_set.shape[0],
-                                                                self.__config.get_items_directory())
+        logger.info("Loaded %d items" % len(items))
+
+        # calculate predictions
+        logger.info("Computing predictions")
+        score_frame = self.__config.get_score_prediction_algorithm().predict(user_id, items, user_ratings,
+                                                                             self.__config.get_items_directory())
+
+        return score_frame
+
+    def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
+        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, test_set.shape[0],
+                                                                    self.__config.get_items_directory())
 
         return score_frame

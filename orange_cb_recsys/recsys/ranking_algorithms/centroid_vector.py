@@ -52,7 +52,7 @@ class CentroidVector(RankingAlgorithm):
             the embedding arrays corresponding to the requested field
         """
         directory_item_list = [os.path.splitext(filename)[0] for filename in os.listdir(items_directory) if filename != 'search_index']
-        arrays: dict = {}
+        arrays = []
         for item in directory_item_list:
             content = load_content_instance(items_directory, item)
             content_id = content.get_content_id()
@@ -68,24 +68,8 @@ class CentroidVector(RankingAlgorithm):
                         raise ValueError("The specified representation is not a document embedding, so the centroid"
                                          " can not be calculated")
                     else:
-                        arrays[content_id] = representation.get_value()
-        return arrays
-
-    @staticmethod
-    def __build_matrix(arrays: dict) -> np.array:
-        """
-        Builds a matrix containing the values of the arrays stored in arrays
-
-        Args:
-            arrays (dict): Dictionary whose values mus be inserted in the matrix
-
-        Returns:
-             np.array: Matrix
-        """
-        matrix = []
-        for item_id in arrays.keys():
-            matrix.append(arrays[item_id])
-        return np.array(matrix)
+                        arrays.append(representation.get_value())
+        return np.array(arrays)
 
     @staticmethod
     def __centroid(matrix) -> np.ndarray:
@@ -100,7 +84,7 @@ class CentroidVector(RankingAlgorithm):
         """
         return np.average(matrix, axis=0)
 
-    def predict(self, ratings: pd.DataFrame, recs_number: int, items_directory: str) -> pd.DataFrame:
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str) -> pd.DataFrame:
         """
         For each item:
         1) Takes the embedding arrays
@@ -108,6 +92,7 @@ class CentroidVector(RankingAlgorithm):
         be a representation that allows the computation of a centroid, otherwise the method will raise an exception;
         3) Determines the similarity between the centroid and the field_representation of the item_field in item.
         Args:
+            user_id:
             recs_number (list[Content]): How long the ranking will be
             ratings (pd.DataFrame): Ratings
             items_directory (str): Name of the directory where the items are stored.
@@ -118,26 +103,25 @@ class CentroidVector(RankingAlgorithm):
         """
         try:
             logger.info("Retrieving array and putting them in the matrix")
-            arrays = self.__get_arrays(items_directory, ratings)
-            matrix = self.__build_matrix(arrays)
+            matrix = self.__get_arrays(items_directory, ratings)
 
             logger.info("Computing centroid")
             centroid = self.__centroid(matrix)
-            columns = ["to_id", "rating"]
+            columns = ["to_id", "similarity"]
             scores = pd.DataFrame(columns=columns)
 
             logger.info("Computing similarities")
             unrated_items = get_unrated_items(items_directory, ratings)
             for i, item in enumerate(unrated_items):
-                if i >= recs_number:
-                    break
                 item_id = item.get_content_id()
                 item_field_representation = item.get_field(self.get_item_field()).get_representation(
                     self.get_item_field_representation()).get_value()
                 similarity = self.__similarity.perform(centroid, item_field_representation)
-                score = similarity * 2 - 1
-                scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, score)], columns=columns)],
+                scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                    ignore_index=True)
+
+            scores = scores.sort_values(['similarity'], ascending=True)
+            scores = scores[:recs_number]
 
             return scores
         except ValueError as v:

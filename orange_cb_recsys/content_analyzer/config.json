@@ -4,13 +4,12 @@
   "output_directory": "movielens_test",
   "raw_source_path": "../../non_vcs_datasets/movies_info.json",
   "source_type": "json",
-  "id_field_name": ["Title", "imdbID"],
-  "start_from": "0",
-  "end_up_at": "all",
+  "id_field_name": ["imdbID"],
   "search_index": "True",
   "fields": [
     {
       "field_name": "Plot",
+      "lang": "EN",
       "memory_interface": "None",
       "memory_interface_path": "None",
       "pipeline_list": [
@@ -32,32 +31,6 @@
         "field_content_production": {"class": "sk_learn_tf-idf"},
         "preprocessing_list": [
           {"class": "nltk", "lemmatization": "True"}
-          ]
-        }
-      ]
-    }
-  ]
-  },
-  {
-    "content_type": "USER",
-    "output_directory": "users_test",
-    "raw_source_path": "../../datasets/users_info.json",
-    "source_type": "json",
-    "id_field_name": ["user_id"],
-    "search_index": "False",
-    "start_from": "0",
-    "end_up_at": "all",
-    "fields": [
-    {
-      "field_name": "name",
-      "search_index": "False",
-      "memory_interface": "None",
-      "memory_interface_path": "None",
-      "pipeline_list": [
-        {
-        "field_content_production": "None",
-        "preprocessing_list": [
-          {"class": "nltk", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
           ]
         }
       ]

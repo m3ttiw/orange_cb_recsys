@@ -36,10 +36,10 @@ class FieldRepresentationPipeline:
         Args:
             preprocessor (InformationProcessor): The preprocessor to add
         """
-        self.__preprocessor_list.append(preprocessor.set_lang())
+        self.__preprocessor_list.append(preprocessor)
 
     def set_content_technique(self, content_technique: FieldContentProductionTechnique):
-        self.__content_technique = content_technique.set_lang()
+        self.__content_technique = content_technique
 
     def get_preprocessor_list(self) -> List[InformationProcessor]:
         for preprocessor in self.__preprocessor_list:

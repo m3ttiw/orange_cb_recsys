@@ -19,7 +19,7 @@ from org.apache.lucene.analysis.core import SimpleAnalyzer
 
 class IndexQuery(RankingAlgorithm):
     def __init__(self, classic_similarity: bool = True, positive_treshold: float = 0):
-        super().__init__()
+        super().__init__(None, None)
         self.__classic_similarity: bool = classic_similarity
         self.__positive_treshold: float = positive_treshold
 
@@ -78,7 +78,7 @@ class IndexQuery(RankingAlgorithm):
 
         return score_frame
 
-    def predict(self, ratings: pd.DataFrame, items_directory: str):
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number, items_directory: str):
         index_path = os.path.join(items_directory, 'search_index')
         if not DEVELOPING:
             index_path = os.path.join(home_path, items_directory, 'search_index')

@@ -1,6 +1,6 @@
 import os
 
-from orange_cb_recsys.recsys.algorithm import RankingAlgorithm, Algorithm
+from orange_cb_recsys.recsys.algorithm import RankingAlgorithm, ScorePredictionAlgorithm
 
 from orange_cb_recsys.utils.const import home_path, DEVELOPING
 from orange_cb_recsys.utils.load_ratings import load_ratings
@@ -9,7 +9,8 @@ from orange_cb_recsys.utils.load_ratings import load_ratings
 class RecSysConfig:
     def __init__(self, users_directory: str,
                  items_directory: str,
-                 algorithm: Algorithm,
+                 score_prediction_algorithm: ScorePredictionAlgorithm = None,
+                 ranking_algorithm: RankingAlgorithm = None,
                  rating_frame=None):
         if DEVELOPING:
             self.__users_directory: str = users_directory
@@ -18,7 +19,11 @@ class RecSysConfig:
             self.__users_directory: str = os.path.join(home_path, users_directory)
             self.__items_directory: str = os.path.join(home_path, items_directory)
 
-        self.__algorithm: Algorithm = algorithm
+        self.__score_prediction_algorithm: ScorePredictionAlgorithm = score_prediction_algorithm
+        self.__ranking_algorithm: RankingAlgorithm = ranking_algorithm
+
+        if self.__score_prediction_algorithm is None and self.__ranking_algorithm is None:
+            raise ValueError("You must set at least one algorithm")
 
         if type(rating_frame) is str:
             self.__rating_frame = load_ratings(rating_frame)
@@ -31,8 +36,11 @@ class RecSysConfig:
     def get_items_directory(self):
         return self.__items_directory
 
-    def get_algorithm(self):
-        return self.__algorithm
+    def get_score_prediction_algorithm(self):
+        return self.__score_prediction_algorithm
+
+    def get_ranking_algorithm(self):
+        return self.__ranking_algorithm
 
     def get_rating_frame(self):
         return self.__rating_frame

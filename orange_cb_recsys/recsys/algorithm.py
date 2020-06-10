@@ -45,10 +45,10 @@ class Algorithm(ABC):
 
 
 class RankingAlgorithm(Algorithm):
-    def predict(self, ratings: pd.DataFrame, recs_number: int, items_directory: str):
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str):
         raise NotImplementedError
 
 
 class ScorePredictionAlgorithm(Algorithm):
-    def predict(self, items: List[Content], ratings: pd.DataFrame, items_directory: str):
+    def predict(self, user_id: str, items: List[Content], ratings: pd.DataFrame, items_directory: str):
         raise NotImplementedError
