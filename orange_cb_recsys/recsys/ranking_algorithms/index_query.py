@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 
@@ -78,7 +79,7 @@ class IndexQuery(RankingAlgorithm):
 
         return score_frame
 
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number, items_directory: str):
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number, items_directory: str, candidate_item_id_list: List = None):
         index_path = os.path.join(items_directory, 'search_index')
         if not DEVELOPING:
             index_path = os.path.join(home_path, items_directory, 'search_index')
