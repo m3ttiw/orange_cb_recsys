@@ -129,7 +129,7 @@ class EvalModel:
             columns = ["from_id", "to_id", "rating"]
             score_frame = pd.DataFrame(columns=columns)
             for user_id in user_id_list:
-
+                logger.info("User %s" % user_id)
                 fit_result = recsys.fit_ranking(user_id, 20)
                 fit_result_with_user = pd.DataFrame(columns=columns)
 
@@ -139,7 +139,7 @@ class EvalModel:
 
                 score_frame = pd.concat([fit_result_with_user, score_frame], ignore_index=True)
 
-            logger.info("Computing ranking metrics for user")
+            logger.info("Computing fairness metrics")
             fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
                                                                 user_groups=self.__fairness_metric_config.get_user_groups(),
                                                                 truth_frame=self.__config.get_rating_frame(),
