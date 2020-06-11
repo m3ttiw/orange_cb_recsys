@@ -104,14 +104,15 @@ class CentroidVector(RankingAlgorithm):
               items and the centroid
         """
 
-        print(ratings)
-
         try:
             logger.info("Retrieving array and putting them in the matrix")
             matrix = self.__get_arrays(items_directory, ratings)
 
             logger.info("Computing centroid")
             centroid = self.__centroid(matrix)
+
+            print(centroid.shape)
+
             columns = ["to_id", "similarity"]
             scores = pd.DataFrame(columns=columns)
 
