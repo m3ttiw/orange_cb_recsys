@@ -40,13 +40,13 @@ class TestRecSys(TestCase):
         path = 'contents'
         try:
             RecSysConfig(users_directory='{}/users_test1591814865.8959296'.format(path),
-                         items_directory='{}/movielens_test1591814823.8405635'.format(path),
+                         items_directory='{}/movielens_test1591885241.5520566'.format(path),
                          rating_frame=t_ratings)
         except ValueError:
             pass
         t_classifier = ClassifierRecommender(item_field='Plot', field_representation='2')
         t_config = RecSysConfig(users_directory='{}/users_test1591814865.8959296'.format(path),
-                                items_directory='{}/movielens_test1591814823.8405635'.format(path),
+                                items_directory='{}/movielens_test1591885241.5520566'.format(path),
                                 rating_frame=t_ratings,
                                 score_prediction_algorithm=t_classifier)
         t_recsys = RecSys(config=t_config)
@@ -65,7 +65,7 @@ class TestRecSys(TestCase):
         t_centroid = CentroidVector(item_field='Plot', field_representation='1', similarity=CosineSimilarity())
 
         t_config = RecSysConfig(users_directory='{}/users_test1591814865.8959296'.format(path),
-                                items_directory='{}/movielens_test1591814823.8405635'.format(path),
+                                items_directory='{}/movielens_test1591885241.5520566'.format(path),
                                 rating_frame=t_ratings,
                                 ranking_algorithm=t_centroid)
         t_recsys = RecSys(config=t_config)
