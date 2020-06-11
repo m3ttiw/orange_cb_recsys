@@ -11,7 +11,7 @@ from orange_cb_recsys.recsys.score_prediction_algorithms.classifier import Class
 class TestClassifierRecommender(TestCase):
     def test_predict(self):
 
-        alg = ClassifierRecommender("Plot", "2")
+        alg = ClassifierRecommender("Plot", "2", 0)
         ratings = pd.DataFrame.from_records([
             ("A000", "tt0114576", 0.5, "54654675"),
             ("A000", "tt0112453", -0.5, "54654675")],
