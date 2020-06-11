@@ -8,9 +8,6 @@ from orange_cb_recsys.recsys.config import RecSysConfig
 from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.load_content import load_content_instance, get_unrated_items
 
-import lucene
-lucene.initVM(vmargs=['-Djava.awt.headless=true'])
-
 
 class RecSys:
     """
