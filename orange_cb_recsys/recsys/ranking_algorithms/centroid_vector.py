@@ -120,7 +120,7 @@ class CentroidVector(RankingAlgorithm):
                 scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                    ignore_index=True)
 
-            scores = scores.sort_values(['similarity'], ascending=False).reset_index()
+            scores = scores.sort_values(['similarity'], ascending=False).reset_index(drop=True)
             scores = scores[:recs_number]
 
             return scores
