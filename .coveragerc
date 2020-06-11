@@ -10,6 +10,7 @@ exclude_lines =
     def __init__
     def set
     def get
+    def append
     if self.debug:
     if settings.DEBUG
     raise AssertionError
