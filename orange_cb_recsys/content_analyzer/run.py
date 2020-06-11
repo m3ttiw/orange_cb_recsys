@@ -25,7 +25,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, S
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config.json"
+DEFAULT_CONFIG_PATH = "config_prova.json"
 
 implemented_preprocessing = [
     "nltk",
@@ -116,7 +116,11 @@ def content_config_run(config_list: List[Dict]):
             content_config['search_index'])
 
         for field_dict in content_config['fields']:
-            field_config = FieldConfig()
+            try:
+                field_config = FieldConfig(field_dict['lang'])
+            except KeyError:
+                field_config = FieldConfig()
+
             # setting the content analyzer config
 
             for pipeline_dict in field_dict['pipeline_list']:

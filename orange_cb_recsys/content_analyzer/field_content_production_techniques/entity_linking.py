@@ -13,9 +13,14 @@ class BabelPyEntityLinking(EntityLinking):
 
     def __init__(self, api_key: str = None):
         super().__init__()
+        self.__api_key = api_key
+        self.__babel_client = None
+
+    def set_lang(self, lang: str):
+        super().set_lang(lang)
         params = dict()
         params['lang'] = self.get_lang()
-        self.__babel_client = BabelfyClient(api_key, params)
+        self.__babel_client = BabelfyClient(self.__api_key, params)
 
     def __str__(self):
         return "BabelPyEntityLinking"
@@ -28,4 +33,5 @@ class BabelPyEntityLinking(EntityLinking):
         if self.__babel_client.entities is not None:
             for entity in self.__babel_client.entities:
                 feature_bag.append_feature(entity['babelSynsetID'], entity['globalScore'])
+
         return feature_bag

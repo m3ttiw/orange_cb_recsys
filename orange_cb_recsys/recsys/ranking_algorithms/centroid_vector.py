@@ -51,19 +51,19 @@ class CentroidVector(RankingAlgorithm):
             arrays (dict<str, FieldRepresentation>): Dictionary whose keys are the id of the items and the values are
             the embedding arrays corresponding to the requested field
         """
-        directory_item_list = [os.path.splitext(filename)[0] for filename in os.listdir(items_directory) if filename != 'search_index']
         arrays = []
         rated_items = get_rated_items(items_directory, ratings)
         for item in rated_items:
-            content_id = item.get_content_id()
             if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold:
                 if self.get_item_field() not in item.get_field_list():
                     raise ValueError("The field name specified could not be found!")
                 else:
-                    representation = item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation())
-                    if representation is None:
+                    try:
+                        representation = item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation())
+                    except KeyError:
                         raise ValueError("The given representation id wasn't found for the specified field")
-                    elif len(representation.get_value().shape) != 1:
+
+                    if len(representation.get_value().shape) != 1:
                         raise ValueError("The specified representation is not a document embedding, so the centroid"
                                          " can not be calculated")
                     else:
@@ -115,6 +115,7 @@ class CentroidVector(RankingAlgorithm):
                 item_id = item.get_content_id()
                 item_field_representation = item.get_field(self.get_item_field()).get_representation(
                     self.get_item_field_representation()).get_value()
+                logger.info("Computing similarity with %s" % item_id)
                 similarity = self.__similarity.perform(centroid, item_field_representation)
                 scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                    ignore_index=True)
