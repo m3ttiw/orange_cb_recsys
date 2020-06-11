@@ -14,6 +14,10 @@
       "memory_interface_path": "None",
       "pipeline_list": [
         {
+        "field_content_production": {"class": "babelpy", "api_key": "bd7835be-12f7-4717-8c5f-429e3e968998"},
+        "preprocessing_list": []
+        },
+        {
         "field_content_production": {"class": "search_index"},
         "preprocessing_list": [
           ]
