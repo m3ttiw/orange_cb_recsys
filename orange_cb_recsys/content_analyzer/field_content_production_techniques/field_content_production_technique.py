@@ -202,7 +202,6 @@ class EmbeddingSource(ABC):
         embedding_matrix = np.ndarray(shape=(len(text), self.get_vector_size()))
 
         text = check_tokenized(text)
-
         for i, word in enumerate(text):
             word = word.lower()
             try:

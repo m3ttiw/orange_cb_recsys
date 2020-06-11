@@ -3,7 +3,7 @@ from typing import Dict
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity
-from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation
+from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation, EmbeddingField
 import os
 import pandas as pd
 import numpy as np
@@ -63,6 +63,9 @@ class CentroidVector(RankingAlgorithm):
                     except KeyError:
                         raise ValueError("The given representation id wasn't found for the specified field")
 
+                    if not isinstance(representation, EmbeddingField):
+                        raise ValueError("The given representation must be an embedding")
+
                     if len(representation.get_value().shape) != 1:
                         raise ValueError("The specified representation is not a document embedding, so the centroid"
                                          " can not be calculated")
@@ -100,6 +103,9 @@ class CentroidVector(RankingAlgorithm):
              scores (pd.DataFrame): DataFrame whose columns are the ids of the items, and the similarities between the
               items and the centroid
         """
+
+        print(ratings)
+
         try:
             logger.info("Retrieving array and putting them in the matrix")
             matrix = self.__get_arrays(items_directory, ratings)
