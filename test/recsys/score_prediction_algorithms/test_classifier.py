@@ -18,12 +18,12 @@ class TestClassifierRecommender(TestCase):
             columns=["from_id", "to_id", "score", "timestamp"])
 
         try:
-            path = "../../../contents/movielens_test1591814823.8405635"
+            path = "../../../contents/movielens_test1591885241.5520566"
             file = os.path.join(path, "tt0114576.xz")
             with lzma.open(file, "r") as content_file:
                 pass
         except FileNotFoundError:
-            path = "contents/movielens_test1591814823.8405635"
+            path = "contents/movielens_test1591885241.5520566"
             file = os.path.join(path, "tt0114576.xz")
 
         with lzma.open(file, "r") as content_file:

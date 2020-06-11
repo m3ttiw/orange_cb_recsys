@@ -61,7 +61,8 @@ class IndexInterface(TextInterface):
         self.__doc.add(Field(field_name, field_data, self.__field_type_searching))
 
     def serialize_content(self):
-        return self.__writer.addDocument(self.__doc)
+        doc_index = self.__writer.addDocument(self.__doc)
+        return doc_index - 1
 
     def stop_writing(self):
         self.__writer.commit()

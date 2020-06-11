@@ -226,6 +226,8 @@ class NLTK(NLP):
             field_data = self.__url_tagging_operation(field_data)
         field_data = self.__tokenization_operation(field_data)
         if self.get_stopwords_removal():
+            print("sto")
+            print(field_data)
             field_data = self.__stopwords_removal_operation(field_data)
         if self.get_lemmatization():
             field_data = self.__lemmatization_operation(field_data)

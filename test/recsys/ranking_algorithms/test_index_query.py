@@ -19,7 +19,7 @@ class TestIndexQuery(TestCase):
             ("A000", "tt0113101", "sdfgd", -0.87, "54654675")
         ], columns=["from_id", "to_id", "original_rating", "score", "timestamp"])
 
-        path = "../../../contents/movielens_test1591814823.8405635"
+        path = "../../../contents/movielens_test1591885241.5520566"
         items = []
         try:
             file1 = os.path.join(path, "tt0114576.xz")
@@ -30,7 +30,7 @@ class TestIndexQuery(TestCase):
             with lzma.open(file2, "rb") as content_file:
                 items.append(pickle.load(content_file))
         except FileNotFoundError:
-            path = "contents/movielens_test1591814823.8405635"
+            path = "contents/movielens_test1591885241.5520566"
             file1 = os.path.join(path, "tt0114576.xz")
             with lzma.open(file1, "rb") as content_file:
                 items.append(pickle.load(content_file))
