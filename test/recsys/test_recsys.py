@@ -52,6 +52,7 @@ class TestRecSys(TestCase):
         t_recsys = RecSys(config=t_config)
         # t_recsys.fit_predict('1', [x for x in item_id_list if np.random.randint(0, 2) == 1])
         t_recsys.fit_predict('1', ['tt0114885'])
+        t_recsys.fit_predict('1')
 
         user_frame = t_ratings[t_ratings['from_id'] == '1']
         test_set = pd.DataFrame({'to_id': ['tt0112281', 'tt0112302']})
