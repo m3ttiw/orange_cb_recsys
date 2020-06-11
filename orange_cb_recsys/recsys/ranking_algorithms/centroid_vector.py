@@ -28,7 +28,7 @@ class CentroidVector(RankingAlgorithm):
         self.__similarity = similarity
         self.__threshold = threshold
 
-    def __get_arrays(self, items_directory: str, ratings: pd.DataFrame) -> Dict[str, FieldRepresentation]:
+    def __get_arrays(self, items_directory: str, ratings: pd.DataFrame) -> np.ndarray:
         """
         1) Iterates the files into items_directory
         2) For each file (that represents an item), checks if its id is present in rated_items. If false, skips
