@@ -12,7 +12,7 @@ def perform_precision(prediction_labels: pd.Series, truth_labels: pd.Series) -> 
 
     Args:
         prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
-        truth_labels (pd.Series): pandas Series wich contains truth "labels"
+        truth_labels (pd.Series): pandas Series which contains truth "labels"
 
     Returns:
         score (float): precision

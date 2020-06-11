@@ -97,7 +97,7 @@ class EvalModel:
                     test = user_ratings.iloc[partition_index[1]]
 
                     predictions = recsys.fit_eval_ranking(user_id, train, test)
-                    truth = pd.DataFrame(test[test.columns[[1, 2]]]).reset_index(drop=True)
+                    truth = test.loc[:, 'to_id':'score']
                     truth.columns = ["to_id", "rating"]
 
                     result_dict = perform_ranking_metrics(predictions, truth)
