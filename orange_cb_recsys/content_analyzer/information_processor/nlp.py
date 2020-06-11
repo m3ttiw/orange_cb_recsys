@@ -33,6 +33,21 @@ class NLTK(NLP):
                  url_tagging: bool = False,
                  lang='english'):
 
+        if type(stopwords_removal) is str:
+            stopwords_removal = stopwords_removal.lower() == 'true'
+
+        if type(stemming) is str:
+            stemming = stemming.lower() == 'true'
+
+        if type(lemmatization) is str:
+            lemmatization = lemmatization.lower() == 'true'
+
+        if type(strip_multiple_whitespaces) is str:
+            strip_multiple_whitespaces = strip_multiple_whitespaces.lower() == 'true'
+
+        if type(url_tagging) is str:
+            url_tagging = url_tagging.lower() == 'true'
+
         super().__init__(stopwords_removal,
                          stemming, lemmatization,
                          strip_multiple_whitespaces, url_tagging)
@@ -105,7 +120,7 @@ class NLTK(NLP):
 
         filtered_sentence = []
         for word_token in text:
-            if word_token not in stop_words:
+            if word_token.lower() not in stop_words:
                 filtered_sentence.append(word_token)
 
         return filtered_sentence
@@ -226,8 +241,6 @@ class NLTK(NLP):
             field_data = self.__url_tagging_operation(field_data)
         field_data = self.__tokenization_operation(field_data)
         if self.get_stopwords_removal():
-            print("sto")
-            print(field_data)
             field_data = self.__stopwords_removal_operation(field_data)
         if self.get_lemmatization():
             field_data = self.__lemmatization_operation(field_data)

@@ -20,7 +20,7 @@ class TestNLTK(TestCase):
         nltka.set_lang("")
         self.assertEqual(nltka.process(
                 "The striped bats are hanging on their feet for the best"),
-                ["The", "striped", "bats", "hanging", "feet", "best"])
+                ["striped", "bats", "hanging", "feet", "best"])
 
         #Test for only stemming
         nltka.set_stemming(True)
@@ -58,7 +58,7 @@ class TestNLTK(TestCase):
         nltka.set_stopwords_removal(True)
         self.assertEqual(nltka.process(
             "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
-            ["the", "strip", "<url>", "bat", "<url>", "<url>", "hang", "foot", "best", "<url>"])
+            ["strip", "<url>", "bat", "<url>", "<url>", "hang", "foot", "best", "<url>"])
 
         nltka.set_named_entity_recognition(True)
         nltka.set_stopwords_removal(False)
