@@ -18,7 +18,6 @@ def perform_precision(prediction_labels: pd.Series, truth_labels: pd.Series) -> 
         score (float): precision
     """
     logger.info("Computing precision")
-
     return prediction_labels.isin(truth_labels).sum() / len(prediction_labels)
 
 

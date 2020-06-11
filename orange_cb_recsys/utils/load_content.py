@@ -28,13 +28,13 @@ def get_unrated_items(items_directory, ratings):
     rated_items_filename_list = set([re.sub(r'[^\w\s]', '', item_id) for item_id in ratings.to_id])
 
     logger.info("Checking if unrated")
-    item_to_predict_id_list = [item_id for item_id in directory_filename_list if
-                               item_id not in rated_items_filename_list]
+    item_to_predict_filename_list = [item_id for item_id in directory_filename_list if
+                                     item_id not in rated_items_filename_list]
 
     logger.info("Loading unrated items")
     item_to_predict_list = [
         load_content_instance(items_directory, item_id)
-        for item_id in item_to_predict_id_list]
+        for item_id in item_to_predict_filename_list]
 
     return item_to_predict_list
 
@@ -49,13 +49,14 @@ def get_rated_items(items_directory, ratings):
     rated_items_filename_list = set([re.sub(r'[^\w\s]', '', item_id) for item_id in ratings.to_id])
 
     logger.info("Checking if rated")
-    item_to_predict_id_list = [item_id for item_id in directory_filename_list if item_id in rated_items_filename_list]
+    item_to_predict_filename_list = [item_id for item_id in directory_filename_list if
+                                     item_id in rated_items_filename_list]
 
-    item_to_predict_id_list.sort()
+    item_to_predict_filename_list.sort()
 
     logger.info("Loading rated items")
     item_to_predict_list = [
-        load_content_instance(items_directory, item_id) for item_id in item_to_predict_id_list]
+        load_content_instance(items_directory, item_id) for item_id in item_to_predict_filename_list]
 
     return item_to_predict_list
 
