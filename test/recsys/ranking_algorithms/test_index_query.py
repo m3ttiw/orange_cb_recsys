@@ -3,6 +3,7 @@ import os
 import pickle
 from unittest import TestCase
 import pandas as pd
+import lucene
 
 from orange_cb_recsys.recsys import IndexQuery, RecSysConfig, RecSys
 
@@ -39,4 +40,8 @@ class TestIndexQuery(TestCase):
             with lzma.open(file2, "rb") as content_file:
                 items.append(pickle.load(content_file))
         t_index = IndexQuery()
-        t_index.predict(user_id='A000', ratings=ratings, recs_number=2, items_directory=path)
+        try:
+            t_index.predict(user_id='A000', ratings=ratings, recs_number=2, items_directory=path)
+        except RuntimeError:
+            lucene.initVM(vmargs=['-Djava.awt.headless=true'])
+            t_index.predict(user_id='A000', ratings=ratings, recs_number=2, items_directory=path)
