@@ -96,15 +96,15 @@ class EvalModel:
                     train = user_ratings.iloc[partition_index[0]]
                     test = user_ratings.iloc[partition_index[1]]
 
-                    predictions = recsys.fit_eval_ranking(user_id, train, test)
                     truth = test.loc[:, 'to_id':'score']
                     truth.columns = ["to_id", "rating"]
-
+                    relevant_items = truth[truth['rating'] >= 0.5].to_id.tolist()
+                    predictions = recsys.fit_eval_ranking(user_id, train, relevant_items)
                     result_dict = perform_ranking_metrics(predictions, truth)
                     result_dict["from"] = user_id
                     ranking_metric_results = ranking_metric_results.append(result_dict, ignore_index=True)
 
-                ranking_metric_results.groupby('from').mean()
+                ranking_metric_results = ranking_metric_results.groupby('from').mean().reset_index()
 
         # calculate fairness metrics
         fairness_metrics_results = \

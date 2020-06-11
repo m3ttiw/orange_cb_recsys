@@ -23,6 +23,7 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
         results (Dict[str, object]): results of the computations of all ranking metrics
     """
     content_prediction = pd.Series(predictions['to_id'].values)
+
     if "relevant_threshold" in options.keys():
         relevant_rank = truth[truth['rating'] >= options["relevant_threshold"]]
     else:
