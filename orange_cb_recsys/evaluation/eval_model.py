@@ -20,16 +20,24 @@ class FairnessMetricsConfig:
         return self.__user_groups
 
 
+class RankingMetricsConfig:
+    def __init__(self, relevant_threshold):
+        self.__relevant_threshold = relevant_threshold
+
+    def get_relevant_threshold(self):
+        return self.__relevant_threshold
+
+
 class EvalModel:
     def __init__(self, config: RecSysConfig,
                  partitioning: Partitioning,
                  prediction_metric: bool = True,
-                 ranking_metric: bool = True,
+                 ranking_metrics_config: RankingMetricsConfig = None,
                  fairness_metric_config: FairnessMetricsConfig = None):
         self.__config: RecSysConfig = config
         self.__partitioning = partitioning
         self.__prediction_metric = prediction_metric
-        self.__ranking_metric = ranking_metric
+        self.__ranking_metrics_config: RankingMetricsConfig = ranking_metrics_config
         self.__fairness_metric_config: FairnessMetricsConfig = fairness_metric_config
 
     def fit(self):
@@ -77,7 +85,7 @@ class EvalModel:
             prediction_metric_results = prediction_metric_results.groupby("from").mean().reset_index()
 
         # calculate ranking metrics
-        if self.__ranking_metric:
+        if self.__ranking_metrics_config is not None:
             if self.__config.get_ranking_algorithm() is None:
                 raise ValueError("You must set ranking algorithm to compute ranking metrics")
             for user_id in user_id_list:
@@ -98,9 +106,13 @@ class EvalModel:
 
                     truth = test.loc[:, 'to_id':'score']
                     truth.columns = ["to_id", "rating"]
-                    relevant_items = truth[truth['rating'] >= 0.5].to_id.tolist()
+
+                    relevant_items = truth[truth['rating'] >= self.__ranking_metrics_config.get_relevant_threshold()].to_id.tolist()
+
                     predictions = recsys.fit_eval_ranking(user_id, train, relevant_items)
-                    result_dict = perform_ranking_metrics(predictions, truth)
+                    result_dict = perform_ranking_metrics(predictions, truth,
+                                                          relevant_threshold=self.__ranking_metrics_config.get_relevant_threshold())
+
                     result_dict["from"] = user_id
                     ranking_metric_results = ranking_metric_results.append(result_dict, ignore_index=True)
 
