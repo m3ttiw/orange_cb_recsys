@@ -30,8 +30,8 @@ class TestRecSys(TestCase):
         ]
         record_list = []
         for i in range(1, 7):
-            exract_items = set([x for i, x in enumerate(item_id_list) if np.random.randint(0, 2) == 1 and i < 10])
-            for item in exract_items:
+            extract_items = set([x for i, x in enumerate(item_id_list) if np.random.randint(0, 2) == 1 and i < 10])
+            for item in extract_items:
                 record_list.append((str(i), item, str(np.random.randint(-10, 11) / 10)))
         t_ratings = pd.DataFrame.from_records(record_list, columns=['from_id', 'to_id', 'score'])
         #print(t_ratings)
@@ -53,6 +53,9 @@ class TestRecSys(TestCase):
         # t_recsys.fit_predict('1', [x for x in item_id_list if np.random.randint(0, 2) == 1])
         t_recsys.fit_predict('1', ['tt0114885'])
 
+        user_frame = t_ratings[t_ratings['from_id'] == '1']
+        test_set = pd.DataFrame({'to_id': ['tt0112281', 'tt0112302']})
+        t_recsys.fit_eval_predict(user_id='1', user_ratings=user_frame, test_set=test_set)
         try:
             t_recsys.fit_ranking('1', 2)
         except ValueError:
@@ -66,6 +69,8 @@ class TestRecSys(TestCase):
                                 ranking_algorithm=t_centroid)
         t_recsys = RecSys(config=t_config)
         t_recsys.fit_ranking('1', 2)
+
+        t_recsys.fit_eval_ranking(user_id='1', user_ratings=user_frame, test_set=test_set)
 
         try:
             t_recsys.fit_predict('1', [])
