@@ -132,7 +132,7 @@ class EvalModel:
                 logger.info("User %s" % user_id)
                 fit_result = recsys.fit_ranking(user_id, 20)
                 fit_result_with_user = pd.DataFrame(columns=columns)
-
+                fit_result_with_user.columns = ["to_id", "rating"]
                 for i, row in fit_result.iterrows():
                     fit_result_with_user = pd.concat([fit_result_with_user, pd.DataFrame.from_records(
                         [(user_id, row["to_id"], row["rating"])], columns=columns)], ignore_index=True)
