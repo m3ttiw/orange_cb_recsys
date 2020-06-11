@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import List
 
 import gensim.downloader as downloader

@@ -1,9 +1,11 @@
 import lzma
-from typing import List, Dict
+import os
+from typing import  Dict
 import pickle
 import re
 
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
+from orange_cb_recsys.utils.const import logger
 
 
 class Content:
@@ -50,17 +52,18 @@ class Content:
         """
         Serialize a content instance
         """
+        logger.info("Serializing content %s in %s" % (self.__content_id, output_directory))
+
         file_name = re.sub(r'[^\w\s]', '', self.__content_id)
-        with lzma.open(output_directory + '/' + file_name + '.xz', 'wb') as f:
+        path = os.path.join(output_directory, file_name + '.xz')
+        with lzma.open(path, 'wb') as f:
             pickle.dump(self, f)
 
     def __str__(self):
-        content_string = "Content:" + self.__content_id
-        field_string = ""
-        for field in self.__field_dict.values():
-            field_string += str(field) + "\n"
+        content_string = "Content: %s" % self.__content_id
+        field_string = '\n'.join(str(field) for field in self.__field_dict.values())
 
-        return content_string + '\n\n' + field_string + "##############################"
+        return "%s \n\n %s ##############################" % (content_string, field_string)
 
     def get_content_id(self):
         return self.__content_id

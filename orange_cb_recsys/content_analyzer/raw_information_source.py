@@ -6,11 +6,13 @@ from typing import Dict
 
 import mysql.connector
 
+
 class RawInformationSource(ABC):
     """
     Abstract Class that generalizes the acquisition of raw descriptions of the contents
     from one of the possible acquisition channels.
     """
+
     def __init__(self):
         pass
 
@@ -23,10 +25,27 @@ class RawInformationSource(ABC):
         raise NotImplementedError
 
 
+class DATFile(RawInformationSource):
+    def __init__(self, file_path: str):
+        super().__init__()
+        self.__file_path: str = file_path
+
+    def __iter__(self) -> Dict:
+        with open(self.__file_path) as f:
+            line_dict = {}
+            for line in f:
+                fields = line.split('::')
+                for i, field in enumerate(fields):
+                    line_dict[str(i)] = field
+
+                yield line_dict
+
+
 class JSONFile(RawInformationSource):
     """
     Class for the data acquisition from a json file
     """
+
     def __init__(self, file_path: str):
         """
         """
@@ -44,6 +63,7 @@ class CSVFile(RawInformationSource):
     """
     Abstract class for the data acquisition from a csv file
     """
+
     def __init__(self, file_path: str):
         """
         """
@@ -67,6 +87,7 @@ class SQLDatabase(RawInformationSource):
             database_name (str): name of database
             table_name (str): name of the database table where data is stored
     """
+
     def __init__(self, host: str,
                  username: str,
                  password: str,

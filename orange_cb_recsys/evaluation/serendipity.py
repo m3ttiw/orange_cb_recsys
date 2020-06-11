@@ -4,6 +4,7 @@ from typing import Set
 import pandas as pd
 
 from orange_cb_recsys.evaluation.utils import popular_items
+from orange_cb_recsys.utils.const import logger
 
 
 def perform_serendipity(score_frame: pd.DataFrame, algorithm_name: str, most_popular_items: Set[str] = None,
@@ -37,7 +38,6 @@ def perform_serendipity(score_frame: pd.DataFrame, algorithm_name: str, most_pop
 
     serendipity = pop_ratios_sum / len(users)
 
-    print('Serendipity: {}'.format(serendipity))
 
     # Serializing results
     try:
@@ -53,6 +53,6 @@ def perform_serendipity(score_frame: pd.DataFrame, algorithm_name: str, most_pop
             file_path = '{}/serendipity_{}.csv'.format(str(Path.home()), algorithm_name)
             with open(file_path, 'a', newline='') as f:
                 f.write("%s,%f\n" % ('serendipity: ', serendipity))
-    print('saved in: {}'.format(file_path))
+    logger.info('saved in: {}'.format(file_path))
 
     return serendipity

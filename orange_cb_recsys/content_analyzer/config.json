@@ -2,15 +2,14 @@
   {
   "content_type": "ITEM",
   "output_directory": "movielens_test",
-  "raw_source_path": "../../datasets/movies_info.json",
+  "raw_source_path": "../../datasets/movies_info_reduced.json",
   "source_type": "json",
-  "id_field_name": ["Title", "imdbID"],
-  "start_from": "0",
-  "end_up_at": "all",
+  "id_field_name": ["imdbID"],
   "search_index": "True",
   "fields": [
     {
       "field_name": "Plot",
+      "lang": "EN",
       "memory_interface": "None",
       "memory_interface_path": "None",
       "pipeline_list": [
@@ -31,7 +30,7 @@
         {
         "field_content_production": {"class": "sk_learn_tf-idf"},
         "preprocessing_list": [
-          {"class": "nltk", "stopwords_removal":"True", "lemmatization":"True"}
+          {"class": "nltk", "lemmatization": "True"}
           ]
         }
       ]

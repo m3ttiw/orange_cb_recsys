@@ -1,7 +1,6 @@
 from collections import Counter
 
 import pandas as pd
-import numpy as np
 from orange_cb_recsys.evaluation.delta_gap import *
 from orange_cb_recsys.evaluation.utils import *
 import matplotlib.pyplot as plt
@@ -9,6 +8,7 @@ from pathlib import Path
 
 
 # fairness_metrics_results = pd.DataFrame(columns=["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
+from orange_cb_recsys.utils.const import logger
 
 
 def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
@@ -21,6 +21,8 @@ def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
     Returns:
         results (pd.DataFrame): each row contains ('from_id', 'gini_index')
     """
+
+    logger.info("Computing Gini index")
 
     def gini(array: np.array):
         """Calculate the Gini coefficient of a numpy array."""
@@ -56,6 +58,8 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
     Returns:
         results (pd.DataFrame): each row contains ('from_id', 'delta-gap')
     """
+
+    logger.info("Computing delta gap")
 
     items = score_frame[['to_id']].values.flatten()
     pop_by_items = Counter(items)
@@ -93,6 +97,8 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
         score_frame (pd.DataFrame): contains 'user_group', 'profile_pop_ratio', 'recs_pop_ratio'
     """
 
+    logger.info("Computing pop ratio profile vs recs")
+
     truth_frame = truth_frame[['from_id', 'to_id']]
     score_frame = pd.DataFrame(columns=['user_group', 'profile_pop_ratio', 'recs_pop_ratio'])
     profile_data = []
@@ -126,7 +132,7 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
     bp = ax.boxplot(data_to_plot)
 
     # Save the figure
-    fig.savefig('fig1.png', bbox_inches='tight')
+    # fig.savefig('fig1.png', bbox_inches='tight')
 
     ## add patch_artist=True option to ax.boxplot()
     ## to get fill color
@@ -165,9 +171,10 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
 
     plt.title('{}'.format(algorithm_name))
     plt.ylabel('Ratio of popular items')
-    plt.show()
-    #plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
+    # plt.show()
+    # plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
     try:
+        print('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
         plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
     except FileNotFoundError:
         try:
@@ -193,6 +200,9 @@ def perform_pop_recs_correlation(truth_frame: pd.DataFrame, score_frame: pd.Data
     Returns:
 
     """
+
+    logger.info("Computing pop recs correlation")
+
     def build_plot(popularities_, recommendations_, algorithm_name_, out_dir_):
         """ build and save the plot"""
         plt.scatter(popularities_, recommendations_, marker='o', s=20, c='orange', edgecolors='black', linewidths=0.05)
@@ -253,6 +263,9 @@ def perform_recs_long_tail_distr(truth_frame: pd.DataFrame, algorithm_name: str,
     Returns:
 
     """
+    logger.info("Computing recs long tail distr")
+
+
     counts_by_item = Counter(truth_frame[['to_id']].values.flatten())
     ordered_item_count_pairs = counts_by_item.most_common()
 
@@ -264,7 +277,7 @@ def perform_recs_long_tail_distr(truth_frame: pd.DataFrame, algorithm_name: str,
     plt.title('{}'.format(algorithm_name))
     plt.ylabel('Num of recommendations')
     plt.xlabel('Recommended items')
-    plt.show()
+    # plt.show()
     try:
         plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(out_dir, algorithm_name))
     except FileNotFoundError:
@@ -286,9 +299,11 @@ def catalog_coverage(score_frame: pd.DataFrame, truth_frame: pd.DataFrame) -> fl
     Returns:
         score (float): coverage percentage
     """
+    logger.info("Computing catalog coverage")
+
     items = set(truth_frame[['to_id']].values.flatten())
     covered_items = set(score_frame[['to_id']].values.flatten())
     coverage_percentage = len(covered_items) / len(items) * 100
 
-    print('Covered items: ', len(covered_items), ' ({}%)'.format(coverage_percentage))
+    # print('Covered items: ', len(covered_items), ' ({}%)'.format(coverage_percentage))
     return coverage_percentage

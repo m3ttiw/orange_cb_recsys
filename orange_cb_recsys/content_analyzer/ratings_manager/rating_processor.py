@@ -34,8 +34,8 @@ class NumberNormalizer(RatingProcessor):
         self.__scale_span = abs(min_ - max_)
 
     def fit(self, field_data: float):
-        if field_data < self.__min:
+        if float(field_data) < self.__min:
             return self.__min
-        if field_data > self.__max:
+        if float(field_data) > self.__max:
             return self.__max
-        return (float(field_data - self.__min) / float(self.__scale_span)) * 2 - 1
+        return (float(float(field_data) - self.__min) / float(self.__scale_span)) * 2 - 1

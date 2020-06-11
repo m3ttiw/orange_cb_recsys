@@ -44,8 +44,8 @@ class FeaturesBagField(FieldRepresentation):
         self.__features: Dict[str, object] = features
 
     def __str__(self):
-        representation_string = "Representation: " + self.get_name() + "\n"
-        return representation_string + str(self.__features)
+        representation_string = "Representation: " + self.get_name()
+        return "%s \n %s" % (representation_string, str(self.__features))
 
     def append_feature(self, feature_key: str, feature_value):
         """
@@ -103,8 +103,8 @@ class EmbeddingField(FieldRepresentation):
         self.__embedding_array: np.ndarray = embedding_array
 
     def __str__(self):
-        representation_string = "Representation: " + self.get_name() + "\n\n"
-        return representation_string + str(self.__embedding_array)
+        representation_string = "Representation: " + self.get_name()
+        return "%s \n\n %s" %(representation_string, str(self.__embedding_array))
 
     def get_value(self) -> np.ndarray:
         return self.__embedding_array
@@ -147,11 +147,9 @@ class ContentField:
 
     def __str__(self):
         field_string = "Field:" + self.__field_name
-        rep_string = ""
-        for rep in self.__representation_dict.values():
-            rep_string += str(rep) + '\n\n'
+        rep_string = '\n\n'.join(str(rep) for rep in self.__representation_dict.values())
 
-        return field_string + '\n\n' + rep_string + "------------------------------"
+        return "%s \n\n %s ------------------------------------" % (field_string, rep_string)
 
     def append(self, representation_id: str, representation):
         self.__representation_dict[representation_id] = representation

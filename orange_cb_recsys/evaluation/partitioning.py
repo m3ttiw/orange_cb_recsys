@@ -23,7 +23,7 @@ class Partitioning(ABC):
         return self.__dataframe
 
 
-class KFoldPartioning(Partitioning):
+class KFoldPartitioning(Partitioning):
     """
     Class that perform K-Fold partitioning
 

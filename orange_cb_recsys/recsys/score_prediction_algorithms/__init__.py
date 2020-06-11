@@ -1,1 +1,1 @@
-from .ratings_based import CentroidVector
+from .classifier import ClassifierRecommender

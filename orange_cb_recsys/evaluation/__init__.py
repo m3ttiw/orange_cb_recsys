@@ -1,2 +1,3 @@
 from .eval_model import EvalModel
-from .partitioning import KFoldPartioning
+from .eval_model import FairnessMetricsConfig
+from .partitioning import KFoldPartitioning

@@ -4,8 +4,8 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import ScoreCombiner
 import pandas as pd
 import time
-
-from orange_cb_recsys.utils.const import home_path
+import logging
+from orange_cb_recsys.utils.const import home_path, logger, DEVELOPING
 
 
 class RatingsFieldConfig:
@@ -60,22 +60,44 @@ class RatingsImporter:
         Returns:
             ratings_frame: pd.DataFrame
         """
+        logging.basicConfig(level=logging.INFO)
         ratings_frame = pd.DataFrame(columns=list(self.__columns))
-        for raw_rating in self.__source:
-            score_list = []
-            row_dict = {
-                "from_id": raw_rating[self.__from_field_name],
-                "to_id": raw_rating[self.__to_field_name],
-                "timestamp": raw_rating[self.__timestamp_field_name],
-            }
-            for i, preference in enumerate(self.__rating_configs):
-                row_dict[preference.get_field_name()] = raw_rating[preference.get_field_name()]
-                score_list.append(preference.get_processor().fit(row_dict[preference.get_field_name()]))
 
-            row_dict["score"] = self.__score_combiner.combine(score_list)
-            ratings_frame = ratings_frame.append(row_dict, ignore_index=True)
+        dicts = \
+            [
+                {
+                    **{
+                        "from_id": raw_rating[self.__from_field_name],
+                        "to_id": raw_rating[self.__to_field_name],
+                        "timestamp": raw_rating[self.__timestamp_field_name],
+                        "score": self.__score_combiner.combine(
+                            [preference.get_processor().fit(raw_rating[preference.get_field_name()])
+                             for preference in self.__rating_configs])
+                    },
+                    **{
+                        preference.get_field_name(): raw_rating[preference.get_field_name()] for preference in
+                        self.__rating_configs
+                    }
+                }
+                for raw_rating in show_progress(self.__source)
+            ]
+
+        ratings_frame = ratings_frame.append(dicts, ignore_index=True)
 
         if self.__file_name is not None:
-            ratings_frame.to_csv("{}/{}_{}.csv".format(home_path, self.__file_name, int(time.time())), index=False, header=False)
+            if not DEVELOPING:
+                ratings_frame.to_csv("{}/ratings/{}_{}.csv".format(home_path, self.__file_name, int(time.time())),
+                                     index=False, header=True)
+            else:
+                ratings_frame.to_csv("{}_{}.csv".format(self.__file_name, int(time.time())), index=False, header=True)
 
         return ratings_frame
+
+
+def show_progress(coll, milestones=100):
+    processed = 0
+    for x in coll:
+        yield x
+        processed += 1
+        if processed % milestones == 0:
+            logger.info('Processed %s elements' % processed)

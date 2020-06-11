@@ -73,7 +73,7 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
         output_path = file_output_directory
     else:
         output_path = os.path.join(home_path, file_output_directory)
-    print("working in dir: {}".format(output_path))
+    logger.info("working in dir: {}".format(output_path))
 
     pop_items = popular_items(score_frame=score_frame)
     pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, most_pop_items=pop_items)
@@ -93,8 +93,6 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     results_by_user = df_gini
     results_by_user_group = pd.merge(delta_gap_score, profile_vs_recs_pop_ratio, on='user_group')
 
-    print(results_by_user)
-    print(results_by_user_group)
     cat_cov = catalog_coverage(score_frame=score_frame, truth_frame=truth_frame)
     return results_by_user, results_by_user_group, cat_cov
 

@@ -13,6 +13,8 @@ class SkLearnTfIdf(TfIdfTechnique):
     def __init__(self):
         super().__init__()
         self.__corpus = []
+        self.__tfidf_matrix = None
+        self.__feature_names = None
         self.__matching = {}
 
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
@@ -21,7 +23,7 @@ class SkLearnTfIdf(TfIdfTechnique):
         TfIdfVectorizer can be called on this colletion
         Args:
             information_source (RawInformationSource):
-            id_field_names:
+            id_field_names: names of the fields that compounds the id
 
         """
 
@@ -38,19 +40,30 @@ class SkLearnTfIdf(TfIdfTechnique):
             self.__matching[content_id] = len(self.__corpus)
             self.__corpus.append(processed_field_data)
 
+        tf = TfidfVectorizer(sublinear_tf=True)
+        self.__tfidf_matrix = tf.fit_transform(self.__corpus)
+
+        del self.__corpus
+
+        self.__feature_names = tf.get_feature_names()
+
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str):
-        tf = TfidfVectorizer(sublinear_tf=True)
-        tfidf_matrix = tf.fit_transform(self.__corpus)
 
-        feature_names = tf.get_feature_names()
+        """
+        Retrieve tf-idf values, for terms in document that match with content_id,
+        from the pre-computed word - document matrix.
+
+        Returns:
+            (FeaturesBag): <term ,tf-idf>
+        """
 
         doc = self.__matching[content_id]
-        feature_index = tfidf_matrix[doc, :].nonzero()[1]
-        tfidf_scores = zip(feature_index, [tfidf_matrix[doc, x] for x in feature_index])
+        feature_index = self.__tfidf_matrix[doc, :].nonzero()[1]
+        tfidf_scores = zip(feature_index, [self.__tfidf_matrix[doc, x] for x in feature_index])
 
         features = {}
-        for w, s in [(feature_names[i], s) for (i, s) in tfidf_scores]:
+        for w, s in [(self.__feature_names[i], s) for (i, s) in tfidf_scores]:
             features[w] = s
 
         return FeaturesBagField(field_representation_name,  features)
@@ -83,7 +96,7 @@ class LuceneTfIdf(TfIdfTechnique):
         Save the processed data in a index that will be used for frequency calc
         Args:
             information_source (RawInformationSource):
-            id_field_names:
+            id_field_names: names of the fields that compounds the id
 
         """
 
@@ -108,4 +121,10 @@ class LuceneTfIdf(TfIdfTechnique):
         self.__index.stop_writing()
 
     def delete_refactored(self):
+        """
+        Delete the index used for term vectors and relative frequencies
+
+        Returns:
+
+        """
         self.__index.delete_index()
