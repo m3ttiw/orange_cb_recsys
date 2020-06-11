@@ -28,15 +28,15 @@ def get_unrated_items(items_directory, ratings):
     rated_items_filename_list = set([re.sub(r'[^\w\s]', '', item_id) for item_id in ratings.to_id])
 
     logger.info("Checking if unrated")
-    item_to_predict_filename_list = [item_id for item_id in directory_filename_list if
-                                     item_id not in rated_items_filename_list]
+    filename_list = [item_id for item_id in directory_filename_list if
+                     item_id not in rated_items_filename_list]
 
     logger.info("Loading unrated items")
-    item_to_predict_list = [
+    unrated_items = [
         load_content_instance(items_directory, item_id)
-        for item_id in item_to_predict_filename_list]
+        for item_id in filename_list]
 
-    return item_to_predict_list
+    return unrated_items
 
 
 def get_rated_items(items_directory, ratings):
@@ -49,16 +49,16 @@ def get_rated_items(items_directory, ratings):
     rated_items_filename_list = set([re.sub(r'[^\w\s]', '', item_id) for item_id in ratings.to_id])
 
     logger.info("Checking if rated")
-    item_to_predict_filename_list = [item_id for item_id in directory_filename_list if
-                                     item_id in rated_items_filename_list]
+    filename_list = [item_id for item_id in directory_filename_list if
+                     item_id in rated_items_filename_list]
 
-    item_to_predict_filename_list.sort()
+    filename_list.sort()
 
     logger.info("Loading rated items")
-    item_to_predict_list = [
-        load_content_instance(items_directory, item_id) for item_id in item_to_predict_filename_list]
+    rated_items = [
+        load_content_instance(items_directory, item_id) for item_id in filename_list]
 
-    return item_to_predict_list
+    return rated_items
 
 
 def remove_not_existent_items(ratings, items_directory):
@@ -70,5 +70,7 @@ def remove_not_existent_items(ratings, items_directory):
 
     intersection = [x for x in rated_items_filename_list if x in directory_filename_list]
     ratings = ratings[ratings["to_id"].isin(intersection)]
+
+    print(ratings)
 
     return ratings

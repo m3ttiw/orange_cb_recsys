@@ -18,10 +18,10 @@ from org.apache.lucene.analysis.core import SimpleAnalyzer
 
 
 class IndexQuery(RankingAlgorithm):
-    def __init__(self, classic_similarity: bool = True, positive_treshold: float = 0):
+    def __init__(self, classic_similarity: bool = True, positive_threshold: float = 0):
         super().__init__(None, None)
         self.__classic_similarity: bool = classic_similarity
-        self.__positive_treshold: float = positive_treshold
+        self.__positive_threshold: float = positive_threshold
 
     def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory):
         BooleanQuery.setMaxClauseCount(2000000)
@@ -88,7 +88,7 @@ class IndexQuery(RankingAlgorithm):
         for item_id, score in zip(ratings.to_id, ratings.score):
             item = load_content_instance(items_directory, item_id)
 
-            if score > self.__positive_treshold:
+            if score > self.__positive_threshold:
                 rated_document_list.append(item.get_index_document_id())
                 scores.append(score)
 
