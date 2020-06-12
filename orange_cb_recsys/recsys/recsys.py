@@ -108,7 +108,6 @@ class RecSys:
         Returns:
             (DataFrame): result frame whose columns are: to_id, rating
         """
-        score_frame = None
         logger.info("Loading items")
         item_to_predict_id_list = [item for item in test_set.to_id]  # unrated items list
         items = [load_content_instance(self.__config.get_items_directory(), re.sub(r'[^\w\s]', '', item_id))
@@ -124,6 +123,7 @@ class RecSys:
         return score_frame
 
     def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set_items, recs_number):
+        user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
         score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
                                                                     self.__config.get_items_directory(),
                                                                     test_set_items)

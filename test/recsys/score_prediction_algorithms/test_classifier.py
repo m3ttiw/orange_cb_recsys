@@ -5,7 +5,7 @@ import pandas as pd
 import os
 import pickle
 
-from orange_cb_recsys.recsys.score_prediction_algorithms.classifier import ClassifierRecommender
+from orange_cb_recsys.recsys.ranking_algorithms.classifier import ClassifierRecommender
 
 
 class TestClassifierRecommender(TestCase):

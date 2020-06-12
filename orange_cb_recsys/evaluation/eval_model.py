@@ -1,4 +1,6 @@
 import os
+from typing import List
+
 import pandas as pd
 
 from orange_cb_recsys.evaluation.metrics import perform_prediction_metrics, perform_ranking_metrics, \
@@ -21,7 +23,7 @@ class FairnessMetricsConfig:
 
 
 class RankingMetricsConfig:
-    def __init__(self, relevant_threshold):
+    def __init__(self, relevant_threshold: float):
         self.__relevant_threshold = relevant_threshold
 
     def get_relevant_threshold(self):
