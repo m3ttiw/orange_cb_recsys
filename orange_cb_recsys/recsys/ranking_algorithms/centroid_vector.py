@@ -83,7 +83,7 @@ class CentroidVector(RankingAlgorithm):
         """
         return np.average(matrix, axis=0)
 
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str) -> pd.DataFrame:
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str, candidate_item_id_list: List = None) -> pd.DataFrame:
         """
         For each item:
         1) Takes the embedding arrays
@@ -91,6 +91,7 @@ class CentroidVector(RankingAlgorithm):
         be a representation that allows the computation of a centroid, otherwise the method will raise an exception;
         3) Determines the similarity between the centroid and the field_representation of the item_field in item.
         Args:
+            candidate_item_id_list:
             user_id:
             recs_number (list[Content]): How long the ranking will be
             ratings (pd.DataFrame): Ratings
@@ -108,13 +109,15 @@ class CentroidVector(RankingAlgorithm):
             logger.info("Computing centroid")
             centroid = self.__centroid(matrix)
 
-            print(centroid.shape)
-
-            columns = ["to_id", "similarity"]
+            columns = ["to_id", "rating"]
             scores = pd.DataFrame(columns=columns)
 
             logger.info("Computing similarities")
-            unrated_items = get_unrated_items(items_directory, ratings)
+            if candidate_item_id_list is None:
+                unrated_items = get_unrated_items(items_directory, ratings)
+            else:
+                unrated_items = [load_content_instance(items_directory, item_id) for item_id in candidate_item_id_list]
+
             for i, item in enumerate(unrated_items):
                 item_id = item.get_content_id()
                 item_field_representation = item.get_field(self.get_item_field()).get_representation(
@@ -124,9 +127,10 @@ class CentroidVector(RankingAlgorithm):
                 scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                    ignore_index=True)
 
-            scores = scores.sort_values(['similarity'], ascending=False).reset_index(drop=True)
+            scores = scores.sort_values(['rating'], ascending=False).reset_index(drop=True)
             scores = scores[:recs_number]
 
             return scores
         except ValueError as v:
             print(str(v))
+

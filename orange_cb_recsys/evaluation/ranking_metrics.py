@@ -76,41 +76,48 @@ def perform_DCG(gain_values: pd.Series) -> List[float]:
     return dcg
 
 
-def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
+def perform_NDCG(predictions: pd.DataFrame) -> List[float]:
     """
     Compute the Normalized DCG measure using Truth rank as ideal DCG
     Args:
         predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
-        truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
 
     Returns:
-        ndcg (List<float>): array of ndcg
+        ndcg (List[float]): array of ndcg
     """
     logger.info("Computing NDCG")
 
-    to_label_intersection = set(predictions[['to_id']].values.flatten()).intersection(
-        set(truth[['to_id']].values.flatten()))
+    #to_label_intersection = set(predictions[['to_id']].values.flatten()).intersection(
+    #    set(truth[['to_id']].values.flatten()))
+    #idcg = perform_DCG(pd.Series(truth['rating'].values))
 
-    idcg = perform_DCG(pd.Series(truth['rating'].values))
-
-    col = ["to_id", "rating"]
-    new_predicted = pd.DataFrame(columns=col)
-    for label in to_label_intersection:
-        truth_row = truth.loc[truth['to_id'] == label]
-        truth_score = truth_row['rating'].values[0]
-        new_predicted = new_predicted.append({'to_id': label, 'rating': truth_score}, ignore_index=True)
-
-    dcg = perform_DCG(gain_values=pd.Series(new_predicted['rating'].values))
-    ndcg = []
-    for i, ideal in enumerate(idcg):
-        try:
-            ndcg.append(dcg[i] / ideal)
-        except IndexError:
-            break
-        except ZeroDivisionError:
-            ndcg.append(0.0)
+    gain = predictions['rating'].values
+    igain = gain.copy()
+    igain[::-1].sort()
+    idcg = perform_DCG(pd.Series(igain))
+    dcg = perform_DCG(pd.Series(gain))
+    ndcg = [dcg[x]/(idcg[x]) for x in range(len(idcg))]
     return ndcg
 
+"""
+col = ["to_id", "rating"]
+new_predicted = pd.DataFrame(columns=col)
+for label in predictions['rating'].values:
+    truth_row = truth.loc[truth['to_id'] == label]
+    truth_score = truth_row['rating'].values[0]
+    new_predicted = new_predicted.append({'to_id': label, 'rating': truth_score}, ignore_index=True)
+
+dcg = perform_DCG(gain_values=pd.Series(new_predicted['rating'].values))
+ndcg = []
+for i, ideal in enumerate(idcg):
+    try:
+        ndcg.append(dcg[i] / ideal)
+    except IndexError:
+        break
+    except ZeroDivisionError:
+        ndcg.append(0.0)
+return ndcg
+"""
 
 def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
     """

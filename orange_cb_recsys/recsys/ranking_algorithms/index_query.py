@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 
@@ -94,7 +95,7 @@ class IndexQuery(RankingAlgorithm):
 
         return score_frame
 
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str) -> pd.DataFrame:
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number, items_directory: str, candidate_item_id_list: List = None):
         """
         Finds the documents that the user liked and then calls __recs_query to execute the prediction
         Args:

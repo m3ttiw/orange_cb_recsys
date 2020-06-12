@@ -26,6 +26,14 @@ class FairnessMetricsConfig:
         return self.__user_groups
 
 
+class RankingMetricsConfig:
+    def __init__(self, relevant_threshold):
+        self.__relevant_threshold = relevant_threshold
+
+    def get_relevant_threshold(self):
+        return self.__relevant_threshold
+
+
 class EvalModel:
     """
     Class for the evaluation
@@ -40,12 +48,12 @@ class EvalModel:
     def __init__(self, config: RecSysConfig,
                  partitioning: Partitioning,
                  prediction_metric: bool = True,
-                 ranking_metric: bool = True,
+                 ranking_metrics_config: RankingMetricsConfig = None,
                  fairness_metric_config: FairnessMetricsConfig = None):
         self.__config: RecSysConfig = config
         self.__partitioning = partitioning
         self.__prediction_metric = prediction_metric
-        self.__ranking_metric = ranking_metric
+        self.__ranking_metrics_config: RankingMetricsConfig = ranking_metrics_config
         self.__fairness_metric_config: FairnessMetricsConfig = fairness_metric_config
 
     def fit(self):
@@ -108,7 +116,7 @@ class EvalModel:
             prediction_metric_results = prediction_metric_results.groupby("from").mean().reset_index()
 
         # calculate ranking metrics
-        if self.__ranking_metric:
+        if self.__ranking_metrics_config is not None:
             if self.__config.get_ranking_algorithm() is None:
                 raise ValueError("You must set ranking algorithm to compute ranking metrics")
             for user_id in user_id_list:
@@ -127,15 +135,19 @@ class EvalModel:
                     train = user_ratings.iloc[partition_index[0]]
                     test = user_ratings.iloc[partition_index[1]]
 
-                    predictions = recsys.fit_eval_ranking(user_id, train, test)
-                    truth = pd.DataFrame(test[test.columns[[1, 2]]]).reset_index(drop=True)
+                    truth = test.loc[:, 'to_id':'score']
                     truth.columns = ["to_id", "rating"]
 
-                    result_dict = perform_ranking_metrics(predictions, truth)
+                    relevant_items_number = len(truth[truth['rating'] >= self.__ranking_metrics_config.get_relevant_threshold()].to_id.tolist())
+
+                    predictions = recsys.fit_eval_ranking(user_id, train, truth['to_id'].tolist(), relevant_items_number)
+                    result_dict = perform_ranking_metrics(predictions, truth,
+                                                          relevant_threshold=self.__ranking_metrics_config.get_relevant_threshold())
+
                     result_dict["from"] = user_id
                     ranking_metric_results = ranking_metric_results.append(result_dict, ignore_index=True)
 
-                ranking_metric_results.groupby('from').mean()
+                ranking_metric_results = ranking_metric_results.groupby('from').mean().reset_index()
 
         # calculate fairness metrics
         fairness_metrics_results = \
@@ -149,17 +161,18 @@ class EvalModel:
             columns = ["from_id", "to_id", "rating"]
             score_frame = pd.DataFrame(columns=columns)
             for user_id in user_id_list:
-
+                logger.info("User %s" % user_id)
                 fit_result = recsys.fit_ranking(user_id, 20)
-                fit_result_with_user = pd.DataFrame(columns=columns)
 
+                fit_result_with_user = pd.DataFrame(columns=columns)
+                fit_result.columns = ["to_id", "rating"]
                 for i, row in fit_result.iterrows():
                     fit_result_with_user = pd.concat([fit_result_with_user, pd.DataFrame.from_records(
                         [(user_id, row["to_id"], row["rating"])], columns=columns)], ignore_index=True)
 
                 score_frame = pd.concat([fit_result_with_user, score_frame], ignore_index=True)
 
-            logger.info("Computing ranking metrics for user")
+            logger.info("Computing fairness metrics")
             fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
                                                                 user_groups=self.__fairness_metric_config.get_user_groups(),
                                                                 truth_frame=self.__config.get_rating_frame(),

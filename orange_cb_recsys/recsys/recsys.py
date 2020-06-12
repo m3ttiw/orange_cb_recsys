@@ -123,16 +123,15 @@ class RecSys:
 
         return score_frame
 
-    def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
+    def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set_items, recs_number):
         """
         Computes a ranking, using as training set the ratings provided by he user
 
         Args:
             user_id:
             user_ratings (pd.DataFrame): Training set
-            test_set (pd.DataFrame)
+            test_set_items (pd.DataFrame)
+            recs_number (int): Number of recommendations to provide
         """
-        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, test_set.shape[0],
-                                                                    self.__config.get_items_directory())
-
+        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
         return score_frame
