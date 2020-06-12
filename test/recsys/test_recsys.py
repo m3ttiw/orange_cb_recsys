@@ -71,7 +71,7 @@ class TestRecSys(TestCase):
         t_recsys = RecSys(config=t_config)
         t_recsys.fit_ranking('1', 2)
 
-        t_recsys.fit_eval_ranking(user_id='1', user_ratings=user_frame, relevant_items=test_set.to_id.tolist())
+        t_recsys.fit_eval_ranking(user_id='1', user_ratings=user_frame, test_set_items=test_set.to_id.tolist(), recs_number=len(test_set.to_id.tolist()))
 
         try:
             t_recsys.fit_predict('1', [])
