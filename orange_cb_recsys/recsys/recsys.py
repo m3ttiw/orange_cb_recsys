@@ -134,4 +134,6 @@ class RecSys:
             recs_number (int): Number of recommendations to provide
         """
         score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
+                                                                    self.__config.get_items_directory(),
+                                                                    test_set_items)
         return score_frame
