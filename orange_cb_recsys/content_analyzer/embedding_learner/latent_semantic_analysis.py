@@ -29,17 +29,15 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
 
     @staticmethod
     def __create_word_docs_matrix(docs, dictionary) -> List[str]:
+        """
+        Returns:
+             docs-words matrix, that contains a mapping between the IDs and the words
+        """
         return [dictionary.doc2bow(doc) for doc in docs]
 
     def fit(self):
         """
-        Creates the model for the embedding and sets it as the value of the 'model' attribute
-
-        Args:
-            dictionary: Can be either a stream of document vectors or a sparse matrix of shape
-                (number_of_terms, number_of_documents)
-            word_docs_matrix: Mapping between the IDs and the words
-
+        Creates the model for the embedding
         """
         docs = self.extract_corpus()
         dictionary = GensimLatentSemanticAnalysis.__create_dictionary(docs)

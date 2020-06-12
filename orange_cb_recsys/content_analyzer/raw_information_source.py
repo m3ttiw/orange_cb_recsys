@@ -12,7 +12,6 @@ class RawInformationSource(ABC):
     Abstract Class that generalizes the acquisition of raw descriptions of the contents
     from one of the possible acquisition channels.
     """
-
     def __init__(self):
         pass
 
@@ -26,6 +25,10 @@ class RawInformationSource(ABC):
 
 
 class DATFile(RawInformationSource):
+    """
+    Class for the data acquisition from a DAT file
+    """
+
     def __init__(self, file_path: str):
         super().__init__()
         self.__file_path: str = file_path
@@ -81,11 +84,11 @@ class SQLDatabase(RawInformationSource):
     """
     Abstract class for the data acquisition from a SQL Database
     Args:
-            host (str): host ip of the sql server
-            username (str): username for the access
-            password (str): password for the access
-            database_name (str): name of database
-            table_name (str): name of the database table where data is stored
+        host (str): host ip of the sql server
+        username (str): username for the access
+        password (str): password for the access
+        database_name (str): name of database
+        table_name (str): name of the database table where data is stored
     """
 
     def __init__(self, host: str,

@@ -10,6 +10,9 @@ from orange_cb_recsys.utils.id_merger import id_merger
 
 
 class SkLearnTfIdf(TfIdfTechnique):
+    """
+    Tf-idf computed using the sklearn library
+    """
     def __init__(self):
         super().__init__()
         self.__corpus = []
@@ -22,9 +25,8 @@ class SkLearnTfIdf(TfIdfTechnique):
         Creates a corpus structure, a list of string where each string is a document.
         TfIdfVectorizer can be called on this colletion
         Args:
-            information_source (RawInformationSource):
+            information_source (RawInformationSource): Source for the raw data
             id_field_names: names of the fields that compounds the id
-
         """
 
         field_name = self.get_field_need_refactor()
@@ -47,12 +49,14 @@ class SkLearnTfIdf(TfIdfTechnique):
 
         self.__feature_names = tf.get_feature_names()
 
-    def produce_content(self, field_representation_name: str, content_id: str,
-                        field_name: str):
-
+    def produce_content(self, field_representation_name: str, content_id: str, field_name: str):
         """
-        Retrieve tf-idf values, for terms in document that match with content_id,
+        Retrieve the tf-idf values, for terms in document that match with content_id,
         from the pre-computed word - document matrix.
+        Args:
+            field_representation_name (str): Name of the field representation
+            content_id (str): Id of the content that contains the terms for which extract the tf-idf
+            field_name (str): Name of the field to consider
 
         Returns:
             (FeaturesBag): <term ,tf-idf>
@@ -74,7 +78,7 @@ class SkLearnTfIdf(TfIdfTechnique):
 
 class LuceneTfIdf(TfIdfTechnique):
     """
-    Class that produces a Bag of words with tf-idf metric
+    Class that produces a Bag of words with tf-idf metric using Lucene
     """
 
     def __init__(self):
@@ -97,7 +101,6 @@ class LuceneTfIdf(TfIdfTechnique):
         Args:
             information_source (RawInformationSource):
             id_field_names: names of the fields that compounds the id
-
         """
 
         field_name = self.get_field_need_refactor()
@@ -123,8 +126,5 @@ class LuceneTfIdf(TfIdfTechnique):
     def delete_refactored(self):
         """
         Delete the index used for term vectors and relative frequencies
-
-        Returns:
-
         """
         self.__index.delete_index()

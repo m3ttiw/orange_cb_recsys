@@ -14,11 +14,12 @@ from orange_cb_recsys.utils.load_content import get_rated_items
 
 class ClassifierRecommender(ScorePredictionAlgorithm):
     """
-       Class that implements a logistic regression classifier.
-       Args:
-           item_field (str): Name of the field that contains the content to use
-           field_representation (str): Id of the field_representation content
-       """
+    Class that implements a logistic regression classifier.
+    Args:
+       item_field (str): Name of the field that contains the content to use
+       field_representation (str): Id of the field_representation content
+       threshold (int): Threshold value
+    """
     def __init__(self, item_field: str, field_representation: str, threshold=-1):
         super().__init__(item_field, field_representation)
         self.__threshold = threshold
@@ -32,14 +33,14 @@ class ClassifierRecommender(ScorePredictionAlgorithm):
         2) Define target features, items with rating greater (lower) than treshold will be used as positive(negative) examples;
         3) Creates an object Classifier, uses the method fit and predicts the class of the new items
 
-            Args:
-                user_id:
-                items (List<Content>): Items for which the similarity will be computed
-                ratings (pd.DataFrame): Ratings
-                items_directory (str): Name of the directory where the items are stored.
+        Args:
+            user_id:
+            items (List<Content>): Items for which the similarity will be computed
+            ratings (pd.DataFrame): Ratings
+            items_directory (str): Name of the directory where the items are stored.
 
-            Returns:
-                 The predicted classes, or the predict values.
+        Returns:
+             The predicted classes, or the predict values.
         """
 
         features_bag_list = []

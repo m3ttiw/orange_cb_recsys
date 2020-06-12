@@ -6,6 +6,14 @@ from orange_cb_recsys.content_analyzer.content_representation.content import Con
 
 
 class Algorithm(ABC):
+    """
+    Abstract class for the algorithms
+    Args:
+        item_field (str): Field on which execute the algorithm
+        item_field_representation (str): Field representation to consider
+        additional_item_fields (Dict<str, str>)
+        additional_user_fields (Dict<str, str>)
+    """
     def __init__(self, item_field: str, item_field_representation: str,
                  additional_item_fields: Dict[str, str] = None,
                  additional_user_fields: Dict[str, str] = None):
@@ -45,10 +53,16 @@ class Algorithm(ABC):
 
 
 class RankingAlgorithm(Algorithm):
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str, candidate_item_id_list: List = None):
+    """
+    Abstract class for the ranking algorithms
+    """
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str):
         raise NotImplementedError
 
 
 class ScorePredictionAlgorithm(Algorithm):
+    """
+    Abstract class for the score prediction algorithms
+    """
     def predict(self, user_id: str, items: List[Content], ratings: pd.DataFrame, items_directory: str):
         raise NotImplementedError

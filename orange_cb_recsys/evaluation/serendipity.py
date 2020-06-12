@@ -10,17 +10,17 @@ from orange_cb_recsys.utils.const import logger
 def perform_serendipity(score_frame: pd.DataFrame, algorithm_name: str, most_popular_items: Set[str] = None,
                         out_dir: str = None, num_of_recs: int = 10) -> float:
     """
-    Calculates the serendipity score
+    Calculates and saves the serendipity score
 
     Args:
         score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
         algorithm_name (str): name of the algorithm that run these metrics
-        most_popular_items (Set[str]): Set contains the most popular label of 'to_id'
+        most_popular_items (Set<str>): Set contains the most popular label of 'to_id'
         out_dir (str): output directory for saving the results
         num_of_recs (int): avg number of recommendation per user
 
     Returns:
-
+        serendipity (float): The serendipity value
     """
     if most_popular_items is None:
         most_popular_items = popular_items(score_frame=score_frame)

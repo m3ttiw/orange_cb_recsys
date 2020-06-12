@@ -15,7 +15,7 @@ from orange_cb_recsys.utils.id_merger import id_merger
 
 class ContentAnalyzer:
     """
-    Class to whom the control of the content analysis phase is delegated,
+    Class to whom the control of the content analysis phase is delegated
 
     Args:
         config (ContentAnalyzerConfig):
@@ -52,11 +52,7 @@ class ContentAnalyzer:
 
     def fit(self):
         """
-        Begins to process the creation of the contents
-
-        Returns:
-            List<Content>:
-                list which elements are the produced content instances
+        Processes the creation of the contents and serializes the contents
         """
 
         output_path = self.__config.get_output_directory()
@@ -124,7 +120,7 @@ class ContentsProducer:
         """
         returns the singleton instance
         Returns:
-            ItemProducer: instance
+            ContentsProducer: instance
         """
         # Static access method
         if ContentsProducer.__instance is None:
@@ -146,7 +142,10 @@ class ContentsProducer:
         self.__config = config
 
     def __get_timestamp(self, raw_content: Dict) -> str:
-        # search for timestamp as dataset field, no timestamp needed for items
+        """
+        Search for timestamp as dataset field. If there isn't a field called 'timestamp', than
+            the timestamp will be the one returned by the system.
+        """
         timestamp = None
         if self.__config.get_content_type() != "item":
             if "timestamp" in raw_content.keys():
@@ -157,6 +156,17 @@ class ContentsProducer:
         return timestamp
 
     def __create_field(self, raw_content: Dict, field_name: str, content_id: str, timestamp: str):
+        """
+        Create a new field for the specified content
+        Args:
+            raw_content (Dict): Raw content for the new field
+            field_name (str): Name of the new field
+            content_id (str): Id of the content to which add the field
+            timestamp (str)
+
+        Returns:
+            field (ContentField)
+        """
         if type(raw_content[field_name]) == list:
             timestamp = raw_content[field_name][1]
             field_data = raw_content[field_name][0]
@@ -184,7 +194,8 @@ class ContentsProducer:
 
         return field
 
-    def __invoke_indexing_technique(self, field_name: str, field_data: str, pipeline: FieldRepresentationPipeline):
+    def __invoke_indexing_technique(self, field_name: str, field_data: str,
+                                    pipeline: FieldRepresentationPipeline):
         preprocessor_list = pipeline.get_preprocessor_list()
         processed_field_data = field_data
         for preprocessor in preprocessor_list:
@@ -200,7 +211,18 @@ class ContentsProducer:
             produce_content(field_representation_name, content_id, field_name)
 
     @staticmethod
-    def __create_representation(field_representation_name: str, field_data, pipeline: FieldRepresentationPipeline):
+    def __create_representation(field_representation_name: str, field_data,
+                                pipeline: FieldRepresentationPipeline):
+        """
+        Returns the specified representation for the specified field.
+        Args:
+            field_representation_name: Name of the representation
+            field_data: Raw data contained in the field
+            pipeline: Preprocessing pipeline for the data
+
+        Returns:
+            (Content)
+        """
         preprocessor_list = pipeline.get_preprocessor_list()
         processed_field_data = field_data
         for preprocessor in preprocessor_list:
@@ -213,9 +235,11 @@ class ContentsProducer:
         """
         Creates a content processing every field in the specified way.
         This class is iteratively invoked by the fit method.
+        Args:
+            raw_content (dict): Raw data from which the content will be created
 
         Returns:
-            Content: an instance of content with his fields
+            content (Content): an instance of content with his fields
 
         Raises:
             general Exception

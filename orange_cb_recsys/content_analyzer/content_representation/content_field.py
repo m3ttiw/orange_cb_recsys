@@ -6,7 +6,7 @@ import numpy as np
 
 class FieldRepresentation(ABC):
     """
-    Abstract class that generalize the concept of "field representation",
+    Abstract class that generalizes the concept of "field representation",
     a field representation is a semantic way to represent a field of an item.
 
     Args:
@@ -29,8 +29,8 @@ class FieldRepresentation(ABC):
 
 class FeaturesBagField(FieldRepresentation):
     """
-    Class for field representation using a bag of features,
-    this class can be also used to represent a bag of words: <keyword, score>;
+    Class for field representation using a bag of features.
+    This class can also be used to represent a bag of words: <keyword, score>;
     this representation is produced by the EntityLinking and tf-idf techniques
 
     Args:
@@ -54,7 +54,6 @@ class FeaturesBagField(FieldRepresentation):
         Args:
             feature_key (str): key, can be a url or a keyword
             feature_value: the value of the field
-
         """
         self.__features[feature_key] = feature_value
 
@@ -75,7 +74,7 @@ class FeaturesBagField(FieldRepresentation):
         Get the features dict
 
         Returns:
-            features: the features dict
+            features (dict<str, object>): the features dict
         """
         return self.__features
 
@@ -85,7 +84,7 @@ class FeaturesBagField(FieldRepresentation):
 
 class EmbeddingField(FieldRepresentation):
     """
-    Class for field representation using embeddings(dense numeric vectors)
+    Class for field representation using embeddings (dense numeric vectors)
     this representation is produced by the EmbeddingTechnique.
 
     Examples:
@@ -104,7 +103,7 @@ class EmbeddingField(FieldRepresentation):
 
     def __str__(self):
         representation_string = "Representation: " + self.get_name()
-        return "%s \n\n %s" %(representation_string, str(self.__embedding_array))
+        return "%s \n\n %s" % (representation_string, str(self.__embedding_array))
 
     def get_value(self) -> np.ndarray:
         return self.__embedding_array
@@ -115,12 +114,13 @@ class EmbeddingField(FieldRepresentation):
 
 class ContentField:
     """
-    Class that represents a field,
-    a field can have different representation of itself
+    Class that represents a field, a field can have more than one representation for itself
     Args:
         field_name (str): the name of the field
         timestamp (str): string that represents the timestamp
-        representation_dict (list<FieldRepresentation>): the list of the representations.
+        representation_dict (dict<str, FieldRepresentation>): Dictionary whose keys are the name
+            of the various representations, and the values are the corresponding FieldRepresentation
+            instances.
     """
 
     def __init__(self, field_name: str,
@@ -142,7 +142,6 @@ class ContentField:
         Returns:
             bool: True if the names are equals
         """
-
         return self.__field_name == other.get_name() and self.__representation_dict == other.__representation_dict
 
     def __str__(self):
@@ -151,7 +150,7 @@ class ContentField:
 
         return "%s \n\n %s ------------------------------------" % (field_string, rep_string)
 
-    def append(self, representation_id: str, representation):
+    def append(self, representation_id: str, representation: FieldRepresentation):
         self.__representation_dict[representation_id] = representation
 
     def get_representation(self, representation_id: str):

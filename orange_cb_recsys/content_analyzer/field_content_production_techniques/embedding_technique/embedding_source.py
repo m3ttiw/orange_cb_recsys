@@ -18,8 +18,7 @@ class BinaryFile(EmbeddingSource):
 
     Attributes:
         file_path (str): path for the binary file containing the embeddings
-        embedding_type (EmbeddingType):
-            technique used to learn the embedding that is being loaded
+        embedding_type (str): Name of the technique used to learn the embedding that is being loaded
     """
 
     def __init__(self, file_path: str,
@@ -43,7 +42,7 @@ class GensimDownloader(EmbeddingSource):
     This class loads the embeddings using the gensim downloader API.
 
     Attributes:
-        name (str): name of the embeddings model to be loaded
+        name (str): name of the embeddings model to load
     """
 
     def __init__(self, name: str):
@@ -78,11 +77,10 @@ class Wikipedia2VecDownloader(EmbeddingSource):
         the vectors of the words contained in text
 
         Args:
-            text (str): contains words of which vectors will be extracted
+            text (list<str>): list of words of which vectors will be extracted
 
         Returns:
-            np.ndarray: bi-dimensional numpy vector,
-                each row is a term vector
+            embedding_matrix (np.ndarray): bi-dimensional numpy vector, each row is a term vector
         """
         embedding_matrix = np.ndarray(shape=(len(text), self.get_vector_size()))
 
@@ -90,7 +88,6 @@ class Wikipedia2VecDownloader(EmbeddingSource):
 
         for i, word in enumerate(text):
             word = word.lower()
-
             try:
                 embedding_matrix[i, :] = self.get_model().get_word_vector(word)
             except KeyError:

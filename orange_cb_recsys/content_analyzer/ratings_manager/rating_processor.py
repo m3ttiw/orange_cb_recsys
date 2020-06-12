@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class RatingProcessor(ABC):
     """
-    Abstract class that process a rating with the personalized fit method
+    Abstract class to process a rating with the personalized fit method
     that returns a score in the range [-1.0,1.0]
     """
 
@@ -24,7 +24,7 @@ class SentimentAnalysis(RatingProcessor):
 
 class NumberNormalizer(RatingProcessor):
     """
-    Class that scale ratings in a numeric scale in the range [-1.0,1.0]
+    Class that normalizes the ratings to a numeric scale in the range [-1.0,1.0]
     """
     def __init__(self, min_: float, max_: float):
         if min_ > max_:

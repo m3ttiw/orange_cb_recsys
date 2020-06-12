@@ -20,7 +20,7 @@ def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
         num_of_recs (int): avg number of recommendation per user
 
     Returns:
-        novelty score (float)
+        novelty (float): Novelty score
     """
     total_ratings = len(truth_frame.index)
     ratings_by_item = Counter(truth_frame[['to_id']].values.flatten())

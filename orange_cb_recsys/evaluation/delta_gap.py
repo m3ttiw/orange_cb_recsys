@@ -7,8 +7,8 @@ def get_avg_pop(items: pd.Series, pop_by_items: Dict[str, object]) -> float:
     """
     Get the average popularity of the given items Series
     Args:
-        items (pd.DataFrame): a pandas Series that contains string labels ('label')
-        pop_by_items (Dict[str, object]): popularity for each label ('label', 'popularity')
+        items (pd.Series): a pandas Series that contains string labels ('label')
+        pop_by_items (Dict<str, object>): popularity for each label ('label', 'popularity')
 
     Returns:
         score (float): average popularity
@@ -25,11 +25,11 @@ def get_avg_pop_by_users(data: pd.DataFrame, pop_by_items: Dict[str, object],
     Get the average popularity for each user in the DataFrame
     Args:
         data (pd.DataFrame): a pandas dataframe with columns = ['from_id', 'to_id', 'rating']
-        pop_by_items (Dict[str, object]): popularity for each label ('label', 'popularity')
-        group (Set[str]): (optional) the set of users (from_id)
+        pop_by_items (Dict<str, object>): popularity for each label ('label', 'popularity')
+        group (Set<str>): (optional) the set of users (from_id)
 
     Returns:
-        score_dict (Dict[str, float]): average popularity by user
+        avg_pop_by_users (Dict<str, float>): average popularity by user
     """
 
     if group is None:
@@ -48,14 +48,13 @@ def calculate_gap(group: Set[str], avg_pop_by_users: Dict[str, object]) -> float
     """
     Compute the GAP (Group Average Popularity) formula
     Args:
-        group (Set[str]): the set of users (from_id)
-        avg_pop_by_users (Dict[str, object]): average popularity by user
+        group (Set<str>): the set of users (from_id)
+        avg_pop_by_users (Dict<str, object>): average popularity by user
 
     Returns:
         score (float): gap score
     """
     total_pop = 0
-    # avg_pop_by_users: Dict[str, float] = get_avg_pop_by_users(group=group, data=data, pop_by_items=pop_by_items)
     for element in group:
         try:
             total_pop += avg_pop_by_users[element]
@@ -66,7 +65,7 @@ def calculate_gap(group: Set[str], avg_pop_by_users: Dict[str, object]) -> float
 
 def calculate_delta_gap(recs_gap: float, profile_gap: float) -> float:
     """
-    Compute the rateo between the recommendation gap and the user profiles gap
+    Compute the ratio between the recommendation gap and the user profiles gap
     Args:
         recs_gap (float): recommendation gap
         profile_gap: user profiles gap

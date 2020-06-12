@@ -24,7 +24,6 @@ def get_wordnet_pos(word):
 class NLTK(NLP):
     """
     Interface for the library NLTK for natural language processing features
-
     """
     def __init__(self, stopwords_removal: bool = False,
                  stemming: bool = False,
@@ -101,7 +100,6 @@ class NLTK(NLP):
 
         Returns:
              List<str>: a list of words
-
         """
         tokenizer = RegexpTokenizer('[\w<>$€]+')
         return tokenizer.tokenize(text)
@@ -144,7 +142,8 @@ class NLTK(NLP):
 
         return stemmed_text
 
-    def __lemmatization_operation(self, text) -> List[str]:
+    @staticmethod
+    def __lemmatization_operation(text) -> List[str]:
         """
         Execute lemmatization on input text
 
@@ -200,7 +199,7 @@ class NLTK(NLP):
             text (str):
 
         Returns:
-            text (str): input text, <URL> instead of full url
+            text (list<str>): input text, <URL> instead of full urls
         """
         import re
         urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]| '

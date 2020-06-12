@@ -1,6 +1,5 @@
 from typing import List
 
-
 from gensim.models.doc2vec import Doc2Vec, TaggedDocument
 
 from orange_cb_recsys.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
@@ -13,7 +12,6 @@ class GensimDoc2Vec(EmbeddingLearner):
     Class that implements the Abstract Class Dord2Vec.
     Implementation of Word2Vec using the Gensim library.
     """
-
     def __init__(self, source: RawInformationSource,
                  preprocessor: TextProcessor,
                  field_list: List[str],
@@ -60,7 +58,6 @@ class GensimDoc2Vec(EmbeddingLearner):
         model.build_vocab(tagged_data)  # this creates the vocabulary
 
         for epoch in range(self.__max_epochs):
-            # print('iteration {0}'.format(epoch))
             model.train(tagged_data,
                         total_examples=model.corpus_count,
                         epochs=model.iter)
@@ -77,7 +74,3 @@ class GensimDoc2Vec(EmbeddingLearner):
             #print("Doc-{}: {}".format(i, model.docvecs[str(i)]))
             return_list.append(model.docvecs[str(i)])
         """
-
-
-
-

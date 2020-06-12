@@ -3,11 +3,17 @@ from scipy import spatial
 
 
 class Similarity(ABC):
+    """
+    Class for the various types of similarity
+    """
     def __init__(self):
         pass
 
     @abstractmethod
     def perform(self, v1, v2):
+        """
+        Calculates the similarity between v1 and v2
+        """
         raise NotImplementedError
 
 

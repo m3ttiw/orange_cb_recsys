@@ -1,10 +1,10 @@
-import re
 from abc import ABC, abstractmethod
+from typing import List
 
 
 class InformationProcessor(ABC):
     """
-    Abstract class that generalize the data processing.
+    Abstract class that generalizes data processing.
     """
     def __init__(self):
         self.__lang = "EN"
@@ -54,9 +54,10 @@ class NLP(TextProcessor):
     Args:
         stopwords_removal (bool): Whether you want to remove stop words
         stemming (bool): Whether you want to perform stemming
-        lemmatization (bool):  Whether you want to perform lemmatization
+        lemmatization (bool): Whether you want to perform lemmatization
         strip_multiple_whitespaces (bool): Whether you want to remove multiple whitespaces
         url_tagging (bool): Whether you want to tag the urls in the text and to replace with "<URL>"
+        named_entity_recognition (bool): Whether you want to perform named entity recognition
     """
 
     def __init__(self, stopwords_removal: bool = False,
@@ -110,15 +111,15 @@ class NLP(TextProcessor):
         self.__named_entity_recognition = named_entity_recognition
 
     @abstractmethod
-    def process(self, field_data) -> str:
+    def process(self, field_data) -> List[str]:
         """
-        Apply on original text operations with True value
+        Apply on the original text the required preprocessing steps
         Args:
             field_data: text on which NLP with specified phases will be applied
 
         Returns:
             list<str>: The text, after being processed with the specified NLP pipeline,
-                is splitted in single words that are put into a list
+                is splitted in single words that are put into a list. The splitting is executed
+                even if none of the preprocessing steps is computed.
         """
         raise NotImplementedError
-

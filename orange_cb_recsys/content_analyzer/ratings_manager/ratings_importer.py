@@ -9,6 +9,13 @@ from orange_cb_recsys.utils.const import home_path, logger, DEVELOPING
 
 
 class RatingsFieldConfig:
+    """
+    Class for the configuration of the field containing the ratings
+
+    Args:
+        preference_field_name (str): Name of the field that contains the ratings
+        processor (RatingProcessor): Processor for the data in the rating field
+    """
     def __init__(self, preference_field_name: str,
                  processor: RatingProcessor):
         self.__preference_field_name = preference_field_name
@@ -22,6 +29,19 @@ class RatingsFieldConfig:
 
 
 class RatingsImporter:
+    """
+    Class that imports the ratings
+    Args:
+        source (RawInformationSource): Source from which the ratings will be imported
+        rating_configs (list<RatingsFieldConfig>):
+        from_field_name (str): Name of the field containing the reference to the person who gave
+            the rating (for example, the user id)
+        to_field_name (str): Name of the field containing the reference to the item that a person
+            rated
+        timestamp_field_name (str): Name of the field containing the timestamp
+        output_directory (str): Name of the directory where the acquired ratings will be stored
+        score_combiner (str): Metric to use to combine the scores
+    """
     def __init__(self, source: RawInformationSource,
                  rating_configs: List[RatingsFieldConfig],
                  from_field_name: str,
@@ -95,6 +115,14 @@ class RatingsImporter:
 
 
 def show_progress(coll, milestones=100):
+    """
+    Yields the elements contained in coll and prints to video how many have been processed
+    Args:
+        coll (list): List that contains the ratings to process
+        milestones (int): Tells to the method how often he has to print an update. For
+            example, if milestones = 100, for every 100 items processed the method will
+            print an update
+    """
     processed = 0
     for x in coll:
         yield x
