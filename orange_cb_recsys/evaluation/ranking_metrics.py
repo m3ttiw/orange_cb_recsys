@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Tuple
 import pandas as pd
 import numpy as np
 
@@ -76,22 +76,47 @@ def perform_DCG(gain_values: pd.Series) -> List[float]:
     return dcg
 
 
-def perform_NDCG(predictions: pd.DataFrame) -> List[float]:
+def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame, split: Dict[int, Tuple[float, float]] = None
+                 ) -> List[float]:
     """
     Compute the Normalized DCG measure using Truth rank as ideal DCG
     Args:
         predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
+        truth (pd.DataFrame):
+        split (Dict[float, Tuple[float, float]])
 
     Returns:
         ndcg (List[float]): array of ndcg
     """
     logger.info("Computing NDCG")
 
-    #to_label_intersection = set(predictions[['to_id']].values.flatten()).intersection(
-    #    set(truth[['to_id']].values.flatten()))
-    #idcg = perform_DCG(pd.Series(truth['rating'].values))
+    def discrete(score_: float):
+        if split is not None and len(split.keys()) != 0:
 
-    gain = predictions['rating'].values
+            shift_class = 0
+            while 0 + shift_class not in split.keys():
+                shift_class += 1
+            shift_class += 1  # no negative
+            for class_ in split.keys():
+                min_, max_ = split[class_]
+                if min_ <= score_ <= max_:  # assumption
+                    return class_ + shift_class
+
+            # if score_ not in split ranges
+            if score_ > 0.0:
+                return max(split.keys())
+            return min(split.keys())
+
+        return score_ + 1  # no negative, shift to range(0,2) from range (-1, 1)
+
+    gain = []
+    for idx, row in predictions.iterrows():
+        label = row['to_id']
+        score = discrete(truth.rating[truth['to_id'] == label].values[0])
+        gain.append(score)
+    gain = np.array(gain)
+    # gain = predictions['rating'].values
+
     igain = gain.copy()
     igain[::-1].sort()
     idcg = perform_DCG(pd.Series(igain))
@@ -100,6 +125,9 @@ def perform_NDCG(predictions: pd.DataFrame) -> List[float]:
     return ndcg
 
 """
+label_intersection = set(predictions[['to_id']].values.flatten()).intersection(
+        set(truth[['to_id']].values.flatten())) 
+idcg = perform_DCG(pd.Series(truth['rating'].values))
 col = ["to_id", "rating"]
 new_predicted = pd.DataFrame(columns=col)
 for label in predictions['rating'].values:
@@ -118,6 +146,7 @@ for i, ideal in enumerate(idcg):
         ndcg.append(0.0)
 return ndcg
 """
+
 
 def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
     """
