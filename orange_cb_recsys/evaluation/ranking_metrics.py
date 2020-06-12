@@ -81,7 +81,6 @@ def perform_NDCG(predictions: pd.DataFrame) -> List[float]:
     Compute the Normalized DCG measure using Truth rank as ideal DCG
     Args:
         predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
-        truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
 
     Returns:
         ndcg (List[float]): array of ndcg
