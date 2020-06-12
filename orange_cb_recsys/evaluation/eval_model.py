@@ -107,9 +107,9 @@ class EvalModel:
                     truth = test.loc[:, 'to_id':'score']
                     truth.columns = ["to_id", "rating"]
 
-                    relevant_items = truth[truth['rating'] >= self.__ranking_metrics_config.get_relevant_threshold()].to_id.tolist()
+                    relevant_items_number = len(truth[truth['rating'] >= self.__ranking_metrics_config.get_relevant_threshold()].to_id.tolist())
 
-                    predictions = recsys.fit_eval_ranking(user_id, train, relevant_items)
+                    predictions = recsys.fit_eval_ranking(user_id, train, truth['to_id'].tolist(), relevant_items_number)
                     result_dict = perform_ranking_metrics(predictions, truth,
                                                           relevant_threshold=self.__ranking_metrics_config.get_relevant_threshold())
 

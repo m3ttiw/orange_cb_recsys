@@ -123,9 +123,9 @@ class RecSys:
 
         return score_frame
 
-    def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, relevant_items):
-        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, len(relevant_items),
+    def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set_items, recs_number):
+        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
                                                                     self.__config.get_items_directory(),
-                                                                    relevant_items)
+                                                                    test_set_items)
 
         return score_frame
