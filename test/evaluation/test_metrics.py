@@ -71,11 +71,8 @@ class Test(TestCase):
         print(results['NDCG'])
 
     def test_NDCG(self):
-        self.assertEqual([], perform_NDCG(truth=pd.DataFrame({'to_id': ['aaa', 'bbb'], 'rating': [0.0, 1.0]}),
-                                          predictions=pd.DataFrame({'to_id': ['ccc', 'ddd'], 'rating': [0.0, 0.5]})),
-                         "null intersection")
-        perform_NDCG(truth=pd.DataFrame({'to_id': ['aaa', 'bbb', 'ccc'], 'rating': [0.1, 0.2, 0.3]}),
-                     predictions=pd.DataFrame({'to_id': ['ccc', 'ddd'], 'rating': [0.5, 0.6]}))
+        perform_NDCG(predictions=pd.DataFrame({'rating': [0.0, 0.5, 1.0, 0.3, -0.4]}))
+
 
     def test_perform_fairness_metrics(self):
         score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
