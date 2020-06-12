@@ -12,7 +12,7 @@ def popular_items(score_frame: pd.DataFrame) -> Set[str]:
         score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
 
     Returns:
-        Set[str]: set of most popular labels
+        Set<str>: set of most popular labels
     """
     items = score_frame[['to_id']].values.flatten()
 
@@ -37,7 +37,7 @@ def pop_ratio_by_user(score_frame: pd.DataFrame, most_pop_items: Set[str]) -> pd
         most_pop_items (Set[str]): set of most popular 'to_id' labels
 
     Returns:
-        pd.DataFrame: contains the 'popularity_ratio' for each 'from_id' (user)
+        (pd.DataFrame): contains the 'popularity_ratio' for each 'from_id' (user)
     """
 
     # Splitting users by popularity
@@ -60,17 +60,17 @@ def pop_ratio_by_user(score_frame: pd.DataFrame, most_pop_items: Set[str]) -> pd
 def split_user_in_groups(score_frame: pd.DataFrame, groups: Dict[str, float], pop_items: Set[str]
                          ) -> Dict[str, Set[str]]:
     """
-    Split of DataFrames in 3 different Sets, based on the recommendation popularity of each user
+    Splits the DataFrames in 3 different Sets, based on the recommendation popularity of each user
 
     Args:
         score_frame (pd.DataFrame): DataFrame with columns = ['from_id', 'to_id', 'rating']
-        groups (Dict[str, float]): each key contains the name of the group and each value contains the percentage
-                                   of the specified group. If the groups don't cover the entire user collection,
-                                   the rest of the users are considered in a 'default_diverse' group
+        groups (Dict[str, float]): each key contains the name of the group and each value contains the
+            percentage of the specified group. If the groups don't cover the entire user collection,
+            the rest of the users are considered in a 'default_diverse' group
         pop_items (Set[str]): set of most popular 'to_id' labels
 
     Returns:
-        groups_dict (Dict[str, Set[str]]): key = group_name, value = Set of 'from_id' labels
+        groups_dict (Dict<str, Set<str>>): key = group_name, value = Set of 'from_id' labels
     """
 
     pop_ratio_by_users = pop_ratio_by_user(score_frame, most_pop_items=pop_items)
@@ -96,11 +96,11 @@ def get_profile_avg_pop_ratio(users: Set[str], pop_ratio_by_users: pd.DataFrame)
     Calculates the average profile popularity ratio
 
     Args:
-        users (Set[str]): set of 'from_id' labels
+        users (Set<str>): set of 'from_id' labels
         pop_ratio_by_users (pd.DataFrame): contains the 'popularity_ratio' for each 'from_id' (user)
 
     Returns:
-        score (float): average profile popularity ratio
+        (float): average profile popularity ratio
     """
     profile_pop_ratios = np.array([])
     for user in users:

@@ -18,12 +18,28 @@ from org.apache.lucene.analysis.core import SimpleAnalyzer
 
 
 class IndexQuery(RankingAlgorithm):
+    """
+    Class for the search engine recommender
+    """
     def __init__(self, classic_similarity: bool = True, positive_threshold: float = 0):
         super().__init__(None, None)
         self.__classic_similarity: bool = classic_similarity
         self.__positive_threshold: float = positive_threshold
 
-    def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory):
+    def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory) -> pd.DataFrame:
+        """
+        Builds a query using the contents that the user liked. The terms relativ to the contents that
+        the user liked are boosted by the rating he/she gave.
+        Args:
+            positive_rated_document_list: List of contents that the user liked
+            scores: Ratings given by the user
+            recs_number: How many items must be recommended. You can only specify the number, not
+                a specific item for which compute the prediction
+            items_directory: Directory where the items are stored
+
+        Returns:
+            score_frame (pd.DataFrame): DataFrame containing the recommendations for the user
+        """
         BooleanQuery.setMaxClauseCount(2000000)
         searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(items_directory))))
         if self.__classic_similarity:
@@ -78,7 +94,18 @@ class IndexQuery(RankingAlgorithm):
 
         return score_frame
 
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number, items_directory: str):
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str) -> pd.DataFrame:
+        """
+        Finds the documents that the user liked and then calls __recs_query to execute the prediction
+        Args:
+            user_id (str):
+            ratings (pd.DataFrame): All the ratings provided by the user
+            recs_number (int): How many items recommend
+            items_directory (str): Directory where the items are stored
+
+        Returns:
+            (pd.DataFrame)
+        """
         index_path = os.path.join(items_directory, 'search_index')
         if not DEVELOPING:
             index_path = os.path.join(home_path, items_directory, 'search_index')

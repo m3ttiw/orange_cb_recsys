@@ -60,14 +60,14 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     Args:
         score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
         truth_frame (pd.DataFrame): the real rank each row contains index(the rank position), label, value
-        user_groups (Dict[str, float): each key contains the name of the group and each value contains the percentage
-                                       of the specified group. If the groups don't cover the entire user collection,
-                                       the rest of the users are considered in a 'default_diverse' group
+        user_groups (Dict[str, float): each key contains the name of the group and each value contains the
+            percentage of the specified group. If the groups don't cover the entire user collection,
+            the rest of the users are considered in a 'default_diverse' group
         algorithm_name (str): name of the algorithm that run these metrics
         file_output_directory (str): output directory for saving the results
 
     Returns:
-        Tuple(pd.DataFrame, pd.DataFrame, float): results_by_user, results_by_user_groups, catalogue_coverage
+        Tuple<pd.DataFrame, pd.DataFrame, float>: results_by_user, results_by_user_groups, catalogue_coverage
     """
     if DEVELOPING:
         output_path = file_output_directory
@@ -107,7 +107,7 @@ def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict
 
     Returns:
         results (Dict[str, object]): Python dictionary where the keys are the names of the metrics and the
-        values are the corresponding values
+            values are the corresponding values
     """
     results = {
         "RMSE": perform_rmse(predictions, truth),

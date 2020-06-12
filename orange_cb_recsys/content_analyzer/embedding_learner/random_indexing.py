@@ -9,6 +9,9 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 
 
 class GensimRandomIndexing(EmbeddingLearner):
+    """
+    Class that implements the random indexing using Gensim
+    """
     def __init__(self, source: RawInformationSource,
                  preprocessor: TextProcessor,
                  field_list: List[str]):

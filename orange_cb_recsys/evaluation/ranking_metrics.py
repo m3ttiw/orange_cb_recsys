@@ -11,8 +11,8 @@ def perform_precision(prediction_labels: pd.Series, truth_labels: pd.Series) -> 
     based on the truth ranking
 
     Args:
-        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
-        truth_labels (pd.Series): pandas Series wich contains truth "labels"
+        prediction_labels (pd.Series): pandas Series which contains predicted "labels"
+        truth_labels (pd.Series): pandas Series which contains truth "labels"
 
     Returns:
         score (float): precision
@@ -31,7 +31,7 @@ def perform_recall(prediction_labels: pd.Series, truth_labels: pd.Series) -> flo
         truth_labels (pd.Series): pandas Series wich contains truth "labels"
 
     Returns:
-        score (float): recall
+        (float): recall
     """
     logger.info("Computing recall")
 
@@ -60,10 +60,10 @@ def perform_DCG(gain_values: pd.Series) -> List[float]:
     """
     Compute the Discounted Cumulative Gain array of a gain vector
     Args:
-        gain_values (pd.Series): array of gains
+        gain_values (pd.Series): Series of gains
 
     Returns:
-        dcg (List[float]): array of dcg
+        dcg (List<float>): array of dcg
     """
     if gain_values.size == 0:
         return []
@@ -84,7 +84,7 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame) -> List[float]:
         truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
 
     Returns:
-        ndcg (List[float]): array of ndcg
+        ndcg (List<float>): array of ndcg
     """
     logger.info("Computing NDCG")
 
@@ -121,7 +121,7 @@ def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
         truth_labels (pd.Series): pandas Series wich contains truth "labels"
 
     Returns:
-        score (float): the mrr value
+        (float): the mrr value
     """
     logger.info("Computing MRR")
 
@@ -143,7 +143,7 @@ def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, m
         method: {'pearson, 'kendall', 'spearman'} or callable
 
     Returns:
-        score (float): value of the specified correlation metric
+        (float): value of the specified correlation metric
     """
     logger.info("Computing correlation")
 

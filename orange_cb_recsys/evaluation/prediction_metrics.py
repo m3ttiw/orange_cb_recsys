@@ -13,7 +13,7 @@ def perform_rmse(predictions: pd.Series, truth: pd.Series) -> float:
         truth (pd.Series): Series containing the truth rating values
 
     Returns:
-        float: The Root Mean Squared Error
+        (float): The Root Mean Squared Error
     """
     logger.info("Computing RMSE")
 
@@ -33,7 +33,7 @@ def perform_mae(predictions: pd.Series, truth: pd.Series) -> float:
         truth (pd.Series): Series containing the truth rating values
 
     Returns:
-        float: The Mean Average Error
+        (float): The Mean Average Error
     """
     logger.info("Computing MAE")
 

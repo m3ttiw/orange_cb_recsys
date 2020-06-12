@@ -120,9 +120,6 @@ class GensimWord2Vec(EmbeddingLearner):
     def fit(self):
         """"
         Implementation of the Abstract Method start_training in the Abstract Class Word2vec.
-
-        Returns:
-            generator: the model, trained on the data in the field_list variable, is returned
         """
         data_to_train = self.extract_corpus()
         model = Word2Vec(sentences=data_to_train, **self.optionals)

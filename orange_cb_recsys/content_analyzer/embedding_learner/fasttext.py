@@ -112,13 +112,9 @@ class GensimFastText(EmbeddingLearner):
     def fit(self):
         """"
         Implementation of the Abstract Method fit in the Abstract Class EmbeddingLearner.
-
-        Returns:
-            generator: the model, trained on the data in the field_list variable, is returned
         """
         data_to_train = self.extract_corpus()
         model = FastText(sentences=data_to_train, **self.optionals)
-        # model.build_vocab(senteces=GensimFastText(self.get_source(), self.get_preprocessor(), self.get_field_list()))
         model.train(data_to_train,
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)

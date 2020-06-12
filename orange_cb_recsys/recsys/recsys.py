@@ -11,8 +11,9 @@ from orange_cb_recsys.utils.load_content import load_content_instance, get_unrat
 
 class RecSys:
     """
-    Class that represent a recommender system, to isntatiate
-    this class a config object must be provided
+    Class that represent a recommender system
+    Args:
+        config (RecSysConfig): Configuration of the recommender system
     """
 
     def __init__(self, config: RecSysConfig):
@@ -20,7 +21,7 @@ class RecSys:
 
     def __get_item_list(self, item_to_predict_id_list, user_ratings):
         if item_to_predict_id_list is None:
-            # all items without rating if the list is not setted
+            # all items without rating if the list is not set
             item_to_predict_list = get_unrated_items(self.__config.get_items_directory(), user_ratings)
         else:
             item_to_predict_list = [
@@ -35,12 +36,12 @@ class RecSys:
         should be used when a score prediction algorithm (instead of a ranking algorithm)
         was chosen in the config
 
-        Args
+        Args:
             user_id: user for which calculate the predictions
-            item_to_predict_id_list: item for which the prediction will be computed,
+            item_to_predict_id_list: items for which the prediction will be computed,
                 if None all unrated items will be used
         Returns:
-            (DataFrame): result frame whose columns are: to_id, rating
+            score_frame (DataFrame): result frame whose columns are: to_id, rating
 
         Raises:
              ValueError: if the algorithm is a ranking algorithm
@@ -67,15 +68,15 @@ class RecSys:
     def fit_ranking(self, user_id: str, recs_number: int):
         """
         Computes the predicted rating for specified user and items,
-        should be used when a score prediction algorithm (instead of a ranking algorithm)
+        should be used when a  ranking algorithm (instead of a score prediction algorithm)
         was chosen in the config
 
-        Args
+        Args:
             user_id: user for which calculate the predictions
             recs_number: how many items should the returned ranking contain,
             the ranking length can be lower
         Returns:
-            (DataFrame): result frame whose columns are: to_id, rating
+            score_frame (DataFrame): result frame whose columns are: to_id, rating
 
         Raises:
              ValueError: if the algorithm is a score prediction algorithm
@@ -97,18 +98,17 @@ class RecSys:
 
     def fit_eval_predict(self, user_id, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
         """
-        Computes predicted ratings, or ranking (according to algorithm chosed in the config)
+        Computes predicted ratings, or ranking (according to algorithm chosen in the config)
         user ratings will be used as train set to fit the algorithm.
         If the algorithm is score_prediction the rating for the item in the test set will
         be predicted, else a ranking with recs_number = len(test_set) will be computed
 
-        Args
+        Args:
             user_ratings: train set
             test_set:
         Returns:
-            (DataFrame): result frame whose columns are: to_id, rating
+            score_frame (DataFrame): result frame whose columns are: to_id, rating
         """
-        score_frame = None
         logger.info("Loading items")
         item_to_predict_id_list = [item for item in test_set.to_id]  # unrated items list
         items = [load_content_instance(self.__config.get_items_directory(), re.sub(r'[^\w\s]', '', item_id))
@@ -124,6 +124,14 @@ class RecSys:
         return score_frame
 
     def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set: pd.DataFrame):
+        """
+        Computes a ranking, using as training set the ratings provided by he user
+
+        Args:
+            user_id:
+            user_ratings (pd.DataFrame): Training set
+            test_set (pd.DataFrame)
+        """
         score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, test_set.shape[0],
                                                                     self.__config.get_items_directory())
 

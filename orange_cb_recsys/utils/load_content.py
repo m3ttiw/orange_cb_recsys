@@ -2,12 +2,20 @@ import lzma
 import os
 import pickle
 import re
-
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.utils.const import logger
 
 
-def load_content_instance(directory, content_id):
+def load_content_instance(directory: str, content_id: str):
+    """
+    Loads a serialized content
+    Args:
+        directory (str): Path to the directory in which the content is stored
+        content_id (str): Id of the content to load
+
+    Returns:
+        content (Content)
+    """
     logger.info("Loading %s" % content_id)
     try:
         content_filename = os.path.join(directory, content_id + '.xz')
@@ -18,7 +26,17 @@ def load_content_instance(directory, content_id):
         return None
 
 
-def get_unrated_items(items_directory, ratings):
+def get_unrated_items(items_directory: str, ratings):
+    """
+    Gets the items that a user has not rated
+
+    Args:
+        items_directory (str): Path to the items directory
+        ratings (pd.DataFrame): Ratings of a user
+
+    Returns:
+        unrated_items (List<Content>): List of items that the user has not rated
+    """
     directory_filename_list = [os.path.splitext(filename)[0]
                                for filename in os.listdir(items_directory)
                                if filename != 'search_index']
@@ -40,6 +58,16 @@ def get_unrated_items(items_directory, ratings):
 
 
 def get_rated_items(items_directory, ratings):
+    """
+    Gets the items that a user not rated
+
+    Args:
+        items_directory (str): Path to the items directory
+        ratings (pd.DataFrame): Ratings of the user
+
+    Returns:
+        unrated_items (List<Content>): List of items that the user has rated
+    """
     directory_filename_list = [os.path.splitext(filename)[0]
                                for filename in os.listdir(items_directory)
                                if filename != 'search_index']
@@ -61,7 +89,15 @@ def get_rated_items(items_directory, ratings):
     return rated_items
 
 
-def remove_not_existent_items(ratings, items_directory):
+def remove_not_existent_items(ratings, items_directory: str):
+    """
+    Sometimes a dataset can contain ratings about an item which is not in the dataset. This
+    function locates these items nd removes them from the ratings frame
+
+    Args:
+        ratings (pd.DataFrame): Ratings of the user
+        items_directory (str): Path to the directory in which the items are stored
+    """
     directory_filename_list = [os.path.splitext(filename)[0]
                                for filename in os.listdir(items_directory)
                                if filename != 'search_index']
