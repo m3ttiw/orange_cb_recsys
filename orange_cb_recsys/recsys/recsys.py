@@ -3,7 +3,6 @@ import re
 import pandas as pd
 from typing import List
 
-from orange_cb_recsys.recsys.algorithm import ScorePredictionAlgorithm, RankingAlgorithm
 from orange_cb_recsys.recsys.config import RecSysConfig
 from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.load_content import load_content_instance, get_unrated_items
@@ -125,7 +124,7 @@ class RecSys:
 
     def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set_items, recs_number):
         """
-        Computes a ranking, using as training set the ratings provided by he user
+        Computes a ranking, using as training set the ratings provided by the user
 
         Args:
             user_id:
@@ -133,7 +132,9 @@ class RecSys:
             test_set_items (pd.DataFrame)
             recs_number (int): Number of recommendations to provide
         """
+        user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
         score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
                                                                     self.__config.get_items_directory(),
                                                                     test_set_items)
+
         return score_frame

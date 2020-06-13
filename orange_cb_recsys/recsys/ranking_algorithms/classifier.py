@@ -1,0 +1,92 @@
+from typing import List
+
+from scipy import sparse
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+
+from orange_cb_recsys.content_analyzer.content_representation.content import Content
+
+import pandas as pd
+
+from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
+from orange_cb_recsys.utils.const import logger
+from orange_cb_recsys.utils.load_content import get_rated_items, get_unrated_items, load_content_instance
+
+
+class ClassifierRecommender(RankingAlgorithm):
+    """
+       Class that implements a logistic regression classifier.
+       Args:
+           item_field (str): Name of the field that contains the content to use
+           field_representation (str): Id of the field_representation content
+       """
+    def __init__(self, item_field: str, field_representation: str, threshold=-1):
+        super().__init__(item_field, field_representation)
+        self.__threshold = threshold
+
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str, candidate_item_id_list: List = None) -> pd.DataFrame:
+        """
+        1) Goes into items_directory and for each item takes the values corresponding to the field_representation of
+        the item_field. For example, if item_field == "Plot" and field_representation == "tf-idf", the function will
+        take the "tf-idf" representation of each  "Plot" field for every rated item, the tf-idf representation of rated items
+        and items to classify will be parsed to dense arrays;
+        2) Define target features, items with rating greater (lower) than treshold will be used as positive(negative) examples;
+        3) Creates an object Classifier, uses the method fit and predicts the class of the new items
+
+            Args:
+                recs_number:
+                candidate_item_id_list:
+                user_id:
+                ratings (pd.DataFrame): Ratings
+                items_directory (str): Name of the directory where the items are stored.
+
+            Returns:
+                 The predicted classes, or the predict values.
+        """
+
+        if candidate_item_id_list is None:
+            unrated_items = get_unrated_items(items_directory, ratings)
+        else:
+            unrated_items = [load_content_instance(items_directory, item_id) for item_id in candidate_item_id_list]
+
+        rated_features_bag_list = []
+        unrated_features_bag_list = []
+
+        logger.info("Retrieving rated items")
+        rated_items = get_rated_items(items_directory, ratings)
+        if self.__threshold == -1:
+            threshold = pd.to_numeric(ratings["score"], downcast="float").mean()
+        else:
+            threshold = self.__threshold
+
+        labels = []
+        for item in rated_items:
+            if item is not None:
+                rated_features_bag_list.append(item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value())
+                labels.append(1 if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= threshold else 0)
+
+        logger.info("Labeling examples")
+        for item in unrated_items:
+            if item is not None:
+                unrated_features_bag_list.append(item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value())
+
+        logger.info("Parsing bag of words to vectors")
+        pipe = make_pipeline(DictVectorizer(sparse=True), LogisticRegression())
+
+        pipe = pipe.fit(rated_features_bag_list, labels)
+
+        columns = ["to_id", "rating"]
+        score_frame = pd.DataFrame(columns=columns)
+
+        logger.info("Predicting scores")
+        score_labels = pipe.predict_proba(unrated_features_bag_list)
+
+        for score, item in zip(score_labels, unrated_items):
+            if item is not None:
+                score_frame = pd.concat([score_frame, pd.DataFrame.from_records([(item.get_content_id(), score[1])], columns=columns)], ignore_index=True)
+
+        score_frame = score_frame.sort_values(['rating'], ascending=False).reset_index(drop=True)
+        score_frame = score_frame[:recs_number]
+
+        return score_frame
