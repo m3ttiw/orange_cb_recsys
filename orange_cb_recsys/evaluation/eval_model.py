@@ -29,11 +29,15 @@ class FairnessMetricsConfig:
 
 
 class RankingMetricsConfig:
-    def __init__(self, relevant_threshold: float):
+    def __init__(self, relevant_threshold: float, relevance_split):
         self.__relevant_threshold = relevant_threshold
+        self.__relevance_split = relevance_split
 
     def get_relevant_threshold(self):
         return self.__relevant_threshold
+
+    def get_relevance_split(self):
+        return self.__relevance_split
 
 
 class EvalModel:
@@ -144,7 +148,8 @@ class EvalModel:
 
                     predictions = recsys.fit_eval_ranking(user_id, train, truth['to_id'].tolist(), relevant_items_number)
                     result_dict = perform_ranking_metrics(predictions, truth,
-                                                          relevant_threshold=self.__ranking_metrics_config.get_relevant_threshold())
+                                                          relevant_threshold=self.__ranking_metrics_config.get_relevant_threshold(),
+                                                          relevance_split=self.__ranking_metrics_config.get_relevance_split())
 
                     result_dict["from"] = user_id
                     ranking_metric_results = ranking_metric_results.append(result_dict, ignore_index=True)

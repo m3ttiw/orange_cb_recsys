@@ -1,3 +1,5 @@
+from typing import List
+
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity

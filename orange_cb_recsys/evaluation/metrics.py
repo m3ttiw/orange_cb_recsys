@@ -29,13 +29,18 @@ def perform_ranking_metrics(predictions: pd.DataFrame,
     else:
         relevant_rank = truth
 
+    if "relevance_split" in options.keys():
+        relevance_split = options["relevance_split"]
+    else:
+        relevance_split = None
+
     content_truth = pd.Series(relevant_rank['to_id'].values)
 
     results = {
         "Precision": perform_precision(prediction_labels=content_prediction, truth_labels=content_truth),
         "Recall": perform_recall(prediction_labels=content_prediction, truth_labels=content_truth),
         "MRR": perform_MRR(prediction_labels=content_prediction, truth_labels=content_truth),
-        "NDCG": perform_NDCG(predictions=predictions, truth=truth),
+        "NDCG": perform_NDCG(predictions=predictions, truth=truth, split=relevance_split),
         "pearson": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth),
         "kendall": perform_correlation(prediction_labels=content_prediction, truth_labels=content_truth,
                                        method='kendall'),

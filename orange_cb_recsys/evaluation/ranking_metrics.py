@@ -1,3 +1,4 @@
+import statistics
 from typing import List, Dict, Tuple
 import pandas as pd
 import numpy as np
@@ -76,11 +77,12 @@ def perform_DCG(gain_values: pd.Series) -> List[float]:
     return dcg
 
 
-def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame, split: Dict[int, Tuple[float, float]] = None
-                 ) -> List[float]:
+def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame,
+                 split: Dict[int, Tuple[float, float]] = None) -> List[float]:
     """
     Compute the Normalized DCG measure using Truth rank as ideal DCG
     Args:
+        split:
         predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
         truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
 
@@ -121,7 +123,7 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame, split: Dict[int
     idcg = perform_DCG(pd.Series(igain))
     dcg = perform_DCG(pd.Series(gain))
     ndcg = [dcg[x]/(idcg[x]) for x in range(len(idcg))]
-    return ndcg
+    return statistics.mean(ndcg)
 
 """
 label_intersection = set(predictions[['to_id']].values.flatten()).intersection(
