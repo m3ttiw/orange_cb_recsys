@@ -80,9 +80,10 @@ class IndexQuery(RankingAlgorithm):
                 field_query = BoostQuery(field_query, score)
                 query_builder.add(field_query, BooleanClause.Occur.SHOULD)
 
-        id_query_string = ' OR '.join("content_id:\"" + content_id + "\"" for content_id in candidate_list)
-        id_query = QueryParser("testo_libero", KeywordAnalyzer()).parse(id_query_string)
-        query_builder.add(id_query, BooleanClause.Occur.MUST)
+        if candidate_list is not None:
+            id_query_string = ' OR '.join("content_id:\"" + content_id + "\"" for content_id in candidate_list)
+            id_query = QueryParser("testo_libero", KeywordAnalyzer()).parse(id_query_string)
+            query_builder.add(id_query, BooleanClause.Occur.MUST)
 
         query = query_builder.build()
         docs_to_search = len(positive_rated_document_list) + recs_number
