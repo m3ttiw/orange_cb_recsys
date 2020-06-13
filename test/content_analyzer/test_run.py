@@ -28,6 +28,50 @@ rating_config_dict = '[{"content_type": "ratings", ' \
                      '"fields": [{"preference_field_name": "text", ' \
                      '"rating_processor": {"class": "number_normalizer"}}]}]'
 
+content_config_dict_ = {
+    "content_type": "ITEM",
+    "output_directory": "movielens_test",
+    "raw_source_path": "datasets/movies_info_reduced.json",
+    "source_type": "json",
+    "id_field_name": ["imdbID"],
+    "fields": [{
+        "field_name": "Title",
+        "memory_interface": "None",
+        "memory_interface_path": "./test-index-plot",
+        "pipeline_list": [
+            {"field_content_production": {"class": "babelpy", "api_key": "bd7835be-12f7-4717-8c5f-429e3e968998"},
+            "preprocessing_list": []}
+        ]
+    }]
+}
+
+rating_config_dict_ = {
+    "content_type": "ratings",
+    "source_type": "json",
+    "from_field_name": "user_id",
+    "to_field_name": "item_id",
+    "timestamp_field_name": "timestamp",
+    "raw_source_path": "datasets/test_import_ratings.json",
+    "output_directory": "datasets/test_ratings",
+    "fields": [
+        {"preference_field_name": "stars", "processor": {"class": "number_normalizer", "max_": 5.0, "min_": 0.0}},
+    ],
+}
+
+rating_config_dict_2 = {
+    "content_type": "ratings",
+    "source_type": "json",
+    "from_field_name": "user_id",
+    "to_field_name": "item_id",
+    "timestamp_field_name": "timestamp",
+    "raw_source_path": "datasets/test_import_ratings.json",
+    "output_directory": "datasets/test_ratings",
+    "fields": [
+        {"preference_field_name": "stars", "processor": {"class": "number_normalizer", "max_": 5.0, "min_": 0.0}},
+        {"preference_field_name": "text", "processor": {"class": "text_blob_sentiment"}},
+    ],
+}
+
 
 class TestRun(TestCase):
     def test_config(self):
@@ -60,11 +104,12 @@ class TestRun(TestCase):
 
     def test_run(self):
         # self.skipTest("test in the submodules.")
-        global content_config_dict, rating_config_dict
+        global content_config_dict_, rating_config_dict_, rating_config_dict_2
         try:
-            content_config_run(json.loads(content_config_dict))
-            rating_config_run(json.loads(rating_config_dict))
-        except:
+            content_config_run([content_config_dict_])
+            rating_config_run(rating_config_dict_)
+            rating_config_run(rating_config_dict_2)
+        except FileNotFoundError:
             self.skipTest("LOCAL MACHINE")
 
     def test_check_for_available(self):
@@ -92,3 +137,7 @@ class TestRun(TestCase):
                    "timestamp": "_",
                    "fields": [{"preference_field_name": "_", "rating_processor": {"class": "text_blob_sentiment"}}]}
         self.assertTrue(check_for_available(in_dict))
+        in_dict = {"content_type": "ratings", "source_type": "csv", "from": "_", "to": "_", "output_directory": "_",
+                   "timestamp": "_",
+                   "fields": [{"preference_field_name": "_", "rating_processor": {"class": "boh"}}]}
+        self.assertFalse(check_for_available(in_dict))

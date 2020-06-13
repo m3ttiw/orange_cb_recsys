@@ -108,12 +108,15 @@ def dict_detector(technique_dict):
 def content_config_run(config_list: List[Dict]):
     for content_config in config_list:
         # content production
+        search_index = False
+        if 'search_index' in content_config.keys():
+            search_index = content_config['search_index']
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
-            runnable_instances[content_config['source_type']](file_path=config_dict["raw_source_path"]),
+            runnable_instances[content_config['source_type']](file_path=content_config["raw_source_path"]),
             content_config['id_field_name'],
             content_config['output_directory'],
-            content_config['search_index'])
+            search_index)
 
         for field_dict in content_config['fields']:
             try:
@@ -155,17 +158,22 @@ def content_config_run(config_list: List[Dict]):
 def rating_config_run(config_dict: Dict):
     rating_configs = []
     for field in config_dict["fields"]:
+        class_name = field['processor'].pop('class')
+        class_dict = dict_detector(field["processor"])
         rating_configs.append(
             RatingsFieldConfig(preference_field_name=field["preference_field_name"],
-                               processor=dict_detector(field["processor"]))
+                               processor=runnable_instances[class_name](**class_dict))
         )
+        args = {}
+        if config_dict["source_type"] is 'sql':
+            pass
     RatingsImporter(
-        source=runnable_instances[config_dict["source_type"]](file_path=config_dict["raw_source_path"], **config_dict),
+        source=runnable_instances[config_dict["source_type"]](file_path=config_dict["raw_source_path"], **args),
         output_directory=config_dict["output_directory"],
         rating_configs=rating_configs,
         from_field_name=config_dict["from_field_name"],
         to_field_name=config_dict["to_field_name"],
-        timestamp_field_name=config_dict["timestamp"]
+        timestamp_field_name=config_dict["timestamp_field_name"]
     ).import_ratings()
 
 
