@@ -4,7 +4,7 @@ from typing import List
 import pandas as pd
 
 from orange_cb_recsys.evaluation.metrics import perform_prediction_metrics, perform_ranking_metrics, \
-    perform_fairness_metrics, logger
+    perform_fairness_metrics, logger, perform_serendipity_novelty_metrics
 from orange_cb_recsys.evaluation.partitioning import Partitioning
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm, ScorePredictionAlgorithm
 from orange_cb_recsys.recsys.config import RecSysConfig
@@ -48,17 +48,19 @@ class EvalModel:
             created
         partitioning (Partitioning): Partitions
         prediction_metric (bool): Whether you want to evaluate the rating prediction phase
-        ranking_metric (bool): Whether you want to evaluate the ranking phase
+        ranking_metrics_config (RankingMetricsConfig): Configuration for ranking metrics copmuting
         fairness_metric_config (FairnessMetricsConfig): Configuration for the fairness computation
     """
     def __init__(self, config: RecSysConfig,
                  partitioning: Partitioning,
                  prediction_metric: bool = True,
                  ranking_metrics_config: RankingMetricsConfig = None,
-                 fairness_metric_config: FairnessMetricsConfig = None):
+                 fairness_metric_config: FairnessMetricsConfig = None,
+                 serendipity_novelty_metrics: bool = False):
         self.__config: RecSysConfig = config
         self.__partitioning = partitioning
         self.__prediction_metric = prediction_metric
+        self.__serendipity_novelty_metrics = serendipity_novelty_metrics
         self.__ranking_metrics_config: RankingMetricsConfig = ranking_metrics_config
         self.__fairness_metric_config: FairnessMetricsConfig = fairness_metric_config
 
@@ -161,15 +163,18 @@ class EvalModel:
             pd.DataFrame(columns=["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs",
                                   "pop_recs_correlation", "recs_long_tail_distr"])
 
-        if self.__fairness_metric_config is not None:
+        serendipity_novelty_results = \
+            pd.DataFrame(columns=["from", "serendipity", "novelty"])
+
+        if self.__fairness_metric_config is not None or self.__serendipity_novelty_metrics:
             if isinstance(self.__config.get_score_prediction_algorithm(), ScorePredictionAlgorithm):
-                raise ValueError("You must set ranking algorithm to use compute fairness metrics")
+                raise ValueError("You must set ranking algorithm to compute fairness metrics")
 
             columns = ["from_id", "to_id", "rating"]
             score_frame = pd.DataFrame(columns=columns)
             for user_id in user_id_list:
                 logger.info("User %s" % user_id)
-                fit_result = recsys.fit_ranking(user_id, 20)
+                fit_result = recsys.fit_ranking(user_id, 10)
 
                 fit_result_with_user = pd.DataFrame(columns=columns)
                 fit_result.columns = ["to_id", "rating"]
@@ -179,10 +184,15 @@ class EvalModel:
 
                 score_frame = pd.concat([fit_result_with_user, score_frame], ignore_index=True)
 
-            logger.info("Computing fairness metrics")
-            fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
-                                                                user_groups=self.__fairness_metric_config.get_user_groups(),
-                                                                truth_frame=self.__config.get_rating_frame(),
-                                                                algorithm_name='test')
+            if self.__fairness_metric_config is not None:
+                logger.info("Computing fairness metrics")
+                fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
+                                                                    user_groups=self.__fairness_metric_config.get_user_groups(),
+                                                                    truth_frame=self.__config.get_rating_frame(),
+                                                                    algorithm_name='test')
+
+            if self.__serendipity_novelty_metrics:
+                logger.info("Computing novelty and serendipity")
+                serendipity_novelty_results = perform_serendipity_novelty_metrics()
 
         return prediction_metric_results, ranking_metric_results, fairness_metrics_results

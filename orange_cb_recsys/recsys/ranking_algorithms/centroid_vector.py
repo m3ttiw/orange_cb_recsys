@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 
 from orange_cb_recsys.utils.const import logger
-from orange_cb_recsys.utils.load_content import get_unrated_items, get_rated_items
+from orange_cb_recsys.utils.load_content import get_unrated_items, get_rated_items, load_content_instance
 
 
 class CentroidVector(RankingAlgorithm):

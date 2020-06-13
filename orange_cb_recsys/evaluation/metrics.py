@@ -1,9 +1,11 @@
 import pandas as pd
 import os
 
+from orange_cb_recsys.evaluation.novelty import perform_novelty
 from orange_cb_recsys.evaluation.ranking_metrics import *
 from orange_cb_recsys.evaluation.prediction_metrics import *
 from orange_cb_recsys.evaluation.fairness_metrics import *
+from orange_cb_recsys.evaluation.serendipity import perform_serendipity
 from orange_cb_recsys.utils.const import *
 
 
@@ -120,3 +122,10 @@ def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict
         "MAE": perform_mae(predictions, truth)
     }
     return results
+
+
+def perform_serendipity_novelty_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame):
+    serendipity = perform_serendipity()
+    novelty = perform_novelty()
+
+    return pd.DataFrame.from_records([(serendipity, novelty)], columns=["serendipity", "novelty"])
