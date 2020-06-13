@@ -96,6 +96,9 @@ class Test(TestCase):
                                               'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
         perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test',
                                  user_groups={'niche': 0.2, 'diverse': 0.6, 'bb_focused': 0.2})
+        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test',
+                                 user_groups={'niche': 0.2, 'diverse': 0.6, 'bb_focused': 0.2},
+                                 file_output_directory='datasets')
 
     def test_perform_gini(self):
         pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],
