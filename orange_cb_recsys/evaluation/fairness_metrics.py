@@ -62,8 +62,6 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
     items = score_frame[['to_id']].values.flatten()
     logger.info("Computing pop by items")
     pop_by_items = Counter(items)
-    logger.info("Computing avg pop by users profiles for delta gap")
-    avg_pop_by_users_profiles = get_avg_pop_by_users(truth_frame, pop_by_items)
     logger.info("Computing recs avg pop by users")
     recs_avg_pop_by_users = get_avg_pop_by_users(score_frame, pop_by_items)
 
@@ -71,6 +69,8 @@ def perform_delta_gap(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
 
     score_frame = pd.DataFrame(columns=['user_group', 'delta-gap'])
     for group_name in users_groups:
+        logger.info("Computing avg pop by users profiles for delta gap")
+        avg_pop_by_users_profiles = get_avg_pop_by_users(truth_frame, pop_by_items, users_groups[group_name])
         logger.info("Computing delta gap for group: %s" % group_name)
         recs_gap = calculate_gap(group=users_groups[group_name].intersection(recommended_users), avg_pop_by_users=recs_avg_pop_by_users)
         profile_gap = calculate_gap(group=users_groups[group_name], avg_pop_by_users=avg_pop_by_users_profiles)
