@@ -39,8 +39,8 @@ class TestEvalModel(TestCase):
                 record_list.append((str(i), item, str(np.random.randint(-10, 11) / 10)))
         t_ratings = pd.DataFrame.from_records(record_list, columns=['from_id', 'to_id', 'score'])
         recsys_config = RecSysConfig(
-            users_directory='/contents/users_test1591814865.8959296',
-            items_directory='/contents/movielens_test1591885241.5520566',
+            users_directory='contents/users_test1591814865.8959296',
+            items_directory='contents/movielens_test1591885241.5520566',
             score_prediction_algorithm=None,
             ranking_algorithm=CentroidVector(
                 item_field='Plot',
@@ -59,6 +59,7 @@ class TestEvalModel(TestCase):
         )
         EvalModel(config=recsys_config,
                   partitioning=KFoldPartitioning(),
+                  prediction_metric=False,
                   ranking_metrics_config=ranking_config,
                   fairness_metric_config=fairness_config,
                   serendipity_novelty_metrics=True
