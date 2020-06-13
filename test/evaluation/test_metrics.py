@@ -71,8 +71,21 @@ class Test(TestCase):
         print(results['NDCG'])
 
     def test_NDCG(self):
-        perform_NDCG(predictions=pd.DataFrame({'rating': [0.0, 0.5, 1.0, 0.3, -0.4]}))
-
+        score_frame = pd.DataFrame.from_dict({'to_id': ["bbb", "eee", "aaa", "ddd", "ccc", "fff", "hhh", "ggg"],
+                                              'rating': [1.0, 1.0, 0.5, 0.5, 0.3, 0.3, 0.7, 0.8]})
+        truth_frame = pd.DataFrame.from_dict({'to_id': ["aaa", "bbb", "ccc", "ddd", "eee", "fff", "ggg", "hhh"],
+                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
+        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame)
+        print(ndcg)
+        split_dict = {}
+        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame, split=split_dict)
+        print(ndcg)
+        split_dict = {1: (-0.5, 0.0), 2: (0.0, 0.5), 3: (0.5, 1.0)}
+        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame, split=split_dict)
+        print(ndcg)
+        split_dict = {0: (-1.0, -0.5), 1: (-0.5, 0.0), 2: (0.0, 0.5), 3: (0.5, 1.0)}
+        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame, split=split_dict)
+        print(ndcg)
 
     def test_perform_fairness_metrics(self):
         score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],

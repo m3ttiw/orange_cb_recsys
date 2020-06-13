@@ -1,15 +1,12 @@
-from typing import Dict, List
-
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity
-from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation, EmbeddingField
-import os
+from orange_cb_recsys.content_analyzer.content_representation.content_field import EmbeddingField
 import pandas as pd
 import numpy as np
 
 from orange_cb_recsys.utils.const import logger
-from orange_cb_recsys.utils.load_content import load_content_instance, get_unrated_items, get_rated_items
+from orange_cb_recsys.utils.load_content import get_unrated_items, get_rated_items
 
 
 class CentroidVector(RankingAlgorithm):

@@ -196,15 +196,12 @@ def perform_pop_recs_correlation(truth_frame: pd.DataFrame, score_frame: pd.Data
         score_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') recommended
         algorithm_name (str): name of the algorithm that perform the metric (for plot)
         out_dir (str): directory for saving the plot
-
-    Returns:
-
     """
 
     logger.info("Computing pop recs correlation")
 
     def build_plot(popularities_, recommendations_, algorithm_name_, out_dir_):
-        """ build and save the plot"""
+        # Build and save the plot
         plt.scatter(popularities_, recommendations_, marker='o', s=20, c='orange', edgecolors='black', linewidths=0.05)
         plt.title('{}'.format(algorithm_name_))
         plt.xlabel('Popularity')
@@ -259,12 +256,8 @@ def perform_recs_long_tail_distr(truth_frame: pd.DataFrame, algorithm_name: str,
         truth_frame (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') of user profiles
         algorithm_name (str): name of the algorithm that perform the metric (for plot)
         out_dir (str): directory for saving the plot
-
-    Returns:
-
     """
     logger.info("Computing recs long tail distr")
-
 
     counts_by_item = Counter(truth_frame[['to_id']].values.flatten())
     ordered_item_count_pairs = counts_by_item.most_common()

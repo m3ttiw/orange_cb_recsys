@@ -13,6 +13,12 @@ from orange_cb_recsys.utils.load_content import remove_not_existent_items
 
 
 class FairnessMetricsConfig:
+    """
+    Configuration for the fairness computation
+    Args:
+        output_directory (str):
+        user_groups: Groups of users
+    """
     def __init__(self, output_directory: str, user_groups):
         # algorithm name automatically retrieved in eval model
         self.__output_directory = output_directory
@@ -31,6 +37,16 @@ class RankingMetricsConfig:
 
 
 class EvalModel:
+    """
+    Class for the evaluation
+    Args:
+        config (RecSysConfig): Configuration of the recommender system that will be internally
+            created
+        partitioning (Partitioning): Partitions
+        prediction_metric (bool): Whether you want to evaluate the rating prediction phase
+        ranking_metric (bool): Whether you want to evaluate the ranking phase
+        fairness_metric_config (FairnessMetricsConfig): Configuration for the fairness computation
+    """
     def __init__(self, config: RecSysConfig,
                  partitioning: Partitioning,
                  prediction_metric: bool = True,
@@ -43,6 +59,19 @@ class EvalModel:
         self.__fairness_metric_config: FairnessMetricsConfig = fairness_metric_config
 
     def fit(self):
+        """
+        This method performs the evaluation by initializing internally a recommender system that produces
+            recommendations for all the users in the directory specified in the configuration phase.
+            The evaluation is performed by creating a training set, and a test set with its corresponding
+            truth base.
+
+        Returns:
+            Tuple<prediction_metric_results, ranking_metric_results, fairness_metrics_results>: Three
+                different DataFrames. Each DataFrame has a 'from' column, representing the user_ids for
+                which the recommendations are provided, and then one different column for every metric
+                performed. The returned DataFrames contain one row per user, and the corresponding
+                metric values are given by the mean of the values obtained for that user.
+        """
         # initialize recommender to call for prediction calcs
         recsys = RecSys(self.__config)
 
@@ -76,13 +105,15 @@ class EvalModel:
                     test = user_ratings.iloc[partition_index[1]]
                     test = remove_not_existent_items(test, self.__config.get_items_directory())
 
-                    predictions = pd.Series(recsys.fit_eval_predict(user_id, train, test).rating, name="rating", dtype=float)
+                    predictions = pd.Series(recsys.fit_eval_predict(user_id, train, test).rating,
+                                            name="rating", dtype=float)
                     truth = pd.Series(test.score.values, name="rating", dtype=float)
 
                     logger.info("Computing metrics")
                     result_dict = perform_prediction_metrics(predictions, truth)
                     result_dict['from'] = user_id
-                    prediction_metric_results = prediction_metric_results.append(result_dict, ignore_index=True)
+                    prediction_metric_results = prediction_metric_results.append(result_dict,
+                                                                                 ignore_index=True)
 
             prediction_metric_results = prediction_metric_results.groupby("from").mean().reset_index()
 
@@ -122,7 +153,8 @@ class EvalModel:
 
         # calculate fairness metrics
         fairness_metrics_results = \
-            pd.DataFrame(columns=["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
+            pd.DataFrame(columns=["from", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs",
+                                  "pop_recs_correlation", "recs_long_tail_distr"])
 
         if self.__fairness_metric_config is not None:
             if isinstance(self.__config.get_score_prediction_algorithm(), ScorePredictionAlgorithm):

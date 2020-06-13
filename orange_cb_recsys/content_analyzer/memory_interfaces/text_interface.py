@@ -51,6 +51,12 @@ class IndexInterface(TextInterface):
         self.__doc = Document()
 
     def new_field(self, field_name: str, field_data):
+        """
+        Add a new field
+        Args:
+            field_name (str): Name of the new field
+            field_data: Data to put into the field
+        """
         if type(field_data) == list:
             for word in field_data:
                 self.__doc.add(Field(field_name, word, self.__field_type_frequency))
@@ -58,13 +64,25 @@ class IndexInterface(TextInterface):
             self.__doc.add(Field(field_name, field_data, self.__field_type_frequency))
 
     def new_searching_field(self, field_name, field_data):
+        """
+        Add a new searching field. It will be used by the search engine recommender
+        Args:
+            field_name (str): Name of the new field
+            field_data: Data to put into the field
+        """
         self.__doc.add(Field(field_name, field_data, self.__field_type_searching))
 
     def serialize_content(self):
+        """
+        Serialize the content
+        """
         doc_index = self.__writer.addDocument(self.__doc)
         return doc_index - 1
 
     def stop_writing(self):
+        """
+        Stop the index writer
+        """
         self.__writer.commit()
         self.__writer.close()
 
@@ -105,5 +123,4 @@ class IndexInterface(TextInterface):
 
     def delete_index(self):
         import shutil
-
         shutil.rmtree(self.get_directory(), ignore_errors=True)

@@ -16,7 +16,7 @@ class EmbeddingLearner(ABC):
     Args:
         source (RawInformationSource): Source where the content is stored.
         preprocessor (InformationProcessor): Instance of the class InformationProcessor.
-        field_list (List[str]): Field name list.
+        field_list (List<str>): Field name list.
     """
     def __init__(self, source: RawInformationSource,
                  preprocessor: TextProcessor,
@@ -32,6 +32,10 @@ class EmbeddingLearner(ABC):
 
     @abstractmethod
     def fit(self, **kwargs):
+        """
+        This method creates the model, in different ways according to the various implementations.
+        The model isn't then returned, but gets stored in the 'model' class attribute.
+        """
         raise NotImplementedError
 
     def get_source(self):
@@ -49,7 +53,13 @@ class EmbeddingLearner(ABC):
     def get_model(self):
         return self.__model
 
-    def extract_corpus(self):
+    def extract_corpus(self) -> list:
+        """
+        Extracts the datas from the source and processes them
+
+        Returns:
+            corpus (list): List of processed data
+        """
         corpus = []
         # iter the source
         for doc in self.get_source():
@@ -61,6 +71,10 @@ class EmbeddingLearner(ABC):
         return corpus
 
     def save(self):
+        """
+        Saves the model. If you are in developing mode, the model is saved in the src directory.
+        If you are not in developing mode, the model will be saved in an external directory.
+        """
         embeddings_path = './'
         if not DEVELOPING:
             embeddings_path = os.path.join(home_path, 'embeddings')

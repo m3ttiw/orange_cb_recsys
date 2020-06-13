@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple, Dict
+from typing import List
 
 import nltk
 import numpy as np
@@ -40,7 +40,8 @@ class SearchIndexing(FieldContentProductionTechnique):
 
 class CollectionBasedTechnique(FieldContentProductionTechnique):
     """
-    This class generalizes the techniques that work on the entire content collection, like the tf-idf technique
+    This class generalizes the techniques that work on the entire content collection,
+    such as the tf-idf technique
     """
 
     def __init__(self):
@@ -80,7 +81,6 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
         Args:
             information_source (RawInformationSource):
             id_field_names: fields where to find data that compound content's id
-
         """
         raise NotImplementedError
 
@@ -176,9 +176,8 @@ class CombiningTechnique(ABC):
 
 class EmbeddingSource(ABC):
     """
-    General class whose purpose is to
-    store the loaded pre-trained embeddings model and
-    extract from it specified words
+    General class whose purpose is to store the loaded pre-trained embeddings model and
+    extract specified words from it
 
     Args:
         self.__model: embeddings model loaded from source
@@ -193,10 +192,10 @@ class EmbeddingSource(ABC):
         the vectors of the words contained in text
 
         Args:
-            text (str): contains words of which vectors will be extracted
+            text (list<str>): contains words of which vectors will be extracted
 
         Returns:
-            np.ndarray: bi-dimensional numpy vector,
+            embedding_matrix (np.ndarray): bi-dimensional numpy vector,
                 each row is a term vector
         """
         embedding_matrix = np.ndarray(shape=(len(text), self.get_vector_size()))
@@ -229,17 +228,16 @@ class EmbeddingSource(ABC):
 
 class EmbeddingTechnique(SingleContentTechnique):
     """
-    Class that can be used to combine different embeddings coming to various sources
+    Class that can be used to combine different embeddings coming from various sources
     in order to produce the semantic description.
 
     Args:
         combining_technique (CombiningTechnique): The technique that will be used
         for combining the embeddings.
         embedding_source (EmbeddingSource):
-            Source from which extract the embeddings vectors for the words in field_data.
-        granularity (Granularity): It can assume three values,
-            depending on whether framework user want
-            to combine relatively to words, phrases or documents.
+            Source where the embeddings vectors for the words in field_data are stored.
+        granularity (Granularity): It can assume three values, depending on whether
+            the framework user wants to combine relatively to words, phrases or documents.
     """
 
     def __init__(self, combining_technique: CombiningTechnique,
@@ -256,13 +254,12 @@ class EmbeddingTechnique(SingleContentTechnique):
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
         Args:
-            field_representation_name:
+            field_representation_name (str): Name of the field representation for which produce
+                the content
             field_data: The terms whose embeddings will be combined.
 
         Returns:
-            np.ndarray:
-                mono-dimensional array for DOC embedding
-                bi-dimensional array for SENTENCE and WORD embedding
+            EmbeddingField
         """
 
         if self.__granularity == "word":
