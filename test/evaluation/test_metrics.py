@@ -106,7 +106,7 @@ class Test(TestCase):
         score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
                                               'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
                                               'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
-        perform_serendipity(score_frame=score_frame, algorithm_name='test')
+        perform_serendipity(score_frame=score_frame)
 
     def test_perform_novelty(self):
         score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
@@ -115,7 +115,7 @@ class Test(TestCase):
         truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
                                               'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
                                               'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
-        perform_novelty(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test')
+        perform_novelty(score_frame=score_frame, truth_frame=truth_frame)
 
     def test_perform_rmse(self):
         predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
