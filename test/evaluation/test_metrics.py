@@ -35,6 +35,17 @@ class Test(TestCase):
 
         col = ["to_id", "rating"]
 
+        perform_ranking_metrics(
+            pd.DataFrame(predicted_rank.items(), columns=col),
+            pd.DataFrame(truth_rank.items(), columns=col),
+        )
+
+        perform_ranking_metrics(
+            pd.DataFrame(predicted_rank.items(), columns=col),
+            pd.DataFrame(truth_rank.items(), columns=col),
+            relevance_split={0: (-1.0, 0.0), 1: (0.0, 0.3), 2: (0.3, 0.7), 3: (0.7, 1.0)}
+        )
+
         results = perform_ranking_metrics(
             pd.DataFrame(predicted_rank.items(), columns=col),
             pd.DataFrame(truth_rank.items(), columns=col),
