@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Dict
 
 import pandas as pd
 
@@ -17,12 +17,12 @@ class FairnessMetricsConfig:
     Configuration for the fairness computation
     Args:
         output_directory (str):
-        user_groups: Groups of users
+        user_groups: Groups of users, key = group name, value = percentage of users
     """
-    def __init__(self, output_directory: str, user_groups):
+    def __init__(self, output_directory: str, user_groups: Dict[str, float]):
         # algorithm name automatically retrieved in eval model
-        self.__output_directory = output_directory
-        self.__user_groups = user_groups
+        self.__output_directory: str = output_directory
+        self.__user_groups: Dict[str, float] = user_groups
 
     def get_user_groups(self):
         return self.__user_groups
