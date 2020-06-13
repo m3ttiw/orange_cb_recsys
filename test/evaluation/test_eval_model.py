@@ -59,6 +59,7 @@ class TestEvalModel(TestCase):
         )
         EvalModel(config=recsys_config,
                   partitioning=KFoldPartitioning(),
+                  prediction_metric=False,
                   ranking_metrics_config=ranking_config,
                   fairness_metric_config=fairness_config,
                   serendipity_novelty_metrics=True
