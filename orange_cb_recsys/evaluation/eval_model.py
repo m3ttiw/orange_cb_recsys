@@ -193,6 +193,6 @@ class EvalModel:
 
             if self.__serendipity_novelty_metrics:
                 logger.info("Computing novelty and serendipity")
-                serendipity_novelty_results = perform_serendipity_novelty_metrics()
+                serendipity_novelty_results = perform_serendipity_novelty_metrics(score_frame, self.__config.get_rating_frame())
 
-        return prediction_metric_results, ranking_metric_results, fairness_metrics_results
+        return prediction_metric_results, ranking_metric_results, fairness_metrics_results, serendipity_novelty_results
