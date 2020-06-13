@@ -78,7 +78,9 @@ def perform_DCG(gain_values: pd.Series) -> List[float]:
 
 
 def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame,
-                 split: Dict[int, Tuple[float, float]] = None) -> List[float]:
+                 split: Dict[int, Tuple[float, float]] = None
+                 # ) -> List[float]:
+                 ) -> float:
     """
     Compute the Normalized DCG measure using Truth rank as ideal DCG
     Args:
@@ -123,6 +125,8 @@ def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame,
     idcg = perform_DCG(pd.Series(igain))
     dcg = perform_DCG(pd.Series(gain))
     ndcg = [dcg[x]/(idcg[x]) for x in range(len(idcg))]
+    if len(ndcg) == 0:
+        return 0.0
     return statistics.mean(ndcg)
 
 """
@@ -163,6 +167,9 @@ def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
     logger.info("Computing MRR")
 
     mrr = 0
+    n = len(truth_labels)
+    if n == 0:
+        return 0
     for t_index, t_value in truth_labels.iteritems():
         for p_index, p_value in prediction_labels.iteritems():
             if t_value == p_value:

@@ -38,6 +38,7 @@ class TestEvalModel(TestCase):
             for item in extract_items:
                 record_list.append((str(i), item, str(np.random.randint(-10, 11) / 10)))
         t_ratings = pd.DataFrame.from_records(record_list, columns=['from_id', 'to_id', 'score'])
+        print(t_ratings)
         recsys_config = RecSysConfig(
             users_directory='contents/users_test1591814865.8959296',
             items_directory='contents/movielens_test1591885241.5520566',
