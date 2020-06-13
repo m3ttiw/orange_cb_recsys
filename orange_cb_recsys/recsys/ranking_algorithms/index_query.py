@@ -5,7 +5,7 @@ from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 
 import pandas as pd
 
-from orange_cb_recsys.utils.const import DEVELOPING, home_path
+from orange_cb_recsys.utils.const import DEVELOPING, home_path, logger
 from orange_cb_recsys.utils.load_content import load_content_instance
 
 from java.nio.file import Paths
@@ -16,6 +16,7 @@ from org.apache.lucene.store import SimpleFSDirectory
 from org.apache.lucene.index import DirectoryReader
 from org.apache.lucene.search.similarities import ClassicSimilarity
 from org.apache.lucene.analysis.core import SimpleAnalyzer
+from org.apache.lucene.analysis.core import KeywordAnalyzer
 
 
 class IndexQuery(RankingAlgorithm):
@@ -27,7 +28,8 @@ class IndexQuery(RankingAlgorithm):
         self.__classic_similarity: bool = classic_similarity
         self.__positive_threshold: float = positive_threshold
 
-    def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory) -> pd.DataFrame:
+    def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory,
+                     candidate_list: List) -> pd.DataFrame:
         """
         Builds a query using the contents that the user liked. The terms relativ to the contents that
         the user liked are boosted by the rating he/she gave.
@@ -64,6 +66,8 @@ class IndexQuery(RankingAlgorithm):
                     continue
                 user_fields[field.name()] += field.stringValue()
 
+        logger.info("Building query")
+
         query_builder = BooleanQuery.Builder()
         for score in scores:
             for field_name in user_fields.keys():
@@ -76,12 +80,18 @@ class IndexQuery(RankingAlgorithm):
                 field_query = BoostQuery(field_query, score)
                 query_builder.add(field_query, BooleanClause.Occur.SHOULD)
 
+        id_query_string = ' OR '.join("content_id:\"" + content_id + "\"" for content_id in candidate_list)
+        id_query = QueryParser("testo_libero", KeywordAnalyzer()).parse(id_query_string)
+        query_builder.add(id_query, BooleanClause.Occur.MUST)
+
         query = query_builder.build()
         docs_to_search = len(positive_rated_document_list) + recs_number
         scoreDocs = searcher.search(query, docs_to_search).scoreDocs
 
+        logger.info("Building score frame to return")
+
         recorded_items = 0
-        columns = ['item_id', 'rating']
+        columns = ['to_id', 'rating']
         score_frame = pd.DataFrame(columns=columns)
         for scoreDoc in scoreDocs:
             if recorded_items >= recs_number:
@@ -99,6 +109,7 @@ class IndexQuery(RankingAlgorithm):
         """
         Finds the documents that the user liked and then calls __recs_query to execute the prediction
         Args:
+            candidate_item_id_list:
             user_id (str):
             ratings (pd.DataFrame): All the ratings provided by the user
             recs_number (int): How many items recommend
@@ -122,5 +133,6 @@ class IndexQuery(RankingAlgorithm):
 
         return self.__recs_query(rated_document_list,
                                  scores,
-                                 len([filename for filename in os.listdir(items_directory) if filename != 'search_index']),
-                                 index_path)
+                                 recs_number,
+                                 index_path,
+                                 candidate_item_id_list)

@@ -2,6 +2,8 @@ from typing import Dict, Set
 
 import pandas as pd
 
+from orange_cb_recsys.utils.const import logger
+
 
 def get_avg_pop(items: pd.Series, pop_by_items: Dict[str, object]) -> float:
     """
@@ -13,10 +15,10 @@ def get_avg_pop(items: pd.Series, pop_by_items: Dict[str, object]) -> float:
     Returns:
         score (float): average popularity
     """
-    total_popularity = 0
-    for item in items:
-        total_popularity += pop_by_items[item]
-    return total_popularity / len(items)
+
+    popularities = [pop_by_items[item] for item in items]
+
+    return sum(popularities) / len(items)
 
 
 def get_avg_pop_by_users(data: pd.DataFrame, pop_by_items: Dict[str, object],
@@ -32,12 +34,19 @@ def get_avg_pop_by_users(data: pd.DataFrame, pop_by_items: Dict[str, object],
         avg_pop_by_users (Dict<str, float>): average popularity by user
     """
 
+    def show_progress(coll, milestones=10):
+        processed = 0
+        for x in coll:
+            yield x
+            processed += 1
+            if processed % milestones == 0:
+                logger.info('Processed %s user in the group' % processed)
+
     if group is None:
         group = data[['from_id']].values.flatten()
-    avg_pop_by_users = {}
-    for user in group:
-        user_items = data.query('from_id == @user')[['to_id']].values.flatten()
-        avg_pop_by_users[user] = get_avg_pop(user_items, pop_by_items)
+    logger.info("Group length: %d" % len(group))
+    series_by_user = {user: data[data.from_id == user].to_id.values.flatten() for user in show_progress(group)}
+    avg_pop_by_users = {user: get_avg_pop(series_by_user[user], pop_by_items) for user in show_progress(group)}
 
     return avg_pop_by_users
 

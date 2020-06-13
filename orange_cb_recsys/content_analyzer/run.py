@@ -165,7 +165,7 @@ def rating_config_run(config_dict: Dict):
                                processor=runnable_instances[class_name](**class_dict))
         )
         args = {}
-        if config_dict["source_type"] is 'sql':
+        if config_dict["source_type"] == 'sql':
             pass
     RatingsImporter(
         source=runnable_instances[config_dict["source_type"]](file_path=config_dict["raw_source_path"], **args),
