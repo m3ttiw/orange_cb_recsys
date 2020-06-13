@@ -50,11 +50,11 @@ class TestEvalModel(TestCase):
             rating_frame=t_ratings
         )
         ranking_config = RankingMetricsConfig(
-            relevant_threshold=0.75,
+            relevant_threshold=0.0,
             relevance_split={0: (-1.0, 0.0), 1: (0.0, 0.3), 2: (0.3, 0.7), 3: (0.7, 1.0)}
         )
         fairness_config = FairnessMetricsConfig(
-            output_directory='/datasets',
+            output_directory='datasets',
             user_groups={'a': 0.2, 'b': 0.4}
         )
         EvalModel(config=recsys_config,
