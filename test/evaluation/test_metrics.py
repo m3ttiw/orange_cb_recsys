@@ -140,3 +140,12 @@ class Test(TestCase):
             "MAE": 0.5714285714285714
         }
         self.assertEqual(perform_prediction_metrics(predictions, truth), result)
+
+    def test_perform_s_n(self):
+        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
+                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
+        perform_serendipity_novelty_metrics(score_frame=score_frame, truth_frame=truth_frame)
