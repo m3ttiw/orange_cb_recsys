@@ -37,7 +37,7 @@ class TestRecSys(TestCase):
         #print(t_ratings)
 
         path = '../../contents'
-        #path = 'contents'
+        path = 'contents'
         try:
             RecSysConfig(users_directory='{}/users_test1591814865.8959296'.format(path),
                          items_directory='{}/movielens_test1591885241.5520566'.format(path),
