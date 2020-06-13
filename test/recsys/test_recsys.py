@@ -36,7 +36,7 @@ class TestRecSys(TestCase):
         t_ratings = pd.DataFrame.from_records(record_list, columns=['from_id', 'to_id', 'score'])
         #print(t_ratings)
 
-        path = '../../contents'
+        #path = '../../contents'
         path = 'contents'
         try:
             RecSysConfig(users_directory='{}/users_test1591814865.8959296'.format(path),
@@ -48,15 +48,15 @@ class TestRecSys(TestCase):
         t_config = RecSysConfig(users_directory='{}/users_test1591814865.8959296'.format(path),
                                 items_directory='{}/movielens_test1591885241.5520566'.format(path),
                                 rating_frame=t_ratings,
-                                score_prediction_algorithm=t_classifier)
+                                ranking_algorithm=t_classifier)
         t_recsys = RecSys(config=t_config)
         # t_recsys.fit_predict('1', [x for x in item_id_list if np.random.randint(0, 2) == 1])
-        t_recsys.fit_predict('1', ['tt0114885'])
-        t_recsys.fit_predict('1')
+        t_recsys.fit_ranking('1', 3)
 
         user_frame = t_ratings[t_ratings['from_id'] == '1']
         test_set = pd.DataFrame({'to_id': ['tt0112281', 'tt0112302']})
-        t_recsys.fit_eval_predict(user_id='1', user_ratings=user_frame, test_set=test_set)
+        t_recsys.fit_eval_ranking(user_id='1', user_ratings=user_frame, test_set_items=test_set.to_id.tolist(),
+                                  recs_number=len(test_set.to_id.tolist()))
         try:
             t_recsys.fit_ranking('1', 2)
         except ValueError:
