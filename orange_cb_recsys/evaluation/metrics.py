@@ -83,7 +83,7 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
         output_path = os.path.join(home_path, file_output_directory)
     logger.info("working in dir: {}".format(output_path))
 
-    pop_items = popular_items(score_frame=score_frame)
+    pop_items = popular_items(score_frame=truth_frame)
     pop_ratio_user = pop_ratio_by_user(score_frame=score_frame, most_pop_items=pop_items)
 
     user_groups = split_user_in_groups(score_frame=score_frame, groups=user_groups, pop_items=pop_items)
@@ -125,7 +125,7 @@ def perform_prediction_metrics(predictions: pd.Series, truth: pd.Series) -> Dict
 
 
 def perform_serendipity_novelty_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFrame):
-    serendipity = perform_serendipity()
-    novelty = perform_novelty()
+    serendipity = perform_serendipity(score_frame, popular_items(truth_frame))
+    novelty = perform_novelty(score_frame, truth_frame)
 
     return pd.DataFrame.from_records([(serendipity, novelty)], columns=["serendipity", "novelty"])

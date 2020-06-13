@@ -7,16 +7,13 @@ import pandas as pd
 from orange_cb_recsys.utils.const import logger
 
 
-def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
-                    algorithm_name: str, out_dir: str = None, num_of_recs: int = 10) -> float:
+def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, num_of_recs: int = 10) -> float:
     """
     Calculates the novelty score
 
     Args:
         score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
         truth_frame (pd.DataFrame): the real rank each row contains index(the rank position), label, value
-        algorithm_name (str): name of the algorithm that run these metrics
-        out_dir (str): output directory for saving the results
         num_of_recs (int): avg number of recommendation per user
 
     Returns:
@@ -37,18 +34,4 @@ def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame,
 
     novelty = - (users_log_popularity / (len(users) * num_of_recs))
 
-    try:
-        file_path = '{}/novelty_{}.csv'.format(out_dir, algorithm_name)
-        with open(file_path, 'a', newline='') as f:
-            f.write("%s,%f\n" % ('novelty: ', novelty))
-    except FileNotFoundError:
-        try:
-            file_path = '../../{}/novelty_{}.csv'.format(out_dir, algorithm_name)
-            with open(file_path, 'a', newline='') as f:
-                f.write("%s,%f\n" % ('novelty: ', novelty))
-        except FileNotFoundError:
-            file_path = '{}/novelty_{}.csv'.format(str(Path.home()), algorithm_name)
-            with open(file_path, 'a', newline='') as f:
-                f.write("%s,%f\n" % ('novelty: ', novelty))
-    logger.info('saved in: {}'.format(file_path))
     return novelty
