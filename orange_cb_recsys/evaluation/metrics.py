@@ -80,7 +80,7 @@ def perform_fairness_metrics(score_frame: pd.DataFrame, truth_frame: pd.DataFram
     if DEVELOPING:
         output_path = file_output_directory
     else:
-        output_path = os.path.join(home_path, file_output_directory)
+        output_path = os.path.join(home_path, 'evaluation_plottings', file_output_directory)
     logger.info("working in dir: {}".format(output_path))
 
     pop_items = popular_items(score_frame=truth_frame)
