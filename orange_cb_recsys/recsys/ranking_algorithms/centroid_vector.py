@@ -1,9 +1,11 @@
 from typing import List
 
+from sklearn.feature_extraction import DictVectorizer
+
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity
-from orange_cb_recsys.content_analyzer.content_representation.content_field import EmbeddingField
+from orange_cb_recsys.content_analyzer.content_representation.content_field import EmbeddingField, FeaturesBagField
 import pandas as pd
 import numpy as np
 
@@ -22,76 +24,65 @@ class CentroidVector(RankingAlgorithm):
         threshold (int): Threshold for the ratings. If the rating is greater than the threshold, it will be considered
         as positive
     """
+
     def __init__(self, item_field: str, field_representation: str, similarity: Similarity, threshold: int = 0):
         super().__init__(item_field, field_representation)
         self.__similarity = similarity
         self.__threshold = threshold
 
-    def __get_arrays(self, items_directory: str, ratings: pd.DataFrame) -> np.ndarray:
-        """
-        1) Iterates the files into items_directory
-        2) For each file (that represents an item), checks if its id is present in rated_items. If false, skips
-        to the next file. Then checks on the rating. If is smaller than the threshold, skips. Otherwise goes on
-        item_field if exists
-        3) Checks if the representation corresponding to field_representation exists
-        4) Checks if the field representation is a document embedding (whose shape equals 1)
-        5) If the previous checks went well, takes the value corresponding to the representation id and adds it to
-           a dictionary
+    def __get_centroid_with_vectorizer(self, ratings: pd.DataFrame, rated_items, unrated_items):
+        dv = DictVectorizer(sparse=True)
 
-        Example: item_field == "Plot" and field_representation == "1", the function will check if the "01"
-        representation of each "Plot" field is a document embedding, and then adds the embeddings to the arrays
-        dictionary.
+        positive_rated_items = [
+            item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value()
+            for item in rated_items
+            if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold]
+
+        dicts = positive_rated_items + \
+            [item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value()
+             for item in unrated_items]
+
+        matrix = dv.fit_transform(dicts)
+        return matrix.mean(axis=0).getA(), matrix[len(rated_items):len(rated_items) + len(unrated_items)]
+
+    def __get_centroid_without_vectorizer(self, ratings: pd.DataFrame, rated_items) -> np.ndarray:
+        """
+        1) For each rated item, checks if its rating is bigger than threshold. If false, skips
+            to the next item, if True add the item embedding array in a matrix
+        2) Computes the centroid of the obtained matrix
 
         Args:
-            items_directory (str): Name of the directory where the items are stored.
             ratings (pd.DataFrame): DataFrame containing the ratings.
 
         Returns:
             arrays (dict<str, FieldRepresentation>): Dictionary whose keys are the id of the items and the values are
             the embedding arrays corresponding to the requested field
         """
+
         arrays = []
-        rated_items = get_rated_items(items_directory, ratings)
         for item in rated_items:
+            representation = item.get_field(self.get_item_field()).get_representation(
+                self.get_item_field_representation())
             if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold:
-                if self.get_item_field() not in item.get_field_list():
-                    raise ValueError("The field name specified could not be found!")
-                else:
-                    try:
-                        representation = item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation())
-                    except KeyError:
-                        raise ValueError("The given representation id wasn't found for the specified field")
+                arrays.append(representation.get_value())
+        return np.array(arrays).mean(axis=0)
 
-                    if not isinstance(representation, EmbeddingField):
-                        raise ValueError("The given representation must be an embedding")
-
-                    if len(representation.get_value().shape) != 1:
-                        raise ValueError("The specified representation is not a document embedding, so the centroid"
-                                         " can not be calculated")
-                    else:
-                        arrays.append(representation.get_value())
-        return np.array(arrays)
-
-    @staticmethod
-    def __centroid(matrix) -> np.ndarray:
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str,
+                candidate_item_id_list: List = None) -> pd.DataFrame:
         """
-        Calculates the centroid of a matrix
+        Checks:
+        1) Checks if the representation corresponding to field_representation exists
+        2) Checks if the field representation is a document embedding (whose shape equals 1)
 
-        Args:
-            matrix (np.array): The matrix of which calculate the centroid
+        Example: item_field == "Plot" and field_representation == "1", the function will check if the "01"
+        representation of each "Plot" field is a document embedding or a tf-idf words bag, and then use the embedding
+        or the frequency vector for algorithm computation.
 
-        Returns:
-            np.ndarray: The array representing the centroid of the matrix
-        """
-        return np.average(matrix, axis=0)
+        Computes the centroid the rated items representations
 
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str, candidate_item_id_list: List = None) -> pd.DataFrame:
-        """
-        For each item:
+        For each candidate item:
         1) Takes the embedding arrays
-        2) Computes the centroid between the representations. In order to do that, field_representation must
-        be a representation that allows the computation of a centroid, otherwise the method will raise an exception;
-        3) Determines the similarity between the centroid and the field_representation of the item_field in item.
+        2) Determines the similarity between the centroid and the field_representation of the item_field in candidate item.
         Args:
             candidate_item_id_list:
             user_id:
@@ -105,29 +96,64 @@ class CentroidVector(RankingAlgorithm):
         """
 
         try:
-            logger.info("Retrieving array and putting them in the matrix")
-            matrix = self.__get_arrays(items_directory, ratings)
-
-            logger.info("Computing centroid")
-            centroid = self.__centroid(matrix)
-
-            columns = ["to_id", "rating"]
-            scores = pd.DataFrame(columns=columns)
-
-            logger.info("Computing similarities")
+            logger.info("Retrieving candidate items")
             if candidate_item_id_list is None:
                 unrated_items = get_unrated_items(items_directory, ratings)
             else:
                 unrated_items = [load_content_instance(items_directory, item_id) for item_id in candidate_item_id_list]
 
-            for i, item in enumerate(unrated_items):
-                item_id = item.get_content_id()
-                item_field_representation = item.get_field(self.get_item_field()).get_representation(
-                    self.get_item_field_representation()).get_value()
-                logger.info("Computing similarity with %s" % item_id)
-                similarity = self.__similarity.perform(centroid, item_field_representation)
-                scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
-                                   ignore_index=True)
+            logger.info("Retrieving rated items")
+            rated_items = get_rated_items(items_directory, ratings)
+
+            first_item = rated_items[0]
+            need_vectorizer = False
+            if self.get_item_field() not in first_item.get_field_list():
+                raise ValueError("The field name specified could not be found!")
+            else:
+                try:
+                    representation = first_item.get_field(self.get_item_field()).get_representation(
+                        self.get_item_field_representation())
+                except KeyError:
+                    raise ValueError("The given representation id wasn't found for the specified field")
+
+                if not isinstance(representation, EmbeddingField) and not isinstance(representation, FeaturesBagField):
+                    raise ValueError("The given representation must be an embedding or a tf-idf vector")
+
+                if isinstance(representation, EmbeddingField):
+                    if len(representation.get_value().shape) != 1:
+                        raise ValueError("The specified representation is not a document embedding, so the centroid"
+                                         " can not be calculated")
+
+                if isinstance(representation, FeaturesBagField):
+                    need_vectorizer = True
+
+            columns = ["to_id", "rating"]
+            scores = pd.DataFrame(columns=columns)
+
+            if not need_vectorizer:
+                logger.info("Computing centroid")
+                centroid = self.__get_centroid_without_vectorizer(ratings, rated_items)
+                logger.info("Computing similarities")
+
+                for item in unrated_items:
+                    item_id = item.get_content_id()
+                    item_field_representation = item.get_field(self.get_item_field()).get_representation(
+                        self.get_item_field_representation()).get_value()
+                    logger.info("Computing similarity with %s" % item_id)
+                    similarity = self.__similarity.perform(centroid, item_field_representation)
+                    scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
+                                       ignore_index=True)
+            else:
+                logger.info("Computing centroid")
+                centroid, unrated_matrix = self.__get_centroid_with_vectorizer(ratings, rated_items, unrated_items)
+
+                logger.info("Computing similarities")
+                for item, item_array in zip(unrated_items, unrated_matrix):
+                    item_id = item.get_content_id()
+                    logger.info("Computing similarity with %s" % item_id)
+                    similarity = self.__similarity.perform(centroid, item_array.todense())
+                    scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
+                                       ignore_index=True)
 
             scores = scores.sort_values(['rating'], ascending=False).reset_index(drop=True)
             scores = scores[:recs_number]
@@ -135,4 +161,3 @@ class CentroidVector(RankingAlgorithm):
             return scores
         except ValueError as v:
             print(str(v))
-
