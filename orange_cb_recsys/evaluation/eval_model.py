@@ -24,9 +24,6 @@ class FairnessMetricsConfig:
         self.__output_directory: str = output_directory
         self.__user_groups: Dict[str, float] = user_groups
 
-    def get_directory(self):
-        return self.__output_directory
-
     def get_user_groups(self):
         return self.__user_groups
 
@@ -192,8 +189,7 @@ class EvalModel:
                 fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
                                                                     user_groups=self.__fairness_metric_config.get_user_groups(),
                                                                     truth_frame=self.__config.get_rating_frame(),
-                                                                    algorithm_name='test',
-                                                                    file_output_directory=self.__fairness_metric_config.get_directory())
+                                                                    algorithm_name='test')
 
             if self.__serendipity_novelty_metrics:
                 logger.info("Computing novelty and serendipity")

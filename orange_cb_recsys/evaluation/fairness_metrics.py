@@ -1,4 +1,3 @@
-import os
 from collections import Counter
 
 import pandas as pd
@@ -9,7 +8,7 @@ from pathlib import Path
 
 
 # fairness_metrics_results = pd.DataFrame(columns=["user", "gini-index", "delta-gaps", "pop_ratio_profile_vs_recs", "pop_recs_correlation", "recs_long_tail_distr"])
-from orange_cb_recsys.utils.const import logger, DEVELOPING, home_path
+from orange_cb_recsys.utils.const import logger
 
 
 def perform_gini_index(score_frame: pd.DataFrame) -> pd.DataFrame:
@@ -116,8 +115,13 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
         recs_data.append(recs_pop_ratios)
 
     if store_frame:
-
-        score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(out_dir, algorithm_name))
+        try:
+            score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(out_dir, algorithm_name))
+        except FileNotFoundError:
+            try:
+                score_frame.to_csv('../../{}/pop_ratio_profile_vs_recs_{}.csv'.format(out_dir, algorithm_name))
+            except FileNotFoundError:
+                score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(str(Path.home()), algorithm_name))
 
     data_to_plot = [profile_data, recs_data]
     # Create a figure instance
@@ -171,8 +175,14 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
     plt.ylabel('Ratio of popular items')
     # plt.show()
     # plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
-
-    plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
+    try:
+        print('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
+        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
+    except FileNotFoundError:
+        try:
+            plt.savefig('../../{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
+        except FileNotFoundError:
+            plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(str(Path.home()), algorithm_name))
     plt.clf()
 
     return score_frame
@@ -198,11 +208,13 @@ def perform_pop_recs_correlation(truth_frame: pd.DataFrame, score_frame: pd.Data
         plt.title('{}'.format(algorithm_name_))
         plt.xlabel('Popularity')
         plt.ylabel('Recommendation frequency')
-
-        if not DEVELOPING:
-            out_dir_ = os.path.join(home_path, 'evaluation_plottings', out_dir_)
-
-        plt.savefig('{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name))
+        try:
+            plt.savefig('{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name_))
+        except FileNotFoundError:
+            try:
+                plt.savefig('../../{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name_))
+            except FileNotFoundError:
+                plt.savefig('{}/pop-recs_{}.svg'.format(str(Path.home()), algorithm_name_))
         plt.clf()
 
     # Calculating popularity by item
@@ -261,8 +273,13 @@ def perform_recs_long_tail_distr(truth_frame: pd.DataFrame, algorithm_name: str,
     plt.ylabel('Num of recommendations')
     plt.xlabel('Recommended items')
     # plt.show()
-
-    plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(out_dir, algorithm_name))
+    try:
+        plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(out_dir, algorithm_name))
+    except FileNotFoundError:
+        try:
+            plt.savefig('../../{}/recs-long-tail-distr_{}.svg'.format(out_dir, algorithm_name))
+        except FileNotFoundError:
+            plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()), algorithm_name))
     plt.clf()
 
 
