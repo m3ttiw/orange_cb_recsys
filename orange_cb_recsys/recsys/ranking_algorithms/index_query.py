@@ -110,8 +110,9 @@ class IndexQuery(RankingAlgorithm):
         """
         Finds the documents that the user liked and then calls __recs_query to execute the prediction
         Args:
-            candidate_item_id_list:
-            user_id (str):
+            candidate_item_id_list: list of items, in which search the recommendations,
+                if None all unrated items will be used as candidates
+            user_id (str): user for which compute the ranking recommendation
             ratings (pd.DataFrame): All the ratings provided by the user
             recs_number (int): How many items recommend
             items_directory (str): Directory where the items are stored

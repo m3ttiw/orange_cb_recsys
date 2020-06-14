@@ -17,6 +17,7 @@ from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces impor
 class IndexInterface(TextInterface):
     """
     Abstract class that takes care of serializing and deserializing text in an indexed structure
+    This use lucene library
 
     Args:
         directory (str): Path of the directory where the content will be serialized

@@ -64,14 +64,16 @@ class RecSys:
 
         return score_frame
 
-    def fit_ranking(self, user_id: str, recs_number: int):
+    def fit_ranking(self, user_id: str, recs_number: int, candidate_item_id_list: List[str] = None):
         """
         Computes the predicted rating for specified user and items,
         should be used when a  ranking algorithm (instead of a score prediction algorithm)
         was chosen in the config
 
         Args:
-            user_id: user for which calculate the predictions
+            candidate_item_id_list: list of items, in which search the recommendations,
+                if None all unrated items will be used as candidates
+            user_id: user for which compute the ranking recommendation
             recs_number: how many items should the returned ranking contain,
             the ranking length can be lower
         Returns:
@@ -91,7 +93,8 @@ class RecSys:
         # calculate predictions
         logger.info("Computing ranking")
         score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
-                                                                    self.__config.get_items_directory())
+                                                                    self.__config.get_items_directory(),
+                                                                    candidate_item_id_list)
 
         return score_frame
 
@@ -100,9 +103,10 @@ class RecSys:
         Computes predicted ratings, or ranking (according to algorithm chosen in the config)
         user ratings will be used as train set to fit the algorithm.
         If the algorithm is score_prediction the rating for the item in the test set will
-        be predicted, else a ranking with recs_number = len(test_set) will be computed
+        be predicted
 
         Args:
+            user_id: user for which predictions will be computed
             user_ratings: train set
             test_set:
         Returns:
@@ -124,7 +128,8 @@ class RecSys:
 
     def fit_eval_ranking(self, user_id, user_ratings: pd.DataFrame, test_set_items, recs_number):
         """
-        Computes a ranking, using as training set the ratings provided by the user
+        Computes a ranking of specified length,
+        using as training set the ratings provided by the user
 
         Args:
             user_id:
