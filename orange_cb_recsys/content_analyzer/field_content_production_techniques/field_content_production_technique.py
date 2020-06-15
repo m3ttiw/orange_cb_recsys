@@ -31,6 +31,19 @@ class FieldContentProductionTechnique(ABC):
 
 class SearchIndexing(FieldContentProductionTechnique):
     def produce_content(self, field_name: str, pipeline_id, field_data, indexer: IndexInterface):
+        """
+        Save field data as a document field using the given indexer,
+        the resulting can be used for an index query recommender
+
+        Args:
+            indexer: Index in which new field will be created
+            field_data: Data that will be stored in the index
+            pipeline_id: Second part of the field name in the indexer index,
+                complete field_name is field_name + pipeline_id
+            field_name (str): First part of the field name in the indexer index,
+                complete field_name is field_name + pipeline_id
+
+        """
         field_data = check_not_tokenized(field_data)
         indexer.new_searching_field(field_name + pipeline_id, field_data)
 
@@ -152,8 +165,8 @@ class EntityLinking(SingleContentTechnique):
 
 class CombiningTechnique(ABC):
     """
-    Class that generalizes the modality in which previously learned embeddings will be
-    combined to produce a semantic description.
+    Class that generalizes the modality in which loaded embeddings will be
+    combined to produce a semantic representation.
     """
 
     def __init__(self):

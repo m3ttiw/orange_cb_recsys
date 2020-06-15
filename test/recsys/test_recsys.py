@@ -44,7 +44,7 @@ class TestRecSys(TestCase):
                          rating_frame=t_ratings)
         except ValueError:
             pass
-        t_classifier = ClassifierRecommender(item_field='Plot', field_representation='2')
+        t_classifier = ClassifierRecommender(item_field='Plot', field_representation='2', classifier="gaussian_process")
         t_config = RecSysConfig(users_directory='{}/users_test1591814865.8959296'.format(path),
                                 items_directory='{}/movielens_test1591885241.5520566'.format(path),
                                 rating_frame=t_ratings,

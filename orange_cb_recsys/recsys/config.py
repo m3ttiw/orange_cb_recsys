@@ -16,7 +16,7 @@ class RecSysConfig:
         items_directory (str): Path to the directory in which the items are stored
         score_prediction_algorithm (ScorePredictionAlgorithm): Score prediction algorithm to use
         ranking_algorithm (RankingAlgorithm): Ranking algorithm to use
-        rating_frame: Can be the path to the directory in which the ratings are stored, or a DataFrame
+        rating_frame: Can be the path to the directory in which the ratings .csv is stored, or a DataFrame
             that contains the ratings
     """
     def __init__(self, users_directory: str,

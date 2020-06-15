@@ -183,8 +183,8 @@ def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, m
     Compute the correlation between the two ranks of labels
 
     Args:
-        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
-        truth_labels (pd.Series): pandas Series wich contains truth "labels"
+        prediction_labels (pd.Series): pandas Series which contains predicted "labels"
+        truth_labels (pd.Series): pandas Series which contains truth "labels"
         method: {'pearson, 'kendall', 'spearman'} or callable
 
     Returns:

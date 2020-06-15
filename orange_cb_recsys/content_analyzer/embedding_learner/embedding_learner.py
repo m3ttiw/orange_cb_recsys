@@ -15,7 +15,9 @@ class EmbeddingLearner(ABC):
 
     Args:
         source (RawInformationSource): Source where the content is stored.
-        preprocessor (InformationProcessor): Instance of the class InformationProcessor.
+        preprocessor (InformationProcessor): Instance of the class InformationProcessor,
+            specify how to process (can be None) the source data, before
+            use it for model computation
         field_list (List<str>): Field name list.
     """
     def __init__(self, source: RawInformationSource,
@@ -73,7 +75,8 @@ class EmbeddingLearner(ABC):
     def save(self):
         """
         Saves the model. If you are in developing mode, the model is saved in the src directory.
-        If you are not in developing mode, the model will be saved in an external directory.
+        If you are not in developing mode, the model will be saved in the embeddings
+        directory under the home path.
         """
         embeddings_path = './'
         if not DEVELOPING:

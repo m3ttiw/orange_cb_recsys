@@ -10,12 +10,12 @@ from orange_cb_recsys.utils.const import logger
 
 class Content:
     """
-    Class that represents a content. A content can be an item, a user or a rating
+    Class that represents a content. A content can be an item or a user.
     A content is identified by a string id and is composed by different fields
     Args:
         content_id (str): identifier
         field_dict (dict[str, ContentField]): dictionary containing the fields instances for the content,
-        and their name
+            and their name as dictionary key
     """
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None):
@@ -42,7 +42,7 @@ class Content:
 
     def remove(self, field_name: str):
         """
-        Remove the field named field_name from the field list
+        Remove the field named field_name from the field dictionary
         Args:
             field_name (str): the name of the field to remove
         """
@@ -50,7 +50,8 @@ class Content:
 
     def serialize(self, output_directory: str):
         """
-        Serialize a content instance
+        Serialize a content instance using lzma compression algorithm,
+        so the file extension is .xz
 
         Args:
             output_directory (str): Name of the directory in which serialize
@@ -77,8 +78,7 @@ class Content:
 
 class RepresentedContentsRecap:
     """
-    Class that collects the Contents instance created,
-    the whole collection can be serialized.
+    Class that collects a string list with id and types for each representation
     Args:
         representation_list (list<str>): List of the names of the representations
     """
@@ -93,7 +93,7 @@ class RepresentedContentsRecap:
 
     def serialize(self):
         """
-        Serialize the entire collection
+        Serialize strings
         """
         raise NotImplementedError
 

@@ -27,10 +27,12 @@ class BabelPyEntityLinking(EntityLinking):
 
     def produce_content(self, field_representation_name: str, field_data) -> FeaturesBagField:
         """
-        Produces the field content for this representation
+        Produces the field content for this representation,
+        bag of features whose keys is babel net synset id and
+        values are global score of the sysnset
         Args:
             field_representation_name (str): Name of the field representation
-            field_data: Data to use the produce the field content
+            field_data: Text that will be linked to BabelNet
 
         Returns:
             feature_bag (FeaturesBagField)

@@ -18,6 +18,9 @@ class Similarity(ABC):
 
 
 class CosineSimilarity(Similarity):
+    """
+    Computes cosine similarity of given numpy arrays
+    """
     def __init__(self):
         super().__init__()
 

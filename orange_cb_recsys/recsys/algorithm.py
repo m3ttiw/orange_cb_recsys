@@ -56,7 +56,8 @@ class RankingAlgorithm(Algorithm):
     """
     Abstract class for the ranking algorithms
     """
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str):
+    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str,
+                candidate_item_id_list: List = None):
         raise NotImplementedError
 
 
