@@ -64,6 +64,7 @@ True if you want to use the text indexing technique, otherwise False
       "memory_interface": "None",
       "memory_interface_path": "None",
 In the "field" field you can specify the name of the field on which to use the technique, its language and the memory interface
+
 The language will be specified for each field, so it will be possible to insert a single file to index ITEM or USER in many languages
     
     "pipeline_list": [
@@ -88,7 +89,13 @@ The language will be specified for each field, so it will be possible to insert 
           ]
         }
 Here instead it is possible to define the pipeline:
+
 For each field you can create many representations, as in this example search_index, embedding and tf-idf.
+
 For each representation we can specify the preprocessing list to be used.
+
 For example, for the tf-idf the nltk class is used which analyzes the natural language and the lemmatization is done
+
+When using nltk these are the variables that can be changed: stopwords_removal, stemming, lemmatization, strip_multiple_white_space and url_tagging
+
 When specifying embedding as field_content_production one must also specify the combining_technique which is currently only centroid, the source of the embedding and the granularity of it which can be word, doc and sentence
