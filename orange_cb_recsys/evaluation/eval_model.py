@@ -27,6 +27,9 @@ class FairnessMetricsConfig:
     def get_user_groups(self):
         return self.__user_groups
 
+    def get_output_directory(self):
+        return self.__output_directory
+
 
 class RankingMetricsConfig:
     def __init__(self, relevant_threshold: float, relevance_split):
@@ -189,6 +192,7 @@ class EvalModel:
                 fairness_metrics_results = perform_fairness_metrics(score_frame=score_frame,
                                                                     user_groups=self.__fairness_metric_config.get_user_groups(),
                                                                     truth_frame=self.__config.get_rating_frame(),
+                                                                    file_output_directory=self.__fairness_metric_config.get_output_directory(),
                                                                     algorithm_name='test')
 
             if self.__serendipity_novelty_metrics:

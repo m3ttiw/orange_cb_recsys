@@ -176,7 +176,6 @@ def perform_pop_ratio_profile_vs_recs(user_groups: Dict[str, Set[str]], truth_fr
     # plt.show()
     # plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, plot_file_name))
     try:
-        print('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
         plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(out_dir, algorithm_name))
     except FileNotFoundError:
         try:
