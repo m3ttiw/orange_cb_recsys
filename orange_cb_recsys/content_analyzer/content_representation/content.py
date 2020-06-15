@@ -1,6 +1,6 @@
 import lzma
 import os
-from typing import  Dict
+from typing import Dict
 import pickle
 import re
 

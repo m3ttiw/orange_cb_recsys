@@ -68,9 +68,9 @@ class Test(TestCase):
             "F2": 0.625,
             "NDCG": [0.85, 0.75, 0.64, 0.72, 0.75, 0.81, 0.79, 0.80],
             "MRR": 0.8958333333333333,
-            "pearson": 0.0,
-            "kendall": 0.0,
-            "spearman": 0.0,
+            "pearson": -0.596,
+            "kendall": -0.333,
+            "spearman": -0.5,
         }
 
         tolerance = 0.5
