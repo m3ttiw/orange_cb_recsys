@@ -2,6 +2,7 @@ import statistics
 from typing import List, Dict, Tuple
 import pandas as pd
 import numpy as np
+from scipy.stats import kendalltau, spearmanr, pearsonr
 
 from orange_cb_recsys.utils.const import logger
 
@@ -189,17 +190,22 @@ def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, m
     Returns:
         (float): value of the specified correlation metric
     """
-    logger.info("Computing correlation")
-
+    logger.info("Computing %s correlation" % method)
     t_series = pd.Series()
     p_series = pd.Series()
     for t_index, t_value in truth_labels.iteritems():
-        t_series = t_series.append(pd.Series(int(t_index)))
         for p_index, p_value in prediction_labels.iteritems():
             if t_value == p_value:
+                t_series = t_series.append(pd.Series(int(t_index)))
                 p_series = p_series.append(pd.Series(int(p_index)))
 
-    return t_series.corr(other=p_series, method=method)
+    coef, p = 0, 0
+    if method == 'pearson':
+        coef, p = pearsonr(t_series, p_series)
+    if method == 'kendall':
+        coef, p = kendalltau(t_series, p_series)
+    if method == 'spearman':
+        coef, p = spearmanr(t_series, p_series)
 
-
+    return coef
 
