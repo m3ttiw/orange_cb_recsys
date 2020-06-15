@@ -73,8 +73,6 @@ class Test(TestCase):
             "spearman": -0.5,
         }
 
-        print(results)
-
         tolerance = 0.5
         for metric in real_results.keys():
             if metric != "NDCG":

@@ -198,14 +198,15 @@ def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, m
             if t_value == p_value:
                 t_series = t_series.append(pd.Series(int(t_index)))
                 p_series = p_series.append(pd.Series(int(p_index)))
+    if t_series.size > 1:
+        coef, p = 0, 0
+        if method == 'pearson':
+            coef, p = pearsonr(t_series, p_series)
+        if method == 'kendall':
+            coef, p = kendalltau(t_series, p_series)
+        if method == 'spearman':
+            coef, p = spearmanr(t_series, p_series)
 
-    coef, p = 0, 0
-    if method == 'pearson':
-        coef, p = pearsonr(t_series, p_series)
-    if method == 'kendall':
-        coef, p = kendalltau(t_series, p_series)
-    if method == 'spearman':
-        coef, p = spearmanr(t_series, p_series)
-
-    return coef
+        return coef
+    return 0.0
 
