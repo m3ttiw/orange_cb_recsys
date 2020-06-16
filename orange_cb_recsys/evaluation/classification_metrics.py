@@ -24,6 +24,9 @@ class Precision(ClassificationMetric):
     def __init__(self, relevant_threshold):
         super().__init__(relevant_threshold)
 
+    def __str__(self):
+        return "Precision"
+
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         logger.info("Computing precision")
         prediction_labels, truth_labels = super().get_labels(predictions, truth)
@@ -33,6 +36,9 @@ class Precision(ClassificationMetric):
 class Recall(ClassificationMetric):
     def __init__(self, relevant_threshold):
         super().__init__(relevant_threshold)
+
+    def __str__(self):
+        return "Recall"
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         """
@@ -50,6 +56,9 @@ class Recall(ClassificationMetric):
 class MRR(ClassificationMetric):
     def __init__(self, relevant_threshold):
         super().__init__(relevant_threshold)
+
+    def __str__(self):
+        return "MRR"
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         """
@@ -81,6 +90,9 @@ class FNMeasure(ClassificationMetric):
         """
         super().__init__(relevant_threshold)
         self.__n = n
+
+    def __str__(self):
+        return "F" + self.__n
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         """

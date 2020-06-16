@@ -2,6 +2,7 @@ import statistics
 from typing import List, Dict, Tuple
 import pandas as pd
 import numpy as np
+from scipy.stats import pearsonr, kendalltau, spearmanr
 
 from orange_cb_recsys.evaluation.metrics import Metric
 from orange_cb_recsys.utils.const import logger
@@ -19,6 +20,9 @@ class NDCG(RankingMetric):
     def __init__(self, relevance_split: Dict[int, Tuple[float, float]]):
         super().__init__(relevance_split)
         self.__relevance_split = relevance_split
+
+    def __str__(self):
+        return "NDCG"
 
     @staticmethod
     def perform_DCG(gain_values: pd.Series) -> List[float]:
@@ -118,9 +122,18 @@ class Correlation(RankingMetric):
         t_series = pd.Series()
         p_series = pd.Series()
         for t_index, t_value in truth_labels.iteritems():
-            t_series = t_series.append(pd.Series(int(t_index)))
             for p_index, p_value in prediction_labels.iteritems():
                 if t_value == p_value:
+                    t_series = t_series.append(pd.Series(int(t_index)))
                     p_series = p_series.append(pd.Series(int(p_index)))
+        if t_series.size > 1:
+            coef, p = 0, 0
+            if self.__method == 'pearson':
+                coef, p = pearsonr(t_series, p_series)
+            if self.__method == 'kendall':
+                coef, p = kendalltau(t_series, p_series)
+            if self.__method == 'spearman':
+                coef, p = spearmanr(t_series, p_series)
 
-        return t_series.corr(other=p_series, method=self.__method)
+            return coef
+        return 0.0
