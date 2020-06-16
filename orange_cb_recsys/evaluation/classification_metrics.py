@@ -8,19 +8,19 @@ import pandas as pd
 
 class ClassificationMetric(Metric):
     """
-    Abstract class that generalize ClassificationMetric.
+    Abstract class that generalize classification metrics.
     A classification metric measure if
     known relevant items are predicted as relevant
 
     Args:
-        relevance_threshold: specify the minimum value to consider
+        relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
     """
-    def __init__(self, relevance_threshold):
-        self.__relevance_threshold = relevance_threshold
+    def __init__(self, relevant_threshold):
+        self.__relevant_threshold = relevant_threshold
 
     def _get_labels(self, predictions: pd.DataFrame, truth: pd.DataFrame):
-        relevant_rank = truth[truth['rating'] >= self.__relevance_threshold]
+        relevant_rank = truth[truth['rating'] >= self.__relevant_threshold]
         content_truth = pd.Series(relevant_rank['to_id'].values)
         content_prediction = pd.Series(predictions['to_id'].values)
         content_prediction = content_prediction[:content_truth.size]
@@ -40,6 +40,13 @@ class ClassificationMetric(Metric):
 
 
 class Precision(ClassificationMetric):
+    """
+    Precision
+
+    Args:
+        relevant_threshold: specify the minimum value to consider
+            a truth frame row as relevant
+    """
     def __init__(self, relevant_threshold):
         super().__init__(relevant_threshold)
 
@@ -64,6 +71,13 @@ class Precision(ClassificationMetric):
 
 
 class Recall(ClassificationMetric):
+    """
+    Recall
+
+    Args:
+        relevant_threshold: specify the minimum value to consider
+            a truth frame row as relevant
+    """
     def __init__(self, relevant_threshold):
         super().__init__(relevant_threshold)
 
@@ -88,6 +102,13 @@ class Recall(ClassificationMetric):
 
 
 class MRR(ClassificationMetric):
+    """
+    MRR
+
+    Args:
+        relevant_threshold: specify the minimum value to consider
+            a truth frame row as relevant
+    """
     def __init__(self, relevant_threshold):
         super().__init__(relevant_threshold)
 
@@ -121,16 +142,20 @@ class MRR(ClassificationMetric):
 
 
 class FNMeasure(ClassificationMetric):
+    """
+    FnMeasure
+
+    Args:
+        n (int): multiplier
+        relevant_threshold: specify the minimum value to consider
+            a truth frame row as relevant
+    """
     def __init__(self, n, relevant_threshold: float):
-        """
-        Args:
-            n (int): multiplier
-        """
         super().__init__(relevant_threshold)
         self.__n = n
 
     def __str__(self):
-        return "F" + self.__n
+        return "F" + str(self.__n)
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """

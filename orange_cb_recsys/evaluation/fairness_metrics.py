@@ -12,12 +12,11 @@ from orange_cb_recsys.utils.const import logger
 
 class FairnessMetric(Metric):
     """
-    Abstract class that generalize FairnessMetric.
+    Abstract class that generalize fairness metrics.
 
     Args:
-        file_name: name of the file that the metrics will serialize
-            (a plot or a csv)
-        out_dir: directory in which the file will be serialized
+        file_name (str): name of the file that the metrics will serialize
+        out_dir (str): directory in which the file will be serialized
     """
 
     def __init__(self, file_name: str, out_dir: str):
@@ -43,8 +42,19 @@ class FairnessMetric(Metric):
 
 
 class GroupFairnessMetric(FairnessMetric):
-    def __init__(self, algorithm_name: str, out_dir: str, user_groups: Dict[str, float]):
-        super().__init__(algorithm_name, out_dir)
+    """
+    Fairness metrics based on user groups
+
+    Args:
+        user_groups (dict<str, float>): specify how to divide user in groups, so
+            specify for each group specify:
+            - name
+            - percentage of users
+        file_name (str): name of the file that the metrics will serialize
+        out_dir (str): directory in which the file will be serialized
+    """
+    def __init__(self, file_name: str, out_dir: str, user_groups: Dict[str, float]):
+        super().__init__(file_name, out_dir)
         self.__user_groups = user_groups
 
     def get_user_groups(self):
@@ -56,6 +66,12 @@ class GroupFairnessMetric(FairnessMetric):
 
 
 class GiniIndex(FairnessMetric):
+    """
+    Gini index
+    """
+    def __init__(self):
+        super().__init__(None, None)
+
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame = None) -> pd.DataFrame:
         """
         Calculate Gini index score for each user in the DataFrame
@@ -93,8 +109,15 @@ class GiniIndex(FairnessMetric):
 
 
 class PopRecsCorrelation(FairnessMetric):
-    def __init__(self, algorithm_name: str, out_dir: str):
-        super().__init__(algorithm_name, out_dir)
+    """
+    PopRecsCorrelation
+
+    Args:
+        file_name (str): name of the file that the metrics will serialize
+        out_dir (str): directory in which the file will be serialized
+    """
+    def __init__(self, file_name: str, out_dir: str):
+        super().__init__(file_name, out_dir)
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         """
@@ -157,8 +180,15 @@ class PopRecsCorrelation(FairnessMetric):
 
 
 class LongTailDistr(FairnessMetric):
-    def __init__(self, algorithm_name: str, out_dir: str):
-        super().__init__(algorithm_name, out_dir)
+    """
+    LongTailDistr
+
+    Args:
+        file_name (str): name of the file that the metrics will serialize
+        out_dir (str): directory in which the file will be serialized
+    """
+    def __init__(self, file_name: str, out_dir: str):
+        super().__init__(file_name, out_dir)
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         """
@@ -196,6 +226,13 @@ class LongTailDistr(FairnessMetric):
 
 
 class CatalogCoverage(FairnessMetric):
+    """
+    CatalogCoverage
+
+    """
+    def __init__(self):
+        super().__init__(None, None)
+
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Calculates the catalog coverage
@@ -217,6 +254,17 @@ class CatalogCoverage(FairnessMetric):
 
 
 class DeltaGap(GroupFairnessMetric):
+    """
+    DeltaGap
+
+    Args:
+        file_name (str): name of the file that the metrics will serialize
+        out_dir (str): directory in which the file will be serialized
+        user_groups (dict<str, float>): specify how to divide user in groups, so
+            specify for each group specify:
+            - name
+            - percentage of users
+    """
     def __init__(self, user_groups: Dict[str, float]):
         super().__init__(None, None, user_groups)
 
@@ -258,16 +306,22 @@ class DeltaGap(GroupFairnessMetric):
 
 class PopRatioVsRecs(GroupFairnessMetric):
     """
-    class for PopRatioVsRecs computation
+    PopRatioVsRecs
 
     Args:
-        store_frame: True if you want to store the frame in a csv file, False otherwise
+        file_name (str): name of the file that the metrics will serialize
+        out_dir (str): directory in which the file will be serialized
+        user_groups (dict<str, float>): specify how to divide user in groups, so
+            specify for each group specify:
+            - name
+            - percentage of users
+        store_frame (bool): True if you want to store the frame in a csv file, False otherwise
     """
 
-    def __init__(self, algorithm_name: str,
+    def __init__(self, file_name: str,
                  out_dir: str, user_groups: Dict[str, float],
                  store_frame: bool):
-        super().__init__(algorithm_name, out_dir, user_groups)
+        super().__init__(file_name, out_dir, user_groups)
         self.__user_groups = user_groups
         self.__store_frame = store_frame
 

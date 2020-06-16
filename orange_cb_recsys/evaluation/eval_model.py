@@ -15,11 +15,12 @@ from orange_cb_recsys.utils.load_content import remove_not_existent_items
 
 class EvalModel:
     """
-    Class for the evaluation
+    Class for automating the process of recommending and
+    evaluate produced recommendations
     Args:
-        config (RecSysConfig): Configuration of the recommender system that will be internally
-            created
+        config (RecSysConfig): Configuration of the recommender system that will be internally created
         partitioning (Partitioning): Partitioning technique
+        metric_list (list<Metric>): List of metrics that eval model will compute
     """
     def __init__(self, config: RecSysConfig,
                  partitioning: Partitioning,
@@ -29,6 +30,9 @@ class EvalModel:
         self.__metric_list = metric_list
         self.__config: RecSysConfig = config
         self.__partitioning = partitioning
+
+    def get_partitioning(self):
+        return self.__partitioning
 
     def get_config(self):
         return self.__config
@@ -42,24 +46,35 @@ class EvalModel:
 
     @abstractmethod
     def fit(self):
-        """
-        This method performs the evaluation by initializing internally a recommender system that produces
-            recommendations for all the users in the directory specified in the configuration phase.
-            The evaluation is performed by creating a training set, and a test set with its corresponding
-            truth base.
-
-        Returns:
-            Tuple<prediction_metric_results, ranking_metric_results, fairness_metrics_results>: Three
-                different DataFrames. Each DataFrame has a 'from' column, representing the user_ids for
-                which the recommendations are provided, and then one different column for every metric
-                performed. The returned DataFrames contain one row per user, and the corresponding
-                metric values are given by the mean of the values obtained for that user.
-        """
         raise NotImplementedError
 
 
 class RankingAlgEvalModel(EvalModel):
+    """
+    Class for automating the process of recommending and
+    evaluate produced recommendations
+
+    Args:
+        config (RecSysConfig): Configuration of the recommender system that will be internally created
+        partitioning (Partitioning): Partitioning technique
+        metric_list (list<Metric>): List of metrics that eval model will compute
+    """
+    def __init__(self, config, partitioning, metric_list = None):
+        super().__init__(config, partitioning, metric_list)
+
     def fit(self):
+        """
+        This method performs the evaluation by initializing internally a recommender system that produces
+            recommendations for all the users in the directory specified in the configuration phase.
+            The evaluation is performed by creating a training set, and a test set with its corresponding
+            truth base. The ranking algorithm will use the test set as candidate items list.
+
+        Returns:
+            ranking_metric_results: has a 'from' column, representing the user_ids for
+                which the metrics was computed, and then one different column for every metric
+                performed. The returned DataFrames contain one row per user, and the corresponding
+                metric values are given by the mean of the values obtained for that user.
+        """
         # initialize recommender to call for prediction computing
         recsys = RecSys(self.get_config())
 
@@ -79,13 +94,11 @@ class RankingAlgEvalModel(EvalModel):
                 self.get_config().get_rating_frame()['from_id'] == user_id]
 
             try:
-                self.__partitioning.set_dataframe(user_ratings)
+                self.get_partitioning().set_dataframe(user_ratings)
             except ValueError:
                 continue
 
-            self.__partitioning.set_dataframe(user_ratings)
-
-            for partition_index in self.__partitioning:
+            for partition_index in self.get_partitioning():
                 result_dict = {}
                 train = user_ratings.iloc[partition_index[0]]
                 test = user_ratings.iloc[partition_index[1]]
@@ -108,7 +121,34 @@ class RankingAlgEvalModel(EvalModel):
 
 
 class PredictionAlgEvalModel(EvalModel):
+    """
+    Class for automating the process of recommending and evaluate produced recommendations.
+    This subclass automate the computation of metrics whose input are the result of a RecSys
+    configured with a rating prediction algorithm.
+    The metrics are iteratively computed for each user
+
+    Args:
+        config (RecSysConfig): Configuration of the recommender system that will be internally created
+        partitioning (Partitioning): Partitioning technique
+        metric_list (list<Metric>): List of metrics that eval model will compute
+    """
+    def __init__(self, config, partitioning, metric_list = None):
+        super().__init__(config, partitioning, metric_list)
+
     def fit(self):
+        """
+        This method performs the rating prediction evaluation by initializing internally
+            a recommender system that produces recommendations for all the
+            users in the directory specified in the configuration phase.
+            The evaluation is performed by creating a training set, and a test set with its corresponding
+            truth base. The rating prediction will be computed on every item in the test eet.
+
+        Returns:
+            prediction_metric_results: has a 'from' column, representing the user_ids for
+                which the metrics was computed, and then one different column for every metric
+                performed. The returned DataFrames contain one row per user, and the corresponding
+                metric values are given by the mean of the values obtained for that user.
+        """
         # initialize recommender to call for prediction computing
         recsys = RecSys(self.get_config())
 
@@ -132,11 +172,11 @@ class PredictionAlgEvalModel(EvalModel):
             user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
 
             try:
-                self.__partitioning.set_dataframe(user_ratings)
+                self.get_partitioning().set_dataframe(user_ratings)
             except ValueError:
                 continue
 
-            for partition_index in self.__partitioning:
+            for partition_index in self.get_partitioning():
                 result_dict = {}
                 logger.info("Computing prediction metrics")
                 train = user_ratings.iloc[partition_index[0]]
@@ -155,7 +195,31 @@ class PredictionAlgEvalModel(EvalModel):
 
 
 class NoTruthEvalModel(EvalModel):
+    """
+    Class for automating the process of recommending and evaluate produced recommendations.
+    This subclass automate the computation of metrics whose input is the result of a RecSys
+    configured with a ranking algorithm.
+    The recommendation are copmuted for eeach user and
+    the metrics are computed, after the recommendation process, on the whole frame
+
+    Args:
+        config (RecSysConfig): Configuration of the recommender system that will be internally created
+        metric_list (list<Metric>): List of metrics that eval model will compute
+    """
+    def __init__(self, config, metric_list = None):
+        super().__init__(config, None, metric_list)
+
     def fit(self):
+        """
+        This method performs the rating prediction evaluation by initializing internally
+            a recommender system that produces recommendations for all the
+            users in the directory specified in the configuration phase.
+
+
+        Returns:
+            result_list: each element of this list is a metric result that can be of different types,
+                according to the metric, for example a DataFrame or a float
+        """
         # initialize recommender to call for prediction computing
         recsys = RecSys(self.get_config())
 

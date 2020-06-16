@@ -27,6 +27,18 @@ class RankingMetric(Metric):
 
 
 class NDCG(RankingMetric):
+    """
+    Normalized discounted cumulative gain
+    .. math::
+        \\begin{align*}
+        \\mathrm{DCG}(L,u) & = \\sum_{i=1}^{|L|} \\frac{r_{ui}}{d(i)}
+        \\end{align*}
+    This is then normalized as follows:
+    .. math::
+        \\begin{align*}
+        \\mathrm{nDCG}(L, u) & = \\frac{\\mathrm{DCG}(L,u)}{\\mathrm{DCG}(L_{\\mathrm{ideal}}, u)}
+        \\end{align*}
+    """
     def __init__(self, relevance_split: Dict[int, Tuple[float, float]]):
         super().__init__(relevance_split)
         self.__relevance_split = relevance_split
