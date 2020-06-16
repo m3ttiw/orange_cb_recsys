@@ -2,7 +2,8 @@ from typing import List
 from gensim.models.fasttext import FastText
 
 from orange_cb_recsys.content_analyzer.embedding_learner.embedding_learner import EmbeddingLearner
-from orange_cb_recsys.content_analyzer.information_processor.information_processor import TextProcessor
+from orange_cb_recsys.content_analyzer.information_processor.\
+    information_processor import TextProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
 
@@ -10,6 +11,12 @@ class GensimFastText(EmbeddingLearner):
     """"
     Class that implements the Abstract Class EmdeddingLearner.
     Implementation of FastText using the Gensim library.
+    Args:
+        source (RawInformationSource): Source where the content is stored.
+        preprocessor (InformationProcessor): Instance of the class InformationProcessor,
+            specify how to process (can be None) the source data, before
+            use it for model computation
+        field_list (List<str>): Field name list.
     """
 
     def __init__(self, source: RawInformationSource,

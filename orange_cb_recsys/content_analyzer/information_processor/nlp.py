@@ -1,9 +1,11 @@
+from typing import List
+
 import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-from typing import List
+from nltk.stem.snowball import SnowballStemmer
 
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import NLP
 
@@ -38,19 +40,19 @@ class NLTK(NLP):
                  url_tagging: bool = False,
                  lang='english'):
 
-        if type(stopwords_removal) is str:
+        if isinstance(stopwords_removal, str):
             stopwords_removal = stopwords_removal.lower() == 'true'
 
-        if type(stemming) is str:
+        if isinstance(stemming, str):
             stemming = stemming.lower() == 'true'
 
-        if type(lemmatization) is str:
+        if isinstance(lemmatization, str):
             lemmatization = lemmatization.lower() == 'true'
 
-        if type(strip_multiple_whitespaces) is str:
+        if isinstance(strip_multiple_whitespaces, str):
             strip_multiple_whitespaces = strip_multiple_whitespaces.lower() == 'true'
 
-        if type(url_tagging) is str:
+        if isinstance(url_tagging, str):
             url_tagging = url_tagging.lower() == 'true'
 
         super().__init__(stopwords_removal,
@@ -88,12 +90,18 @@ class NLTK(NLP):
 
     def __repr__(self):
         return "< NLTK: " + "" \
-                "stopwords_removal = " + str(self.__stopwords_removal) + ";" + \
-                 "stemming = " + str(self.__stemming) + ";" + \
-                 "lemmatization = " + str(self.__lemmatization) + ";" + \
-                 "named_entity_recognition = " + str(self.__named_entity_recognition) + ";" + \
-                 "strip_multiple_whitespaces = " + str(self.__strip_multiple_whitespaces) + ";" + \
-                 "url_tagging = " + str(self.__url_tagging) + " >"
+                "stopwords_removal = " + \
+               str(self.get_stopwords_removal()) + ";" + \
+                 "stemming = " + \
+               str(self.get_stemming()) + ";" + \
+                 "lemmatization = " + \
+               str(self.get_lemmatization()) + ";" + \
+                 "named_entity_recognition = " + \
+               str(self.get_named_entity_recognition()) + ";" + \
+                 "strip_multiple_whitespaces = " + \
+               str(self.get_strip_multiple_whitespaces()) + ";" + \
+                 "url_tagging = " + \
+               str(self.get_url_tagging()) + " >"
 
     def set_lang(self, lang: str):
         super().set_lang(self.__full_lang_code)
@@ -139,7 +147,6 @@ class NLTK(NLP):
         Returns:
             stemmed_text (List<str>): List of the fords from the text, reduced to their stem version
         """
-        from nltk.stem.snowball import SnowballStemmer
         stemmer = SnowballStemmer(language=self.get_lang())
 
         stemmed_text = []

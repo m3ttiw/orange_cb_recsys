@@ -35,7 +35,8 @@ class ClassificationMetric(Metric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set, first n will be considered relevant,
+              it represents the ranking of all the items in the test set,
+              first n will be considered relevant,
               with n equal to the number of relevant items in the test set
         """
         raise NotImplementedError
@@ -63,7 +64,8 @@ class Precision(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set, first n will be considered relevant,
+              it represents the ranking of all the items in the test set,
+              first n will be considered relevant,
               with n equal to the number of relevant items in the test set
 
         Returns:
@@ -96,7 +98,8 @@ class Recall(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set, first n will be considered relevant,
+              it represents the ranking of all the items in the test set,
+              first n will be considered relevant,
               with n equal to the number of relevant items in the test set
 
         Returns:
@@ -128,7 +131,8 @@ class MRR(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set, first n will be considered relevant,
+              it represents the ranking of all the items in the test set,
+              first n will be considered relevant,
               with n equal to the number of relevant items in the test set
 
         Returns:
@@ -139,8 +143,8 @@ class MRR(ClassificationMetric):
         prediction_labels, truth_labels = super()._get_labels(predictions, truth)
 
         mrr = 0
-        n = len(truth_labels)
-        if n == 0:
+
+        if len(truth_labels) == 0:
             return 0
         for t_index, t_value in truth_labels.iteritems():
             for p_index, p_value in prediction_labels.iteritems():
@@ -173,7 +177,8 @@ class FNMeasure(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set, first n will be considered relevant,
+              it represents the ranking of all the items in the test set,
+              first n will be considered relevant,
               with n equal to the number of relevant items in the test set
 
         Returns:
@@ -184,6 +189,7 @@ class FNMeasure(ClassificationMetric):
 
         prediction_labels, truth_labels = super()._get_labels(predictions, truth)
         precision = prediction_labels.isin(truth_labels).sum() / len(prediction_labels)
-        recall = prediction_labels.isin(truth_labels).sum() / len(truth_labels)
+        recall = \
+            prediction_labels.isin(truth_labels).sum() / len(truth_labels)
 
         return (1 + (self.__n ** 2)) * ((precision * recall) / ((self.__n ** 2) * precision + recall))

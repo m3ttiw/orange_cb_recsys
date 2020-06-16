@@ -5,8 +5,8 @@ from gensim.models import KeyedVectors, Doc2Vec, fasttext
 from wikipedia2vec import Wikipedia2Vec
 import numpy as np
 
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
-    EmbeddingSource
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.\
+    field_content_production_technique import EmbeddingSource
 from orange_cb_recsys.utils.check_tokenization import check_tokenized
 
 
@@ -33,7 +33,8 @@ class BinaryFile(EmbeddingSource):
         elif embedding_type == "fasttext":
             self.set_model(fasttext.load_facebook_vectors(self.__file_path))
         else:
-            raise ValueError("Must specify a valid embedding model type for loading from binary file")
+            raise ValueError(
+                "Must specify a valid embedding model type for loading from binary file")
 
 
 class GensimDownloader(EmbeddingSource):
@@ -55,7 +56,7 @@ class Wikipedia2VecDownloader(EmbeddingSource):
     """
     Class that implements the abstract class EmbeddingSoruce.
     This class loads the embeddings using the Wikipedia2Vec binary file loader.
-    Can be used for loading of pre-trained wikipedia dump embedding, 
+    Can be used for loading of pre-trained wikipedia dump embedding,
     both downloaded or trained on local machine.
 
     Attributes:

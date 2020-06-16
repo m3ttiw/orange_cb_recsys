@@ -12,7 +12,5 @@ def load_ratings(filename: str):
     Returns:
         (pd.DataFrame): Ratings
     """
-    if not DEVELOPING:
-        return pd.read_csv(os.path.join(home_path, filename), dtype=str)
-    else:
-        return pd.read_csv(filename, dtype=str)
+
+    return pd.read_csv(filename, dtype=str)

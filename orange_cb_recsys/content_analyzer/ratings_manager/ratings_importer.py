@@ -1,10 +1,12 @@
 from typing import List
+
+import time
+
+import pandas as pd
+
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import RatingProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 from orange_cb_recsys.content_analyzer.ratings_manager.score_combiner import ScoreCombiner
-import pandas as pd
-import time
-import logging
 from orange_cb_recsys.utils.const import home_path, logger, DEVELOPING
 
 
@@ -59,7 +61,7 @@ class RatingsImporter:
         self.__score_combiner = ScoreCombiner(score_combiner)
 
         self.__columns: list = ["from_id", "to_id", "score", "timestamp"]
-        for i, field in enumerate(self.__rating_configs):
+        for field in self.__rating_configs:
             self.__columns.append(field.get_field_name())
 
     def get_frame_columns(self) -> list:
@@ -80,7 +82,6 @@ class RatingsImporter:
         Returns:
             ratings_frame: pd.DataFrame
         """
-        logging.basicConfig(level=logging.INFO)
         ratings_frame = pd.DataFrame(columns=list(self.__columns))
 
         dicts = \
@@ -95,8 +96,9 @@ class RatingsImporter:
                              for preference in self.__rating_configs])
                     },
                     **{
-                        preference.get_field_name(): raw_rating[preference.get_field_name()] for preference in
-                        self.__rating_configs
+                        preference.get_field_name():
+                            raw_rating[preference.get_field_name()]
+                        for preference in self.__rating_configs
                     }
                 }
                 for raw_rating in show_progress(self.__source)
@@ -106,10 +108,14 @@ class RatingsImporter:
 
         if self.__file_name is not None:
             if not DEVELOPING:
-                ratings_frame.to_csv("{}/ratings/{}_{}.csv".format(home_path, self.__file_name, int(time.time())),
-                                     index=False, header=True)
+                ratings_frame.to_csv(
+                    "{}/ratings/{}_{}.csv".format(
+                        home_path, self.__file_name, int(time.time())),
+                    index=False, header=True)
             else:
-                ratings_frame.to_csv("{}_{}.csv".format(self.__file_name, int(time.time())), index=False, header=True)
+                ratings_frame.to_csv(
+                    "{}_{}.csv".format(
+                        self.__file_name, int(time.time())), index=False, header=True)
 
         return ratings_frame
 
@@ -124,8 +130,8 @@ def show_progress(coll, milestones=100):
             print an update
     """
     processed = 0
-    for x in coll:
-        yield x
+    for element in coll:
+        yield element
         processed += 1
         if processed % milestones == 0:
-            logger.info('Processed %s elements' % processed)
+            logger.info('Processed %s elements', processed)

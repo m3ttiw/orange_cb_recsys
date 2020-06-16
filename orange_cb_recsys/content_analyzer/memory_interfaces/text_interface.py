@@ -1,5 +1,6 @@
 import lucene
 import math
+import shutil
 
 from java.nio.file import Paths
 from org.apache.lucene.index import IndexWriter, IndexWriterConfig, IndexOptions
@@ -40,7 +41,8 @@ class IndexInterface(TextInterface):
         self.__field_type_frequency.setTokenized(False)
         self.__field_type_frequency.setStoreTermVectors(True)
         self.__field_type_frequency.setStoreTermVectorPositions(True)
-        self.__field_type_frequency.setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
+        self.__field_type_frequency.\
+            setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
         fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
         self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
 
@@ -58,7 +60,7 @@ class IndexInterface(TextInterface):
             field_name (str): Name of the new field
             field_data: Data to put into the field
         """
-        if type(field_data) == list:
+        if isinstance(field_data, list):
             for word in field_data:
                 self.__doc.add(Field(field_name, word, self.__field_type_frequency))
         else:
@@ -96,11 +98,14 @@ class IndexInterface(TextInterface):
             content_id (str): Id of the content that contains the specified field
 
         Returns:
-             words_bag (Dict <str, float>): Dictionary whose keys are the words contained in the field,
-                and the corresponding values are the tf-idf values.
+             words_bag (Dict <str, float>):
+             Dictionary whose keys are the words contained in the field,
+             and the corresponding values are the tf-idf values.
         """
-        searcher = IndexSearcher(DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
-        query = QueryParser("testo_libero", KeywordAnalyzer()).parse("content_id:\"" + content_id + "\"")
+        searcher = IndexSearcher(
+            DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
+        query = QueryParser(
+            "testo_libero", KeywordAnalyzer()).parse("content_id:\"" + content_id + "\"")
         score_docs = searcher.search(query, 1).scoreDocs
         document_offset = -1
         for score_doc in score_docs:
@@ -123,5 +128,4 @@ class IndexInterface(TextInterface):
         return words_bag
 
     def delete_index(self):
-        import shutil
         shutil.rmtree(self.get_directory(), ignore_errors=True)

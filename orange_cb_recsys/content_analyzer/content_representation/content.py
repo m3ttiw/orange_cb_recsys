@@ -14,8 +14,9 @@ class Content:
     A content is identified by a string id and is composed by different fields
     Args:
         content_id (str): identifier
-        field_dict (dict[str, ContentField]): dictionary containing the fields instances for the content,
-            and their name as dictionary key
+        field_dict (dict[str, ContentField]): dictionary
+        containing the fields instances for the content,
+        and their name as dictionary key
     """
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None):
@@ -56,7 +57,7 @@ class Content:
         Args:
             output_directory (str): Name of the directory in which serialize
         """
-        logger.info("Serializing content %s in %s" % (self.__content_id, output_directory))
+        logger.info("Serializing content %s in %s", self.__content_id, output_directory)
 
         file_name = re.sub(r'[^\w\s]', '', self.__content_id)
         path = os.path.join(output_directory, file_name + '.xz')

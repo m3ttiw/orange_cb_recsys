@@ -1,8 +1,8 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from orange_cb_recsys.content_analyzer.content_representation.content_field import FeaturesBagField
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
-    TfIdfTechnique
+from orange_cb_recsys.content_analyzer.field_content_production_techniques.\
+    field_content_production_technique import TfIdfTechnique
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 from orange_cb_recsys.utils.check_tokenization import check_tokenized, check_not_tokenized
@@ -43,12 +43,12 @@ class SkLearnTfIdf(TfIdfTechnique):
             self.__matching[content_id] = len(self.__corpus)
             self.__corpus.append(processed_field_data)
 
-        tf = TfidfVectorizer(sublinear_tf=True)
-        self.__tfidf_matrix = tf.fit_transform(self.__corpus)
+        tf_vectorizer = TfidfVectorizer(sublinear_tf=True)
+        self.__tfidf_matrix = tf_vectorizer.fit_transform(self.__corpus)
 
         del self.__corpus
 
-        self.__feature_names = tf.get_feature_names()
+        self.__feature_names = tf_vectorizer.get_feature_names()
 
     def produce_content(self, field_representation_name: str, content_id: str, field_name: str):
         """
@@ -68,10 +68,10 @@ class SkLearnTfIdf(TfIdfTechnique):
         tfidf_scores = zip(feature_index, [self.__tfidf_matrix[doc, x] for x in feature_index])
 
         features = {}
-        for w, s in [(self.__feature_names[i], s) for (i, s) in tfidf_scores]:
-            features[w] = s
+        for word, score in [(self.__feature_names[i], score) for (i, score) in tfidf_scores]:
+            features[word] = score
 
-        return FeaturesBagField(field_representation_name,  features)
+        return FeaturesBagField(field_representation_name, features)
 
     def delete_refactored(self):
         pass
@@ -94,7 +94,9 @@ class LuceneTfIdf(TfIdfTechnique):
 
     def produce_content(self, field_representation_name: str, content_id: str,
                         field_name: str) -> FeaturesBagField:
-        return FeaturesBagField(field_representation_name, self.__index.get_tf_idf(field_name, content_id))
+
+        return FeaturesBagField(
+            field_representation_name, self.__index.get_tf_idf(field_name, content_id))
 
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
         """

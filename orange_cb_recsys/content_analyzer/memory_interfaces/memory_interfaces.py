@@ -131,6 +131,5 @@ class TextInterface(InformationInterface):
         raise NotImplementedError
 
     @abstractmethod
-    def get_tf_idf(self, field_name: str, item_id: str):
+    def get_tf_idf(self, field_name: str, content_id: str):
         raise NotImplementedError
-

@@ -5,9 +5,10 @@ import nltk
 import numpy as np
 
 from nltk.tokenize import sent_tokenize
-from orange_cb_recsys.content_analyzer.content_representation.content_field import FieldRepresentation, \
-    FeaturesBagField, EmbeddingField
-from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
+from orange_cb_recsys.content_analyzer.content_representation. \
+    content_field import FieldRepresentation, FeaturesBagField, EmbeddingField
+from orange_cb_recsys.content_analyzer.information_processor. \
+    information_processor import InformationProcessor
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 from orange_cb_recsys.utils.check_tokenization import check_tokenized, check_not_tokenized
@@ -277,7 +278,7 @@ class EmbeddingTechnique(SingleContentTechnique):
         if self.__granularity == "word":
             doc_matrix = self.__embedding_source.load(field_data)
             return EmbeddingField(field_representation_name, doc_matrix)
-        elif self.__granularity == "sentence":
+        if self.__granularity == "sentence":
             try:
                 nltk.data.find('punkt')
             except LookupError:
@@ -287,15 +288,17 @@ class EmbeddingTechnique(SingleContentTechnique):
             for i, sentence in enumerate(sentences):
                 sentences[i] = sentence[:len(sentence) - 1]
 
-            sentences_embeddings = np.ndarray(shape=(len(sentences), self.__embedding_source.get_vector_size()))
+            sentences_embeddings = \
+                np.ndarray(shape=(len(sentences), self.__embedding_source.get_vector_size()))
             for i, sentence in enumerate(sentences):
                 sentence_matrix = self.__embedding_source.load(sentence)
                 sentences_embeddings[i, :] = self.__combining_technique.combine(sentence_matrix)
 
             return EmbeddingField(field_representation_name, sentences_embeddings)
-        elif self.__granularity == "doc":
+        if self.__granularity == "doc":
             doc_matrix = self.__embedding_source.load(field_data)
-            return EmbeddingField(field_representation_name, self.__combining_technique.combine(doc_matrix))
+            return EmbeddingField(
+                field_representation_name, self.__combining_technique.combine(doc_matrix))
         else:
             raise ValueError("Must specify a valid embedding technique granularity")
 
@@ -303,5 +306,7 @@ class EmbeddingTechnique(SingleContentTechnique):
         return "EmbeddingTechnique"
 
     def __repr__(self):
-        return "EmbeddingTechnique " + str(self.__combining_technique) + " " + str(self.__embedding_source) + " " + str(
-            self.__granularity)
+        return "EmbeddingTechnique " \
+               + str(self.__combining_technique) + " " + \
+               str(self.__embedding_source) + " " \
+               + str(self.__granularity)

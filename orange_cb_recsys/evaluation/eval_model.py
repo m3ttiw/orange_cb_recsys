@@ -18,7 +18,8 @@ class EvalModel:
     Class for automating the process of recommending and
     evaluate produced recommendations
     Args:
-        config (RecSysConfig): Configuration of the recommender system that will be internally created
+        config (RecSysConfig): Configuration of the
+        recommender system that will be internally created
         partitioning (Partitioning): Partitioning technique
         metric_list (list<Metric>): List of metrics that eval model will compute
     """
@@ -55,19 +56,23 @@ class RankingAlgEvalModel(EvalModel):
     evaluate produced recommendations
 
     Args:
-        config (RecSysConfig): Configuration of the recommender system that will be internally created
+        config (RecSysConfig): Configuration of the
+        recommender system that will be internally created
         partitioning (Partitioning): Partitioning technique
         metric_list (list<Metric>): List of metrics that eval model will compute
     """
-    def __init__(self, config, partitioning, metric_list = None):
+    def __init__(self, config, partitioning, metric_list: List[Metric] = None):
         super().__init__(config, partitioning, metric_list)
 
     def fit(self):
         """
-        This method performs the evaluation by initializing internally a recommender system that produces
-            recommendations for all the users in the directory specified in the configuration phase.
-            The evaluation is performed by creating a training set, and a test set with its corresponding
-            truth base. The ranking algorithm will use the test set as candidate items list.
+        This method performs the evaluation by initializing
+        internally a recommender system that produces
+        recommendations for all the users in the directory
+        specified in the configuration phase.
+        The evaluation is performed by creating a training set,
+        and a test set with its corresponding
+        truth base. The ranking algorithm will use the test set as candidate items list.
 
         Returns:
             ranking_metric_results: has a 'from' column, representing the user_ids for
@@ -80,7 +85,9 @@ class RankingAlgEvalModel(EvalModel):
 
         # get all users in specified directory
         logger.info("Loading user instances")
-        user_id_list = [os.path.splitext(filename)[0] for filename in os.listdir(self.get_config().get_users_directory())]
+        user_id_list = \
+            [os.path.splitext(filename)[0]
+             for filename in os.listdir(self.get_config().get_users_directory())]
 
         # define results structure
         ranking_alg_metrics_results = pd.DataFrame()
@@ -89,7 +96,7 @@ class RankingAlgEvalModel(EvalModel):
         if self.get_config().get_ranking_algorithm() is None:
             raise ValueError("You must set ranking algorithm to compute ranking metrics")
         for user_id in user_id_list:
-            logger.info("Computing ranking metrics for user %s" % user_id)
+            logger.info("Computing ranking metrics for user %s", user_id)
             user_ratings = self.get_config().get_rating_frame()[
                 self.get_config().get_rating_frame()['from_id'] == user_id]
 
@@ -107,15 +114,18 @@ class RankingAlgEvalModel(EvalModel):
                 truth.columns = ["to_id", "rating"]
 
                 recs_number = len(truth['rating'].values)
-                predictions = recsys.fit_eval_ranking(user_id, train, truth['to_id'].tolist(), recs_number)
+                predictions = recsys.fit_eval_ranking(
+                    user_id, train, truth['to_id'].tolist(), recs_number)
 
                 for metric in self.get_metrics():
                     result_dict['from'] = user_id
                     result_dict[str(metric)] = metric.perform(predictions, truth)
 
-                ranking_alg_metrics_results = ranking_alg_metrics_results.append(result_dict, ignore_index=True)
+                ranking_alg_metrics_results = \
+                    ranking_alg_metrics_results.append(result_dict, ignore_index=True)
 
-        ranking_alg_metrics_results = ranking_alg_metrics_results.groupby('from').mean().reset_index()
+        ranking_alg_metrics_results = \
+            ranking_alg_metrics_results.groupby('from').mean().reset_index()
 
         return ranking_alg_metrics_results
 
@@ -123,16 +133,18 @@ class RankingAlgEvalModel(EvalModel):
 class PredictionAlgEvalModel(EvalModel):
     """
     Class for automating the process of recommending and evaluate produced recommendations.
-    This subclass automate the computation of metrics whose input are the result of a RecSys
+    This subclass automate the computation of metrics
+    whose input are the result of a RecSys
     configured with a rating prediction algorithm.
     The metrics are iteratively computed for each user
 
     Args:
-        config (RecSysConfig): Configuration of the recommender system that will be internally created
+        config (RecSysConfig): Configuration of the
+        recommender system that will be internally created
         partitioning (Partitioning): Partitioning technique
         metric_list (list<Metric>): List of metrics that eval model will compute
     """
-    def __init__(self, config, partitioning, metric_list = None):
+    def __init__(self, config, partitioning, metric_list: List[Metric] = None):
         super().__init__(config, partitioning, metric_list)
 
     def fit(self):
@@ -140,7 +152,8 @@ class PredictionAlgEvalModel(EvalModel):
         This method performs the rating prediction evaluation by initializing internally
             a recommender system that produces recommendations for all the
             users in the directory specified in the configuration phase.
-            The evaluation is performed by creating a training set, and a test set with its corresponding
+            The evaluation is performed by creating a training set,
+            and a test set with its corresponding
             truth base. The rating prediction will be computed on every item in the test eet.
 
         Returns:
@@ -154,7 +167,9 @@ class PredictionAlgEvalModel(EvalModel):
 
         # get all users in specified directory
         logger.info("Loading user instances")
-        user_id_list = [os.path.splitext(filename)[0] for filename in os.listdir(self.get_config().get_users_directory())]
+        user_id_list = [
+            os.path.splitext(filename)[0]
+            for filename in os.listdir(self.get_config().get_users_directory())]
 
         # define results structure
         prediction_metric_results = pd.DataFrame()
@@ -164,7 +179,7 @@ class PredictionAlgEvalModel(EvalModel):
             raise ValueError("You must set score prediction algorithm to compute this eval model")
 
         for user_id in user_id_list:
-            logger.info("User %s" % user_id)
+            logger.info("User %s", user_id)
             logger.info("Loading user ratings")
 
             user_ratings = self.get_config().get_rating_frame()[
@@ -196,17 +211,21 @@ class PredictionAlgEvalModel(EvalModel):
 
 class ReportEvalModel(EvalModel):
     """
-    Class for automating the process of recommending and evaluate produced recommendations.
-    This subclass automate the computation of metrics whose input is the result of a RecSys
+    Class for automating the process of recommending
+    and evaluate produced recommendations.
+    This subclass automate the computation of metrics
+    whose input is the result of a RecSys
     configured with a ranking algorithm.
     The recommendation are copmuted for eeach user and
-    the metrics are computed, after the recommendation process, on the whole frame
+    the metrics are computed, after the recommendation process,
+    on the whole frame
 
     Args:
-        config (RecSysConfig): Configuration of the recommender system that will be internally created
+        config (RecSysConfig): Configuration of the
+        recommender system that will be internally created
         metric_list (list<Metric>): List of metrics that eval model will compute
     """
-    def __init__(self, config, recs_number: int, metric_list=None):
+    def __init__(self, config, recs_number: int, metric_list: List[Metric] = None):
         super().__init__(config, None, metric_list)
         self.__recs_number = recs_number
 
@@ -218,15 +237,18 @@ class ReportEvalModel(EvalModel):
 
 
         Returns:
-            result_list: each element of this list is a metric result that can be of different types,
-                according to the metric, for example a DataFrame or a float
+            result_list: each element of this list is a metric
+            result that can be of different types,
+            according to the metric, for example a DataFrame or a float
         """
         # initialize recommender to call for prediction computing
         recsys = RecSys(self.get_config())
 
         # get all users in specified directory
         logger.info("Loading user instances")
-        user_id_list = [os.path.splitext(filename)[0] for filename in os.listdir(self.get_config().get_users_directory())]
+        user_id_list = [
+            os.path.splitext(filename)[0]
+            for filename in os.listdir(self.get_config().get_users_directory())]
 
         # define results structure
         no_truth_metrics_results = []
@@ -240,7 +262,7 @@ class ReportEvalModel(EvalModel):
         columns = ["from_id", "to_id", "rating"]
         score_frame = pd.DataFrame(columns=columns)
         for user_id in user_id_list:
-            logger.info("User %s" % user_id)
+            logger.info("User %s", user_id)
             fit_result = recsys.fit_ranking(user_id, self.__recs_number)
 
             fit_result_with_user = pd.DataFrame(columns=columns)
@@ -253,6 +275,7 @@ class ReportEvalModel(EvalModel):
 
         logger.info("Computing no truth metrics")
         for metric in self.get_metrics():
-            no_truth_metrics_results.append(metric.perform(score_frame, self.get_config().get_rating_frame()))
+            no_truth_metrics_results.append(
+                metric.perform(score_frame, self.get_config().get_rating_frame()))
 
         return no_truth_metrics_results

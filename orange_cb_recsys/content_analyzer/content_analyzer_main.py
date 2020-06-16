@@ -2,10 +2,13 @@ from typing import Dict
 import time
 import os
 
-from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldRepresentationPipeline
-from orange_cb_recsys.content_analyzer.content_representation.content import Content, RepresentedContentsRecap
+from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, \
+    FieldRepresentationPipeline
+from orange_cb_recsys.content_analyzer.content_representation.content import Content, \
+    RepresentedContentsRecap
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
+from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
+    field_content_production_technique import \
     CollectionBasedTechnique, \
     SingleContentTechnique, SearchIndexing
 from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
@@ -35,16 +38,17 @@ class ContentAnalyzer:
 
                 technique = pipeline.get_content_technique()
                 if isinstance(technique, CollectionBasedTechnique):
-                    logger.info("Creating collection for technique: %s on field %s, representation: %s" % (
-                        technique, field_name, pipeline))
+                    logger.info("Creating collection for technique: %s on field %s, "
+                                "representation: %s", technique, field_name, pipeline)
                     technique.set_field_need_refactor(field_name)
                     technique.set_pipeline_need_refactor(str(pipeline))
                     technique.set_processor_list(pipeline.get_preprocessor_list())
-                    technique.dataset_refactor(self.__config.get_source(), self.__config.get_id_field_name())
+                    technique.dataset_refactor(
+                        self.__config.get_source(), self.__config.get_id_field_name())
 
     def __config_recap(self):
-        recap_list = [("Field: %s; representation id: %s: technique: %s"
-                       % (field_name, str(pipeline), str(pipeline.get_content_technique())))
+        recap_list = [("Field: %s; representation id: %s: technique: %s",
+                       field_name, str(pipeline), str(pipeline.get_content_technique()))
                       for field_name in self.__config.get_field_name_list()
                       for pipeline in self.__config.get_pipeline_list(field_name)]
 
@@ -62,9 +66,7 @@ class ContentAnalyzer:
 
         indexer = None
         if self.__config.get_search_index():
-            index_path = os.path.join(self.__config.get_output_directory(), 'search_index')
-            if not DEVELOPING:
-                index_path = os.path.join(home_path, self.__config.get_output_directory(), 'search_index')
+            index_path = os.path.join(output_path, 'search_index')
             indexer = IndexInterface(index_path)
             indexer.init_writing()
 
@@ -79,7 +81,7 @@ class ContentAnalyzer:
         contents_producer.set_indexer(indexer)
         i = 0
         for raw_content in self.__config.get_source():
-            logger.info("Processing item %d" % i)
+            logger.info("Processing item %d", i)
             content = contents_producer.create_content(raw_content)
             content.serialize(output_path)
             i += 1
@@ -95,8 +97,6 @@ class ContentAnalyzer:
                 technique = pipeline.get_content_technique()
                 if isinstance(technique, CollectionBasedTechnique):
                     technique.delete_refactored()
-
-        print(self.__config_recap())
 
     def __str__(self):
         return "ContentAnalyzer"
@@ -167,7 +167,7 @@ class ContentsProducer:
         Returns:
             field (ContentField)
         """
-        if type(raw_content[field_name]) == list:
+        if isinstance(raw_content[field_name], list):
             timestamp = raw_content[field_name][1]
             field_data = raw_content[field_name][0]
         else:
@@ -182,9 +182,13 @@ class ContentsProducer:
         field = ContentField(field_name, timestamp)
 
         for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
-            logger.info("processing representation %d" % i)
-            if isinstance(pipeline.get_content_technique(), CollectionBasedTechnique):
-                field.append(str(i), self.__create_representation_CBT(str(i), field_name, content_id, pipeline))
+            logger.info("processing representation %d", i)
+            if isinstance(pipeline.get_content_technique(),
+                          CollectionBasedTechnique):
+                field.append(str(i),
+                             self.__create_representation_CBT
+                             (str(i), field_name, content_id, pipeline))
+
             elif isinstance(pipeline.get_content_technique(), SingleContentTechnique):
                 field.append(str(i), self.__create_representation(str(i), field_data, pipeline))
             elif isinstance(pipeline.get_content_technique(), SearchIndexing):
@@ -201,11 +205,13 @@ class ContentsProducer:
         for preprocessor in preprocessor_list:
             processed_field_data = preprocessor.process(processed_field_data)
 
-        pipeline.get_content_technique().produce_content(field_name, str(pipeline), processed_field_data,
+        pipeline.get_content_technique().produce_content(field_name,
+                                                         str(pipeline), processed_field_data,
                                                          self.__indexer)
 
     @staticmethod
-    def __create_representation_CBT(field_representation_name: str, field_name: str, content_id: str,
+    def __create_representation_CBT(field_representation_name: str,
+                                    field_name: str, content_id: str,
                                     pipeline: FieldRepresentationPipeline):
         return pipeline.get_content_technique(). \
             produce_content(field_representation_name, content_id, field_name)
@@ -247,37 +253,39 @@ class ContentsProducer:
 
         if self.__config is None:
             raise Exception("You must set a config with set_config()")
-        else:
-            CONTENT_ID = "content_id"
 
-            timestamp = self.__get_timestamp(raw_content)
+        CONTENT_ID = "content_id"
 
-            # construct id from the list of the fields that compound id
-            content_id = id_merger(raw_content, self.__config.get_id_field_name())
-            content = Content(content_id)
+        timestamp = self.__get_timestamp(raw_content)
 
-            if self.__indexer is not None:
-                self.__indexer.new_content()
-                self.__indexer.new_field(CONTENT_ID, content_id)
+        # construct id from the list of the fields that compound id
+        content_id = id_merger(raw_content, self.__config.get_id_field_name())
+        content = Content(content_id)
 
-            interfaces = self.__config.get_interfaces()
-            for interface in interfaces:
-                interface.new_content()
-                interface.new_field(CONTENT_ID, content_id)
+        if self.__indexer is not None:
+            self.__indexer.new_content()
+            self.__indexer.new_field(CONTENT_ID, content_id)
 
-            # produce
-            for field_name in self.__config.get_field_name_list():
-                logger.info("Processing field: %s" % field_name)
-                # search for timestamp override on specific field
-                content.append(field_name, self.__create_field(raw_content, field_name, content_id, timestamp))
+        interfaces = self.__config.get_interfaces()
+        for interface in interfaces:
+            interface.new_content()
+            interface.new_field(CONTENT_ID, content_id)
 
-            if self.__indexer is not None:
-                content.set_index_document_id(self.__indexer.serialize_content())
+        # produce
+        for field_name in self.__config.get_field_name_list():
+            logger.info("Processing field: %s", field_name)
+            # search for timestamp override on specific field
+            content.append(field_name,
+                           self.__create_field
+                           (raw_content, field_name, content_id, timestamp))
 
-            for interface in interfaces:
-                interface.serialize_content()
+        if self.__indexer is not None:
+            content.set_index_document_id(self.__indexer.serialize_content())
 
-            return content
+        for interface in interfaces:
+            interface.serialize_content()
+
+        return content
 
     def __str__(self):
         return "ContentsProducer"

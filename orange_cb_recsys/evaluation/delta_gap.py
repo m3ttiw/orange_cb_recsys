@@ -36,17 +36,23 @@ def get_avg_pop_by_users(data: pd.DataFrame, pop_by_items: Dict[str, object],
 
     def show_progress(coll, milestones=10):
         processed = 0
-        for x in coll:
-            yield x
+        for element in coll:
+            yield element
             processed += 1
             if processed % milestones == 0:
-                logger.info('Processed %s user in the group' % processed)
+                logger.info('Processed %s user in the group', processed)
 
     if group is None:
         group = data[['from_id']].values.flatten()
-    logger.info("Group length: %d" % len(group))
-    series_by_user = {user: data[data.from_id == user].to_id.values.flatten() for user in show_progress(group)}
-    avg_pop_by_users = {user: get_avg_pop(series_by_user[user], pop_by_items) for user in show_progress(group)}
+    logger.info("Group length: %d", len(group))
+    series_by_user = {
+        user: data[data.from_id == user].to_id.values.flatten()
+        for user in show_progress(group)
+    }
+    avg_pop_by_users = {
+        user: get_avg_pop(series_by_user[user], pop_by_items)
+        for user in show_progress(group)
+    }
 
     return avg_pop_by_users
 
@@ -85,7 +91,3 @@ def calculate_delta_gap(recs_gap: float, profile_gap: float) -> float:
     if profile_gap == 0.0:
         return 0.0
     return (recs_gap - profile_gap) / profile_gap
-
-
-
-

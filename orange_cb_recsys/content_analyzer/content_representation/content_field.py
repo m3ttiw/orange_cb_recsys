@@ -36,7 +36,7 @@ class FeaturesBagField(FieldRepresentation):
     Args:
         features (dict<str, object>): the dictionary where features are stored
     """
-    
+
     def __init__(self, name: str, features: Dict[str, object] = None):
         super().__init__(name)
         if features is None:
@@ -142,7 +142,8 @@ class ContentField:
         Returns:
             bool: True if the names are equals
         """
-        return self.__field_name == other.get_name() and self.__representation_dict == other.__representation_dict
+        return self.__field_name == \
+               other.get_name() and self.__representation_dict == other.__representation_dict
 
     def __str__(self):
         field_string = "Field:" + self.__field_name

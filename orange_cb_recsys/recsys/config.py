@@ -1,8 +1,5 @@
-import os
-
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm, ScorePredictionAlgorithm
 
-from orange_cb_recsys.utils.const import home_path, DEVELOPING
 from orange_cb_recsys.utils.load_ratings import load_ratings
 
 import pandas as pd
@@ -24,12 +21,8 @@ class RecSysConfig:
                  score_prediction_algorithm: ScorePredictionAlgorithm = None,
                  ranking_algorithm: RankingAlgorithm = None,
                  rating_frame=None):
-        if DEVELOPING:
-            self.__users_directory: str = users_directory
-            self.__items_directory: str = items_directory
-        else:
-            self.__users_directory: str = os.path.join(home_path, users_directory)
-            self.__items_directory: str = os.path.join(home_path, items_directory)
+        self.__users_directory: str = users_directory
+        self.__items_directory: str = items_directory
 
         self.__score_prediction_algorithm: ScorePredictionAlgorithm = score_prediction_algorithm
         self.__ranking_algorithm: RankingAlgorithm = ranking_algorithm
