@@ -1,10 +1,10 @@
 from typing import List
 
 from sklearn.feature_extraction import DictVectorizer
-
+from scipy import sparse
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
-from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity
+from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity, DenseVector, SparseVector
 from orange_cb_recsys.content_analyzer.content_representation.content_field import EmbeddingField, FeaturesBagField
 import pandas as pd
 import numpy as np
@@ -39,11 +39,12 @@ class CentroidVector(RankingAlgorithm):
             if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold]
 
         dicts = positive_rated_items + \
-            [item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value()
-             for item in unrated_items]
+                [item.get_field(self.get_item_field()).get_representation(
+                    self.get_item_field_representation()).get_value() for item in unrated_items]
 
         matrix = dv.fit_transform(dicts)
-        return matrix.mean(axis=0).getA(), matrix[len(rated_items):len(rated_items) + len(unrated_items)]
+        return sparse.csr_matrix(matrix.mean(axis=0).getA()), matrix[
+                                                              len(rated_items):len(rated_items) + len(unrated_items)]
 
     def __get_centroid_without_vectorizer(self, ratings: pd.DataFrame, rated_items) -> np.ndarray:
         """
@@ -83,6 +84,7 @@ class CentroidVector(RankingAlgorithm):
         For each candidate item:
         1) Takes the embedding arrays
         2) Determines the similarity between the centroid and the field_representation of the item_field in candidate item.
+
         Args:
             candidate_item_id_list:
             user_id:
@@ -140,7 +142,7 @@ class CentroidVector(RankingAlgorithm):
                     item_field_representation = item.get_field(self.get_item_field()).get_representation(
                         self.get_item_field_representation()).get_value()
                     logger.info("Computing similarity with %s" % item_id)
-                    similarity = self.__similarity.perform(centroid, item_field_representation)
+                    similarity = self.__similarity.perform(DenseVector(centroid), DenseVector(item_field_representation))
                     scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                        ignore_index=True)
             else:
@@ -151,7 +153,7 @@ class CentroidVector(RankingAlgorithm):
                 for item, item_array in zip(unrated_items, unrated_matrix):
                     item_id = item.get_content_id()
                     logger.info("Computing similarity with %s" % item_id)
-                    similarity = self.__similarity.perform(centroid, item_array.todense())
+                    similarity = self.__similarity.perform(SparseVector(centroid), SparseVector(item_array))
                     scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                        ignore_index=True)
 
