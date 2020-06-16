@@ -58,6 +58,15 @@ class RankingAlgorithm(Algorithm):
     """
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str,
                 candidate_item_id_list: List = None):
+        """
+        Args:
+            candidate_item_id_list: list of the items that can be recommended, if None
+                all unrated items will be used
+            user_id: user for which recommendations will be computed
+            recs_number (list[Content]): How long the ranking will be
+            ratings (pd.DataFrame): ratings of the user with id equal to user_id
+            items_directory (str): Name of the directory where the items are stored.
+        """
         raise NotImplementedError
 
 

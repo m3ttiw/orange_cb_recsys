@@ -31,8 +31,9 @@ class IndexQuery(RankingAlgorithm):
     def __recs_query(self, positive_rated_document_list, scores, recs_number, items_directory,
                      candidate_list: List) -> pd.DataFrame:
         """
-        Builds a query using the contents that the user liked. The terms relativ to the contents that
-        the user liked are boosted by the rating he/she gave.
+        Builds a query using the contents that the user liked. The terms relative to the contents that
+        the user liked are boosted by the rating he/she gave. A filter clause is added to the query to
+        consider only candidate items
         Args:
             positive_rated_document_list: List of contents that the user liked
             scores: Ratings given by the user
@@ -110,13 +111,12 @@ class IndexQuery(RankingAlgorithm):
         """
         Finds the documents that the user liked and then calls __recs_query to execute the prediction
         Args:
-            candidate_item_id_list: list of items, in which search the recommendations,
-                if None all unrated items will be used as candidates
-            user_id (str): user for which compute the ranking recommendation
-            ratings (pd.DataFrame): All the ratings provided by the user
-            recs_number (int): How many items recommend
-            items_directory (str): Directory where the items are stored
-
+            candidate_item_id_list: list of the items that can be recommended, if None
+                all unrated items will be used
+            user_id: user for which recommendations will be computed
+            recs_number (list[Content]): How long the ranking will be
+            ratings (pd.DataFrame): ratings of the user with id equal to user_id
+            items_directory (str): Name of the directory where the items are stored.
         Returns:
             (pd.DataFrame)
         """
