@@ -10,13 +10,13 @@ class Novelty(Metric):
     def __init__(self, num_of_recs):
         self.__num_of_recs = num_of_recs
 
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Calculates the novelty score
 
         Args:
-            score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
-            truth_frame (pd.DataFrame): the real rank each row contains index(the rank position), label, value
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
         Returns:
             novelty (float): Novelty score

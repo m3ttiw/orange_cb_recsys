@@ -11,18 +11,34 @@ from orange_cb_recsys.utils.const import logger
 
 
 class FairnessMetric(Metric):
-    def __init__(self, algorithm_name: str, out_dir: str):
-        self.__algorithm_name = algorithm_name
+    """
+    Abstract class that generalize FairnessMetric.
+
+    Args:
+        file_name: name of the file that the metrics will serialize
+            (a plot or a csv)
+        out_dir: directory in which the file will be serialized
+    """
+
+    def __init__(self, file_name: str, out_dir: str):
+        self.__file_name = file_name
         self.__out_dir = out_dir
 
-    def get_algorithm_name(self):
-        return self.__algorithm_name
+    def get_file_name(self):
+        return self.__file_name
 
     def get_output_directory(self):
         return self.__out_dir
 
     @abstractmethod
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+        """
+        Method that execute the fairness metric computation
+
+        Args:
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
+        """
         raise NotImplementedError
 
 
@@ -40,13 +56,13 @@ class GroupFairnessMetric(FairnessMetric):
 
 
 class GiniIndex(FairnessMetric):
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame = None):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame = None) -> pd.DataFrame:
         """
         Calculate Gini index score for each user in the DataFrame
 
         Args:
-            truth:
-            predictions (pd.DataFrame): frame wich stores ('from_id', 'to_id', 'rating')
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
         Returns:
             results (pd.DataFrame): each row contains ('from_id', 'gini_index')
@@ -82,9 +98,12 @@ class PopRecsCorrelation(FairnessMetric):
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         """
-        Calculates the correlation between the two frames
+        Calculates the correlation between the two frames and store
+        the correlation plot
 
         Args:
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
         """
 
         logger.info("Computing pop recs correlation")
@@ -130,11 +149,11 @@ class PopRecsCorrelation(FairnessMetric):
                 at_least_one_zero = True
 
         build_plot(popularities, recommendations,
-                   self.get_algorithm_name(), self.get_output_directory())
+                   self.get_file_name(), self.get_output_directory())
 
         if at_least_one_zero:
             build_plot(popularities_no_zeros, recommendations_no_zeros,
-                       self.get_algorithm_name() + '-no-zeros', self.get_output_directory())
+                       self.get_file_name() + '-no-zeros', self.get_output_directory())
 
 
 class LongTailDistr(FairnessMetric):
@@ -144,9 +163,9 @@ class LongTailDistr(FairnessMetric):
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         """
         Plot the long tail distribution for the truth frame
-
         Args:
-
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
         """
         logger.info("Computing recs long tail distr")
 
@@ -158,28 +177,32 @@ class LongTailDistr(FairnessMetric):
             ordered_counts.append(item_count_pair[1])
 
         plt.plot(ordered_counts)
-        plt.title('{}'.format(self.get_algorithm_name()))
+        plt.title('{}'.format(self.get_file_name()))
         plt.ylabel('Num of recommendations')
         plt.xlabel('Recommended items')
-        # plt.show()
+
         try:
             plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(self.get_output_directory(),
-                                                                self.get_algorithm_name()))
+                                                                self.get_file_name()))
         except FileNotFoundError:
             try:
                 plt.savefig('../../{}/recs-long-tail-distr_{}.svg'.format(self.get_output_directory(),
-                                                                          self.get_algorithm_name()))
+                                                                          self.get_file_name()))
             except FileNotFoundError:
                 plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()),
-                                                                    self.get_algorithm_name()))
+                                                                    self.get_file_name()))
 
         plt.clf()
 
 
 class CatalogCoverage(FairnessMetric):
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Calculates the catalog coverage
+
+        Args:
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
         Returns:
             score (float): coverage percentage
@@ -197,9 +220,13 @@ class DeltaGap(GroupFairnessMetric):
     def __init__(self, user_groups: Dict[str, float]):
         super().__init__(None, None, user_groups)
 
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:
         """
         Compute the Delta - GAP (Group Average Popularity) metric
+
+        Args:
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
         Returns:
             results (pd.DataFrame): each row contains ('from_id', 'delta-gap')
@@ -230,6 +257,13 @@ class DeltaGap(GroupFairnessMetric):
 
 
 class PopRatioVsRecs(GroupFairnessMetric):
+    """
+    class for PopRatioVsRecs computation
+
+    Args:
+        store_frame: True if you want to store the frame in a csv file, False otherwise
+    """
+
     def __init__(self, algorithm_name: str,
                  out_dir: str, user_groups: Dict[str, float],
                  store_frame: bool):
@@ -237,13 +271,13 @@ class PopRatioVsRecs(GroupFairnessMetric):
         self.__user_groups = user_groups
         self.__store_frame = store_frame
 
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> pd.DataFrame:
         """
         Perform the comparison between the profile popularity and recommendation popularity and build a boxplot
 
         Args:
-            predictions:
-            truth (pd.DataFrame): frame which stores ('from_id', 'to_id', 'rating') of user profiles
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
         Returns:
             score_frame (pd.DataFrame): contains 'user_group', 'profile_pop_ratio', 'recs_pop_ratio'
@@ -272,14 +306,14 @@ class PopRatioVsRecs(GroupFairnessMetric):
         if self.__store_frame:
             try:
                 score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.get_output_directory(),
-                                                                                self.get_algorithm_name()))
+                                                                                self.get_file_name()))
             except FileNotFoundError:
                 try:
                     score_frame.to_csv('../../{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.get_output_directory(),
-                                                                                          self.get_algorithm_name()))
+                                                                                          self.get_file_name()))
                 except FileNotFoundError:
                     score_frame.to_csv(
-                        '{}/pop_ratio_profile_vs_recs_{}.csv'.format(str(Path.home()), self.get_algorithm_name()))
+                        '{}/pop_ratio_profile_vs_recs_{}.csv'.format(str(Path.home()), self.get_file_name()))
 
         data_to_plot = [profile_data, recs_data]
         # Create a figure instance
@@ -322,18 +356,18 @@ class PopRatioVsRecs(GroupFairnessMetric):
         ax.get_xaxis().tick_bottom()
         ax.get_yaxis().tick_left()
 
-        plt.title('{}'.format(self.__algorithm_name))
+        plt.title('{}'.format(self.__file_name))
         plt.ylabel('Ratio of popular items')
         try:
             plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.get_output_directory(),
-                                                                     self.get_algorithm_name()))
+                                                                     self.get_file_name()))
         except FileNotFoundError:
             try:
                 plt.savefig('../../{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.get_output_directory(),
-                                                                               self.get_algorithm_name()))
+                                                                               self.get_file_name()))
             except FileNotFoundError:
                 plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(str(Path.home()),
-                                                                         self.get_algorithm_name()))
+                                                                         self.get_file_name()))
 
         plt.clf()
 

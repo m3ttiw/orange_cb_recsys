@@ -13,7 +13,8 @@ class Serendipity(Metric):
         Calculates the serendipity score
 
         Args:
-
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
         Returns:
             serendipity (float): The serendipity value

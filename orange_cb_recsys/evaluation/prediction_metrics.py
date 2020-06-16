@@ -7,17 +7,24 @@ from orange_cb_recsys.utils.const import logger
 
 class PredictionMetric(Metric):
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+        """
+        Method that execute the prediction metric computation
+
+        Args:
+              truth (pd.DataFrame): dataframe whose columns are: to_id, rating
+              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating
+        """
         raise NotImplementedError
 
 
 class RMSE(PredictionMetric):
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Compute the RMSE metric
 
         Args:
-            predictions (pd.Series): Series containing the predicted ratings
-            truth (pd.Series): Series containing the truth rating values
+              truth (pd.DataFrame): dataframe whose columns are: to_id, rating
+              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating
 
         Returns:
             (float): The Root Mean Squared Error
@@ -35,13 +42,13 @@ class RMSE(PredictionMetric):
 
 
 class MAE(PredictionMetric):
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Compute the MAE metric
 
         Args:
-            predictions (pd.Series): Series containing the predicted ratings
-            truth (pd.Series): Series containing the truth rating values
+              truth (pd.DataFrame): dataframe whose columns are: to_id, rating
+              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating
 
         Returns:
             (float): The Mean Average Error

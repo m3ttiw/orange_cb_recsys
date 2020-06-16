@@ -10,6 +10,14 @@ from orange_cb_recsys.utils.const import logger
 
 
 class RankingMetric(Metric):
+    """
+    Abstract class that generalize ranking metrics.
+    It measures the quality of the given predicted ranking
+
+    Args:
+        relevance_split: specify how to map each truth score
+            to a discrete relevance judgement
+    """
     def __init__(self, relevance_split: Dict[int, Tuple[float, float]]):
         self.__relevance_split = relevance_split
 
@@ -50,8 +58,6 @@ class NDCG(RankingMetric):
         """
         Compute the Normalized DCG measure using Truth rank as ideal DCG
         Args:
-            predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
-            truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
 
         Returns:
             ndcg (List[float]): array of ndcg
@@ -107,7 +113,7 @@ class Correlation(RankingMetric):
     def __str__(self):
         return self.__method
 
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Compute the correlation between the two ranks
 
