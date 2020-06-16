@@ -23,7 +23,13 @@ def get_wordnet_pos(word):
 
 class NLTK(NLP):
     """
-    Interface for the library NLTK for natural language processing features
+    Interface to the NLTK library for natural language processing features
+    Args:
+        stopwords_removal (bool): Whether you want to remove stop words
+        stemming (bool): Whether you want to perform stemming
+        lemmatization (bool): Whether you want to perform lemmatization
+        strip_multiple_whitespaces (bool): Whether you want to remove multiple whitespaces
+        url_tagging (bool): Whether you want to tag the urls in the text and to replace with "<URL>"
     """
     def __init__(self, stopwords_removal: bool = False,
                  stemming: bool = False,

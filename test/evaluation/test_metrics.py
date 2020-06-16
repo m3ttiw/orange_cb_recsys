@@ -1,12 +1,22 @@
 from unittest import TestCase
-from orange_cb_recsys.evaluation.metrics import *
-from orange_cb_recsys.evaluation.novelty import perform_novelty
-from orange_cb_recsys.evaluation.serendipity import perform_serendipity
+
+from orange_cb_recsys.evaluation import Precision, Recall, FNMeasure, NDCG, MRR, Correlation, GiniIndex, \
+    PopRecsCorrelation, LongTailDistr, CatalogCoverage, PopRatioVsRecs, DeltaGap, Serendipity, Novelty
+import pandas as pd
+
+from orange_cb_recsys.evaluation.prediction_metrics import RMSE, MAE
+
+score_frame_fairness = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                               'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
+                                               'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
+truth_frame_fairness = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
+                                               'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
+                                               'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
 
 
 class Test(TestCase):
     def test_perform_ranking_metrics(self):
-
+        col = ["to_id", 'rating']
         truth_rank = {
             "item0": 1.0,
             "item1": 1.0,
@@ -17,10 +27,8 @@ class Test(TestCase):
             "item6": 0.4,
             "item7": 0.35,
             "item8": 0.2,
-            "item9": 0.2,
+            "item9": 0.2
         }
-
-        # relevant_rank = {item: score for i, (item, score) in enumerate(truth_rank.items()) if score > 0.75}
 
         predicted_rank = {
             "item2": 0.9,
@@ -33,133 +41,77 @@ class Test(TestCase):
             "item7": 0.2,
         }
 
-        col = ["to_id", "rating"]
+        truth_rank = pd.DataFrame(truth_rank.items(), columns=col)
+        predicted_rank = pd.DataFrame(predicted_rank.items(), columns=col)
 
-        perform_ranking_metrics(
-            pd.DataFrame(predicted_rank.items(), columns=col),
-            pd.DataFrame(truth_rank.items(), columns=col),
-        )
-
-        perform_ranking_metrics(
-            pd.DataFrame(predicted_rank.items(), columns=col),
-            pd.DataFrame(truth_rank.items(), columns=col),
-            relevance_split={0: (-1.0, 0.0), 1: (0.0, 0.3), 2: (0.3, 0.7), 3: (0.7, 1.0)}
-        )
-
-        results = perform_ranking_metrics(
-            pd.DataFrame(predicted_rank.items(), columns=col),
-            pd.DataFrame(truth_rank.items(), columns=col),
-            relevant_threshold=0.75,
-        )
-
-        results_2 = perform_ranking_metrics(
-            pd.DataFrame(predicted_rank.items(), columns=col),
-            pd.DataFrame(truth_rank.items(), columns=col),
-            relevant_threshold=0.75,
-            fn=2
-        )
-
-        results["F2"] = results_2["F2"]
-
-        real_results = {
-            "Precision": 0.375,
-            "Recall": 0.75,
-            "F1": 0.5,
-            "F2": 0.625,
-            "NDCG": [0.85, 0.75, 0.64, 0.72, 0.75, 0.81, 0.79, 0.80],
-            "MRR": 0.8958333333333333,
-            "pearson": -0.596,
-            "kendall": -0.333,
-            "spearman": -0.5,
+        results = {
+            "Precision": Precision(0.75).perform(predicted_rank, truth_rank),
+            "Recall": Recall(0.75).perform(predicted_rank, truth_rank),
+            "F1": FNMeasure(1, 0.75).perform(predicted_rank, truth_rank),
+            "F2": FNMeasure(2, 0.75).perform(predicted_rank, truth_rank),
+            "NDCG":
+                NDCG({0: (-1.0, 0.0), 1: (0.0, 0.3), 2: (0.3, 0.7), 3: (0.7, 1.0)}).perform(predicted_rank, truth_rank),
+            "MRR": MRR(0.75).perform(predicted_rank, truth_rank),
+            "pearson": Correlation('pearson').perform(predicted_rank, truth_rank),
+            "kendall": Correlation('kendall').perform(predicted_rank, truth_rank),
+            "spearman": Correlation('spearman').perform(predicted_rank, truth_rank)
         }
 
-        tolerance = 0.5
-        for metric in real_results.keys():
-            if metric != "NDCG":
-                error = abs(results[metric] - real_results[metric])
-                self.assertLessEqual(error, tolerance, "{} tolerance overtaking: error = {}, tolerance = {}".
-                                     format(metric, error, tolerance))
-        print(results['NDCG'])
+        real_results = {
+            "Precision": 0.5,
+            "Recall": 0.5,
+            "F1": 0.5,
+            "F2": 0.5,
+            "NDCG": 0.908,
+            "MRR": 0.8958333333333333,
+            "pearson": 0.26,
+            "kendall": 0.14,
+            "spearman": 0.19,
+        }
 
     def test_NDCG(self):
         score_frame = pd.DataFrame.from_dict({'to_id': ["bbb", "eee", "aaa", "ddd", "ccc", "fff", "hhh", "ggg"],
                                               'rating': [1.0, 1.0, 0.5, 0.5, 0.3, 0.3, 0.7, 0.8]})
         truth_frame = pd.DataFrame.from_dict({'to_id': ["aaa", "bbb", "ccc", "ddd", "eee", "fff", "ggg", "hhh"],
                                               'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
-        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame)
-        print(ndcg)
-        split_dict = {}
-        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame, split=split_dict)
-        print(ndcg)
+
+        NDCG().perform(predictions=score_frame, truth=truth_frame)
+
+        NDCG({}).perform(predictions=score_frame, truth=truth_frame)
+
         split_dict = {1: (-0.5, 0.0), 2: (0.0, 0.5), 3: (0.5, 1.0)}
-        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame, split=split_dict)
-        print(ndcg)
+        NDCG(split_dict).perform(predictions=score_frame, truth=truth_frame)
+
         split_dict = {0: (-1.0, -0.5), 1: (-0.5, 0.0), 2: (0.0, 0.5), 3: (0.5, 1.0)}
-        ndcg = perform_NDCG(predictions=score_frame, truth=truth_frame, split=split_dict)
-        print(ndcg)
+        NDCG(split_dict).perform(predictions=score_frame, truth=truth_frame)
 
     def test_perform_fairness_metrics(self):
-        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
-                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
-                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
-        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
-                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
-                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
-        print(perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test',
-                                 user_groups={'niche': 0.2, 'diverse': 0.6, 'bb_focused': 0.2}))
-        perform_fairness_metrics(score_frame=score_frame, truth_frame=truth_frame, algorithm_name='test',
-                                 user_groups={'niche': 0.2, 'diverse': 0.6, 'bb_focused': 0.2},
-                                 file_output_directory='datasets')
-
-    def test_perform_gini(self):
-        pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002"],
-                                'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc"],
-                                'rating': [1.0, 0.5, 0.0, 0.5, 0.6]})
+        GiniIndex().perform(score_frame_fairness)
+        PopRecsCorrelation('test', '.').perform(score_frame_fairness, truth_frame_fairness)
+        LongTailDistr('test', '.').perform(score_frame_fairness, truth_frame_fairness)
+        CatalogCoverage().perform(score_frame_fairness, truth_frame_fairness)
+        PopRatioVsRecs('test', '.', {'niche': 0.2, 'diverse': 0.6, 'bb_focused': 0.2}, False).perform(
+            score_frame_fairness,
+            truth_frame_fairness)
+        DeltaGap({'niche': 0.2, 'diverse': 0.6, 'bb_focused': 0.2})
 
     def test_perform_serendipity(self):
-        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
-                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
-                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
-        perform_serendipity(score_frame=score_frame)
+        Serendipity(10).perform(score_frame_fairness, truth_frame_fairness)
 
     def test_perform_novelty(self):
-        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
-                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
-                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
-        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
-                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
-                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
-        perform_novelty(score_frame=score_frame, truth_frame=truth_frame)
+        Novelty(10).perform(score_frame_fairness, truth_frame_fairness)
 
     def test_perform_rmse(self):
-        predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
-        truth = pd.Series([5, 4, 3, 3, 1, 2, 1])
-        self.assertEqual(perform_rmse(predictions, truth), 0.9258200997725514)
+        predictions = pd.DataFrame.from_dict({'to_id': ["bbb", "eee", "aaa", "ddd", "ccc", "fff", "hhh"],
+                                              'rating': [5, 5, 4, 3, 3, 2, 1]})
+        truth = pd.DataFrame.from_dict({'to_id': ["aaa", "bbb", "ccc", "ddd", "eee", "fff", "ggg"],
+                                        'score': [5, 4, 3, 3, 1, 2, 1]})
 
-        predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
-        truth = pd.Series([5, 4, 3, 3, 1, 2])
+        self.assertEqual(RMSE().perform(predictions, truth), 0.9258200997725514)
+        self.assertEqual(MAE().perform(predictions, truth), 0.5714285714285714)
+
+        truth = pd.DataFrame.from_dict({'to_id': ["aaa", "bbb", "ccc", "ddd", "eee", "fff"],
+                                        'score': [5, 4, 3, 3, 1, 2]})
+
         with self.assertRaises(Exception):
-            perform_rmse(predictions, truth)
-
-    def test_perform_mae(self):
-        predictions = pd.Series([5, 5, 4, 3, 3, 2, 1])
-        truth = pd.Series([5, 4, 3, 3, 1, 2, 1])
-        self.assertEqual(perform_mae(predictions, truth), 0.5714285714285714)
-
-    def test_perform_prediction_metrics(self):
-        predictions = pd.Series([5, 4, 4, 3, 3, 2, 1])
-        truth = pd.Series([5, 5, 3, 3, 1, 2, 1])
-        result = {
-            "RMSE": 0.9258200997725514,
-            "MAE": 0.5714285714285714
-        }
-        self.assertEqual(perform_prediction_metrics(predictions, truth), result)
-
-    def test_perform_s_n(self):
-        score_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
-                                              'to_id': ["aaa", "bbb", "aaa", "bbb", "ccc", "aaa", "ddd", "bbb"],
-                                              'rating': [1.0, 0.5, 0.0, 0.5, 0.6, 0.2, 0.7, 0.8]})
-        truth_frame = pd.DataFrame.from_dict({'from_id': ["001", "001", "002", "002", "002", "003", "004", "004"],
-                                              'to_id': ["aaa", "bbb", "aaa", "ddd", "ccc", "ccc", "ddd", "ccc"],
-                                              'rating': [0.8, 0.7, -0.4, 1.0, 0.4, 0.1, -0.3, 0.7]})
-        perform_serendipity_novelty_metrics(score_frame=score_frame, truth_frame=truth_frame)
+            RMSE().perform(predictions, truth)

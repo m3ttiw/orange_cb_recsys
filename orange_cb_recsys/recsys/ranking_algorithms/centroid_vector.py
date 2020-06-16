@@ -1,10 +1,10 @@
 from typing import List
 
 from sklearn.feature_extraction import DictVectorizer
-
+from scipy import sparse
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
-from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity
+from orange_cb_recsys.recsys.ranking_algorithms.similarities import Similarity, DenseVector, SparseVector
 from orange_cb_recsys.content_analyzer.content_representation.content_field import EmbeddingField, FeaturesBagField
 import pandas as pd
 import numpy as np
@@ -19,7 +19,7 @@ class CentroidVector(RankingAlgorithm):
     Then computes the similarity between the centroid and the item of which predict the score.
     Args:
         item_field: Name of the field that contains the content to use
-        field_representation: Id of the field_representation content of which compute the centroid and then the
+        field_representation: Id of the field_representation content of which compute the centroid
         similarity (Similarity): Kind of similarity to use
         threshold (int): Threshold for the ratings. If the rating is greater than the threshold, it will be considered
         as positive
@@ -31,6 +31,20 @@ class CentroidVector(RankingAlgorithm):
         self.__threshold = threshold
 
     def __get_centroid_with_vectorizer(self, ratings: pd.DataFrame, rated_items, unrated_items):
+        """
+        1) For each rated item, checks if its rating is bigger than threshold. If false, skips
+            to the next item, if True add the item embedding array in a dictionary list taht will be
+            transformed in a scipy  csr_matrix (sparse) using sklearn DictVectorizer
+        2) Computes the centroid of the obtained sparse matrix
+
+        Args:
+            ratings (pd.DataFrame): DataFrame containing the ratings.
+
+        Returns:
+            centroid (sparse.csr_matrix): Sparse matrix that represents the centroid vector of the
+            given item representations
+        """
+
         dv = DictVectorizer(sparse=True)
 
         positive_rated_items = [
@@ -39,11 +53,12 @@ class CentroidVector(RankingAlgorithm):
             if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold]
 
         dicts = positive_rated_items + \
-            [item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value()
-             for item in unrated_items]
+                [item.get_field(self.get_item_field()).get_representation(
+                    self.get_item_field_representation()).get_value() for item in unrated_items]
 
         matrix = dv.fit_transform(dicts)
-        return matrix.mean(axis=0).getA(), matrix[len(rated_items):len(rated_items) + len(unrated_items)]
+        return sparse.csr_matrix(matrix.mean(axis=0).getA()), matrix[
+                                                              len(rated_items):len(rated_items) + len(unrated_items)]
 
     def __get_centroid_without_vectorizer(self, ratings: pd.DataFrame, rated_items) -> np.ndarray:
         """
@@ -55,8 +70,8 @@ class CentroidVector(RankingAlgorithm):
             ratings (pd.DataFrame): DataFrame containing the ratings.
 
         Returns:
-            arrays (dict<str, FieldRepresentation>): Dictionary whose keys are the id of the items and the values are
-            the embedding arrays corresponding to the requested field
+            centroid (np.array): numpy array that represents the centroid vector of the
+            given item representations
         """
 
         arrays = []
@@ -78,21 +93,23 @@ class CentroidVector(RankingAlgorithm):
         representation of each "Plot" field is a document embedding or a tf-idf words bag, and then use the embedding
         or the frequency vector for algorithm computation.
 
-        Computes the centroid the rated items representations
+        Computes the centroid of the positive rated items representations
 
         For each candidate item:
         1) Takes the embedding arrays
         2) Determines the similarity between the centroid and the field_representation of the item_field in candidate item.
+
         Args:
-            candidate_item_id_list:
-            user_id:
+            candidate_item_id_list: list of the items that can be recommended, if None
+                all unrated items will be used
+            user_id: user for which recommendations will be computed
             recs_number (list[Content]): How long the ranking will be
-            ratings (pd.DataFrame): Ratings
+            ratings (pd.DataFrame): ratings of the user with id equal to user_id
             items_directory (str): Name of the directory where the items are stored.
 
         Returns:
-             scores (pd.DataFrame): DataFrame whose columns are the ids of the items, and the similarities between the
-              items and the centroid
+             scores (pd.DataFrame): DataFrame whose columns are the ids of the items (to_id), and the similarities between the
+              items and the centroid (rating)
         """
 
         try:
@@ -140,7 +157,7 @@ class CentroidVector(RankingAlgorithm):
                     item_field_representation = item.get_field(self.get_item_field()).get_representation(
                         self.get_item_field_representation()).get_value()
                     logger.info("Computing similarity with %s" % item_id)
-                    similarity = self.__similarity.perform(centroid, item_field_representation)
+                    similarity = self.__similarity.perform(DenseVector(centroid), DenseVector(item_field_representation))
                     scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                        ignore_index=True)
             else:
@@ -151,7 +168,7 @@ class CentroidVector(RankingAlgorithm):
                 for item, item_array in zip(unrated_items, unrated_matrix):
                     item_id = item.get_content_id()
                     logger.info("Computing similarity with %s" % item_id)
-                    similarity = self.__similarity.perform(centroid, item_array.todense())
+                    similarity = self.__similarity.perform(SparseVector(centroid), SparseVector(item_array))
                     scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
                                        ignore_index=True)
 

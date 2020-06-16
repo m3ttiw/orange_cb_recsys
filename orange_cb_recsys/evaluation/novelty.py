@@ -1,37 +1,39 @@
 import math
 from collections import Counter
-from pathlib import Path
 
 import pandas as pd
 
-from orange_cb_recsys.utils.const import logger
+from orange_cb_recsys.evaluation.metrics import Metric
 
 
-def perform_novelty(score_frame: pd.DataFrame, truth_frame: pd.DataFrame, num_of_recs: int = 10) -> float:
-    """
-    Calculates the novelty score
+class Novelty(Metric):
+    def __init__(self, num_of_recs):
+        self.__num_of_recs = num_of_recs
 
-    Args:
-        score_frame (pd.DataFrame): each row contains index(the rank position), label, value predicted
-        truth_frame (pd.DataFrame): the real rank each row contains index(the rank position), label, value
-        num_of_recs (int): avg number of recommendation per user
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
+        """
+        Calculates the novelty score
 
-    Returns:
-        novelty (float): Novelty score
-    """
-    total_ratings = len(truth_frame.index)
-    ratings_by_item = Counter(truth_frame[['to_id']].values.flatten())
-    users = set(score_frame[['from_id']].values.flatten())
+        Args:
+              truth (pd.DataFrame): original rating frame used for recsys config
+              predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
-    users_log_popularity = 0
-    for user in users:
-        user_recs = set(score_frame.query('from_id == @user')[['to_id']].values.flatten())
-        user_log_popularity = 0
-        for item in user_recs:
-            item_pop = (ratings_by_item[item] + 1) / total_ratings
-            user_log_popularity += math.log2(item_pop)
-        users_log_popularity += user_log_popularity
+        Returns:
+            novelty (float): Novelty score
+        """
+        total_ratings = len(truth.index)
+        ratings_by_item = Counter(truth[['to_id']].values.flatten())
+        users = set(predictions[['from_id']].values.flatten())
 
-    novelty = - (users_log_popularity / (len(users) * num_of_recs))
+        users_log_popularity = 0
+        for user in users:
+            user_recs = set(predictions.query('from_id == @user')[['to_id']].values.flatten())
+            user_log_popularity = 0
+            for item in user_recs:
+                item_pop = (ratings_by_item[item] + 1) / total_ratings
+                user_log_popularity += math.log2(item_pop)
+            users_log_popularity += user_log_popularity
 
-    return novelty
+        novelty = - (users_log_popularity / (len(users) * self.__num_of_recs))
+
+        return novelty

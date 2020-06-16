@@ -130,7 +130,6 @@ class TfIdfTechnique(CollectionBasedTechnique):
 
     def __init__(self):
         super().__init__()
-        self.__index = IndexInterface('./frequency-index')
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
@@ -149,7 +148,7 @@ class TfIdfTechnique(CollectionBasedTechnique):
         return "TfIdfTechnique"
 
     def __repr__(self):
-        return "TfIdfTechnique " + str(self.__index)
+        return "TfIdfTechnique "
 
 
 class EntityLinking(SingleContentTechnique):

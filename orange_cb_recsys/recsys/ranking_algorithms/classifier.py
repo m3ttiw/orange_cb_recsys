@@ -42,15 +42,16 @@ class ClassifierRecommender(RankingAlgorithm):
         2) Define target features, items with rating greater (lower) than threshold will be used as positive(negative) examples;
         3) Creates an object Classifier, uses the method fit and predicts the class of the new items
 
-            Args:
-                recs_number:
-                candidate_item_id_list:
-                user_id:
-                ratings (pd.DataFrame): ratings of the given user, used for labeling examples
-                items_directory (str): Name of the directory where the items are stored.
+        Args:
+            candidate_item_id_list: list of the items that can be recommended, if None
+                all unrated items will be used
+            user_id: user for which recommendations will be computed
+            recs_number (list[Content]): How long the ranking will be
+            ratings (pd.DataFrame): ratings of the user with id equal to user_id
+            items_directory (str): Name of the directory where the items are stored.
 
-            Returns:
-                 The predicted classes, or the predict values.
+        Returns:
+            The predicted classes, or the predict values.
         """
 
         if candidate_item_id_list is None:

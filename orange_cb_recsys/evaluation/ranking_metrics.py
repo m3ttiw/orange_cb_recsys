@@ -1,212 +1,158 @@
 import statistics
+from abc import abstractmethod
 from typing import List, Dict, Tuple
 import pandas as pd
 import numpy as np
-from scipy.stats import kendalltau, spearmanr, pearsonr
+from scipy.stats import pearsonr, kendalltau, spearmanr
 
+from orange_cb_recsys.evaluation.metrics import Metric
 from orange_cb_recsys.utils.const import logger
 
 
-def perform_precision(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
+class RankingMetric(Metric):
     """
-    Returns the precision of the given ranking (predictions)
-    based on the truth ranking
+    Abstract class that generalize ranking metrics.
+    It measures the quality of the given predicted ranking
 
     Args:
-        prediction_labels (pd.Series): pandas Series which contains predicted "labels"
-        truth_labels (pd.Series): pandas Series which contains truth "labels"
-
-    Returns:
-        score (float): precision
+        relevance_split: specify how to map each truth score
+            to a discrete relevance judgement
     """
-    logger.info("Computing precision")
-    return prediction_labels.isin(truth_labels).sum() / len(prediction_labels)
+    def __init__(self, relevance_split: Dict[int, Tuple[float, float]]):
+        self.__relevance_split = relevance_split
+
+    @abstractmethod
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+        raise NotImplementedError
 
 
-def perform_recall(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
+class NDCG(RankingMetric):
     """
-    Compute the recall of the given ranking (predictions)
-    based on the truth ranking
-
-    Args:
-        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
-        truth_labels (pd.Series): pandas Series wich contains truth "labels"
-
-    Returns:
-        (float): recall
+    Normalized discounted cumulative gain
+    .. math::
+        \\begin{align*}
+        \\mathrm{DCG}(L,u) & = \\sum_{i=1}^{|L|} \\frac{r_{ui}}{d(i)}
+        \\end{align*}
+    This is then normalized as follows:
+    .. math::
+        \\begin{align*}
+        \\mathrm{nDCG}(L, u) & = \\frac{\\mathrm{DCG}(L,u)}{\\mathrm{DCG}(L_{\\mathrm{ideal}}, u)}
+        \\end{align*}
     """
-    logger.info("Computing recall")
+    def __init__(self, relevance_split: Dict[int, Tuple[float, float]] = None):
+        super().__init__(relevance_split)
+        self.__relevance_split = relevance_split
 
-    return prediction_labels.isin(truth_labels).sum() / len(truth_labels)
+    def __str__(self):
+        return "NDCG"
+
+    @staticmethod
+    def perform_DCG(gain_values: pd.Series) -> List[float]:
+        """
+        Compute the Discounted Cumulative Gain array of a gain vector
+        Args:
+            gain_values (pd.Series): Series of gains
+
+        Returns:
+            dcg (List<float>): array of dcg
+        """
+        if gain_values.size == 0:
+            return []
+        dcg = []
+        for i, gain in enumerate(gain_values):
+            if i == 0:
+                dcg.append(gain)
+            else:
+                dcg.append((gain / np.log2(i + 1)) + dcg[i - 1])
+        return dcg
+
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
+        """
+        Compute the Normalized DCG measure using Truth rank as ideal DCG
+        Args:
+
+        Returns:
+            ndcg (List[float]): array of ndcg
+        """
+        logger.info("Computing NDCG")
+
+        def discrete(score_: float):
+            if self.__relevance_split is not None and len(self.__relevance_split.keys()) != 0:
+
+                shift_class = 0
+                while 0 + shift_class not in self.__relevance_split.keys():
+                    shift_class += 1
+                shift_class += 1  # no negative
+                for class_ in self.__relevance_split.keys():
+                    min_, max_ = self.__relevance_split[class_]
+                    if min_ <= score_ <= max_:  # assumption
+                        return class_ + shift_class
+
+                # if score_ not in split ranges
+                if score_ > 0.0:
+                    return max(self.__relevance_split.keys())
+                return min(self.__relevance_split.keys())
+
+            return score_ + 1  # no negative, shift to range(0,2) from range (-1, 1)
+
+        gain = []
+        for idx, row in predictions.iterrows():
+            label = row['to_id']
+            score = discrete(truth.rating[truth['to_id'] == label].values[0])
+            gain.append(score)
+        gain = np.array(gain)
+
+        igain = gain.copy()
+        igain[::-1].sort()
+        idcg = NDCG.perform_DCG(pd.Series(igain))
+        dcg = NDCG.perform_DCG(pd.Series(gain))
+        ndcg = [dcg[x] / (idcg[x]) for x in range(len(idcg))]
+        if len(ndcg) == 0:
+            return 0.0
+        return statistics.mean(ndcg)
 
 
-def perform_Fn(precision: float, recall: float, n: int = 1) -> float:
-    """
-    Compute the Fn measure of the given ranking (predictions)
-    based on the truth ranking
+class Correlation(RankingMetric):
+    def __init__(self, method: str):
+        """
+        Args:
+            method: {'pearson, 'kendall', 'spearman'} or callable
+        """
+        super().__init__(None)
+        self.__method = method
 
-    Args:
-        precision (float): precision of the rank
-        recall (float): recall of the rank
-        n (int): multiplier
+    def __str__(self):
+        return self.__method
 
-    Returns:
-        score (float): Fn value
-    """
-    logger.info("Computing FN")
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
+        """
+        Compute the correlation between the two ranks
 
-    return (1 + (n ** 2)) * ((precision * recall) / ((n ** 2) * precision + recall))
+        Args:
 
+        Returns:
+            (float): value of the specified correlation metric
+        """
+        logger.info("Computing correlation")
 
-def perform_DCG(gain_values: pd.Series) -> List[float]:
-    """
-    Compute the Discounted Cumulative Gain array of a gain vector
-    Args:
-        gain_values (pd.Series): Series of gains
+        truth_labels = pd.Series(truth['to_id'].values)
+        prediction_labels = pd.Series(predictions['to_id'].values)
 
-    Returns:
-        dcg (List<float>): array of dcg
-    """
-    if gain_values.size == 0:
-        return []
-    dcg = []
-    for i, gain in enumerate(gain_values):
-        if i == 0:
-            dcg.append(gain)
-        else:
-            dcg.append((gain / np.log2(i + 1)) + dcg[i - 1])
-    return dcg
+        t_series = pd.Series()
+        p_series = pd.Series()
+        for t_index, t_value in truth_labels.iteritems():
+            for p_index, p_value in prediction_labels.iteritems():
+                if t_value == p_value:
+                    t_series = t_series.append(pd.Series(int(t_index)))
+                    p_series = p_series.append(pd.Series(int(p_index)))
+        if t_series.size > 1:
+            coef, p = 0, 0
+            if self.__method == 'pearson':
+                coef, p = pearsonr(t_series, p_series)
+            if self.__method == 'kendall':
+                coef, p = kendalltau(t_series, p_series)
+            if self.__method == 'spearman':
+                coef, p = spearmanr(t_series, p_series)
 
-
-def perform_NDCG(predictions: pd.DataFrame, truth: pd.DataFrame,
-                 split: Dict[int, Tuple[float, float]] = None
-                 # ) -> List[float]:
-                 ) -> float:
-    """
-    Compute the Normalized DCG measure using Truth rank as ideal DCG
-    Args:
-        split:
-        predictions (pd.DataFrame): each row contains index(the rank position), label, value predicted
-        truth (pd.DataFrame): the real rank each row contains index(the rank position), label, value
-
-    Returns:
-        ndcg (List[float]): array of ndcg
-    """
-    logger.info("Computing NDCG")
-
-    def discrete(score_: float):
-        if split is not None and len(split.keys()) != 0:
-
-            shift_class = 0
-            while 0 + shift_class not in split.keys():
-                shift_class += 1
-            shift_class += 1  # no negative
-            for class_ in split.keys():
-                min_, max_ = split[class_]
-                if min_ <= score_ <= max_:  # assumption
-                    return class_ + shift_class
-
-            # if score_ not in split ranges
-            if score_ > 0.0:
-                return max(split.keys())
-            return min(split.keys())
-
-        return score_ + 1  # no negative, shift to range(0,2) from range (-1, 1)
-
-    gain = []
-    for idx, row in predictions.iterrows():
-        label = row['to_id']
-        score = discrete(truth.rating[truth['to_id'] == label].values[0])
-        gain.append(score)
-    gain = np.array(gain)
-    # gain = predictions['rating'].values
-
-    igain = gain.copy()
-    igain[::-1].sort()
-    idcg = perform_DCG(pd.Series(igain))
-    dcg = perform_DCG(pd.Series(gain))
-    ndcg = [dcg[x]/(idcg[x]) for x in range(len(idcg))]
-    if len(ndcg) == 0:
+            return coef
         return 0.0
-    return statistics.mean(ndcg)
-
-"""
-label_intersection = set(predictions[['to_id']].values.flatten()).intersection(
-        set(truth[['to_id']].values.flatten())) 
-idcg = perform_DCG(pd.Series(truth['rating'].values))
-col = ["to_id", "rating"]
-new_predicted = pd.DataFrame(columns=col)
-for label in predictions['rating'].values:
-    truth_row = truth.loc[truth['to_id'] == label]
-    truth_score = truth_row['rating'].values[0]
-    new_predicted = new_predicted.append({'to_id': label, 'rating': truth_score}, ignore_index=True)
-
-dcg = perform_DCG(gain_values=pd.Series(new_predicted['rating'].values))
-ndcg = []
-for i, ideal in enumerate(idcg):
-    try:
-        ndcg.append(dcg[i] / ideal)
-    except IndexError:
-        break
-    except ZeroDivisionError:
-        ndcg.append(0.0)
-return ndcg
-"""
-
-
-def perform_MRR(prediction_labels: pd.Series, truth_labels: pd.Series) -> float:
-    """
-    Compute the Mean Reciprocal Rank metric
-
-    Args:
-        prediction_labels (pd.Series): pandas Series wich contains predicted "labels"
-        truth_labels (pd.Series): pandas Series wich contains truth "labels"
-
-    Returns:
-        (float): the mrr value
-    """
-    logger.info("Computing MRR")
-
-    mrr = 0
-    n = len(truth_labels)
-    if n == 0:
-        return 0
-    for t_index, t_value in truth_labels.iteritems():
-        for p_index, p_value in prediction_labels.iteritems():
-            if t_value == p_value:
-                mrr += (int(t_index) + 1) / (int(p_index) + 1)
-    return mrr / len(truth_labels)
-
-
-def perform_correlation(prediction_labels: pd.Series, truth_labels: pd.Series, method='pearson') -> float:
-    """
-    Compute the correlation between the two ranks of labels
-
-    Args:
-        prediction_labels (pd.Series): pandas Series which contains predicted "labels"
-        truth_labels (pd.Series): pandas Series which contains truth "labels"
-        method: {'pearson, 'kendall', 'spearman'} or callable
-
-    Returns:
-        (float): value of the specified correlation metric
-    """
-    logger.info("Computing %s correlation" % method)
-    t_series = pd.Series()
-    p_series = pd.Series()
-    for t_index, t_value in truth_labels.iteritems():
-        for p_index, p_value in prediction_labels.iteritems():
-            if t_value == p_value:
-                t_series = t_series.append(pd.Series(int(t_index)))
-                p_series = p_series.append(pd.Series(int(p_index)))
-    if t_series.size > 1:
-        coef, p = 0, 0
-        if method == 'pearson':
-            coef, p = pearsonr(t_series, p_series)
-        if method == 'kendall':
-            coef, p = kendalltau(t_series, p_series)
-        if method == 'spearman':
-            coef, p = spearmanr(t_series, p_series)
-
-        return coef
-    return 0.0
-
