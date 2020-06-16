@@ -16,7 +16,7 @@ class ClassificationMetric(Metric):
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
     """
-    def __init__(self, relevant_threshold):
+    def __init__(self, relevant_threshold: float = 0.4):
         self.__relevant_threshold = relevant_threshold
 
     def _get_labels(self, predictions: pd.DataFrame, truth: pd.DataFrame):
@@ -47,7 +47,7 @@ class Precision(ClassificationMetric):
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
     """
-    def __init__(self, relevant_threshold):
+    def __init__(self, relevant_threshold: float = 0.4):
         super().__init__(relevant_threshold)
 
     def __str__(self):
@@ -78,7 +78,7 @@ class Recall(ClassificationMetric):
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
     """
-    def __init__(self, relevant_threshold):
+    def __init__(self, relevant_threshold: float = 0.4):
         super().__init__(relevant_threshold)
 
     def __str__(self):
@@ -109,7 +109,7 @@ class MRR(ClassificationMetric):
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
     """
-    def __init__(self, relevant_threshold):
+    def __init__(self, relevant_threshold: float = 0.4):
         super().__init__(relevant_threshold)
 
     def __str__(self):
@@ -150,7 +150,7 @@ class FNMeasure(ClassificationMetric):
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
     """
-    def __init__(self, n, relevant_threshold: float):
+    def __init__(self, n, relevant_threshold: float = 0.4):
         super().__init__(relevant_threshold)
         self.__n = n
 

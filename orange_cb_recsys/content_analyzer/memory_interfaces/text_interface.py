@@ -82,7 +82,7 @@ class IndexInterface(TextInterface):
 
     def stop_writing(self):
         """
-        Stop the index writer
+        Stop the index writer and commit the operations
         """
         self.__writer.commit()
         self.__writer.close()

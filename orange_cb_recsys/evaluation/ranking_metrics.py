@@ -39,7 +39,7 @@ class NDCG(RankingMetric):
         \\mathrm{nDCG}(L, u) & = \\frac{\\mathrm{DCG}(L,u)}{\\mathrm{DCG}(L_{\\mathrm{ideal}}, u)}
         \\end{align*}
     """
-    def __init__(self, relevance_split: Dict[int, Tuple[float, float]]):
+    def __init__(self, relevance_split: Dict[int, Tuple[float, float]] = None):
         super().__init__(relevance_split)
         self.__relevance_split = relevance_split
 
@@ -101,7 +101,6 @@ class NDCG(RankingMetric):
             score = discrete(truth.rating[truth['to_id'] == label].values[0])
             gain.append(score)
         gain = np.array(gain)
-        # gain = predictions['rating'].values
 
         igain = gain.copy()
         igain[::-1].sort()

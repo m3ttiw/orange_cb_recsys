@@ -21,12 +21,4 @@ class TextBlobSentimentAnalysis(SentimentAnalysis):
             sentiment_data: a list of sentiment analysis score
         """
 
-        """
-        sentiment_data = list()         ### RIADATTARE A UN SOLO FIELD
-        for line in self.get_source():
-            if type(self.get_field_name()) == str:
-                text = TextBlob(line[self.get_field_name()]).sentiment.polarity
-                sentiment_data.append(text)
-        return sentiment_data
-        """
         return TextBlob(field_data).sentiment.polarity

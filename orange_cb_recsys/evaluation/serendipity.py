@@ -5,7 +5,7 @@ from orange_cb_recsys.evaluation.utils import popular_items
 
 
 class Serendipity(Metric):
-    def __init__(self, num_of_recs):
+    def __init__(self, num_of_recs: int):
         self.__num_of_recs = num_of_recs
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:

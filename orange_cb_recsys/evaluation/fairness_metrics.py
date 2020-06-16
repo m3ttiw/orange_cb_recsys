@@ -1,3 +1,4 @@
+import os
 from abc import abstractmethod
 
 import pandas as pd
@@ -5,9 +6,8 @@ from orange_cb_recsys.evaluation.delta_gap import *
 from orange_cb_recsys.evaluation.metrics import Metric
 from orange_cb_recsys.evaluation.utils import *
 import matplotlib.pyplot as plt
-from pathlib import Path
 
-from orange_cb_recsys.utils.const import logger
+from orange_cb_recsys.utils.const import logger, DEVELOPING, home_path
 
 
 class FairnessMetric(Metric):
@@ -20,6 +20,8 @@ class FairnessMetric(Metric):
     """
 
     def __init__(self, file_name: str, out_dir: str):
+        if not DEVELOPING:
+            out_dir = os.path.join(home_path, out_dir)
         self.__file_name = file_name
         self.__out_dir = out_dir
 
@@ -137,13 +139,7 @@ class PopRecsCorrelation(FairnessMetric):
             plt.title('{}'.format(algorithm_name_))
             plt.xlabel('Popularity')
             plt.ylabel('Recommendation frequency')
-            try:
-                plt.savefig('{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name_))
-            except FileNotFoundError:
-                try:
-                    plt.savefig('../../{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name_))
-                except FileNotFoundError:
-                    plt.savefig('{}/pop-recs_{}.svg'.format(str(Path.home()), algorithm_name_))
+            plt.savefig('{}/pop-recs_{}.svg'.format(out_dir_, algorithm_name_))
             plt.clf()
 
         # Calculating popularity by item
@@ -211,16 +207,8 @@ class LongTailDistr(FairnessMetric):
         plt.ylabel('Num of recommendations')
         plt.xlabel('Recommended items')
 
-        try:
-            plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(self.get_output_directory(),
-                                                                self.get_file_name()))
-        except FileNotFoundError:
-            try:
-                plt.savefig('../../{}/recs-long-tail-distr_{}.svg'.format(self.get_output_directory(),
-                                                                          self.get_file_name()))
-            except FileNotFoundError:
-                plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(str(Path.home()),
-                                                                    self.get_file_name()))
+        plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(self.get_output_directory(),
+                                                            self.get_file_name()))
 
         plt.clf()
 
@@ -256,12 +244,8 @@ class CatalogCoverage(FairnessMetric):
 class DeltaGap(GroupFairnessMetric):
     """
     DeltaGap
-
-    Args:
-        file_name (str): name of the file that the metrics will serialize
-        out_dir (str): directory in which the file will be serialized
         user_groups (dict<str, float>): specify how to divide user in groups, so
-            specify for each group specify:
+            specify for each group:
             - name
             - percentage of users
     """
@@ -291,6 +275,7 @@ class DeltaGap(GroupFairnessMetric):
         recommended_users = set(truth[['from_id']].values.flatten())
 
         score_frame = pd.DataFrame(columns=['user_group', 'delta-gap'])
+        print(user_groups)
         for group_name in user_groups:
             logger.info("Computing avg pop by users profiles for delta gap")
             avg_pop_by_users_profiles = get_avg_pop_by_users(truth, pop_by_items, user_groups[group_name])
@@ -298,6 +283,7 @@ class DeltaGap(GroupFairnessMetric):
             recs_gap = calculate_gap(group=user_groups[group_name].intersection(recommended_users),
                                      avg_pop_by_users=recs_avg_pop_by_users)
             profile_gap = calculate_gap(group=user_groups[group_name], avg_pop_by_users=avg_pop_by_users_profiles)
+            print("Group:", group_name, "has profile gap:", profile_gap)
             group_delta_gap = calculate_delta_gap(recs_gap=recs_gap, profile_gap=profile_gap)
             score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name], 'delta-gap': [group_delta_gap]}),
                                              ignore_index=True)
@@ -320,7 +306,7 @@ class PopRatioVsRecs(GroupFairnessMetric):
 
     def __init__(self, file_name: str,
                  out_dir: str, user_groups: Dict[str, float],
-                 store_frame: bool):
+                 store_frame: bool = False):
         super().__init__(file_name, out_dir, user_groups)
         self.__user_groups = user_groups
         self.__store_frame = store_frame
@@ -358,16 +344,8 @@ class PopRatioVsRecs(GroupFairnessMetric):
             recs_data.append(recs_pop_ratios)
 
         if self.__store_frame:
-            try:
-                score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.get_output_directory(),
-                                                                                self.get_file_name()))
-            except FileNotFoundError:
-                try:
-                    score_frame.to_csv('../../{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.get_output_directory(),
-                                                                                          self.get_file_name()))
-                except FileNotFoundError:
-                    score_frame.to_csv(
-                        '{}/pop_ratio_profile_vs_recs_{}.csv'.format(str(Path.home()), self.get_file_name()))
+            score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.get_output_directory(),
+                                                                            self.get_file_name()))
 
         data_to_plot = [profile_data, recs_data]
         # Create a figure instance
@@ -410,18 +388,10 @@ class PopRatioVsRecs(GroupFairnessMetric):
         ax.get_xaxis().tick_bottom()
         ax.get_yaxis().tick_left()
 
-        plt.title('{}'.format(self.__file_name))
+        plt.title('{}'.format(self.get_file_name()))
         plt.ylabel('Ratio of popular items')
-        try:
-            plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.get_output_directory(),
-                                                                     self.get_file_name()))
-        except FileNotFoundError:
-            try:
-                plt.savefig('../../{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.get_output_directory(),
-                                                                               self.get_file_name()))
-            except FileNotFoundError:
-                plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(str(Path.home()),
-                                                                         self.get_file_name()))
+        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.get_output_directory(),
+                                                                 self.get_file_name()))
 
         plt.clf()
 
