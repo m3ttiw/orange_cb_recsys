@@ -82,6 +82,8 @@ def calculate_delta_gap(recs_gap: float, profile_gap: float) -> float:
     Returns:
         score (float): delta gap measure
     """
+    if profile_gap == 0.0:
+        return 0.0
     return (recs_gap - profile_gap) / profile_gap
 
 

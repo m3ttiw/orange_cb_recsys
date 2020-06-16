@@ -1,4 +1,4 @@
-from .eval_model import EvalModel, RankingAlgEvalModel, ScorePredictionAlgorithm, NoTruthEvalModel
+from .eval_model import EvalModel, RankingAlgEvalModel, ScorePredictionAlgorithm, ReportEvalModel
 from .partitioning import KFoldPartitioning
 from .metrics import Metric
 from .classification_metrics import Precision, Recall, FNMeasure, ClassificationMetric, MRR

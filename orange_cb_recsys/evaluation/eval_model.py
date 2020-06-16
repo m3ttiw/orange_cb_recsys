@@ -194,7 +194,7 @@ class PredictionAlgEvalModel(EvalModel):
         return prediction_metric_results
 
 
-class NoTruthEvalModel(EvalModel):
+class ReportEvalModel(EvalModel):
     """
     Class for automating the process of recommending and evaluate produced recommendations.
     This subclass automate the computation of metrics whose input is the result of a RecSys
@@ -206,8 +206,9 @@ class NoTruthEvalModel(EvalModel):
         config (RecSysConfig): Configuration of the recommender system that will be internally created
         metric_list (list<Metric>): List of metrics that eval model will compute
     """
-    def __init__(self, config, metric_list = None):
+    def __init__(self, config, recs_number: int, metric_list=None):
         super().__init__(config, None, metric_list)
+        self.__recs_number = recs_number
 
     def fit(self):
         """
@@ -240,7 +241,7 @@ class NoTruthEvalModel(EvalModel):
         score_frame = pd.DataFrame(columns=columns)
         for user_id in user_id_list:
             logger.info("User %s" % user_id)
-            fit_result = recsys.fit_ranking(user_id, 10)
+            fit_result = recsys.fit_ranking(user_id, self.__recs_number)
 
             fit_result_with_user = pd.DataFrame(columns=columns)
             fit_result.columns = ["to_id", "rating"]
