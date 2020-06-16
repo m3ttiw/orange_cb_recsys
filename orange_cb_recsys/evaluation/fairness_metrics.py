@@ -39,7 +39,7 @@ class GroupFairnessMetric(FairnessMetric):
         raise NotImplementedError
 
 
-class GiniIndex(Metric):
+class GiniIndex(FairnessMetric):
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame = None):
         """
         Calculate Gini index score for each user in the DataFrame

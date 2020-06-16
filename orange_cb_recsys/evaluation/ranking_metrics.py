@@ -1,4 +1,5 @@
 import statistics
+from abc import abstractmethod
 from typing import List, Dict, Tuple
 import pandas as pd
 import numpy as np
@@ -12,6 +13,7 @@ class RankingMetric(Metric):
     def __init__(self, relevance_split: Dict[int, Tuple[float, float]]):
         self.__relevance_split = relevance_split
 
+    @abstractmethod
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         raise NotImplementedError
 

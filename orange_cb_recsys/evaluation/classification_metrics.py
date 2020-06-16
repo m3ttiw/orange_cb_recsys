@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from orange_cb_recsys.evaluation.metrics import Metric
 from orange_cb_recsys.utils.const import logger
 
@@ -16,6 +18,7 @@ class ClassificationMetric(Metric):
 
         return content_truth, content_prediction
 
+    @abstractmethod
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
         raise NotImplementedError
 
