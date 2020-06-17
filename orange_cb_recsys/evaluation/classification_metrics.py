@@ -58,8 +58,12 @@ class Precision(ClassificationMetric):
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
-        Compute the recall of the given ranking (predictions)
+        Compute the precision of the given ranking (predictions)
         based on the truth ranking
+        .. math::
+        \\begin{align*}
+        \\mathrm{Precision}& = #relevant recommended items \over #recommended items
+        \\end{align*}
 
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
@@ -94,7 +98,12 @@ class Recall(ClassificationMetric):
         """
         Compute the recall of the given ranking (predictions)
         based on the truth ranking
-
+        
+        .. math::
+        \\begin{align*}
+        \\mathrm{Precision}& = #relevant recommended items \over #tested relevant items
+        \\end{align*}
+        
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
@@ -127,7 +136,12 @@ class MRR(ClassificationMetric):
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Compute the Mean Reciprocal Rank metric
-
+        
+        .. math::
+        \\begin{align*}
+        \\mathrm{Precision}& = #relevant recommended items \over #recommended items
+        \\end{align*}
+        
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
@@ -173,6 +187,11 @@ class FNMeasure(ClassificationMetric):
         """
         Compute the Fn measure of the given ranking (predictions)
         based on the truth ranking
+        
+        .. math::
+        \\begin{align*}
+        \\mathrm{Fn-Measure}& = (1 + n^2) \times \frac{precision \times recall}{n^2 \times precision + recall}
+        \\end{align*}
 
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
