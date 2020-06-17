@@ -62,6 +62,16 @@ def get_avg_pop_by_users(data: pd.DataFrame, pop_by_items: Dict[str, object],
 def calculate_gap(group: Set[str], avg_pop_by_users: Dict[str, object]) -> float:
     """
     Compute the GAP (Group Average Popularity) formula
+    
+    .. math::
+        \\begin{align*}
+        \\mathrm{GAP(u)}& = \[ \frac{\sum_{u\in G} \frac{\sum_{i \in iu} pop_i }{|iu|}}{|G|} \]
+        \\end{align*}
+    Where:
+      • G is the set of users
+      • iu is the set of items rated by user u
+      • pop_i is the popularity of item i
+      
     Args:
         group (Set<str>): the set of users (from_id)
         avg_pop_by_users (Dict<str, object>): average popularity by user
