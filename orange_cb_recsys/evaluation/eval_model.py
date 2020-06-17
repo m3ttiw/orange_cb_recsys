@@ -216,9 +216,9 @@ class ReportEvalModel(EvalModel):
     This subclass automate the computation of metrics
     whose input is the result of a RecSys
     configured with a ranking algorithm.
-    The recommendation are copmuted for eeach user and
-    the metrics are computed, after the recommendation process,
-    on the whole frame
+    The recommendation are computed for each user and
+    the metrics are computed only after the whole
+    recommendation process, on the entire frame
 
     Args:
         config (RecSysConfig): Configuration of the
