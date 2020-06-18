@@ -10,7 +10,13 @@ class Serendipity(Metric):
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
-        Calculates the serendipity score
+        Calculates the serendipity score: unexpected recommendations, surprisingly and interesting items a user
+        might not have otherwise discovered
+
+        .. math::
+        \\begin{align*}
+        \\mathrm{Unexpected \; recommendations}&  = |recommendations \; from  \; tested \; algorithm| - |recommendations \; from \;  obvious \;  algorithm|
+        \\end{align*}
 
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config

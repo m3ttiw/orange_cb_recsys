@@ -17,7 +17,10 @@ class Novelty(Metric):
         """
         Calculates the novelty score
 
-        Novelty = \frac{\sum_{{i} \in hits} log_2(1/popularity_i)}{|hits|}
+        .. math::
+        \\begin{align*}
+        \\mathrm{Novelty}& = \frac{\sum_{{i} \in hits} log_2(1/popularity_i)}{|hits|}
+        \\end{align*}
 
         where:
         - hits is a set of predicted items
