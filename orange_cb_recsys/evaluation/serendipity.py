@@ -5,6 +5,13 @@ from orange_cb_recsys.evaluation.utils import popular_items
 
 
 class Serendipity(Metric):
+    """
+    Serendipity
+        .. math::
+        \\begin{align*}
+        \\mathrm{Unexpected \; recommendations}&  = |recommendations \; from  \; tested \; algorithm| - |recommendations \; from \;  obvious \;  algorithm|
+        \\end{align*}
+    """
     def __init__(self, num_of_recs: int):
         self.__num_of_recs = num_of_recs
 
@@ -12,12 +19,7 @@ class Serendipity(Metric):
         """
         Calculates the serendipity score: unexpected recommendations, surprisingly and interesting items a user
         might not have otherwise discovered
-
-        .. math::
-        \\begin{align*}
-        \\mathrm{Unexpected \; recommendations}&  = |recommendations \; from  \; tested \; algorithm| - |recommendations \; from \;  obvious \;  algorithm|
-        \\end{align*}
-
+        
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config
               predictions (pd.DataFrame): dataframe with recommendations for multiple users
