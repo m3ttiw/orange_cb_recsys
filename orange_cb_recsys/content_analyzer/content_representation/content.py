@@ -19,7 +19,9 @@ class Content:
         and their name as dictionary key
     """
     def __init__(self, content_id: str,
-                 field_dict: Dict[str, ContentField] = None):
+                 field_dict: Dict[str, ContentField] = None,
+                 lod_properties: Dict[str, str] = None):
+        self.__lod_properties = lod_properties
         if field_dict is None:
             field_dict = {}       # list o dict
         self.__index_document_id: int = None
