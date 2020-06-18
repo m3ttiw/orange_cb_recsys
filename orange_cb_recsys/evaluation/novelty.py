@@ -7,12 +7,21 @@ from orange_cb_recsys.evaluation.metrics import Metric
 
 
 class Novelty(Metric):
+    """
+    Novelty
+    """
     def __init__(self, num_of_recs):
         self.__num_of_recs = num_of_recs
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Calculates the novelty score
+
+        Novelty = \frac{\sum_{{i} \in hits} log_2(1/popularity_i)}{|hits|}
+
+        where:
+        - hits is a set of predicted items
+        - Popularity(i) = % users who rated item i
 
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config
