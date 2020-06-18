@@ -67,6 +67,7 @@ def calculate_gap(group: Set[str], avg_pop_by_users: Dict[str, object]) -> float
         \\begin{align*}
         \\mathrm{GAP(u)}& = \[ \frac{\sum_{u\in G} \frac{\sum_{i \in iu} pop_i }{|iu|}}{|G|} \]
         \\end{align*}
+
     Where:
       • G is the set of users
       • iu is the set of items rated by user u
@@ -91,6 +92,12 @@ def calculate_gap(group: Set[str], avg_pop_by_users: Dict[str, object]) -> float
 def calculate_delta_gap(recs_gap: float, profile_gap: float) -> float:
     """
     Compute the ratio between the recommendation gap and the user profiles gap
+
+    .. math::
+        \\begin{align*}
+        \\mathrm{\Delta GAP}& = \frac{recs_{GAP} - profile_{GAP}}{profile_{GAP}}
+        \\end{align*}
+
     Args:
         recs_gap (float): recommendation gap
         profile_gap: user profiles gap

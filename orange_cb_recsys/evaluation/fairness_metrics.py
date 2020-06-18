@@ -71,19 +71,29 @@ class GiniIndex(FairnessMetric):
     """
     Gini index
     """
-    def __init__(self):
+    def __init__(self, item: bool = False):
         super().__init__(None, None)
+        self.__item = item
 
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame = None) -> pd.DataFrame:
         """
-        Calculate Gini index score for each user in the DataFrame
+        Calculate Gini index score for each user or item in the DataFrame
+
+        .. math::
+        \\begin{align*}
+        \\mathrm{Gini\; index }& = \frac{\sum_{i = 0}^{n} (2i - n - 1)}{n \sum_{i = 0}^{n} elem_i }
+        \\end{align*}
+
+        Where:
+        - n is the size of the user or item set
+        - elem(i) is the user or the item in the i-th position in the sorted frame by user or item
 
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config
               predictions (pd.DataFrame): dataframe with recommendations for multiple users
 
         Returns:
-            results (pd.DataFrame): each row contains ('from_id', 'gini_index')
+            results (pd.DataFrame): each row contains the 'gini_index' for each user or item
         """
 
         logger.info("Computing Gini index")
@@ -100,11 +110,14 @@ class GiniIndex(FairnessMetric):
             return (np.sum((2 * index - n - 1) * array)) / (n * np.sum(array))  # Gini coefficient
 
         score_dict = {}
+        column = 'from_id'
+        if self.__item:
+            column = 'to_id'
         # for each user extract a pd.DataFrame df
-        for idx, df in predictions.groupby('from_id'):
+        for idx, df in predictions.groupby(column):
             # from the DataFrame exract the 'rating' column as a np.array and create a Gini_index
             # store the score in a dict
-            score_dict[df['from_id'].iloc[0]] = gini(df['rating'].to_numpy())
+            score_dict[df[column].iloc[0]] = gini(df['rating'].to_numpy())
         results = pd.DataFrame({'from': list(score_dict.keys()), 'gini-index': list(score_dict.values())})
 
         return results
@@ -224,6 +237,11 @@ class CatalogCoverage(FairnessMetric):
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Calculates the catalog coverage
+
+        .. math::
+        \\begin{align*}
+        \\mathrm{Catalogue\; coverage}& = \frac{|covered\; items|}{|items|} * 100
+        \\end{align*}
 
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config
