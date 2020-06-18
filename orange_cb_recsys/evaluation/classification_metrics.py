@@ -45,7 +45,7 @@ class ClassificationMetric(Metric):
 class Precision(ClassificationMetric):
     """
     Precision
-    .. math::
+        .. math::
         \\begin{align*}
         \\mathrm{Precision}& = #relevant recommended items \over #recommended items
         \\end{align*}
