@@ -45,6 +45,10 @@ class ClassificationMetric(Metric):
 class Precision(ClassificationMetric):
     """
     Precision
+    .. math::
+        \\begin{align*}
+        \\mathrm{Precision}& = #relevant recommended items \over #recommended items
+        \\end{align*}
 
     Args:
         relevant_threshold: specify the minimum value to consider
@@ -60,11 +64,7 @@ class Precision(ClassificationMetric):
         """
         Compute the precision of the given ranking (predictions)
         based on the truth ranking
-        .. math::
-        \\begin{align*}
-        \\mathrm{Precision}& = #relevant recommended items \over #recommended items
-        \\end{align*}
-
+        
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
@@ -83,6 +83,10 @@ class Precision(ClassificationMetric):
 class Recall(ClassificationMetric):
     """
     Recall
+        .. math::
+        \\begin{align*}
+        \\mathrm{Precision}& = #relevant recommended items \over #tested relevant items
+        \\end{align*}
 
     Args:
         relevant_threshold: specify the minimum value to consider
@@ -98,11 +102,6 @@ class Recall(ClassificationMetric):
         """
         Compute the recall of the given ranking (predictions)
         based on the truth ranking
-        
-        .. math::
-        \\begin{align*}
-        \\mathrm{Precision}& = #relevant recommended items \over #tested relevant items
-        \\end{align*}
         
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
