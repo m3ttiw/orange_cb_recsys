@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict
+import pandas as pd
+from SPARQLWrapper import SPARQLWrapper, JSON
+from orange_cb_recsys.utils.string_cleaner import clean_with_unders, clean_no_unders
 
 
 class LODPropertiesRetrieval(ABC):
