@@ -139,9 +139,11 @@ class MRR(ClassificationMetric):
         
         .. math::
         \\begin{align*}
-        \\mathrm{Precision}& = #relevant recommended items \over #recommended items
+        \\\mathrm{MRR}& = \[\frac{\sum_{i=1}^{\mid Q \mid} \frac{1}{rank(i)}}{|Q|}\]
         \\end{align*}
-        
+        Where:
+            • Q is the set of recommendation lists
+            • rank(i) is the position of the first relevant item in the i-th recommendation list
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
