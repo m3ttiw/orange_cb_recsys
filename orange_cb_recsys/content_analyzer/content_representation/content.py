@@ -15,18 +15,26 @@ class Content:
     Args:
         content_id (str): identifier
         field_dict (dict[str, ContentField]): dictionary
-        containing the fields instances for the content,
-        and their name as dictionary key
+            containing the fields instances for the content,
+            and their name as dictionary key
+        lod_properties (Dict[str, str]): dictionary that contains
+            exogenous knowledge from a ontology via LOD cloud
     """
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None,
                  lod_properties: Dict[str, str] = None):
-        self.__lod_properties = lod_properties
+        self.__lod_properties: Dict[str, str] = lod_properties
         if field_dict is None:
             field_dict = {}       # list o dict
         self.__index_document_id: int = None
         self.__content_id: str = content_id
         self.__field_dict: Dict[str, ContentField] = field_dict
+
+    def set_lod_properties(self, lod_properties: Dict[str, str]):
+        self.__lod_properties = lod_properties
+
+    def get_lod_properties(self):
+        return self.__lod_properties
 
     def set_index_document_id(self, index_document_id: int):
         self.__index_document_id = index_document_id
