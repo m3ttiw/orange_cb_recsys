@@ -4,6 +4,7 @@ from typing import List, Dict, Set
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     FieldContentProductionTechnique, CollectionBasedTechnique
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
+from orange_cb_recsys.content_analyzer.lod_properties_retrieval import LODPropertiesRetrieval
 from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
@@ -129,7 +130,8 @@ class ContentAnalyzerConfig:
                  id_field_name,
                  output_directory: str,
                  search_index=False,
-                 field_config_dict: Dict[str, FieldConfig] = None):
+                 field_config_dict: Dict[str, FieldConfig] = None,
+                 lod_properties_retrieval: LODPropertiesRetrieval = None):
         if field_config_dict is None:
             field_config_dict = {}
 
@@ -143,8 +145,15 @@ class ContentAnalyzerConfig:
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
         self.__id_field_name: str = id_field_name
+        self.__lod_properties_retrieval: LODPropertiesRetrieval = lod_properties_retrieval
 
         FieldRepresentationPipeline.instance_counter = 0
+
+    def set_lod_properties_retrieval(self, lod_properties_retrieval: LODPropertiesRetrieval):
+        self.__lod_properties_retrieval = lod_properties_retrieval
+
+    def get_lod_properties_retrieval(self):
+        return self.__lod_properties_retrieval
 
     def get_search_index(self):
         return self.__search_index
