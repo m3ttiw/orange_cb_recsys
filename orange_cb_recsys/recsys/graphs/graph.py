@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Tuple
+from typing import List, Tuple
 
 import pandas as pd
 
@@ -8,8 +8,8 @@ class Graph(ABC):
     """
     Abstract class that generalize the concept of a Graph
     Attributes:
-        source_frame (pandas.DataFrame): must contains at least 'from', 'to', 'score' columns. The graph will be generated
-            from this DataFrame
+        source_frame (pandas.DataFrame): must contains at least 'from', 'to', 'score' columns. The graph will be
+            generated from this DataFrame
     """
     def __init__(self, source_frame: pd.DataFrame):
         if self.__check_columns(source_frame):
@@ -22,12 +22,12 @@ class Graph(ABC):
     @staticmethod
     def __check_columns(df: pd.DataFrame):
         """
-
+        Check if there are at least least 'from', 'to', 'score' columns in the DataFrame
         Args:
-            df:
+            df (pandas.DataFrame): DataFrame to check
 
         Returns:
-
+            bool: False if there aren't 'from', 'to', 'score' columns, else True
         """
         if 'from' not in df.columns or 'to' not in df.columns or 'score' not in df.columns:
             return False
@@ -36,12 +36,12 @@ class Graph(ABC):
     @staticmethod
     def normalize_score(score: float) -> float:
         """
-
+        Convert the score in the range [-1.0, 1.0] in a normalized weight [0.0, 1.0]
         Args:
-            score:
+            score (float): float in the range [-1.0, 1.0]
 
         Returns:
-
+            float in the range [0.0, 1.0]
         """
         return 1 - score / 2
 
