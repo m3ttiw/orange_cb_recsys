@@ -18,6 +18,7 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
 from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
     tf_idf import LuceneTfIdf, SkLearnTfIdf
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
+from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMappingTechnique
 from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import \
@@ -65,7 +66,8 @@ runnable_instances = {
     "text_blob_sentiment": TextBlobSentimentAnalysis,
     "number_normalizer": NumberNormalizer,
     "search_index": SearchIndexing,
-    "sk_learn_tf-idf": SkLearnTfIdf
+    "sk_learn_tf-idf": SkLearnTfIdf,
+    "dbpedia_mapping": DBPediaMappingTechnique
 }
 
 
@@ -107,6 +109,7 @@ def dict_detector(technique_dict):
         if isinstance(value, dict) and 'class' in value.keys():
             parameter_class_name = value.pop('class')
             technique_dict[key] = runnable_instances[parameter_class_name](**value)
+            break
 
     return technique_dict
 
@@ -117,6 +120,7 @@ def content_config_run(config_list: List[Dict]):
         search_index = False
         if 'search_index' in content_config.keys():
             search_index = content_config['search_index']
+
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
             runnable_instances[content_config['source_type']]
@@ -124,6 +128,10 @@ def content_config_run(config_list: List[Dict]):
             content_config['id_field_name'],
             content_config['output_directory'],
             search_index)
+
+        if 'get_lod_properties' in content_config.keys():
+            lod_prop = dict_detector(content_config['get_lod_properties'])
+            content_analyzer_config.set_lod_properties_retrieval(lod_prop)
 
         for field_dict in content_config['fields']:
             try:
