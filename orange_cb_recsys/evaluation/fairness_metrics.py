@@ -70,15 +70,7 @@ class GroupFairnessMetric(FairnessMetric):
 class GiniIndex(FairnessMetric):
     """
     Gini index
-    """
-    def __init__(self, item: bool = False):
-        super().__init__(None, None)
-        self.__item = item
-
-    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame = None) -> pd.DataFrame:
-        """
-        Calculate Gini index score for each user or item in the DataFrame
-
+    
         .. math::
         \\begin{align*}
         \\mathrm{Gini\; index }& = \frac{\sum_{i = 0}^{n} (2i - n - 1)}{n \sum_{i = 0}^{n} elem_i }
@@ -87,6 +79,14 @@ class GiniIndex(FairnessMetric):
         Where:
         - n is the size of the user or item set
         - elem(i) is the user or the item in the i-th position in the sorted frame by user or item
+    """
+    def __init__(self, item: bool = False):
+        super().__init__(None, None)
+        self.__item = item
+
+    def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame = None) -> pd.DataFrame:
+        """
+        Calculate Gini index score for each user or item in the DataFrame
 
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config
