@@ -5,8 +5,12 @@
   source_type: "json"
   id_field_name:
   - "imdbID"
-  start_from: '0'
-  end_up_at: "all"
+  get_lod_properties:
+    class: 'dbpedia_mapping'
+    mode: 'only_retrieved_evaluated'
+    entity_type: 'Film'
+    lang: 'EN'
+    label_field: 'Title'
   fields:
   - field_name: "Title"
     memory_interface: "index"
