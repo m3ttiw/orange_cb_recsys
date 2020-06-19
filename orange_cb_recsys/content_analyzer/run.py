@@ -130,8 +130,9 @@ def content_config_run(config_list: List[Dict]):
             search_index)
 
         if 'get_lod_properties' in content_config.keys():
-            lod_prop = dict_detector(content_config['get_lod_properties'])
-            content_analyzer_config.set_lod_properties_retrieval(lod_prop)
+            class_name = content_config['get_lod_properties'].pop('class')
+            args = dict_detector(content_config['get_lod_properties'])
+            content_analyzer_config.set_lod_properties_retrieval(runnable_instances[class_name](**args))
 
         for field_dict in content_config['fields']:
             try:
