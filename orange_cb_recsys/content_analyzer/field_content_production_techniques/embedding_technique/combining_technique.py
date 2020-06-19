@@ -38,7 +38,7 @@ class Sum(CombiningTechnique):
         Calculates the centroid of the input matrix
 
         Args:
-            embedding_matrix (np.ndarray): np bi-dimensional array whose centroid will be calculated
+            embedding_matrix (np.ndarray): np bi-dimensional array whose sum will be calculated
 
         Returns:
             np.ndarray: sum vector of the input matrix
