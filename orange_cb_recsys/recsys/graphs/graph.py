@@ -12,6 +12,7 @@ class Graph(ABC):
             generated from this DataFrame
     """
     def __init__(self, source_frame: pd.DataFrame):
+        self.__graph = None
         if self.__check_columns(source_frame):
             self.create_graph()
             for idx, row in source_frame.iterrows():
@@ -46,7 +47,7 @@ class Graph(ABC):
         return 1 - score / 2
 
     @abstractmethod
-    def create_graph(self) -> object:
+    def create_graph(self):
         pass
 
     @abstractmethod
@@ -54,8 +55,13 @@ class Graph(ABC):
         pass
 
     @abstractmethod
-    def add_edge(self, from_node: object, to_node: object, _weight: float, attr: List[object] = None):
+    def add_edge(self, from_node: object, to_node: object, weight: float, attr: List[object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
+        pass
+
+    @abstractmethod
+    def get_edge(self, from_node: object, to_node: object):
+        """it can be None if does not exist"""
         pass
 
     @abstractmethod
@@ -76,7 +82,7 @@ class BipartiteGraph(Graph):
         super().__init__(source_frame)
 
     @abstractmethod
-    def create_graph(self) -> object:
+    def create_graph(self):
         pass
 
     @abstractmethod
@@ -84,8 +90,13 @@ class BipartiteGraph(Graph):
         pass
 
     @abstractmethod
-    def add_edge(self, from_node: object, to_node: object, _weight: float, attr: List[object] = None):
+    def add_edge(self, from_node: object, to_node: object, weight: float, attr: List[object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
+        pass
+
+    @abstractmethod
+    def get_edge(self, from_node: object, to_node: object):
+        """it can be None if does not exist"""
         pass
 
     @abstractmethod
@@ -102,12 +113,18 @@ class BipartiteGraph(Graph):
 
 
 class TripariteGraph(Graph):
-    def __init__(self, source_frame: pd.DataFrame, contents_dir: str):
+    def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None):
         super().__init__(source_frame)
         self.__contents_dir = contents_dir
 
+    def set_contents_dir(self, contents_dir: str):
+        self.__contents_dir = contents_dir
+
+    def get_contents_dir(self) -> str:
+        return self.__contents_dir
+
     @abstractmethod
-    def create_graph(self) -> object:
+    def create_graph(self):
         pass
 
     @abstractmethod
@@ -115,8 +132,13 @@ class TripariteGraph(Graph):
         pass
 
     @abstractmethod
-    def add_edge(self, from_node: object, to_node: object, _weight: float, attr: List[object] = None):
+    def add_edge(self, from_node: object, to_node: object, weight: float, attr: List[object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
+        pass
+
+    @abstractmethod
+    def get_edge(self, from_node: object, to_node: object):
+        """it can be None if does not exist"""
         pass
 
     @abstractmethod
