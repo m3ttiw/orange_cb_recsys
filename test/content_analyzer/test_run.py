@@ -34,6 +34,13 @@ content_config_dict_ = {
     "raw_source_path": "datasets/movies_info_reduced.json",
     "source_type": "json",
     "id_field_name": ["imdbID"],
+    "get_lod_properties": {
+        "class": "dbpedia_mapping",
+        "mode": 'only_retrieved_evaluated',
+        "entity_type": 'Film',
+        "lang": 'EN',
+        "label_field": 'Title'
+    },
     "fields": [{
         "field_name": "Title",
         "memory_interface": "None",
