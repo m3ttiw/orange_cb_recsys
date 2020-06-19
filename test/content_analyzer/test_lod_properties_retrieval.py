@@ -5,11 +5,18 @@ from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMa
 
 class TestDBPediaMappingTechnique(TestCase):
     def test_get_properties(self):
-        raw_content = {"Title": "Jumanji", "Year": "1995", "Rated": "PG", "Released": "15 Dec 1995", "Runtime": "104 min",
+        raw_content = {"Title": "Jumanji", "Year": "1995", "Rated": "PG", "Released": "15 Dec 1995",
+                       "Runtime": "104 min",
                        "Genre": "Adventure, Family, Fantasy", "Director": "Joe Johnston",
-                       "Writer": "Jonathan Hensleigh (screenplay by), Greg Taylor (screenplay by), Jim Strain (screenplay by), Greg Taylor (screen story by), Jim Strain (screen story by), Chris Van Allsburg (screen story by), Chris Van Allsburg (based on the book by)",
+                       "Writer": "Jonathan Hensleigh (screenplay by), Greg Taylor (screenplay by), "
+                                 "Jim Strain (screenplay by), Greg Taylor (screen story by), Jim Strain ("
+                                 "screen story by), Chris Van Allsburg (screen story by), "
+                                 "Chris Van Allsburg (based on the book by)",
                        "Actors": "Robin Williams, Jonathan Hyde, Kirsten Dunst, Bradley Pierce",
-                       "Plot": "After being trapped in a jungle board game for 26 years, a Man-Child wins his release from the game. But, no sooner has he arrived that he is forced to play again, and this time sets the creatures of the jungle loose on the city. Now it is up to him to stop them.",
+                       "Plot": "After being trapped in a jungle board game for 26 years, "
+                               "a Man-Child wins his release from the game. But, no sooner has he arrived that he "
+                               "is forced to play again, and this time sets the creatures of "
+                               "the jungle loose on the city. Now it is up to him to stop them.",
                        "Language": "English, French", "Country": "USA", "Awards": "4 wins & 9 nominations.",
                        "Poster": "https://m.media-amazon.com/images/M/MV5BZTk2ZmUwYmEtNTcwZS00YmMyLWFkYjMtNTRmZDA3YWExMjc2XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
                        "Ratings": [{"Source": "Internet Movie Database", "Value": "6.9/10"},
