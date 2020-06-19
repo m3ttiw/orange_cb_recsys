@@ -48,33 +48,33 @@ class Graph(ABC):
 
     @abstractmethod
     def create_graph(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def add_node(self, node: object):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def add_edge(self, from_node: object, to_node: object, weight: float, attr: List[object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_edge(self, from_node: object, to_node: object):
         """it can be None if does not exist"""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_adj(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_predecessors(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_successors(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
 
 class BipartiteGraph(Graph):
@@ -83,36 +83,37 @@ class BipartiteGraph(Graph):
 
     @abstractmethod
     def create_graph(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def add_node(self, node: object):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def add_edge(self, from_node: object, to_node: object, weight: float, attr: List[object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_edge(self, from_node: object, to_node: object):
         """it can be None if does not exist"""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_adj(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_predecessors(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_successors(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
 
 class TripariteGraph(Graph):
+    """ rating su più fields -> più archi (import di RatingsProcessor)"""
     def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None):
         super().__init__(source_frame)
         self.__contents_dir = contents_dir
@@ -125,34 +126,34 @@ class TripariteGraph(Graph):
 
     @abstractmethod
     def create_graph(self):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def add_node(self, node: object):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def add_edge(self, from_node: object, to_node: object, weight: float, attr: List[object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_edge(self, from_node: object, to_node: object):
         """it can be None if does not exist"""
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_adj(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_predecessors(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def get_successors(self, node: object) -> List[Tuple[object, object, float]]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
-    def exract_properties(self):
-        pass
+    def extract_properties(self):
+        raise NotImplementedError
