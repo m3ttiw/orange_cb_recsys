@@ -240,7 +240,7 @@ class ContentsProducer:
     def create_content(self, raw_content: Dict):
         """
         Creates a content processing every field in the specified way.
-        This class is iteratively invoked by the fit method.
+        This method is iteratively invoked by the fit method.
         Args:
             raw_content (dict): Raw data from which the content will be created
 
