@@ -45,7 +45,8 @@ implemented_content_prod = [
     "babelpy",
     "lucene_tf-idf",
     "search_index",
-    "sk_learn_tf-idf"
+    "sk_learn_tf-idf",
+    "synset_frequency"
 ]
 
 implemented_rating_proc = [

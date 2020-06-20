@@ -1,3 +1,18 @@
+import nltk
+
+try:
+    nltk.data.find('averaged_perceptron_tagger')
+except LookupError:
+    nltk.download('averaged_perceptron_tagger')
+try:
+    nltk.data.find('wordnet')
+except LookupError:
+    nltk.download('wordnet')
+try:
+    nltk.data.find('punkt')
+except LookupError:
+    nltk.download('punkt')
+
 from orange_cb_recsys.content_analyzer.content_representation.content_field import FeaturesBagField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques import SingleContentTechnique
 from orange_cb_recsys.utils.check_tokenization import check_not_tokenized
@@ -6,6 +21,10 @@ from collections import Counter
 
 
 class SynsetDocumentFrequency(SingleContentTechnique):
+    def __init__(self):
+        super().__init__()
+
+
     def produce_content(self, field_representation_name: str, field_data) -> FeaturesBagField:
         """
         Produces a bag of features whose key is a wordnet synset
@@ -18,6 +37,4 @@ class SynsetDocumentFrequency(SingleContentTechnique):
         synsets = disambiguate(field_data)
         synsets = [synset for word, synset in synsets if synset is not None]
 
-        fb = FeaturesBagField(field_representation_name, Counter(synsets))
-        print(fb)
-        return fb
+        return FeaturesBagField(field_representation_name, Counter(synsets))
