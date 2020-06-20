@@ -25,6 +25,10 @@ class GensimRandomIndexing(EmbeddingLearner):
         super().__init__(source, preprocessor, field_list)
 
     def fit(self):
+        """
+        This method creates the model, using Gensim Random Projection.
+        The model isn't then returned, but gets stored in the 'model' class attribute.
+        """
         corpus = self.extract_corpus()
         dictionary = Dictionary(corpus)
         model = RpModel(corpus, id2word=dictionary)

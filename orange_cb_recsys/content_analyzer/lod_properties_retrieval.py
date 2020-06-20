@@ -10,6 +10,14 @@ from orange_cb_recsys.utils.string_cleaner import clean_with_unders, clean_no_un
 class LODPropertiesRetrieval(ABC):
 
     def __init__(self, mode: str = 'only_retrieved_evaluated'):
+        """
+        Class that creates a list of couples like this:
+            <property: property value URI>
+        The couples are properties retrieved from Linked Open Data Cloud
+
+        Args:
+            mode: one in: 'all', 'all_retrieved', 'only_retrieved_evaluated', 'original_retrieved',
+        """
         self.__mode = self.__check_mode(mode)
 
     @staticmethod
@@ -40,6 +48,19 @@ class DBPediaMappingTechnique(LODPropertiesRetrieval):
     """
     Class that creates a list of couples like this:
         <property: property value URI>
+    In this implementation the properties are retrieved from DBPedia
+
+    Args:
+        entity_type (str): domain of the items that you want to process
+        lang (str): lang of the descriptions
+        label_field: field ato be used as a filter,
+        DBPedia node that has label value equal to specified field value
+        will be retrieved
+        additional_filters: other fields to use as filters,
+        useful if label is not enough.
+        You need to specify the name of the filed in your dataset
+        and the name of the corresponding DBPedia property
+        mode: one in: 'all', 'all_retrieved', 'only_retrieved_evaluated', 'original_retrieved',
     """
 
     def __init__(self, entity_type: str, lang: str, label_field: str, additional_filters=None,
@@ -236,6 +257,16 @@ class DBPediaMappingTechnique(LODPropertiesRetrieval):
         return properties
 
     def get_properties(self, raw_content: Dict[str, object]) -> Dict[str, str]:
+        """
+        Execute the properties couple retrieval
+
+        Args:
+            raw_content: represent a row in the dataset that
+                is being processed
+
+        Returns:
+
+        """
         logger.info("Extracting LOD properties")
         if self.get_mode() == 'only_retrieved_evaluated':
             return self.__get_only_retrieved_evaluated(raw_content)
