@@ -109,7 +109,6 @@ def dict_detector(technique_dict):
         if isinstance(value, dict) and 'class' in value.keys():
             parameter_class_name = value.pop('class')
             technique_dict[key] = runnable_instances[parameter_class_name](**value)
-            break
 
     return technique_dict
 
