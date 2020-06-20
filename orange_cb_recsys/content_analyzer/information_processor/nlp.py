@@ -116,7 +116,7 @@ class NLTK(NLP):
         Returns:
              List<str>: a list of words
         """
-        return word_tokenize(text)
+        return [word for sent in nltk.sent_tokenize(text) for word in word_tokenize(sent)]
 
     def __stopwords_removal_operation(self, text) -> List[str]:
         """
