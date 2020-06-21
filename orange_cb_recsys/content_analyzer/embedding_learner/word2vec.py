@@ -10,7 +10,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 
 class GensimWord2Vec(EmbeddingLearner):
     """"
-    Class that implements the Abstract Class Word2Vec.
+    Class that implements the Abstract Class EmbeddingLearner.
     Implementation of Word2Vec using the Gensim library.
     Args:
         source (RawInformationSource): Source where the content is stored.
