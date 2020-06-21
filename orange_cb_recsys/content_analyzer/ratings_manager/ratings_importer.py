@@ -99,6 +99,11 @@ class RatingsImporter:
                         preference.get_field_name():
                             raw_rating[preference.get_field_name()]
                         for preference in self.__rating_configs
+                    },
+                    **{
+                        "{}_score".format(preference.get_field_name().lower()):
+                            preference.get_processor().fit(raw_rating[preference.get_field_name()])
+                        for preference in self.__rating_configs
                     }
                 }
                 for raw_rating in show_progress(self.__source)
