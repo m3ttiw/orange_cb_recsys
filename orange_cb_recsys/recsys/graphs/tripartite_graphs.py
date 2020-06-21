@@ -1,11 +1,11 @@
 from typing import List, Tuple, Dict
 
-from orange_cb_recsys.recsys.graphs import BipartiteGraph
+from orange_cb_recsys.recsys.graphs import TripartiteGraph
 import pandas as pd
 import networkx as nx
 
 
-class NXBipartiteGraph(BipartiteGraph):
+class NXTripartiteGraph(TripartiteGraph):
     def __init__(self, source_frame: pd.DataFrame):
         super().__init__(source_frame)
 

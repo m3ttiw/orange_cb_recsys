@@ -53,12 +53,12 @@ class Graph(ABC):
 
     @abstractmethod
     def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight',
-                 attr: List[object] = None):
+                 attr: Dict[str, object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
         raise NotImplementedError
 
     @abstractmethod
-    def get_edge(self, from_node: object, to_node: object):
+    def get_edge_data(self, from_node: object, to_node: object):
         """it can be None if does not exist"""
         raise NotImplementedError
 
@@ -102,12 +102,12 @@ class BipartiteGraph(Graph):
 
     @abstractmethod
     def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight',
-                 attr: List[object] = None):
+                 attr: Dict[str, object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
         raise NotImplementedError
 
     @abstractmethod
-    def get_edge(self, from_node: object, to_node: object):
+    def get_edge_data(self, from_node: object, to_node: object):
         """it can be None if does not exist"""
         raise NotImplementedError
 
@@ -124,9 +124,12 @@ class BipartiteGraph(Graph):
         raise NotImplementedError
 
 
-class TripariteGraph(Graph):
+class TripartiteGraph(Graph):
     """ rating su più fields -> più archi (import di RatingsProcessor)"""
     def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None, **options):
+        self.__default_score_label = 'score_label'
+        if 'default_score_label' in options.keys():
+            self.__default_score_label = self.normalize_score(options['default_score_label'])
         self.__not_rated_value = 0.5
         if 'not_rated_value' in options.keys():
             self.__not_rated_value = self.normalize_score(options['not_rated_value'])
@@ -136,7 +139,8 @@ class TripariteGraph(Graph):
         if self.__check_columns(source_frame):
             self.create_graph()
             for idx, row in source_frame.iterrows():
-                self.add_edge(row['from'], row['to'], self.normalize_score(row['score']))
+                self.add_edge(row['from'], row['to'], self.normalize_score(row['score']),
+                              label=self.__default_score_label)
                 content = self.load_content(row['to'])
                 properties: dict = content.get_lod_properties()
                 for prop_key in properties.keys():
@@ -145,6 +149,9 @@ class TripariteGraph(Graph):
 
         else:
             raise ValueError('The source frame must contains at least \'from\', \'to\', \'score\' columns')
+
+    def get_default_score_label(self):
+        return self.__default_score_label
 
     def get_contents_dir(self) -> str:
         return self.__contents_dir
@@ -171,12 +178,12 @@ class TripariteGraph(Graph):
 
     @abstractmethod
     def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight',
-                 attr: List[object] = None):
+                 attr: Dict[str, object] = None):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
         raise NotImplementedError
 
     @abstractmethod
-    def get_edge(self, from_node: object, to_node: object):
+    def get_edge_data(self, from_node: object, to_node: object):
         """it can be None if does not exist"""
         raise NotImplementedError
 
@@ -192,6 +199,18 @@ class TripariteGraph(Graph):
     def get_successors(self, node: object) -> List[Tuple[object, object, float]]:
         raise NotImplementedError
 
-    @abstractmethod
-    def extract_properties(self):
-        raise NotImplementedError
+    def get_properties(self, node: object) -> Dict[object, object]:
+        properties = {}
+        for succ in self.get_successors(node):
+            edge_data = self.get_edge_data(node, succ)
+            if edge_data['label'] != self.get_default_score_label():
+                properties[edge_data['label']] = edge_data['weight']
+        return properties
+
+    def get_voted_contents(self, node: object) -> Dict[object, object]:
+        properties = {}
+        for succ in self.get_successors(node):
+            edge_data = self.get_edge_data(node, succ)
+            if edge_data['label'] == self.get_default_score_label():
+                properties[edge_data['label']] = edge_data['weight']
+        return properties
