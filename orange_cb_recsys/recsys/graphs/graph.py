@@ -150,7 +150,7 @@ class TripariteGraph(Graph):
         return self.__contents_dir
 
     def get_preference(self, label: str, preferences_dict) -> float:
-        ls = '{}_score'.format(label)
+        ls = '{}_score'.format(label.lower())
         if ls in preferences_dict.keys():
             return preferences_dict[ls]
         return self.__not_rated_value
