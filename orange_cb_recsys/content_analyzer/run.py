@@ -1,4 +1,5 @@
 from typing import List, Dict
+import orange_cb_recsys.utils.runnable_instances as r_i
 
 import json
 import sys
@@ -7,28 +8,8 @@ import yaml
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldConfig, \
     FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzer
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.synset_document_frequency import \
-    SynsetDocumentFrequency
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    embedding_technique.combining_technique import Centroid
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    embedding_technique.embedding_source import BinaryFile, GensimDownloader
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    entity_linking import BabelPyEntityLinking
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    field_content_production_technique import EmbeddingTechnique, SearchIndexing
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    tf_idf import LuceneTfIdf, SkLearnTfIdf
-from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
-from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMappingTechnique
-from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
-from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import \
     RatingsImporter, RatingsFieldConfig
-from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import \
-    TextBlobSentimentAnalysis
-from orange_cb_recsys.content_analyzer.raw_information_source import \
-    JSONFile, SQLDatabase, CSVFile
 
 import lucene
 
@@ -36,43 +17,13 @@ lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
 DEFAULT_CONFIG_PATH = "config_prova.json"
 
-implemented_preprocessing = [
-    "nltk",
-]
+implemented_preprocessing = r_i.get_cat('preprocessing')
 
-implemented_content_prod = [
-    "embedding",
-    "babelpy",
-    "lucene_tf-idf",
-    "search_index",
-    "sk_learn_tf-idf",
-    "synset_frequency"
-]
+implemented_content_prod = r_i.get_cat('content_production')
 
-implemented_rating_proc = [
-    "text_blob_sentiment",
-    "number_normalizer",
-]
+implemented_rating_proc = r_i.get_cat('rating_processor')
 
-runnable_instances = {
-    "json": JSONFile,
-    "csv": CSVFile,
-    "sql": SQLDatabase,
-    "index": IndexInterface,
-    "babelpy": BabelPyEntityLinking,
-    "nltk": NLTK,
-    "lucene_tf-idf": LuceneTfIdf,
-    "binary_file": BinaryFile,
-    "gensim_downloader": GensimDownloader,
-    "centroid": Centroid,
-    "embedding": EmbeddingTechnique,
-    "text_blob_sentiment": TextBlobSentimentAnalysis,
-    "number_normalizer": NumberNormalizer,
-    "search_index": SearchIndexing,
-    "sk_learn_tf-idf": SkLearnTfIdf,
-    "dbpedia_mapping": DBPediaMappingTechnique,
-    "synset_frequency": SynsetDocumentFrequency
-}
+runnable_instances = r_i.get()
 
 
 def check_for_available(content_config: Dict):

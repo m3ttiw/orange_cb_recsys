@@ -44,13 +44,27 @@ runnable_instances = {
     "synset_frequency": SynsetDocumentFrequency,
 }
 
+"""
+    This contains, for each alias a specific category
+"""
 
-def __serialize(r_i=None):
-    if r_i is None:
-        r_i = runnable_instances
+categories = {
+    "embedding": 'content_production',
+    "babelpy": 'content_production',
+    "lucene_tf-idf": 'content_production',
+    "search_index": 'content_production',
+    "sk_learn_tf-idf": 'content_production',
+    "synset_frequency": 'content_production',
+    "text_blob_sentiment": 'rating_processor',
+    "number_normalizer": 'rating_processor',
+    "nltk": 'preprocessor',
+}
+
+
+def __serialize(r_i: Dict[str, object], label: str):
     logger.info("Serializing runnable_instances in utils dir",)
 
-    path = 'runnableinstances.xz'
+    path = '{}.xz'.format(label)
     with lzma.open(path, 'wb') as f:
         pickle.dump(r_i, f)
 
@@ -73,13 +87,45 @@ def get(alias: str = None):
         return None
 
 
-def add(alias: str, runnable_class: object):
+def get_cat(category: str = None, alias: str = None):
+    """category: {'rating_processor', 'content_production', 'preprocessor'}"""
+    if category is not None and category not in ['rating_processor', 'content_production', 'preprocessor']:
+        raise ValueError('category not found')
+    logger.info("Loading runnable_instances")
+    cat = {}
+    try:
+        path = 'categories.xz'
+        with lzma.open(path, "rb") as f:
+            cat = pickle.load(f)
+    except FileNotFoundError:
+        logger.info('runnable_instances not found, dict is empty')
+    if alias is None:
+        if category is None:
+            return cat
+        return [cat[k] for k in cat.keys() if cat[k] == category]
+    elif alias in cat.keys() and category is None:
+        return cat[alias]
+    elif alias in cat.keys() and category:
+        return cat[alias] == category
+    logger.info('runnable_instance with %s alias not found', alias)
+    return None
+
+
+def add(alias: str, runnable_class: object, category: str = None):
+    """category: {'rating_processor', 'content_production', 'preprocessor'}"""
+    if category is not None and category not in ['rating_processor', 'content_production', 'preprocessor']:
+        raise ValueError('category not found')
     r_i = get()
+    cat = get_cat()
+
     if alias in r_i.keys():
         logger.info('alias %s already exist, runnable_instance not added', alias)
     else:
+        if category is not None:       # and is not in the r_i dict obv
+            cat[alias] = category
         r_i[alias] = runnable_class
-        __serialize(r_i)
+        __serialize(r_i, 'runnable_instances')
+        __serialize(cat, 'categories')
         logger.info('%s successfully added', alias)
 
 
@@ -89,14 +135,31 @@ def remove(alias: str):
         logger.info('alias %s does not exist, runnable_instance not removed', alias)
     else:
         r_i.pop(alias)
-        __serialize(r_i)
+        remove_from_categories(alias)
+        __serialize(r_i, 'runnable_instances')
         logger.info('alias %s successfully removed', alias)
 
 
-def show():
-    r_i = get()
-    for k in r_i.keys():
-        logger.info('< %s : %s >', k, str(r_i[k]))
+def remove_from_categories(alias: str):
+    cat = get_cat()
+    if alias not in cat.keys():
+        logger.info('alias %s does not have a category', alias)
+    else:
+        cat.pop(alias)
+        __serialize(cat, 'categories')
+        logger.info('alias %s category successfully removed', alias)
 
 
-__serialize(runnable_instances)
+def show(categories: bool=False):
+    if categories:
+        cat = get_cat()
+        for k in cat.keys():
+            logger.info('< %s : %s >', k, str(cat[k]))
+    else:
+        r_i = get()
+        for k in r_i.keys():
+            logger.info('< %s : %s >', k, str(r_i[k]))
+
+
+__serialize(runnable_instances, 'runnable_instances')
+

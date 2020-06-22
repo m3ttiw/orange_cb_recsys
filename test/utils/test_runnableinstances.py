@@ -1,5 +1,5 @@
 from unittest import TestCase
-from orange_cb_recsys.utils.runnableinstances import *
+from orange_cb_recsys.utils.runnable_instances import *
 
 
 class Test(TestCase):
@@ -8,8 +8,19 @@ class Test(TestCase):
 
         get()
 
-        add('test', 'ciao')
+        add('test', 'test_test')
 
         remove('test')
 
         show()
+
+        add('test2', 'test_cat', 'preprocessor')
+
+        try:
+            add('test2', 'test_cat', 'test_fail')
+        except ValueError:
+            pass
+
+        show(True)
+
+        print(get_cat('preprocessor'))
