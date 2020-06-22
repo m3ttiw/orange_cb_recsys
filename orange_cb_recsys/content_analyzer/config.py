@@ -4,7 +4,7 @@ from typing import List, Dict, Set
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     FieldContentProductionTechnique, CollectionBasedTechnique
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
-from orange_cb_recsys.content_analyzer.lod_properties_retrieval import LODPropertiesRetrieval
+from orange_cb_recsys.content_analyzer.lod_properties_retrieval import ExogenousPropertiesRetrieval
 from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
@@ -131,9 +131,11 @@ class ContentAnalyzerConfig:
                  output_directory: str,
                  search_index=False,
                  field_config_dict: Dict[str, FieldConfig] = None,
-                 lod_properties_retrieval: LODPropertiesRetrieval = None):
+                 exogenous_properties_retrieval: List[ExogenousPropertiesRetrieval] = None):
         if field_config_dict is None:
             field_config_dict = {}
+        if exogenous_properties_retrieval is None:
+            exogenous_properties_retrieval = []
 
         if type(search_index) is str:
             self.__search_index = search_index.lower() == 'true'
@@ -145,15 +147,18 @@ class ContentAnalyzerConfig:
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
         self.__id_field_name: str = id_field_name
-        self.__lod_properties_retrieval: LODPropertiesRetrieval = lod_properties_retrieval
+        self.__exogenous_properties_retrieval: \
+            List[ExogenousPropertiesRetrieval] = exogenous_properties_retrieval
 
         FieldRepresentationPipeline.instance_counter = 0
 
-    def set_lod_properties_retrieval(self, lod_properties_retrieval: LODPropertiesRetrieval):
-        self.__lod_properties_retrieval = lod_properties_retrieval
+    def append_exogenous_properties_retrieval(self,
+                                              exogenous_properties_retrieval: List[ExogenousPropertiesRetrieval]):
+        self.__exogenous_properties_retrieval.append(exogenous_properties_retrieval)
 
-    def get_lod_properties_retrieval(self):
-        return self.__lod_properties_retrieval
+    def get_exogenous_properties_retrieval(self) -> ExogenousPropertiesRetrieval:
+        for ex_retrieval in self.__exogenous_properties_retrieval:
+            yield ex_retrieval
 
     def get_search_index(self):
         return self.__search_index

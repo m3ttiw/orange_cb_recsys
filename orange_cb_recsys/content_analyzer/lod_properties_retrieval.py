@@ -3,11 +3,12 @@ from typing import Dict
 import pandas as pd
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+from orange_cb_recsys.content_analyzer.content_representation.content import PropertiesDict
 from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.string_cleaner import clean_with_unders, clean_no_unders
 
 
-class LODPropertiesRetrieval(ABC):
+class ExogenousPropertiesRetrieval(ABC):
 
     def __init__(self, mode: str = 'only_retrieved_evaluated'):
         """
@@ -40,11 +41,11 @@ class LODPropertiesRetrieval(ABC):
         return self.__mode
 
     @abstractmethod
-    def get_properties(self, raw_content: Dict[str, object]) -> Dict[str, str]:
+    def get_properties(self, name, raw_content: Dict[str, object]) -> Dict[str, str]:
         pass
 
 
-class DBPediaMappingTechnique(LODPropertiesRetrieval):
+class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
     """
     Class that creates a list of couples like this:
         <property: property value URI>
@@ -256,11 +257,12 @@ class DBPediaMappingTechnique(LODPropertiesRetrieval):
                 properties[property_label] = ""
         return properties
 
-    def get_properties(self, raw_content: Dict[str, object]) -> Dict[str, str]:
+    def get_properties(self, name: str, raw_content: Dict[str, object]) -> Dict[str, str]:
         """
         Execute the properties couple retrieval
 
         Args:
+            name (str): string identifier of the returned properties object
             raw_content: represent a row in the dataset that
                 is being processed
 
@@ -268,14 +270,17 @@ class DBPediaMappingTechnique(LODPropertiesRetrieval):
 
         """
         logger.info("Extracting LOD properties")
+        prop_dict = {}
         if self.get_mode() == 'only_retrieved_evaluated':
-            return self.__get_only_retrieved_evaluated(raw_content)
+            prop_dict = self.__get_only_retrieved_evaluated(raw_content)
 
         if self.get_mode() == 'all_retrieved':
-            return self.__get_all_properties_retrieved(raw_content)
+            prop_dict = self.__get_all_properties_retrieved(raw_content)
 
         if self.get_mode() == 'original_retrieved':
-            return self.__get_original_retrieved(raw_content)
+            prop_dict = self.__get_original_retrieved(raw_content)
 
         if self.get_mode() == 'all':
-            return self.__get_all_properties(raw_content)
+            prop_dict = self.__get_all_properties(raw_content)
+
+        return PropertiesDict(name, prop_dict)

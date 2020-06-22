@@ -262,9 +262,9 @@ class ContentsProducer:
         content_id = id_merger(raw_content, self.__config.get_id_field_name())
         content = Content(content_id)
 
-        if self.__config.get_lod_properties_retrieval() is not None:
-            lod_properties = self.__config.get_lod_properties_retrieval().get_properties(raw_content)
-            content.set_lod_properties(lod_properties)
+        for i, ex_retrieval in enumerate(self.__config.get_exogenous_properties_retrieval()):
+            lod_properties = ex_retrieval.get_properties(str(i), raw_content)
+            content.append_exogenous_properties(str(i), lod_properties)
 
         if self.__indexer is not None:
             self.__indexer.new_content()

@@ -18,7 +18,9 @@ class BinaryFile(EmbeddingSource):
 
     Attributes:
         file_path (str): path for the binary file containing the embeddings
-        embedding_type (str): Name of the technique used to learn the embedding that is being loaded
+        embedding_type (str): Name of the technique used to learn
+        the embedding that is being loaded
+        the possible values are: "word2vec", "doc2vec", "fasttext"
     """
 
     def __init__(self, file_path: str,

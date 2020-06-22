@@ -15,7 +15,7 @@ import lucene
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config_prova.json"
+DEFAULT_CONFIG_PATH = "config.yml"
 
 implemented_preprocessing = r_i.get_cat('preprocessor')
 
@@ -84,9 +84,10 @@ def content_config_run(config_list: List[Dict]):
             search_index)
 
         if 'get_lod_properties' in content_config.keys():
-            class_name = content_config['get_lod_properties'].pop('class')
-            args = dict_detector(content_config['get_lod_properties'])
-            content_analyzer_config.set_lod_properties_retrieval(runnable_instances[class_name](**args))
+            for ex_retrieval in content_config['get_lod_properties']:
+                class_name = ex_retrieval.pop('class')
+                args = dict_detector(ex_retrieval)
+                content_analyzer_config.append_exogenous_properties_retrieval(runnable_instances[class_name](**args))
 
         for field_dict in content_config['fields']:
             try:
