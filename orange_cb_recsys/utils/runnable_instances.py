@@ -119,7 +119,7 @@ def get_cat(category: str = None, alias: str = None):
     if alias is None:
         if category is None:
             return cat
-        return [cat[k] for k in cat.keys() if cat[k] == category]
+        return [k for k in cat.keys() if cat[k] == category]
     elif alias in cat.keys() and category is None:
         return cat[alias]
     elif alias in cat.keys() and category:
