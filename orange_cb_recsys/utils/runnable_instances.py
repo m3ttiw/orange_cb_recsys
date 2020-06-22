@@ -1,4 +1,5 @@
 import lzma
+import os
 import pickle
 from typing import Dict
 
@@ -13,7 +14,7 @@ from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase, DATFile
-from orange_cb_recsys.utils.const import logger
+from orange_cb_recsys.utils.const import logger, home_path
 
 """ Default dict for all implementation of the abstract classes, for different purpose, 
     with an 'alias' as key and the 'class name' as value
@@ -64,7 +65,13 @@ categories = {
 def __serialize(r_i: Dict[str, object], label: str):
     logger.info("Serializing runnable_instances in utils dir",)
 
-    path = '{}.xz'.format(label)
+    path = '../../contents/{}.xz'.format(label)
+    try:
+        with lzma.open(path, "rb") as f:
+            pass
+    except FileNotFoundError:
+        path = 'contents/{}.xz'.format(label)
+
     with lzma.open(path, 'wb') as f:
         pickle.dump(r_i, f)
 
@@ -73,7 +80,12 @@ def get(alias: str = None):
     logger.info("Loading runnable_instances")
     r_i = {}
     try:
-        path = 'runnableinstances.xz'
+        path = '../../contents/runnable_instances.xz'
+        try:
+            with lzma.open(path, "rb") as f:
+                pass
+        except FileNotFoundError:
+            path = 'contents/runnable_instances.xz'
         with lzma.open(path, "rb") as f:
             r_i = pickle.load(f)
     except FileNotFoundError:
@@ -94,7 +106,12 @@ def get_cat(category: str = None, alias: str = None):
     logger.info("Loading runnable_instances")
     cat = {}
     try:
-        path = 'categories.xz'
+        path = '../../contents/categories.xz'
+        try:
+            with lzma.open(path, "rb") as f:
+                pass
+        except FileNotFoundError:
+            path = 'contents/categories.xz'
         with lzma.open(path, "rb") as f:
             cat = pickle.load(f)
     except FileNotFoundError:
@@ -159,3 +176,5 @@ def show(categories: bool=False):
         r_i = get()
         for k in r_i.keys():
             logger.info('< %s : %s >', k, str(r_i[k]))
+
+

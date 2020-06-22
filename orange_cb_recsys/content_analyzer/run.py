@@ -29,7 +29,7 @@ runnable_instances = r_i.get()
 def check_for_available(content_config: Dict):
     # check if need_interface is respected
     # check runnable_instances
-    if content_config['source_type'] not in ['json', 'csv', 'sql']:
+    if content_config['source_type'] not in ['json', 'csv', 'sql', 'dat']:
         return False
     if content_config['content_type'].lower() == 'ratings':
         if "from" not in content_config.keys() \
