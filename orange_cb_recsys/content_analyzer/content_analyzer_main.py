@@ -264,7 +264,7 @@ class ContentsProducer:
 
         for i, ex_retrieval in enumerate(self.__config.get_exogenous_properties_retrieval()):
             lod_properties = ex_retrieval.get_properties(str(i), raw_content)
-            content.append_exogenous_properties(str(i), lod_properties)
+            content.append_exogenous_rep(str(i), lod_properties)
 
         if self.__indexer is not None:
             self.__indexer.new_content()
