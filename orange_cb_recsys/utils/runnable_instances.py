@@ -159,7 +159,3 @@ def show(categories: bool=False):
         r_i = get()
         for k in r_i.keys():
             logger.info('< %s : %s >', k, str(r_i[k]))
-
-
-__serialize(runnable_instances, 'runnable_instances')
-
