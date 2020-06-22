@@ -17,7 +17,7 @@ lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
 DEFAULT_CONFIG_PATH = "config_prova.json"
 
-implemented_preprocessing = r_i.get_cat('preprocessing')
+implemented_preprocessing = r_i.get_cat('preprocessor')
 
 implemented_content_prod = r_i.get_cat('content_production')
 
