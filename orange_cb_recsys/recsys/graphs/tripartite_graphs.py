@@ -15,9 +15,8 @@ class NXTripartiteGraph(TripartiteGraph):
     def add_node(self, node: object):
         self.__graph.add_node(node)
 
-    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight',
-                 attr: Dict[str, object] = None):
-        self.__graph.add_edge(from_node, to_node, weight=weight, label=label, **attr)
+    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight'):
+        self.__graph.add_edge(from_node, to_node, weight=weight, label=label)
 
     def get_edge_data(self, from_node: object, to_node: object):
         try:

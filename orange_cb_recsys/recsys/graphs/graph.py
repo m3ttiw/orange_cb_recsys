@@ -6,8 +6,6 @@ from typing import List, Tuple, Dict
 import pandas as pd
 
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
-from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
-from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 
 
 class Graph(ABC):
@@ -18,16 +16,16 @@ class Graph(ABC):
         pass
 
     @staticmethod
-    def __check_columns(df: pd.DataFrame):
+    def check_columns(df: pd.DataFrame):
         """
-        Check if there are at least least 'from', 'to', 'score' columns in the DataFrame
+        Check if there are at least least 'from_id', 'to_id', 'score' columns in the DataFrame
         Args:
             df (pandas.DataFrame): DataFrame to check
 
         Returns:
-            bool: False if there aren't 'from', 'to', 'score' columns, else True
+            bool: False if there aren't 'from_id', 'to_id', 'score' columns, else True
         """
-        if 'from' not in df.columns or 'to' not in df.columns or 'score' not in df.columns:
+        if 'from_id' not in df.columns or 'to_id' not in df.columns or 'score' not in df.columns:
             return False
         return True
 
@@ -52,8 +50,7 @@ class Graph(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight',
-                 attr: Dict[str, object] = None):
+    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight'):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
         raise NotImplementedError
 
@@ -79,18 +76,18 @@ class BipartiteGraph(Graph):
     """
     Abstract class that generalize the concept of a BipartiteGraph
     Attributes:
-        source_frame (pandas.DataFrame): must contains at least 'from', 'to', 'score' columns. The graph will be
+        source_frame (pandas.DataFrame): must contains at least 'from_id', 'to_id', 'score' columns. The graph will be
             generated from this DataFrame
     """
     def __init__(self, source_frame: pd.DataFrame):
         super().__init__()
         self.__graph = None
-        if self.__check_columns(source_frame):
+        if self.check_columns(source_frame):
             self.create_graph()
             for idx, row in source_frame.iterrows():
-                self.add_edge(row['from'], row['to'], self.normalize_score(row['score']))
+                self.add_edge(row['from_id'], row['to_id'], self.normalize_score(row['score']))
         else:
-            raise ValueError('The source frame must contains at least \'from\', \'to\', \'score\' columns')
+            raise ValueError('The source frame must contains at least \'from_id\', \'to_id\', \'score\' columns')
 
     @abstractmethod
     def create_graph(self):
@@ -101,8 +98,7 @@ class BipartiteGraph(Graph):
         raise NotImplementedError
 
     @abstractmethod
-    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight',
-                 attr: Dict[str, object] = None):
+    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight'):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
         raise NotImplementedError
 
@@ -136,19 +132,18 @@ class TripartiteGraph(Graph):
         self.__contents_dir = contents_dir
         super().__init__()
         self.__graph = None
-        if self.__check_columns(source_frame):
+        if self.check_columns(source_frame):
             self.create_graph()
             for idx, row in source_frame.iterrows():
-                self.add_edge(row['from'], row['to'], self.normalize_score(row['score']),
+                self.add_edge(row['from_id'], row['to_id'], self.normalize_score(row['score']),
                               label=self.__default_score_label)
-                content = self.load_content(row['to'])
+                content = self.load_content(row['to_id'])
                 properties: dict = content.get_lod_properties()
                 for prop_key in properties.keys():
                     preference = self.get_preference(prop_key, row)
-                    self.add_edge(row['to'], properties[prop_key], preference, prop_key)
-
+                    self.add_edge(row['to_id'], properties[prop_key], preference, prop_key)
         else:
-            raise ValueError('The source frame must contains at least \'from\', \'to\', \'score\' columns')
+            raise ValueError('The source frame must contains at least \'from_id\', \'to_id\', \'score\' columns')
 
     def get_default_score_label(self):
         return self.__default_score_label
@@ -177,8 +172,7 @@ class TripartiteGraph(Graph):
         raise NotImplementedError
 
     @abstractmethod
-    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight',
-                 attr: Dict[str, object] = None):
+    def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight'):
         """ adds an edge, if the nodes are not in the graph, adds the nodes"""
         raise NotImplementedError
 
