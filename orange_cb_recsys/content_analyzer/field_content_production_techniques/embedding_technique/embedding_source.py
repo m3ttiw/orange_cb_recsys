@@ -16,7 +16,7 @@ class BinaryFile(EmbeddingSource):
     This class loads the embeddings from a binary file
     in a way that depends from embedding_type.
 
-    Attributes:
+    Args:
         file_path (str): path for the binary file containing the embeddings
         embedding_type (str): Name of the technique used to learn
         the embedding that is being loaded
@@ -44,7 +44,7 @@ class GensimDownloader(EmbeddingSource):
     Class that implements the abstract class EmbeddingSource.
     This class loads the embeddings using the gensim downloader API.
 
-    Attributes:
+    Args:
         name (str): name of the embeddings model to load
     """
 
@@ -61,7 +61,7 @@ class Wikipedia2VecDownloader(EmbeddingSource):
     Can be used for loading of pre-trained wikipedia dump embedding,
     both downloaded or trained on local machine.
 
-    Attributes:
+    Args:
         path (str): path for the binary file containing the embeddings
     """
 

@@ -25,6 +25,7 @@ class SkLearnTfIdf(TfIdfTechnique):
         Creates a corpus structure, a list of string where each string is a document.
         Then call TfIdfVectorizer this collection, obtaining term-document
         tf-idf matrix, the corpus is then deleted
+
         Args:
             information_source (RawInformationSource): Source for the raw data
             id_field_names: names of the fields that compounds the id
@@ -54,6 +55,7 @@ class SkLearnTfIdf(TfIdfTechnique):
         """
         Retrieve the tf-idf values, for terms in document that match with content_id,
         from the pre-computed word - document matrix.
+
         Args:
             field_representation_name (str): Name of the field representation
             content_id (str): Id of the content that contains the terms for which extract the tf-idf
@@ -101,9 +103,10 @@ class LuceneTfIdf(TfIdfTechnique):
     def dataset_refactor(self, information_source: RawInformationSource, id_field_names: str):
         """
         Save the processed data in a index that will be used for frequency calc
+
         Args:
             information_source (RawInformationSource): data source from which extract the field data
-                to create the index for tf-idf computing
+            to create the index for tf-idf computing
             id_field_names: names of the fields that compounds the id
         """
 

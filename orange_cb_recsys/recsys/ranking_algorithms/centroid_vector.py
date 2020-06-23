@@ -33,8 +33,8 @@ class CentroidVector(RankingAlgorithm):
     def __get_centroid_with_vectorizer(self, ratings: pd.DataFrame, rated_items, unrated_items):
         """
         1) For each rated item, checks if its rating is bigger than threshold. If false, skips
-            to the next item, if True add the item embedding array in a dictionary list taht will be
-            transformed in a scipy  csr_matrix (sparse) using sklearn DictVectorizer
+        to the next item, if True add the item embedding array in a dictionary list taht will be
+        transformed in a scipy  csr_matrix (sparse) using sklearn DictVectorizer
         2) Computes the centroid of the obtained sparse matrix
 
         Args:
@@ -63,7 +63,7 @@ class CentroidVector(RankingAlgorithm):
     def __get_centroid_without_vectorizer(self, ratings: pd.DataFrame, rated_items) -> np.ndarray:
         """
         1) For each rated item, checks if its rating is bigger than threshold. If false, skips
-            to the next item, if True add the item embedding array in a matrix
+        to the next item, if True add the item embedding array in a matrix
         2) Computes the centroid of the obtained matrix
 
         Args:
@@ -101,7 +101,7 @@ class CentroidVector(RankingAlgorithm):
 
         Args:
             candidate_item_id_list: list of the items that can be recommended, if None
-                all unrated items will be used
+            all unrated items will be used
             user_id: user for which recommendations will be computed
             recs_number (list[Content]): How long the ranking will be
             ratings (pd.DataFrame): ratings of the user with id equal to user_id

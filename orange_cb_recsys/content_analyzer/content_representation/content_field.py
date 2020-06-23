@@ -94,7 +94,7 @@ class EmbeddingField(FieldRepresentation):
 
     Args:
         embedding_array (np.ndarray): embeddings array,
-            it can be of different shapes according to the granularity of the technique
+        it can be of different shapes according to the granularity of the technique
     """
     def __init__(self, name: str,
                  embedding_array: np.ndarray):
@@ -115,12 +115,13 @@ class EmbeddingField(FieldRepresentation):
 class ContentField:
     """
     Class that represents a field, a field can have more than one representation for itself
+
     Args:
         field_name (str): the name of the field
         timestamp (str): string that represents the timestamp
         representation_dict (dict<str, FieldRepresentation>): Dictionary whose keys are the name
-            of the various representations, and the values are the corresponding FieldRepresentation
-            instances.
+        of the various representations, and the values are the corresponding FieldRepresentation
+        instances.
     """
 
     def __init__(self, field_name: str,

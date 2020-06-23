@@ -56,6 +56,7 @@ class IndexInterface(TextInterface):
     def new_field(self, field_name: str, field_data):
         """
         Add a new field
+
         Args:
             field_name (str): Name of the new field
             field_data: Data to put into the field
@@ -69,6 +70,7 @@ class IndexInterface(TextInterface):
     def new_searching_field(self, field_name, field_data):
         """
         Add a new searching field. It will be used by the search engine recommender
+
         Args:
             field_name (str): Name of the new field
             field_data: Data to put into the field
@@ -93,6 +95,7 @@ class IndexInterface(TextInterface):
         """
         Calculates the tf-idf for the words contained in the field of the content whose id
         is content_id
+
         Args:
             field_name (str): Name of the field containing the words for which calculate the tf-idf
             content_id (str): Id of the content that contains the specified field

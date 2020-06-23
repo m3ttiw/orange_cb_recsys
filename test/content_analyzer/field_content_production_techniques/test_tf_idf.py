@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-import lucene
-
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import LuceneTfIdf, SkLearnTfIdf
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile

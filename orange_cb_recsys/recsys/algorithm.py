@@ -61,7 +61,7 @@ class RankingAlgorithm(Algorithm):
         """
         Args:
             candidate_item_id_list: list of the items that can be recommended, if None
-                all unrated items will be used
+            all unrated items will be used
             user_id: user for which recommendations will be computed
             recs_number (list[Content]): How long the ranking will be
             ratings (pd.DataFrame): ratings of the user with id equal to user_id

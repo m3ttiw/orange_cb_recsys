@@ -119,7 +119,7 @@ class NLP(TextProcessor):
 
         Returns:
             list<str>: The text, after being processed with the specified NLP pipeline,
-                is splitted in single words that are put into a list. The splitting is executed
-                even if none of the preprocessing steps is computed.
+            is splitted in single words that are put into a list. The splitting is executed
+            even if none of the preprocessing steps is computed.
         """
         raise NotImplementedError

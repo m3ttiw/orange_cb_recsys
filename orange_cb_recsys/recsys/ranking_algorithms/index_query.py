@@ -38,7 +38,7 @@ class IndexQuery(RankingAlgorithm):
             positive_rated_document_list: List of contents that the user liked
             scores: Ratings given by the user
             recs_number: How many items must be recommended. You can only specify the number, not
-                a specific item for which compute the prediction
+            a specific item for which compute the prediction
             items_directory: Directory where the items are stored
 
         Returns:
@@ -112,7 +112,7 @@ class IndexQuery(RankingAlgorithm):
         Finds the documents that the user liked and then calls __recs_query to execute the prediction
         Args:
             candidate_item_id_list: list of the items that can be recommended, if None
-                all unrated items will be used
+            all unrated items will be used
             user_id: user for which recommendations will be computed
             recs_number (list[Content]): How long the ranking will be
             ratings (pd.DataFrame): ratings of the user with id equal to user_id

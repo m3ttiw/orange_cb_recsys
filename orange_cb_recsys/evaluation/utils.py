@@ -65,8 +65,8 @@ def split_user_in_groups(score_frame: pd.DataFrame, groups: Dict[str, float], po
     Args:
         score_frame (pd.DataFrame): DataFrame with columns = ['from_id', 'to_id', 'rating']
         groups (Dict[str, float]): each key contains the name of the group and each value contains the
-            percentage of the specified group. If the groups don't cover the entire user collection,
-            the rest of the users are considered in a 'default_diverse' group
+        percentage of the specified group. If the groups don't cover the entire user collection,
+        the rest of the users are considered in a 'default_diverse' group
         pop_items (Set[str]): set of most popular 'to_id' labels
 
     Returns:

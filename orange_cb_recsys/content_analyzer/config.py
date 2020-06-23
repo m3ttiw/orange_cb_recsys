@@ -34,6 +34,7 @@ class FieldRepresentationPipeline:
     def append_preprocessor(self, preprocessor: InformationProcessor):
         """
         Add a new preprocessor to the preprocessor list
+
         Args:
             preprocessor (InformationProcessor): The preprocessor to add
         """
@@ -71,6 +72,7 @@ class FieldRepresentationPipeline:
 class FieldConfig:
     """
     Class that represents the configuration of a single field.
+
     Args:
         pipelines_list (List<FieldRepresentationPipeline>):
             list of the pipelines that will be used to produce different field's representations,
@@ -114,10 +116,10 @@ class FieldConfig:
 
 class ContentAnalyzerConfig:
     """
-    Class that represents the Configuration for the content analyzer.
+    Class that represents the configuration for the content analyzer.
+
     Args:
-        source (RawInformationSource):
-        raw data source to iterate on for extracting the contents
+        source (RawInformationSource): raw data source to iterate on for extracting the contents
         id_field_name_list (str): list of the fields names containing the content's id,
         it's a list instead of single value for handling complex id
         composed of multiple fields
@@ -195,6 +197,7 @@ class ContentAnalyzerConfig:
     def get_pipeline_list(self, field_name: str) -> List[FieldRepresentationPipeline]:
         """
         Get the list of the pipelines specified for the input field
+
         Args:
             field_name (str): name of the field
 
@@ -208,6 +211,7 @@ class ContentAnalyzerConfig:
     def get_field_name_list(self) -> List[str]:
         """
         Get the list of the field names
+
         Returns:
             List<str>: list of config dictionary keys
         """

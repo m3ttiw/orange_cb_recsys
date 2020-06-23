@@ -16,7 +16,7 @@ class RankingMetric(Metric):
 
     Args:
         relevance_split: specify how to map each truth score
-            to a discrete relevance judgement
+        to a discrete relevance judgement
     """
     def __init__(self, relevance_split: Dict[int, Tuple[float, float]]):
         self.__relevance_split = relevance_split
