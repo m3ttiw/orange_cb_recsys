@@ -68,7 +68,7 @@ class Content:
     """
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None,
-                 exogenous_rep_dict: Dict[str, str] = None):
+                 exogenous_rep_dict: Dict[str, ExogenousPropertiesRepresentation] = None):
         if field_dict is None:
             field_dict = {}       # list o dict
         if exogenous_rep_dict is None:
@@ -83,7 +83,10 @@ class Content:
         self.__exogenous_rep_dict[name] = exogenous_properties
 
     def get_exogenous_rep(self, name):
-        return self.__exogenous_rep_dict[name]
+        try:
+            return self.__exogenous_rep_dict[name]
+        except KeyError:
+            return None
 
     def set_index_document_id(self, index_document_id: int):
         self.__index_document_id = index_document_id

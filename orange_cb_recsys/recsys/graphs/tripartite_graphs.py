@@ -1,13 +1,13 @@
-from typing import List, Tuple, Dict
-
+from typing import List, Tuple
 from orange_cb_recsys.recsys.graphs import TripartiteGraph
 import pandas as pd
 import networkx as nx
 
 
 class NXTripartiteGraph(TripartiteGraph):
-    def __init__(self, source_frame: pd.DataFrame):
-        super().__init__(source_frame)
+    def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None, exogenous_properties: List[str] = None,
+                 **options):
+        super().__init__(source_frame, contents_dir, exogenous_properties, **options)
 
     def create_graph(self):
         self.__graph = nx.DiGraph()

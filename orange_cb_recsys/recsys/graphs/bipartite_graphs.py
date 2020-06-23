@@ -1,8 +1,8 @@
-from typing import List, Tuple, Dict
-
+from typing import List, Tuple
 from orange_cb_recsys.recsys.graphs import BipartiteGraph
 import pandas as pd
 import networkx as nx
+import matplotlib.pyplot as plt
 
 
 class NXBipartiteGraph(BipartiteGraph):
@@ -32,3 +32,8 @@ class NXBipartiteGraph(BipartiteGraph):
 
     def get_successors(self, node: object) -> List[Tuple[object, object, float]]:
         return self.__graph.successors(node)
+
+    def get_graph(self):
+        return self.__graph
+
+

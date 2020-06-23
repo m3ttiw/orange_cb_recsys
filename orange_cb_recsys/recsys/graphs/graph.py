@@ -122,28 +122,47 @@ class BipartiteGraph(Graph):
 
 class TripartiteGraph(Graph):
     """ rating su più fields -> più archi (import di RatingsProcessor)"""
-    def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None, **options):
+    def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None, exogenous_properties: List[str] = None,
+                 **options):
+
         self.__default_score_label = 'score_label'
         if 'default_score_label' in options.keys():
             self.__default_score_label = self.normalize_score(options['default_score_label'])
+
         self.__not_rated_value = 0.5
         if 'not_rated_value' in options.keys():
             self.__not_rated_value = self.normalize_score(options['not_rated_value'])
-        self.__contents_dir = contents_dir
+
+        self.__exogenous_properties: List[str] = exogenous_properties
+        if exogenous_properties is None:
+            self.__exogenous_properties: List[str] = []
+
+        self.__contents_dir: str = contents_dir
         super().__init__()
+        self.__source_frame = source_frame
         self.__graph = None
+
         if self.check_columns(source_frame):
             self.create_graph()
+
             for idx, row in source_frame.iterrows():
                 self.add_edge(row['from_id'], row['to_id'], self.normalize_score(row['score']),
                               label=self.__default_score_label)
                 content = self.load_content(row['to_id'])
-                properties: dict = content.get_lod_properties()
-                for prop_key in properties.keys():
-                    preference = self.get_preference(prop_key, row)
-                    self.add_edge(row['to_id'], properties[prop_key], preference, prop_key)
+                if content is not None:
+                    for prop_name in self.__exogenous_properties:
+                        properties: dict = content.get_exogenous_rep(prop_name)
+
+                        if properties is not None:
+
+                            for prop_key in properties.keys():
+                                preference = self.get_preference(prop_key, row)
+                                self.add_edge(row['to_id'], properties[prop_key], preference, prop_key)
         else:
             raise ValueError('The source frame must contains at least \'from_id\', \'to_id\', \'score\' columns')
+
+    def get_exogenous_properties(self) -> List[str]:
+        return self.__exogenous_properties
 
     def get_default_score_label(self):
         return self.__default_score_label
@@ -159,9 +178,20 @@ class TripartiteGraph(Graph):
 
     @staticmethod
     def load_content(file_name: str) -> Content:
-        with lzma.open('{}.xz'.format(file_name), 'r') as file:
-            content = pickle.load(file)
+        try:
+            with lzma.open('{}.xz'.format(file_name), 'r') as file:
+                content = pickle.load(file)
+        except FileNotFoundError:
+            content = None
         return content
+
+    def query_frame(self, key: str, column: str) -> List[Dict]:
+        """returns list of rows"""
+        results_ = []
+        rows = self.__source_frame.loc[self.__source_frame[column] == key]
+        for row in rows.iterrows():
+            results_.append(row)
+        return results_
 
     @abstractmethod
     def create_graph(self):
@@ -170,6 +200,41 @@ class TripartiteGraph(Graph):
     @abstractmethod
     def add_node(self, node: object):
         raise NotImplementedError
+
+    def add_tree(self, node: object):
+        """
+        add a node if is not in the graph and append properties if the node has some
+        Args:
+            node:
+
+        Returns:
+
+        """
+        rows = self.query_frame(str(node), 'to_id')
+        for row in rows:
+            content = self.load_content(str(node))
+            if content is not None:
+                for prop_name in self.__exogenous_properties:
+                    properties: dict = content.get_exogenous_rep(prop_name)
+
+                    if properties is not None:
+
+                        for prop_key in properties.keys():
+                            preference = self.get_preference(prop_key, row)
+                            self.add_edge(row['to_id'], properties[prop_key], preference, prop_key)
+
+        rows = self.query_frame(str(node), 'from_id')
+        for row in rows:
+            content = self.load_content(str(node))
+            if content is not None:
+                for prop_name in self.__exogenous_properties:
+                    properties: dict = content.get_exogenous_rep(prop_name)
+
+                    if properties is not None:
+
+                        for prop_key in properties.keys():
+                            preference = self.get_preference(prop_key, row)
+                            self.add_edge(row['from_id'], properties[prop_key], preference, prop_key)
 
     @abstractmethod
     def add_edge(self, from_node: object, to_node: object, weight: float, label: str = 'weight'):
