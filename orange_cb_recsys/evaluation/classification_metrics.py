@@ -143,6 +143,7 @@ class MRR(ClassificationMetric):
         Where:
             • Q is the set of recommendation lists
             • rank(i) is the position of the first relevant item in the i-th recommendation list
+
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;

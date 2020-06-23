@@ -10,6 +10,7 @@ from orange_cb_recsys.utils.check_tokenization import check_not_tokenized
 class BabelPyEntityLinking(EntityLinking):
     """
     Interface for the Babelpy library that wraps some feature of Babelfy entity Linking.
+
     Args:
         api_key: string obtained by registering to
         babelfy website, with None babelpy key only few
@@ -35,6 +36,7 @@ class BabelPyEntityLinking(EntityLinking):
         Produces the field content for this representation,
         bag of features whose keys is babel net synset id and
         values are global score of the sysnset
+
         Args:
             field_representation_name (str): Name of the field representation
             field_data: Text that will be linked to BabelNet

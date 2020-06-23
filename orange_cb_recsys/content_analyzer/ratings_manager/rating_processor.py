@@ -25,6 +25,7 @@ class SentimentAnalysis(RatingProcessor):
 class NumberNormalizer(RatingProcessor):
     """
     Class that normalizes the ratings to a numeric scale in the range [-1.0,1.0]
+
     Args:
         min_ (float): minimum value of the original scale
         max_ (float): maximum value of the original scale

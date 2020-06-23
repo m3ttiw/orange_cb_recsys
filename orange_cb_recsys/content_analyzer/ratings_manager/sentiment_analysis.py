@@ -17,6 +17,7 @@ class TextBlobSentimentAnalysis(SentimentAnalysis):
     def fit(self, field_data: str) -> float:
         """
         This method calculates the sentiment analysis score on textual reviews
+
         Returns:
             sentiment_data: a list of sentiment analysis score
         """

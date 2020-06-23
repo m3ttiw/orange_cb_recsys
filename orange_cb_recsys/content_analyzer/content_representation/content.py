@@ -13,6 +13,7 @@ class ExogenousPropertiesRepresentation(ABC):
     """
     Output of LodPropertiesRetrieval, different representations
     exist according to different techniques
+
     Args:
         name (str): string identifier of the exogenous
         properties representation
@@ -56,6 +57,7 @@ class Content:
     """
     Class that represents a content. A content can be an item or a user.
     A content is identified by a string id and is composed by different fields
+
     Args:
         content_id (str): identifier
         field_dict (dict[str, ContentField]): dictionary
@@ -106,6 +108,7 @@ class Content:
     def remove(self, field_name: str):
         """
         Remove the field named field_name from the field dictionary
+
         Args:
             field_name (str): the name of the field to remove
         """

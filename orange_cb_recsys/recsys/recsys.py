@@ -38,7 +38,7 @@ class RecSys:
         Args:
             user_id: user for which calculate the predictions
             item_to_predict_id_list: items for which the prediction will be computed,
-                if None all unrated items will be used
+            if None all unrated items will be used
         Returns:
             score_frame (DataFrame): result frame whose columns are: to_id, rating
 
@@ -72,7 +72,7 @@ class RecSys:
 
         Args:
             candidate_item_id_list: list of items, in which search the recommendations,
-                if None all unrated items will be used as candidates
+            if None all unrated items will be used as candidates
             user_id: user for which compute the ranking recommendation
             recs_number: how many items should the returned ranking contain,
             the ranking length can be lower

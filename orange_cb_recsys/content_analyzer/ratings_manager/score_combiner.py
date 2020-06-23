@@ -18,6 +18,7 @@ def mode(score_list: List[float]) -> float:
 class ScoreCombiner:
     """
     Class that combines the scores given by a user
+
     Args:
         function (str): Name of the method to use to combine the ratings
     """

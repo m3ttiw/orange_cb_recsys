@@ -92,6 +92,7 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
         """
         This method restructures the raw data in a way functional to the final representation.
         This is done only for those field representations that require this phase to be done
+
         Args:
             information_source (RawInformationSource):
             id_field_names: fields where to find data that compound content's id
@@ -114,6 +115,7 @@ class SingleContentTechnique(FieldContentProductionTechnique):
     def produce_content(self, field_representation_name: str, field_data) -> FieldRepresentation:
         """
         Given data of certain field it returns a complex representation's instance of the field.
+
         Args:
             field_representation_name: name of the field representation object that will be created
             field_data: input for the complex representation production
@@ -248,9 +250,9 @@ class EmbeddingTechnique(SingleContentTechnique):
         combining_technique (CombiningTechnique): The technique that will be used
         for combining the embeddings.
         embedding_source (EmbeddingSource):
-            Source where the embeddings vectors for the words in field_data are stored.
+        Source where the embeddings vectors for the words in field_data are stored.
         granularity (Granularity): It can assume three values, depending on whether
-            the framework user wants to combine relatively to words, phrases or documents.
+        the framework user wants to combine relatively to words, phrases or documents.
     """
 
     def __init__(self, combining_technique: CombiningTechnique,
@@ -266,9 +268,10 @@ class EmbeddingTechnique(SingleContentTechnique):
         """
         Method that builds the semantic content starting from the embeddings contained in
         field_data.
+
         Args:
             field_representation_name (str): Name of the field representation for which produce
-                the content
+            the content
             field_data: The terms whose embeddings will be combined.
 
         Returns:

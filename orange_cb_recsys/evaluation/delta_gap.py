@@ -8,6 +8,7 @@ from orange_cb_recsys.utils.const import logger
 def get_avg_pop(items: pd.Series, pop_by_items: Dict[str, object]) -> float:
     """
     Get the average popularity of the given items Series
+
     Args:
         items (pd.Series): a pandas Series that contains string labels ('label')
         pop_by_items (Dict<str, object>): popularity for each label ('label', 'popularity')
@@ -25,6 +26,7 @@ def get_avg_pop_by_users(data: pd.DataFrame, pop_by_items: Dict[str, object],
                          group: Set[str] = None) -> Dict[str, float]:
     """
     Get the average popularity for each user in the DataFrame
+
     Args:
         data (pd.DataFrame): a pandas dataframe with columns = ['from_id', 'to_id', 'rating']
         pop_by_items (Dict<str, object>): popularity for each label ('label', 'popularity')

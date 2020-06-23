@@ -15,9 +15,9 @@ class Metric(ABC):
 
         Args:
               truth (pd.DataFrame): dataframe with known ratings,
-                it is used as ground truth in metric computation
+              it is used as ground truth in metric computation
               predictions (pd.DataFrame): dataframe with predicted items and
-                associated scores
+              associated scores
         """
         raise NotImplementedError
 

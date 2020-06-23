@@ -24,6 +24,7 @@ class InformationInterface(ABC):
     def new_field(self, field_name: str, field_data):
         """
         Serialize the raw data of a field.
+
         Args:
             field_name: name of the created field
             field_data: data to serialize

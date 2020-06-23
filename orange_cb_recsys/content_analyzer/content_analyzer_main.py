@@ -158,6 +158,7 @@ class ContentsProducer:
     def __create_field(self, raw_content: Dict, field_name: str, content_id: str, timestamp: str):
         """
         Create a new field for the specified content
+
         Args:
             raw_content (Dict): Raw content for the new field
             field_name (str): Name of the new field
@@ -221,6 +222,7 @@ class ContentsProducer:
                                 pipeline: FieldRepresentationPipeline):
         """
         Returns the specified representation for the specified field.
+
         Args:
             field_representation_name: Name of the representation
             field_data: Raw data contained in the field
@@ -241,6 +243,7 @@ class ContentsProducer:
         """
         Creates a content processing every field in the specified way.
         This method is iteratively invoked by the fit method.
+
         Args:
             raw_content (dict): Raw data from which the content will be created
 

@@ -27,6 +27,9 @@ class RawInformationSource(ABC):
 class DATFile(RawInformationSource):
     """
     Class for the data acquisition from a DAT file
+
+    Args:
+        file_path (str)
     """
 
     def __init__(self, file_path: str):
@@ -47,6 +50,9 @@ class DATFile(RawInformationSource):
 class JSONFile(RawInformationSource):
     """
     Class for the data acquisition from a json file
+
+    Args:
+        file_path (str)
     """
 
     def __init__(self, file_path: str):
@@ -65,6 +71,9 @@ class JSONFile(RawInformationSource):
 class CSVFile(RawInformationSource):
     """
     Abstract class for the data acquisition from a csv file
+
+    Args:
+        file_path (str)
     """
 
     def __init__(self, file_path: str):
@@ -83,6 +92,7 @@ class CSVFile(RawInformationSource):
 class SQLDatabase(RawInformationSource):
     """
     Abstract class for the data acquisition from a SQL Database
+
     Args:
         host (str): host ip of the sql server
         username (str): username for the access

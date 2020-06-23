@@ -12,11 +12,12 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 class GensimLatentSemanticAnalysis(EmbeddingLearner):
     """
     Class that implements latent semantic analysis using Gensim
+
     Args:
         source (RawInformationSource): Source where the content is stored.
         preprocessor (InformationProcessor): Instance of the class InformationProcessor,
-            specify how to process (can be None) the source data, before
-            use it for model computation
+        specify how to process (can be None) the source data, before
+        use it for model computation
         field_list (List<str>): Field name list.
     """
     def __init__(self, source: RawInformationSource,
@@ -39,6 +40,7 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
     @staticmethod
     def __create_word_docs_matrix(docs, dictionary) -> List[str]:
         """
+
         Returns:
              docs-words matrix, that contains a mapping between the IDs and the words
         """

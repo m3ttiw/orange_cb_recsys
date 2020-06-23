@@ -33,6 +33,7 @@ class RatingsFieldConfig:
 class RatingsImporter:
     """
     Class that imports the ratings
+
     Args:
         source (RawInformationSource): Source from which the ratings will be imported
         rating_configs (list<RatingsFieldConfig>):
@@ -79,6 +80,7 @@ class RatingsImporter:
     def import_ratings(self) -> pd.DataFrame:
         """
         Imports the ratings from the source and stores in a dataframe
+
         Returns:
             ratings_frame: pd.DataFrame
         """
@@ -128,6 +130,7 @@ class RatingsImporter:
 def show_progress(coll, milestones=100):
     """
     Yields the elements contained in coll and prints to video how many have been processed
+
     Args:
         coll (list): List that contains the ratings to process
         milestones (int): Tells to the method how often he has to print an update. For

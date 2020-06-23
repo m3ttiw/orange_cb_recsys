@@ -16,14 +16,16 @@ from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase, DATFile
 from orange_cb_recsys.utils.const import logger, home_path
 
-""" Default dict for all implementation of the abstract classes, for different purpose, 
-    with an 'alias' as key and the 'class name' as value
-    You can use this to show all implemented class in the framework
-    If a class is added to the framework and is a 'runnable_instance', 
-    you must add to this dict using add_runnable_instance() function 
-    or you can add manually in this dict and call __serialize() function 
-    with no arguments to add it permanently and also show in this file
-    """
+""" 
+Default dict for all implementation of the abstract classes, for different purpose, 
+with an 'alias' as key and the 'class name' as value
+You can use this to show all implemented class in the framework
+If a class is added to the framework and is a 'runnable_instance', 
+you must add to this dict using add_runnable_instance() function 
+or you can add manually in this dict and call __serialize() function 
+with no arguments to add it permanently and also show in this file
+"""
+
 runnable_instances = {
     "json": JSONFile,
     "csv": CSVFile,
@@ -46,7 +48,7 @@ runnable_instances = {
 }
 
 """
-    This contains, for each alias a specific category
+This contains, for each alias a specific category
 """
 
 categories = {

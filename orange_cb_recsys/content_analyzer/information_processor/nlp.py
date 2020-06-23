@@ -27,6 +27,7 @@ def get_wordnet_pos(word):
 class NLTK(NLP):
     """
     Interface to the NLTK library for natural language processing features
+
     Args:
         stopwords_removal (bool): Whether you want to remove stop words
         stemming (bool): Whether you want to perform stemming
@@ -110,6 +111,7 @@ class NLTK(NLP):
     def __tokenization_operation(self, text) -> List[str]:
         """
         Splits the text in one-word tokens
+
         Args:
              text (str): Text to split in tokens
 
