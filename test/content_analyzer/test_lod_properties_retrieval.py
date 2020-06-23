@@ -5,6 +5,7 @@ from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMa
 
 class TestDBPediaMappingTechnique(TestCase):
     def test_get_properties(self):
+        self.skipTest("need SPARQL")
         raw_content = {"Title": "Jumanji", "Year": "1995", "Rated": "PG", "Released": "15 Dec 1995",
                        "Runtime": "104 min",
                        "Genre": "Adventure, Family, Fantasy", "Director": "Joe Johnston",
