@@ -2,7 +2,6 @@ from typing import List, Tuple
 from orange_cb_recsys.recsys.graphs import BipartiteGraph
 import pandas as pd
 import networkx as nx
-import matplotlib.pyplot as plt
 
 
 class NXBipartiteGraph(BipartiteGraph):
@@ -35,5 +34,3 @@ class NXBipartiteGraph(BipartiteGraph):
 
     def get_graph(self):
         return self.__graph
-
-
