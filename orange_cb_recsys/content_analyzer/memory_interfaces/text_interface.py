@@ -119,7 +119,7 @@ class IndexInterface(TextInterface):
             term_text = term.utf8ToString()
             postings = term_enum.postings(None)
             postings.nextDoc()
-            term_frequency = 1 + math.log(postings.freq())  # normalized term frequency
+            term_frequency = 1 + math.log10(postings.freq())  # normalized term frequency
             inverse_document_frequency = math.log10(reader.maxDoc() / reader.docFreq(Term(field_name, term)))
             tf_idf = term_frequency * inverse_document_frequency
             words_bag[term_text] = tf_idf
