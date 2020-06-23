@@ -6,57 +6,9 @@
   id_field_name:
   - "imdbID"
   get_lod_properties:
-    class: 'dbpedia_mapping'
-    mode: 'only_retrieved_evaluated'
-    entity_type: 'Film'
-    lang: 'EN'
-    label_field: 'Title'
-  fields:
-  - field_name: "Title"
-    memory_interface: "index"
-    memory_interface_path: "test-movielens-explanation"
-    pipeline_list:
-    - field_content_production:
-        class: "babelpy"
-        api_key: "bd7835be-12f7-4717-8c5f-429e3e968998"
-      preprocessing_list: []
-  - field_name: "Plot"
-    memory_interface: "None"
-    memory_interface_path: "None"
-    pipeline_list:
-    - field_content_production:
-        class: "embedding"
-        combining_technique:
-          class: "centroid"
-        embedding_source:
-          class: "binary_file"
-          file_path: "../../datasets/doc2vec/doc2vec.bin"
-          embedding_type: 2
-        granularity: 1
-      preprocessing_list:
-      - class: "nltk"
-        url_tagging: 'True'
-        strip_multiple_whitespaces: 'True'
-    - field_content_production:
-        class: "lucene_tf-idf"
-      preprocessing_list:
-      - class: "nltk"
-        stopwords_removal: 'True'
-        lemmatization: 'True'
-- content_type: "RATING"
-  output_directory: "movielens_test"
-  raw_source_path: "../../datasets/movies_info_reduced.json"
-  source_type: "json"
-  from_field_name: "user_id"
-  to_field_name: "item_id"
-  timestamp_field_name: "timestamp"
-  fields:
-   - preference_field_name: "Text"
-     rating_processor:
-      - class: "text_blob_sentiment"
-   - preference_field_name: "Stars"
-     rating_processor:
-      - class: "number_normalizer"
-        min: "0.0"
-        max: "5.0"
-
+    - class: 'dbpedia_mapping'
+      mode: 'only_retrieved_evaluated'
+      entity_type: 'Film'
+      lang: 'EN'
+      label_field: 'Title'
+  fields: []

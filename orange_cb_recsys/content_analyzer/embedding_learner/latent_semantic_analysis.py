@@ -46,7 +46,8 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
 
     def fit(self):
         """
-        Creates the model for the embedding
+        This method creates the model, using Gensim Latent Semantic Analysis.
+        The model isn't then returned, but gets stored in the 'model' class attribute.
         """
         docs = self.extract_corpus()
         dictionary = GensimLatentSemanticAnalysis.__create_dictionary(docs)

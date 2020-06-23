@@ -10,7 +10,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import RawInformat
 
 class GensimWord2Vec(EmbeddingLearner):
     """"
-    Class that implements the Abstract Class Word2Vec.
+    Class that implements the Abstract Class EmbeddingLearner.
     Implementation of Word2Vec using the Gensim library.
     Args:
         source (RawInformationSource): Source where the content is stored.
@@ -125,8 +125,9 @@ class GensimWord2Vec(EmbeddingLearner):
                "preprocessor = " + str(self.get_preprocessor()) + " >"
 
     def fit(self):
-        """"
-        Implementation of the Abstract Method start_training in the Abstract Class Word2vec.
+        """
+        This method creates the model, using Word 2 Vec.
+        The model isn't then returned, but gets stored in the 'model' class attribute.
         """
         data_to_train = self.extract_corpus()
         model = Word2Vec(sentences=data_to_train, **self.optionals)

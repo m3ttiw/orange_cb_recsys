@@ -44,7 +44,7 @@ class ContentAnalyzer:
                     technique.set_pipeline_need_refactor(str(pipeline))
                     technique.set_processor_list(pipeline.get_preprocessor_list())
                     technique.dataset_refactor(
-                        self.__config.get_source(), self.__config.get_id_field_name())
+                        self.__config.get_source(), self.__config.get_id_field_name_list())
 
     def __config_recap(self):
         recap_list = [("Field: %s; representation id: %s: technique: %s",
@@ -240,7 +240,7 @@ class ContentsProducer:
     def create_content(self, raw_content: Dict):
         """
         Creates a content processing every field in the specified way.
-        This class is iteratively invoked by the fit method.
+        This method is iteratively invoked by the fit method.
         Args:
             raw_content (dict): Raw data from which the content will be created
 
@@ -259,12 +259,12 @@ class ContentsProducer:
         timestamp = self.__get_timestamp(raw_content)
 
         # construct id from the list of the fields that compound id
-        content_id = id_merger(raw_content, self.__config.get_id_field_name())
+        content_id = id_merger(raw_content, self.__config.get_id_field_name_list())
         content = Content(content_id)
 
-        if self.__config.get_lod_properties_retrieval() is not None:
-            lod_properties = self.__config.get_lod_properties_retrieval().get_properties(raw_content)
-            content.set_lod_properties(lod_properties)
+        for i, ex_retrieval in enumerate(self.__config.get_exogenous_properties_retrieval()):
+            lod_properties = ex_retrieval.get_properties(str(i), raw_content)
+            content.append_exogenous_rep(str(i), lod_properties)
 
         if self.__indexer is not None:
             self.__indexer.new_content()

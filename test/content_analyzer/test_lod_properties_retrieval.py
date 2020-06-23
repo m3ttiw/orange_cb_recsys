@@ -5,6 +5,7 @@ from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMa
 
 class TestDBPediaMappingTechnique(TestCase):
     def test_get_properties(self):
+        self.skipTest("need SPARQL")
         raw_content = {"Title": "Jumanji", "Year": "1995", "Rated": "PG", "Released": "15 Dec 1995",
                        "Runtime": "104 min",
                        "Genre": "Adventure, Family, Fantasy", "Director": "Joe Johnston",
@@ -26,22 +27,17 @@ class TestDBPediaMappingTechnique(TestCase):
                        "Website": "N/A", "Response": "True"}
 
         mapp = DBPediaMappingTechnique('Film', 'EN', 'Title')
-        prop = mapp.get_properties(raw_content)
-        print(prop)
+        prop = mapp.get_properties('1', raw_content)
 
         mapp.set_mode('all')
-        prop = mapp.get_properties(raw_content)
-        print(prop)
+        prop = mapp.get_properties('1', raw_content)
 
         mapp.set_mode('all_retrieved')
-        prop = mapp.get_properties(raw_content)
-        print(prop)
+        prop = mapp.get_properties('1', raw_content)
 
         mapp.set_mode('original_retrieved')
-        prop = mapp.get_properties(raw_content)
-        print(prop)
+        prop = mapp.get_properties('1', raw_content)
 
         mapp.set_label_field('Genre')
         mapp.set_mode('only_retrieved_evaluated')
-        prop = mapp.get_properties(raw_content)
-        print(prop)
+        prop = mapp.get_properties('1', raw_content)

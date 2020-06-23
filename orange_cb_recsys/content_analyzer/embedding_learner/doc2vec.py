@@ -51,8 +51,9 @@ class GensimDoc2Vec(EmbeddingLearner):
                "preprocessor = " + str(self.__preprocessor) + " >"
 
     def fit(self):
-        """"
-        Implementation of the Abstract Method fit in the Abstract Class Doc2vec.
+        """
+        This method creates the model, using Gensim Doc2Vec.
+        The model isn't then returned, but gets stored in the 'model' class attribute.
         """
         corpus = self.extract_corpus()
         tagged_data = [TaggedDocument(words=_d, tags=[str(i)]) for i, _d in enumerate(corpus)]

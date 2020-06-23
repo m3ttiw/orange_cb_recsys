@@ -4,7 +4,7 @@ from typing import List, Dict, Set
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     FieldContentProductionTechnique, CollectionBasedTechnique
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
-from orange_cb_recsys.content_analyzer.lod_properties_retrieval import LODPropertiesRetrieval
+from orange_cb_recsys.content_analyzer.lod_properties_retrieval import ExogenousPropertiesRetrieval
 from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
@@ -117,23 +117,36 @@ class ContentAnalyzerConfig:
     Class that represents the Configuration for the content analyzer.
     Args:
         source (RawInformationSource):
-            raw data source to iterate on for extracting the contents
-        id_field_name (str): list of the fields names containing the content's id,
-            it's a list instead of single value for handling complex id
-            composed of multiple fields
+        raw data source to iterate on for extracting the contents
+        id_field_name_list (str): list of the fields names containing the content's id,
+        it's a list instead of single value for handling complex id
+        composed of multiple fields
         field_config_dict (Dict<str, FieldConfig>):
-            store the config for each field_name
+        store the config for each field_name
+        output_directory (str):
+        path of the results serialized content instance
+        search_index (bool):
+        True if in the technique a sarch indexing is specified
+        field_config_dict:
+        FieldConfig instance specified
+        for each field you want to produce
+        exogenous_properties_retrieval:
+        list of techniques that retrievas
+        exogenous properties that represent
+        the contents
     """
 
     def __init__(self, content_type: str,
                  source: RawInformationSource,
-                 id_field_name,
+                 id_field_name_list,
                  output_directory: str,
                  search_index=False,
                  field_config_dict: Dict[str, FieldConfig] = None,
-                 lod_properties_retrieval: LODPropertiesRetrieval = None):
+                 exogenous_properties_retrieval: List[ExogenousPropertiesRetrieval] = None):
         if field_config_dict is None:
             field_config_dict = {}
+        if exogenous_properties_retrieval is None:
+            exogenous_properties_retrieval = []
 
         if type(search_index) is str:
             self.__search_index = search_index.lower() == 'true'
@@ -144,16 +157,19 @@ class ContentAnalyzerConfig:
         self.__content_type = content_type.lower()
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
-        self.__id_field_name: str = id_field_name
-        self.__lod_properties_retrieval: LODPropertiesRetrieval = lod_properties_retrieval
+        self.__id_field_name_list: str = id_field_name_list
+        self.__exogenous_properties_retrieval: \
+            List[ExogenousPropertiesRetrieval] = exogenous_properties_retrieval
 
         FieldRepresentationPipeline.instance_counter = 0
 
-    def set_lod_properties_retrieval(self, lod_properties_retrieval: LODPropertiesRetrieval):
-        self.__lod_properties_retrieval = lod_properties_retrieval
+    def append_exogenous_properties_retrieval(self,
+                                              exogenous_properties_retrieval: List[ExogenousPropertiesRetrieval]):
+        self.__exogenous_properties_retrieval.append(exogenous_properties_retrieval)
 
-    def get_lod_properties_retrieval(self):
-        return self.__lod_properties_retrieval
+    def get_exogenous_properties_retrieval(self) -> ExogenousPropertiesRetrieval:
+        for ex_retrieval in self.__exogenous_properties_retrieval:
+            yield ex_retrieval
 
     def get_search_index(self):
         return self.__search_index
@@ -164,8 +180,8 @@ class ContentAnalyzerConfig:
     def get_content_type(self):
         return self.__content_type
 
-    def get_id_field_name(self):
-        return self.__id_field_name
+    def get_id_field_name_list(self):
+        return self.__id_field_name_list
 
     def get_source(self) -> RawInformationSource:
         return self.__source
@@ -214,11 +230,11 @@ class ContentAnalyzerConfig:
         self.__field_config_dict[field_name] = field_config
 
     def __str__(self):
-        return str(self.__id_field_name)
+        return str(self.__id_field_name_list)
 
     def __repr__(self):
         msg = "< " + "ContentAnalyzerConfig: " + "" \
-                                                 "id_field_name = " + str(self.__id_field_name) + "; " \
+                                                 "id_field_name = " + str(self.__id_field_name_list) + "; " \
                                                                                                   "source = " + str(
             self.__source) + "; " \
                              "field_config_dict = " + str(self.__field_config_dict) + "; " \

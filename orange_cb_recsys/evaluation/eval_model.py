@@ -53,7 +53,11 @@ class EvalModel:
 class RankingAlgEvalModel(EvalModel):
     """
     Class for automating the process of recommending and
-    evaluate produced recommendations
+    evaluate produced recommendations.
+    This subclass automate the computation of metrics
+    whose input are the result of a RecSys
+    configured with a ranking algorithm.
+    The metrics are iteratively computed for each user
 
     Args:
         config (RecSysConfig): Configuration of the
@@ -112,11 +116,9 @@ class RankingAlgEvalModel(EvalModel):
 
                 truth = test.loc[:, 'to_id':'score']
                 truth.columns = ["to_id", "rating"]
-
                 recs_number = len(truth['rating'].values)
                 predictions = recsys.fit_eval_ranking(
                     user_id, train, truth['to_id'].tolist(), recs_number)
-
                 for metric in self.get_metrics():
                     result_dict['from'] = user_id
                     result_dict[str(metric)] = metric.perform(predictions, truth)

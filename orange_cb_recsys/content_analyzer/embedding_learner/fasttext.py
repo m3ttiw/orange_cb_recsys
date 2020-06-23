@@ -117,8 +117,9 @@ class GensimFastText(EmbeddingLearner):
                "preprocessor = " + str(self.get_preprocessor()) + " >"
 
     def fit(self):
-        """"
-        Implementation of the Abstract Method fit in the Abstract Class EmbeddingLearner.
+        """
+        This method creates the model, using Gensim FastText.
+        The model isn't then returned, but gets stored in the 'model' class attribute.
         """
         data_to_train = self.extract_corpus()
         model = FastText(sentences=data_to_train, **self.optionals)

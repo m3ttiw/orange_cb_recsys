@@ -19,7 +19,7 @@ class TestEmbeddingLearner(TestCase):
                     ['tom', 'huck', '22', 'dec', '1995'],
                     ['wait', 'exhal', '22', 'dec', '1995'],
                     ['sabrina', '15', 'dec', '1995'],
-                    ['dracula', 'dead', 'love', '22', 'dec', '1995'],
+                    ['dracula', ':', 'dead', 'love', '22', 'dec', '1995'],
                     ['nixon', '05', 'jan', '1996'],
                     ['american', 'presid', '17', 'nov', '1995'],
                     ['goldeney', '17', 'nov', '1995'],
@@ -30,7 +30,7 @@ class TestEmbeddingLearner(TestCase):
                     ['sens', 'sensibl', '26', 'jan', '1996'],
                     ['four', 'room', '25', 'dec', '1995'],
                     ['money', 'train', '22', 'nov', '1995'],
-                    ['ace', 'ventura', 'natur', 'call', '10', 'nov', '1995']]
+                    ['ace', 'ventura', ':', 'natur', 'call', '10', 'nov', '1995']]
 
         file_path = "datasets/movies_info_reduced.json"
         try:

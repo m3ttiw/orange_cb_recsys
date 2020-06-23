@@ -1,11 +1,55 @@
 import lzma
 import os
+from abc import ABC
 from typing import Dict
 import pickle
 import re
 
 from orange_cb_recsys.content_analyzer.content_representation.content_field import ContentField
 from orange_cb_recsys.utils.const import logger
+
+
+class ExogenousPropertiesRepresentation(ABC):
+    """
+    Output of LodPropertiesRetrieval, different representations
+    exist according to different techniques
+    Args:
+        name (str): string identifier of the exogenous
+        properties representation
+    """
+    def __init__(self, name: str):
+        self.__name = name
+
+    def get_value(self):
+        raise NotImplementedError
+
+
+class PropertiesDict(ExogenousPropertiesRepresentation):
+    """
+    Couples <property name, property value>
+    retrieved by DBPediaMappingTechnique
+
+    Args:
+        name: string identifier of the exogenous
+        properties representation
+        features: properties in the specified format
+    """
+
+    def __init__(self, name: str, features: Dict[str, str] = None):
+        super().__init__(name)
+        if features is None:
+            features = {}
+
+        self.__features: Dict[str, str] = features
+
+    def get_value(self):
+        """
+
+        Returns: features dictionary
+
+        """
+
+        return self.__features
 
 
 class Content:
@@ -15,26 +59,31 @@ class Content:
     Args:
         content_id (str): identifier
         field_dict (dict[str, ContentField]): dictionary
-            containing the fields instances for the content,
-            and their name as dictionary key
-        lod_properties (Dict[str, str]): dictionary that contains
-            exogenous knowledge from a ontology via LOD cloud
+        containing the fields instances for the content,
+        and their name as dictionary key
+        exogenous_rep_dict (Dict <str, ExogenousProperties>):
+        different representations of content obtained
+        using ExogenousPropertiesRetrieval, the dictionary key is
+        the representation name
     """
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None,
-                 lod_properties: Dict[str, str] = None):
-        self.__lod_properties: Dict[str, str] = lod_properties
+                 exogenous_rep_dict: Dict[str, str] = None):
         if field_dict is None:
             field_dict = {}       # list o dict
+        if exogenous_rep_dict is None:
+            exogenous_rep_dict = {}
+
+        self.__exogenous_rep_dict: Dict[str, ExogenousPropertiesRepresentation] = exogenous_rep_dict
         self.__index_document_id: int = None
         self.__content_id: str = content_id
         self.__field_dict: Dict[str, ContentField] = field_dict
 
-    def set_lod_properties(self, lod_properties: Dict[str, str]):
-        self.__lod_properties = lod_properties
+    def append_exogenous_rep(self, name: str, exogenous_properties: ExogenousPropertiesRepresentation):
+        self.__exogenous_rep_dict[name] = exogenous_properties
 
-    def get_lod_properties(self):
-        return self.__lod_properties
+    def get_exogenous_rep(self, name):
+        return self.__exogenous_rep_dict[name]
 
     def set_index_document_id(self, index_document_id: int):
         self.__index_document_id = index_document_id

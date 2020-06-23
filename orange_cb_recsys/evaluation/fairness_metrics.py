@@ -293,7 +293,6 @@ class DeltaGap(GroupFairnessMetric):
         recommended_users = set(truth[['from_id']].values.flatten())
 
         score_frame = pd.DataFrame(columns=['user_group', 'delta-gap'])
-        print(user_groups)
         for group_name in user_groups:
             logger.info("Computing avg pop by users profiles for delta gap")
             avg_pop_by_users_profiles = get_avg_pop_by_users(truth, pop_by_items, user_groups[group_name])
@@ -301,7 +300,6 @@ class DeltaGap(GroupFairnessMetric):
             recs_gap = calculate_gap(group=user_groups[group_name].intersection(recommended_users),
                                      avg_pop_by_users=recs_avg_pop_by_users)
             profile_gap = calculate_gap(group=user_groups[group_name], avg_pop_by_users=avg_pop_by_users_profiles)
-            print("Group:", group_name, "has profile gap:", profile_gap)
             group_delta_gap = calculate_delta_gap(recs_gap=recs_gap, profile_gap=profile_gap)
             score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name], 'delta-gap': [group_delta_gap]}),
                                              ignore_index=True)

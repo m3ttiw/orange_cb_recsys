@@ -1,4 +1,5 @@
 from typing import List, Dict
+import orange_cb_recsys.utils.runnable_instances as r_i
 
 import json
 import sys
@@ -7,74 +8,28 @@ import yaml
 from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldConfig, \
     FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzer
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    embedding_technique.combining_technique import Centroid
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    embedding_technique.embedding_source import BinaryFile, GensimDownloader
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    entity_linking import BabelPyEntityLinking
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    field_content_production_technique import EmbeddingTechnique, SearchIndexing
-from orange_cb_recsys.content_analyzer.field_content_production_techniques. \
-    tf_idf import LuceneTfIdf, SkLearnTfIdf
-from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
-from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMappingTechnique
-from orange_cb_recsys.content_analyzer.memory_interfaces.text_interface import IndexInterface
-from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import \
     RatingsImporter, RatingsFieldConfig
-from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import \
-    TextBlobSentimentAnalysis
-from orange_cb_recsys.content_analyzer.raw_information_source import \
-    JSONFile, SQLDatabase, CSVFile
 
 import lucene
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config_prova.json"
+DEFAULT_CONFIG_PATH = "config.json"
 
-implemented_preprocessing = [
-    "nltk",
-]
+implemented_preprocessing = r_i.get_cat('preprocessor')
 
-implemented_content_prod = [
-    "embedding",
-    "babelpy",
-    "lucene_tf-idf",
-    "search_index",
-    "sk_learn_tf-idf"
-]
+implemented_content_prod = r_i.get_cat('content_production')
 
-implemented_rating_proc = [
-    "text_blob_sentiment",
-    "number_normalizer",
-]
+implemented_rating_proc = r_i.get_cat('rating_processor')
 
-runnable_instances = {
-    "json": JSONFile,
-    "csv": CSVFile,
-    "sql": SQLDatabase,
-    "index": IndexInterface,
-    "babelpy": BabelPyEntityLinking,
-    "nltk": NLTK,
-    "lucene_tf-idf": LuceneTfIdf,
-    "binary_file": BinaryFile,
-    "gensim_downloader": GensimDownloader,
-    "centroid": Centroid,
-    "embedding": EmbeddingTechnique,
-    "text_blob_sentiment": TextBlobSentimentAnalysis,
-    "number_normalizer": NumberNormalizer,
-    "search_index": SearchIndexing,
-    "sk_learn_tf-idf": SkLearnTfIdf,
-    "dbpedia_mapping": DBPediaMappingTechnique
-}
+runnable_instances = r_i.get()
 
 
 def check_for_available(content_config: Dict):
     # check if need_interface is respected
     # check runnable_instances
-    if content_config['source_type'] not in ['json', 'csv', 'sql']:
+    if content_config['source_type'] not in ['json', 'csv', 'sql', 'dat']:
         return False
     if content_config['content_type'].lower() == 'ratings':
         if "from" not in content_config.keys() \
@@ -109,7 +64,6 @@ def dict_detector(technique_dict):
         if isinstance(value, dict) and 'class' in value.keys():
             parameter_class_name = value.pop('class')
             technique_dict[key] = runnable_instances[parameter_class_name](**value)
-            break
 
     return technique_dict
 
@@ -130,9 +84,10 @@ def content_config_run(config_list: List[Dict]):
             search_index)
 
         if 'get_lod_properties' in content_config.keys():
-            class_name = content_config['get_lod_properties'].pop('class')
-            args = dict_detector(content_config['get_lod_properties'])
-            content_analyzer_config.set_lod_properties_retrieval(runnable_instances[class_name](**args))
+            for ex_retrieval in content_config['get_lod_properties']:
+                class_name = ex_retrieval.pop('class')
+                args = dict_detector(ex_retrieval)
+                content_analyzer_config.append_exogenous_properties_retrieval(runnable_instances[class_name](**args))
 
         for field_dict in content_config['fields']:
             try:

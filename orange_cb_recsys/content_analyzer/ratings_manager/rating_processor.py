@@ -37,6 +37,15 @@ class NumberNormalizer(RatingProcessor):
         self.__scale_span = abs(min_ - max_)
 
     def fit(self, field_data: float):
+        """
+
+        Args:
+            field_data: rating field that will be
+                normalized
+
+        Returns:
+            (float): field_data normalized in the interval [-1, 1]
+        """
         if float(field_data) < self.__min:
             return self.__min
         if float(field_data) > self.__max:

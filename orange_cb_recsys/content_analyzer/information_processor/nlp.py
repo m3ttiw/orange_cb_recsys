@@ -1,8 +1,9 @@
 from typing import List
 
 import nltk
+
+from nltk import word_tokenize
 from nltk.corpus import stopwords
-from nltk.tokenize import RegexpTokenizer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from nltk.stem.snowball import SnowballStemmer
@@ -115,8 +116,7 @@ class NLTK(NLP):
         Returns:
              List<str>: a list of words
         """
-        tokenizer = RegexpTokenizer('[\w<>$€]+')
-        return tokenizer.tokenize(text)
+        return [word for sent in nltk.sent_tokenize(text) for word in word_tokenize(sent)]
 
     def __stopwords_removal_operation(self, text) -> List[str]:
         """
