@@ -53,7 +53,11 @@ class EvalModel:
 class RankingAlgEvalModel(EvalModel):
     """
     Class for automating the process of recommending and
-    evaluate produced recommendations
+    evaluate produced recommendations.
+    This subclass automate the computation of metrics
+    whose input are the result of a RecSys
+    configured with a ranking algorithm.
+    The metrics are iteratively computed for each user
 
     Args:
         config (RecSysConfig): Configuration of the
