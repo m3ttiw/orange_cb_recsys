@@ -15,7 +15,7 @@ import lucene
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config.yml"
+DEFAULT_CONFIG_PATH = "config.json"
 
 implemented_preprocessing = r_i.get_cat('preprocessor')
 

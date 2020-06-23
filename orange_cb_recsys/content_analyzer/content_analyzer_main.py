@@ -44,7 +44,7 @@ class ContentAnalyzer:
                     technique.set_pipeline_need_refactor(str(pipeline))
                     technique.set_processor_list(pipeline.get_preprocessor_list())
                     technique.dataset_refactor(
-                        self.__config.get_source(), self.__config.get_id_field_name())
+                        self.__config.get_source(), self.__config.get_id_field_name_list())
 
     def __config_recap(self):
         recap_list = [("Field: %s; representation id: %s: technique: %s",
@@ -259,7 +259,7 @@ class ContentsProducer:
         timestamp = self.__get_timestamp(raw_content)
 
         # construct id from the list of the fields that compound id
-        content_id = id_merger(raw_content, self.__config.get_id_field_name())
+        content_id = id_merger(raw_content, self.__config.get_id_field_name_list())
         content = Content(content_id)
 
         for i, ex_retrieval in enumerate(self.__config.get_exogenous_properties_retrieval()):
