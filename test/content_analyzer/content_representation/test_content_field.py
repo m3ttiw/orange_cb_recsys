@@ -14,5 +14,5 @@ class TestFeaturesBagField(TestCase):
         feature = FeaturesBagField('repr_name')
         feature.append_feature('synsetID_1', 'global_score_1')
         feature.append_feature('synsetID_2', 'global_score_2')
-        self.assertEqual(feature.get_value(), {'synsetID_1': 'global_score_1', 'synsetID_2': 'global_score_2'},
+        self.assertEqual(feature.value, {'synsetID_1': 'global_score_1', 'synsetID_2': 'global_score_2'},
                          "Error in the features_dict")

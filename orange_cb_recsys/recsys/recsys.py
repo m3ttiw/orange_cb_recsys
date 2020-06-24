@@ -21,10 +21,10 @@ class RecSys:
     def __get_item_list(self, item_to_predict_id_list, user_ratings):
         if item_to_predict_id_list is None:
             # all items without rating if the list is not set
-            item_to_predict_list = get_unrated_items(self.__config.get_items_directory(), user_ratings)
+            item_to_predict_list = get_unrated_items(self.__config.items_directory, user_ratings)
         else:
             item_to_predict_list = [
-                load_content_instance(self.__config.get_items_directory(), re.sub(r'[^\w\s]', '', item_id))
+                load_content_instance(self.__config.items_directory, re.sub(r'[^\w\s]', '', item_id))
                 for item_id in item_to_predict_id_list]
 
         return item_to_predict_list
@@ -45,12 +45,12 @@ class RecSys:
         Raises:
              ValueError: if the algorithm is a ranking algorithm
         """
-        if self.__config.get_score_prediction_algorithm() is None:
+        if self.__config.score_prediction_algorithm is None:
             raise ValueError("You must set score prediction algorithm to use this method")
 
         # load user ratings
         logger.info("Loading user ratings")
-        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'] == user_id]
+        user_ratings = self.__config.rating_frame[self.__config.rating_frame['from_id'] == user_id]
         user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
 
         # define for which items calculate the prediction
@@ -59,8 +59,8 @@ class RecSys:
 
         # calculate predictions
         logger.info("Computing predicitons")
-        score_frame = self.__config.get_score_prediction_algorithm().predict(user_id, items, user_ratings,
-                                                                             self.__config.get_items_directory())
+        score_frame = self.__config.score_prediction_algorithm.predict(user_id, items, user_ratings,
+                                                                       self.__config.items_directory)
 
         return score_frame
 
@@ -82,19 +82,19 @@ class RecSys:
         Raises:
              ValueError: if the algorithm is a score prediction algorithm
         """
-        if self.__config.get_ranking_algorithm() is None:
+        if self.__config.ranking_algorithm is None:
             raise ValueError("You must set ranking algorithm to use this method")
 
         # load user ratings
         logger.info("Loading user ratings")
-        user_ratings = self.__config.get_rating_frame()[self.__config.get_rating_frame()['from_id'] == user_id]
+        user_ratings = self.__config.rating_frame[self.__config.rating_frame['from_id'] == user_id]
         user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
 
         # calculate predictions
         logger.info("Computing ranking")
-        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
-                                                                    self.__config.get_items_directory(),
-                                                                    candidate_item_id_list)
+        score_frame = self.__config.ranking_algorithm.predict(user_id, user_ratings, recs_number,
+                                                              self.__config.items_directory,
+                                                              candidate_item_id_list)
 
         return score_frame
 
@@ -114,15 +114,15 @@ class RecSys:
         """
         logger.info("Loading items")
         item_to_predict_id_list = [item for item in test_set.to_id]  # unrated items list
-        items = [load_content_instance(self.__config.get_items_directory(), re.sub(r'[^\w\s]', '', item_id))
+        items = [load_content_instance(self.__config.items_directory, re.sub(r'[^\w\s]', '', item_id))
                  for item_id in item_to_predict_id_list]
 
         logger.info("Loaded %d items" % len(items))
 
         # calculate predictions
         logger.info("Computing predictions")
-        score_frame = self.__config.get_score_prediction_algorithm().predict(user_id, items, user_ratings,
-                                                                             self.__config.get_items_directory())
+        score_frame = self.__config.score_prediction_algorithm.predict(user_id, items, user_ratings,
+                                                                       self.__config.items_directory)
 
         return score_frame
 
@@ -138,7 +138,7 @@ class RecSys:
             recs_number (int): Number of recommendations to provide
         """
         user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
-        score_frame = self.__config.get_ranking_algorithm().predict(user_id, user_ratings, recs_number,
-                                                                    self.__config.get_items_directory(),
-                                                                    test_set_items)
+        score_frame = self.__config.ranking_algorithm.predict(user_id, user_ratings, recs_number,
+                                                              self.__config.items_directory,
+                                                              test_set_items)
         return score_frame

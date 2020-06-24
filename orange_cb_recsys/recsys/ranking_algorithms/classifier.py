@@ -24,9 +24,16 @@ from orange_cb_recsys.utils.load_content import get_rated_items, get_unrated_ite
 class ClassifierRecommender(RankingAlgorithm):
     """
        Class that implements a logistic regression classifier.
+
        Args:
            item_field (str): Name of the field that contains the content to use
            field_representation (str): Id of the field_representation content
+           classifier(str): classifier that will be used
+           can be one of the following values:
+           random_forest, svm, log_regr,
+           knn, decision_tree, gaussian_process
+           threshold: ratings bigger than threshold will be
+           considered as positive
        """
     def __init__(self, item_field: str, field_representation: str, classifier: str, threshold=-1):
         super().__init__(item_field, field_representation)
@@ -72,13 +79,13 @@ class ClassifierRecommender(RankingAlgorithm):
         labels = []
         for item in rated_items:
             if item is not None:
-                rated_features_bag_list.append(item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value())
-                labels.append(1 if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= threshold else 0)
+                rated_features_bag_list.append(item.get_field(self.item_field).get_representation(self.item_field_representation).value)
+                labels.append(1 if float(ratings[ratings['to_id'] == item.content_id].score) >= threshold else 0)
 
         logger.info("Labeling examples")
         for item in unrated_items:
             if item is not None:
-                unrated_features_bag_list.append(item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value())
+                unrated_features_bag_list.append(item.get_field(self.item_field).get_representation(self.item_field_representation).value)
 
         clf = None
         if self.__classifier.lower() == "random_forest":
@@ -110,7 +117,7 @@ class ClassifierRecommender(RankingAlgorithm):
 
         for score, item in zip(score_labels, unrated_items):
             if item is not None:
-                score_frame = pd.concat([score_frame, pd.DataFrame.from_records([(item.get_content_id(), score[1])], columns=columns)], ignore_index=True)
+                score_frame = pd.concat([score_frame, pd.DataFrame.from_records([(item.content_id, score[1])], columns=columns)], ignore_index=True)
 
         score_frame = score_frame.sort_values(['rating'], ascending=False).reset_index(drop=True)
         score_frame = score_frame[:recs_number]

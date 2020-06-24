@@ -121,10 +121,8 @@ def content_config_run(config_list: List[Dict]):
                         FieldRepresentationPipeline(None, preprocessing_list))
             # verify that the memory interface is set
             if field_dict['memory_interface'] != "None":
-                field_config.set_memory_interface(
-                    runnable_instances[
-                        field_dict['memory_interface']]
-                    (field_dict['memory_interface_path']))
+                field_config.memory_interface = runnable_instances[
+                    field_dict['memory_interface']](field_dict['memory_interface_path'])
 
             content_analyzer_config.append_field_config(field_dict["field_name"], field_config)
 
@@ -140,7 +138,7 @@ def rating_config_run(config_dict: Dict):
         class_name = field['processor'].pop('class')
         class_dict = dict_detector(field["processor"])
         rating_configs.append(
-            RatingsFieldConfig(preference_field_name=field["preference_field_name"],
+            RatingsFieldConfig(field_name=field["preference_field_name"],
                                processor=runnable_instances[class_name](**class_dict))
         )
         args = {}

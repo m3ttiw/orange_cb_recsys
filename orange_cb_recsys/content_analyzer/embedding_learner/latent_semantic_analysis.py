@@ -54,4 +54,4 @@ class GensimLatentSemanticAnalysis(EmbeddingLearner):
         docs = self.extract_corpus()
         dictionary = GensimLatentSemanticAnalysis.__create_dictionary(docs)
         word_docs_matrix = GensimLatentSemanticAnalysis.__create_word_docs_matrix(docs, dictionary)
-        self.set_model(LsiModel(word_docs_matrix, id2word=dictionary))
+        self.model = LsiModel(word_docs_matrix, id2word=dictionary)

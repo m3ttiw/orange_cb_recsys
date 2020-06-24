@@ -15,18 +15,20 @@ class RatingsFieldConfig:
     Class for the configuration of the field containing the ratings
 
     Args:
-        preference_field_name (str): Name of the field that contains the ratings
+        field_name (str): Name of the field that contains the ratings
         processor (RatingProcessor): Processor for the data in the rating field
     """
-    def __init__(self, preference_field_name: str,
+    def __init__(self, field_name: str,
                  processor: RatingProcessor):
-        self.__preference_field_name = preference_field_name
+        self.__field_name = field_name
         self.__processor = processor
 
-    def get_field_name(self):
-        return self.__preference_field_name
+    @property
+    def field_name(self):
+        return self.__field_name
 
-    def get_processor(self):
+    @property
+    def processor(self):
         return self.__processor
 
 
@@ -63,18 +65,22 @@ class RatingsImporter:
 
         self.__columns: list = ["from_id", "to_id", "score", "timestamp"]
         for field in self.__rating_configs:
-            self.__columns.append(field.get_field_name())
+            self.__columns.append(field.field_name)
 
-    def get_frame_columns(self) -> list:
+    @property
+    def frame_columns(self) -> list:
         return self.__columns
 
-    def get_from_field_name(self) -> str:
+    @property
+    def from_field_name(self) -> str:
         return self.__from_field_name
 
-    def get_to_field_name(self) -> str:
+    @property
+    def to_field_name(self) -> str:
         return self.__to_field_name
 
-    def get_timestamp_field_name(self) -> str:
+    @property
+    def timestamp_field_name(self) -> str:
         return self.__timestamp_field_name
 
     def import_ratings(self) -> pd.DataFrame:
@@ -94,12 +100,12 @@ class RatingsImporter:
                         "to_id": raw_rating[self.__to_field_name],
                         "timestamp": raw_rating[self.__timestamp_field_name],
                         "score": self.__score_combiner.combine(
-                            [preference.get_processor().fit(raw_rating[preference.get_field_name()])
+                            [preference.processor.fit(raw_rating[preference.field_name])
                              for preference in self.__rating_configs])
                     },
                     **{
-                        preference.get_field_name():
-                            raw_rating[preference.get_field_name()]
+                        preference.field_name:
+                            raw_rating[preference.field_name]
                         for preference in self.__rating_configs
                     },
                     **{

@@ -33,4 +33,4 @@ class GensimRandomIndexing(EmbeddingLearner):
         corpus = self.extract_corpus()
         dictionary = Dictionary(corpus)
         model = RpModel(corpus, id2word=dictionary)
-        self.set_model(model)
+        self.model = model

@@ -37,32 +37,42 @@ class RecSysConfig:
 
         self.__rating_frame['score'] = pd.to_numeric(self.__rating_frame["score"], downcast="float")
 
-    def get_users_directory(self):
+    @property
+    def users_directory(self):
         return self.__users_directory
 
-    def get_items_directory(self):
+    @property
+    def items_directory(self):
         return self.__items_directory
 
-    def get_score_prediction_algorithm(self):
+    @property
+    def score_prediction_algorithm(self):
         return self.__score_prediction_algorithm
 
-    def get_ranking_algorithm(self):
+    @property
+    def ranking_algorithm(self):
         return self.__ranking_algorithm
 
-    def get_rating_frame(self):
+    @property
+    def rating_frame(self):
         return self.__rating_frame
 
-    def set_users_directory(self, users_directory: str):
+    @users_directory.setter
+    def users_directory(self, users_directory: str):
         self.__users_directory = users_directory
 
-    def set_ranking_algorithm(self, ranking_algorithm: str):
+    @ranking_algorithm.setter
+    def ranking_algorithm(self, ranking_algorithm: str):
         self.__ranking_algorithm = ranking_algorithm
 
-    def set_score_prediction_algorithm(self, score_prediction_algorithm: str):
+    @score_prediction_algorithm.setter
+    def score_prediction_algorithm(self, score_prediction_algorithm: str):
         self.__score_prediction_algorithm = score_prediction_algorithm
 
-    def set_items_directory(self, items_directory: str):
+    @items_directory.setter
+    def items_directory(self, items_directory: str):
         self.__items_directory = items_directory
 
-    def set_rating_frame(self, rating_frame: str):
+    @rating_frame.setter
+    def rating_frame(self, rating_frame: str):
         self.__rating_frame = rating_frame

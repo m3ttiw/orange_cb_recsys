@@ -24,7 +24,7 @@ class TestEmbeddingTechnique(TestCase):
                        -7.03384009e-01, 6.97145015e-01, 5.35014980e-02, -8.15229982e-01,
                        -6.40249997e-01]
 
-        self.assertTrue(np.allclose(result.get_value(), expected))
+        self.assertTrue(np.allclose(result.value, expected))
 
         technique = EmbeddingTechnique(Centroid(), GensimDownloader('glove-twitter-25'), granularity="word")
 

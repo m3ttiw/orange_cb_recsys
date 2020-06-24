@@ -19,15 +19,6 @@
           ]
         },
         {
-        "field_content_production": {"class": "embedding",
-          "combining_technique": {"class":  "centroid"},
-          "embedding_source": {"class": "binary_file", "file_path": "../../datasets/doc2vec/doc2vec.bin", "embedding_type":  "doc2vec"},
-          "granularity": "doc"},
-        "preprocessing_list": [
-          {"class": "nltk", "url_tagging":"True", "strip_multiple_whitespaces": "True"}
-          ]
-        },
-        {
         "field_content_production": {"class": "lucene_tf-idf"},
         "preprocessing_list": [
           {"class": "nltk", "lemmatization": "True"}

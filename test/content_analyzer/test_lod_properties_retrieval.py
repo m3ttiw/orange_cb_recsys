@@ -29,15 +29,15 @@ class TestDBPediaMappingTechnique(TestCase):
         mapp = DBPediaMappingTechnique('Film', 'EN', 'Title')
         prop = mapp.get_properties('1', raw_content)
 
-        mapp.set_mode('all')
+        mapp.mode = 'all'
         prop = mapp.get_properties('1', raw_content)
 
-        mapp.set_mode('all_retrieved')
+        mapp.mode = 'all_retrieved'
         prop = mapp.get_properties('1', raw_content)
 
-        mapp.set_mode('original_retrieved')
+        mapp.mode = 'original_retrieved'
         prop = mapp.get_properties('1', raw_content)
 
-        mapp.set_label_field('Genre')
-        mapp.set_mode('only_retrieved_evaluated')
+        mapp.label_field = 'Genre'
+        mapp.mode = 'only_retrieved_evaluated'
         prop = mapp.get_properties('1', raw_content)

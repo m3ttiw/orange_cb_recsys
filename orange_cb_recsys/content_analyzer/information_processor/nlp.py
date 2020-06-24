@@ -93,20 +93,20 @@ class NLTK(NLP):
     def __repr__(self):
         return "< NLTK: " + "" \
                 "stopwords_removal = " + \
-               str(self.get_stopwords_removal()) + ";" + \
+               str(self.stopwords_removal) + ";" + \
                  "stemming = " + \
-               str(self.get_stemming()) + ";" + \
+               str(self.stemming) + ";" + \
                  "lemmatization = " + \
-               str(self.get_lemmatization()) + ";" + \
+               str(self.lemmatization) + ";" + \
                  "named_entity_recognition = " + \
-               str(self.get_named_entity_recognition()) + ";" + \
+               str(self.named_entity_recognition) + ";" + \
                  "strip_multiple_whitespaces = " + \
-               str(self.get_strip_multiple_whitespaces()) + ";" + \
+               str(self.strip_multiple_whitespaces) + ";" + \
                  "url_tagging = " + \
-               str(self.get_url_tagging()) + " >"
+               str(self.url_tagging) + " >"
 
     def set_lang(self, lang: str):
-        super().set_lang(self.__full_lang_code)
+        self.lang = self.__full_lang_code
 
     def __tokenization_operation(self, text) -> List[str]:
         """
@@ -130,7 +130,7 @@ class NLTK(NLP):
         Returns:
             filtered_sentence (List<str>): list of words from the text, without the stopwords
         """
-        stop_words = set(stopwords.words(self.get_lang()))
+        stop_words = set(stopwords.words(self.__full_lang_code))
 
         filtered_sentence = []
         for word_token in text:
@@ -149,7 +149,7 @@ class NLTK(NLP):
         Returns:
             stemmed_text (List<str>): List of the fords from the text, reduced to their stem version
         """
-        stemmer = SnowballStemmer(language=self.get_lang())
+        stemmer = SnowballStemmer(language=self.__full_lang_code)
 
         stemmed_text = []
         for word in text:
@@ -249,17 +249,17 @@ class NLTK(NLP):
         return text
 
     def process(self, field_data) -> List[str]:
-        if self.get_strip_multiple_whitespaces():
+        if self.strip_multiple_whitespaces:
             field_data = self.__strip_multiple_whitespaces_operation(field_data)
-        if self.get_url_tagging():
+        if self.url_tagging:
             field_data = self.__url_tagging_operation(field_data)
         field_data = self.__tokenization_operation(field_data)
-        if self.get_stopwords_removal():
+        if self.stopwords_removal:
             field_data = self.__stopwords_removal_operation(field_data)
-        if self.get_lemmatization():
+        if self.lemmatization:
             field_data = self.__lemmatization_operation(field_data)
-        if self.get_stemming():
+        if self.stemming:
             field_data = self.__stemming_operation(field_data)
-        if self.get_named_entity_recognition():
+        if self.named_entity_recognition:
             field_data = self.__named_entity_recognition_operation(field_data)
         return self.__compact_tokens(field_data)
