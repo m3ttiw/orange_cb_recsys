@@ -87,6 +87,9 @@ class FieldConfig:
 
         self.__lang = lang
         self.__memory_interface: InformationInterface = memory_interface
+
+        for pipeline in pipelines_list:
+            pipeline.set_lang(self.__lang)
         self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
 
     def get_lang(self):
@@ -101,6 +104,11 @@ class FieldConfig:
     def append_pipeline(self, pipeline: FieldRepresentationPipeline):
         pipeline.set_lang(self.__lang)
         self.__pipelines_list.append(pipeline)
+
+    def append_pipeline_list(self, pipeline_list: List[FieldRepresentationPipeline]):
+        for pipeline in pipeline_list:
+            pipeline.set_lang(self.__lang)
+            self.__pipelines_list.append(pipeline)
 
     def get_pipeline_list(self) -> List[FieldRepresentationPipeline]:
         for pipeline in self.__pipelines_list:
