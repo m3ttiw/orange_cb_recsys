@@ -35,7 +35,7 @@ class BinaryFile(EmbeddingSource):
         elif embedding_type == "fasttext":
             self.model = fasttext.load_facebook_vectors(self.__file_path)
         elif embedding_type == "ri":
-            self.__model = RpModel.load(self.__file_path)
+            self.model = RpModel.load(self.__file_path)
         else:
             raise ValueError(
                 "Must specify a valid embedding model type for loading from binary file")
