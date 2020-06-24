@@ -40,22 +40,25 @@ class FieldRepresentationPipeline:
         """
         self.__preprocessor_list.append(preprocessor)
 
-    def set_content_technique(self, content_technique: FieldContentProductionTechnique):
+    @property
+    def content_technique(self) -> FieldContentProductionTechnique:
+        return self.__content_technique
+
+    @content_technique.setter
+    def content_technique(self, content_technique: FieldContentProductionTechnique):
         self.__content_technique = content_technique
 
-    def get_preprocessor_list(self) -> List[InformationProcessor]:
+    @property
+    def preprocessor_list(self) -> List[InformationProcessor]:
         for preprocessor in self.__preprocessor_list:
             yield preprocessor
 
-    def get_content_technique(self) -> FieldContentProductionTechnique:
-        return self.__content_technique
-
     def set_lang(self, lang: str):
         for preprocessor in self.__preprocessor_list:
-            preprocessor.set_lang(lang)
+            preprocessor.lang = lang
 
         try:
-            self.__content_technique.set_lang(lang)
+            self.__content_technique.lang = lang
         except AttributeError:
             pass
 
@@ -92,25 +95,29 @@ class FieldConfig:
             pipeline.set_lang(self.__lang)
         self.__pipelines_list: List[FieldRepresentationPipeline] = pipelines_list
 
-    def get_lang(self):
+    @property
+    def lang(self):
         return self.__lang
 
-    def get_memory_interface(self) -> InformationInterface:
+    @property
+    def memory_interface(self) -> InformationInterface:
         return self.__memory_interface
 
-    def set_memory_interface(self, memory_interface: InformationInterface):
+    @memory_interface.setter
+    def memory_interface(self, memory_interface: InformationInterface):
         self.__memory_interface = memory_interface
 
     def append_pipeline(self, pipeline: FieldRepresentationPipeline):
         pipeline.set_lang(self.__lang)
         self.__pipelines_list.append(pipeline)
 
-    def append_pipeline_list(self, pipeline_list: List[FieldRepresentationPipeline]):
+    def extend_pipeline_list(self, pipeline_list: List[FieldRepresentationPipeline]):
         for pipeline in pipeline_list:
             pipeline.set_lang(self.__lang)
-            self.__pipelines_list.append(pipeline)
+        self.__pipelines_list.extend(pipeline_list)
 
-    def get_pipeline_list(self) -> List[FieldRepresentationPipeline]:
+    @property
+    def pipeline_list(self) -> List[FieldRepresentationPipeline]:
         for pipeline in self.__pipelines_list:
             yield pipeline
 
@@ -177,30 +184,36 @@ class ContentAnalyzerConfig:
                                               exogenous_properties_retrieval: List[ExogenousPropertiesRetrieval]):
         self.__exogenous_properties_retrieval.append(exogenous_properties_retrieval)
 
-    def get_exogenous_properties_retrieval(self) -> ExogenousPropertiesRetrieval:
+    @property
+    def exogenous_properties_retrieval(self) -> ExogenousPropertiesRetrieval:
         for ex_retrieval in self.__exogenous_properties_retrieval:
             yield ex_retrieval
 
-    def get_search_index(self):
+    @property
+    def search_index(self):
         return self.__search_index
 
-    def get_output_directory(self):
+    @property
+    def output_directory(self):
         return self.__output_directory
 
-    def get_content_type(self):
+    @property
+    def content_type(self):
         return self.__content_type
 
-    def get_id_field_name_list(self):
+    @property
+    def id_field_name_list(self):
         return self.__id_field_name_list
 
-    def get_source(self) -> RawInformationSource:
+    @property
+    def source(self) -> RawInformationSource:
         return self.__source
+
+    def get_memory_interface(self, field_name: str) -> InformationInterface:
+        return self.__field_config_dict[field_name].memory_interface
 
     def get_field_config(self, field_name: str):
         return self.__field_config_dict[field_name]
-
-    def get_memory_interface(self, field_name: str) -> InformationInterface:
-        return self.__field_config_dict[field_name].get_memory_interface()
 
     def get_pipeline_list(self, field_name: str) -> List[FieldRepresentationPipeline]:
         """
@@ -213,7 +226,7 @@ class ContentAnalyzerConfig:
             List<FieldRepresentationPipeline>:
                 the list of pipelines specified for the input field
         """
-        for pipeline in self.__field_config_dict[field_name].get_pipeline_list():
+        for pipeline in self.__field_config_dict[field_name].pipeline_list:
             yield pipeline
 
     def get_field_name_list(self) -> List[str]:
@@ -234,8 +247,8 @@ class ContentAnalyzerConfig:
         """
         interfaces = set()
         for key in self.__field_config_dict.keys():
-            if self.__field_config_dict[key].get_memory_interface() is not None:
-                interfaces.add(self.__field_config_dict[key].get_memory_interface())
+            if self.__field_config_dict[key].memory_interface is not None:
+                interfaces.add(self.__field_config_dict[key].memory_interface)
         return interfaces
 
     def append_field_config(self, field_name: str, field_config: FieldConfig):

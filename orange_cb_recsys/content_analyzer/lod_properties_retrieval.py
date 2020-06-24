@@ -34,11 +34,13 @@ class ExogenousPropertiesRetrieval(ABC):
         else:
             return 'all'
 
-    def set_mode(self, mode):
-        self.__mode = self.__check_mode(mode)
-
-    def get_mode(self):
+    @property
+    def mode(self):
         return self.__mode
+
+    @mode.setter
+    def mode(self, mode):
+        self.__mode = self.__check_mode(mode)
 
     @abstractmethod
     def get_properties(self, name, raw_content: Dict[str, object]) -> Dict[str, str]:
@@ -81,7 +83,12 @@ class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
 
         self.__has_label = self.__check_has_label()
 
-    def set_label_field(self, label_field: str):
+    @property
+    def label_field(self):
+        return self.__label_field
+
+    @label_field.setter
+    def label_field(self, label_field: str):
         self.__label_field = label_field
 
     def __check_has_label(self):
@@ -271,16 +278,16 @@ class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
         """
         logger.info("Extracting LOD properties")
         prop_dict = {}
-        if self.get_mode() == 'only_retrieved_evaluated':
+        if self.mode == 'only_retrieved_evaluated':
             prop_dict = self.__get_only_retrieved_evaluated(raw_content)
 
-        if self.get_mode() == 'all_retrieved':
+        if self.mode == 'all_retrieved':
             prop_dict = self.__get_all_properties_retrieved(raw_content)
 
-        if self.get_mode() == 'original_retrieved':
+        if self.mode == 'original_retrieved':
             prop_dict = self.__get_original_retrieved(raw_content)
 
-        if self.get_mode() == 'all':
+        if self.mode == 'all':
             prop_dict = self.__get_all_properties(raw_content)
 
         return PropertiesDict(name, prop_dict)

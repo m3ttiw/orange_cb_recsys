@@ -15,12 +15,12 @@ class TestLuceneTfIdf(TestCase):
             file_path = 'datasets/movies_info_reduced.json'
 
         technique = LuceneTfIdf()
-        technique.set_field_need_refactor("Plot")
-        technique.set_pipeline_need_refactor(str(1))
-        technique.set_processor_list([NLTK()])
+        technique.field_need_refactor = "Plot"
+        technique.pipeline_need_refactor = str(1)
+        technique.processor_list = [NLTK()]
         technique.dataset_refactor(JSONFile(file_path), ["imdbID"])
         features_bag_test = technique.produce_content("test", "tt0113497", "Plot")
-        features = features_bag_test.get_value()
+        features = features_bag_test.value
 
         self.assertEqual(features['years'], 0.6989700043360189)
 
@@ -35,9 +35,9 @@ class TestSkLearnTfIDF(TestCase):
             file_path = 'datasets/movies_info_reduced.json'
 
         technique = SkLearnTfIdf()
-        technique.set_field_need_refactor("Plot")
-        technique.set_pipeline_need_refactor(str(1))
-        technique.set_processor_list([NLTK()])
+        technique.field_need_refactor = "Plot"
+        technique.pipeline_need_refactor = str(1)
+        technique.processor_list = [NLTK()]
         technique.dataset_refactor(JSONFile(file_path), ["imdbID"])
         features_bag_test = technique.produce_content("test", "tt0113497", "Plot")
         features = features_bag_test.get_value()

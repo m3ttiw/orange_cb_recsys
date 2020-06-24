@@ -23,9 +23,9 @@ class BabelPyEntityLinking(EntityLinking):
         self.__babel_client = None
 
     def set_lang(self, lang: str):
-        super().set_lang(lang)
+        self.lang = lang
         params = dict()
-        params['lang'] = self.get_lang()
+        params['lang'] = self.lang
         self.__babel_client = BabelfyClient(self.__api_key, params)
 
     def __str__(self):

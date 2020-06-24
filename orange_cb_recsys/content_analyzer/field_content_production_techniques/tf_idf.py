@@ -31,8 +31,8 @@ class SkLearnTfIdf(TfIdfTechnique):
             id_field_names: names of the fields that compounds the id
         """
 
-        field_name = self.get_field_need_refactor()
-        preprocessor_list = self.get_processor_list()
+        field_name = self.field_need_refactor
+        preprocessor_list = self.processor_list
 
         for raw_content in information_source:
             processed_field_data = raw_content[field_name]
@@ -110,9 +110,9 @@ class LuceneTfIdf(TfIdfTechnique):
             id_field_names: names of the fields that compounds the id
         """
 
-        field_name = self.get_field_need_refactor()
-        preprocessor_list = self.get_processor_list()
-        pipeline_id = self.get_pipeline_need_refactor()
+        field_name = self.field_need_refactor
+        preprocessor_list = self.processor_list
+        pipeline_id = self.pipeline_need_refactor
 
         self.__index = IndexInterface('./' + field_name + pipeline_id)
         self.__index.init_writing()

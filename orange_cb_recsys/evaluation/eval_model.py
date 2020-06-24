@@ -32,16 +32,19 @@ class EvalModel:
         self.__config: RecSysConfig = config
         self.__partitioning = partitioning
 
-    def get_partitioning(self):
+    @property
+    def partitioning(self):
         return self.__partitioning
 
-    def get_config(self):
+    @property
+    def config(self):
         return self.__config
 
     def append_metric(self, metric: Metric):
         self.__metric_list.append(metric)
 
-    def get_metrics(self):
+    @property
+    def metrics(self):
         for metric in self.__metric_list:
             yield metric
 
@@ -85,31 +88,31 @@ class RankingAlgEvalModel(EvalModel):
                 metric values are given by the mean of the values obtained for that user.
         """
         # initialize recommender to call for prediction computing
-        recsys = RecSys(self.get_config())
+        recsys = RecSys(self.config)
 
         # get all users in specified directory
         logger.info("Loading user instances")
         user_id_list = \
             [os.path.splitext(filename)[0]
-             for filename in os.listdir(self.get_config().get_users_directory())]
+             for filename in os.listdir(self.config.users_directory)]
 
         # define results structure
         ranking_alg_metrics_results = pd.DataFrame()
 
         # calculate metrics on ranking algorithm results
-        if self.get_config().get_ranking_algorithm() is None:
+        if self.config.ranking_algorithm is None:
             raise ValueError("You must set ranking algorithm to compute ranking metrics")
         for user_id in user_id_list:
             logger.info("Computing ranking metrics for user %s", user_id)
-            user_ratings = self.get_config().get_rating_frame()[
-                self.get_config().get_rating_frame()['from_id'] == user_id]
+            user_ratings = self.config.rating_frame[
+                self.config.rating_frame['from_id'] == user_id]
 
             try:
-                self.get_partitioning().set_dataframe(user_ratings)
+                self.partitioning.dataframe = user_ratings
             except ValueError:
                 continue
 
-            for partition_index in self.get_partitioning():
+            for partition_index in self.partitioning:
                 result_dict = {}
                 train = user_ratings.iloc[partition_index[0]]
                 test = user_ratings.iloc[partition_index[1]]
@@ -119,7 +122,7 @@ class RankingAlgEvalModel(EvalModel):
                 recs_number = len(truth['rating'].values)
                 predictions = recsys.fit_eval_ranking(
                     user_id, train, truth['to_id'].tolist(), recs_number)
-                for metric in self.get_metrics():
+                for metric in self.metrics:
                     result_dict['from'] = user_id
                     result_dict[str(metric)] = metric.perform(predictions, truth)
 
@@ -165,43 +168,43 @@ class PredictionAlgEvalModel(EvalModel):
                 metric values are given by the mean of the values obtained for that user.
         """
         # initialize recommender to call for prediction computing
-        recsys = RecSys(self.get_config())
+        recsys = RecSys(self.config)
 
         # get all users in specified directory
         logger.info("Loading user instances")
         user_id_list = [
             os.path.splitext(filename)[0]
-            for filename in os.listdir(self.get_config().get_users_directory())]
+            for filename in os.listdir(self.config.users_directory)]
 
         # define results structure
         prediction_metric_results = pd.DataFrame()
 
         # calculate metrics on prediction algorithm results
-        if self.get_config().get_score_prediction_algorithm() is None:
+        if self.config.score_prediction_algorithm is None:
             raise ValueError("You must set score prediction algorithm to compute this eval model")
 
         for user_id in user_id_list:
             logger.info("User %s", user_id)
             logger.info("Loading user ratings")
 
-            user_ratings = self.get_config().get_rating_frame()[
-                self.get_config().get_rating_frame()['from_id'] == user_id]
+            user_ratings = self.config.rating_frame[
+                self.config.rating_frame['from_id'] == user_id]
             user_ratings = user_ratings.sort_values(['to_id'], ascending=True)
 
             try:
-                self.get_partitioning().set_dataframe(user_ratings)
+                self.partitioning.dataframe = user_ratings
             except ValueError:
                 continue
 
-            for partition_index in self.get_partitioning():
+            for partition_index in self.partitioning:
                 result_dict = {}
                 logger.info("Computing prediction metrics")
                 train = user_ratings.iloc[partition_index[0]]
                 test = user_ratings.iloc[partition_index[1]]
-                test = remove_not_existent_items(test, self.get_config().get_items_directory())
+                test = remove_not_existent_items(test, self.config.items_directory)
 
                 predictions = recsys.fit_eval_predict(user_id, train, test)
-                for metric in self.get_metrics():
+                for metric in self.metrics:
                     result_dict[str(metric)] = metric.perform(predictions, test)
 
                 prediction_metric_results.append(result_dict, ignore_index=True)
@@ -244,13 +247,13 @@ class ReportEvalModel(EvalModel):
             according to the metric, for example a DataFrame or a float
         """
         # initialize recommender to call for prediction computing
-        recsys = RecSys(self.get_config())
+        recsys = RecSys(self.config)
 
         # get all users in specified directory
         logger.info("Loading user instances")
         user_id_list = [
             os.path.splitext(filename)[0]
-            for filename in os.listdir(self.get_config().get_users_directory())]
+            for filename in os.listdir(self.config.users_directory)]
 
         # define results structure
         no_truth_metrics_results = []
@@ -258,7 +261,7 @@ class ReportEvalModel(EvalModel):
         # calculate metrics that not require ground truth
         # for example fairness metrics, serendipity, novelty
 
-        if isinstance(self.get_config().get_score_prediction_algorithm(), ScorePredictionAlgorithm):
+        if isinstance(self.config.score_prediction_algorithm, ScorePredictionAlgorithm):
             raise ValueError("You must set ranking algorithm to compute this metrics")
 
         columns = ["from_id", "to_id", "rating"]
@@ -276,8 +279,8 @@ class ReportEvalModel(EvalModel):
             score_frame = pd.concat([fit_result_with_user, score_frame], ignore_index=True)
 
         logger.info("Computing no truth metrics")
-        for metric in self.get_metrics():
+        for metric in self.metrics:
             no_truth_metrics_results.append(
-                metric.perform(score_frame, self.get_config().get_rating_frame()))
+                metric.perform(score_frame, self.config.rating_frame))
 
         return no_truth_metrics_results

@@ -11,7 +11,7 @@ class TestBabelPyEntityLinking(TestCase):
         babel.set_lang('EN')
         content = babel.produce_content("provaEL", str_)
         if content is not None:
-            features = content.get_value()
+            features = content.value
             for key in features:
                 if key in babelfy_dict.keys():
                     self.assertEqual(features[key], babelfy_dict[key], "different global score")

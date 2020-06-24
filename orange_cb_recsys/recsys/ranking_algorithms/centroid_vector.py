@@ -48,13 +48,13 @@ class CentroidVector(RankingAlgorithm):
         dv = DictVectorizer(sparse=True)
 
         positive_rated_items = [
-            item.get_field(self.get_item_field()).get_representation(self.get_item_field_representation()).get_value()
+            item.get_field(self.item_field).get_representation(self.item_field_representation).get_value()
             for item in rated_items
             if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold]
 
         dicts = positive_rated_items + \
-                [item.get_field(self.get_item_field()).get_representation(
-                    self.get_item_field_representation()).get_value() for item in unrated_items]
+                [item.get_field(self.item_field).get_representation(
+                    self.item_field_representation).get_value() for item in unrated_items]
 
         matrix = dv.fit_transform(dicts)
         return sparse.csr_matrix(matrix.mean(axis=0).getA()), matrix[
@@ -76,10 +76,10 @@ class CentroidVector(RankingAlgorithm):
 
         arrays = []
         for item in rated_items:
-            representation = item.get_field(self.get_item_field()).get_representation(
-                self.get_item_field_representation())
-            if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold:
-                arrays.append(representation.get_value())
+            representation = item.get_field(self.item_field).get_representation(
+                self.item_field_representation)
+            if float(ratings[ratings['to_id'] == item.content_id].score) >= self.__threshold:
+                arrays.append(representation.value)
         return np.array(arrays).mean(axis=0)
 
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str,
@@ -124,12 +124,12 @@ class CentroidVector(RankingAlgorithm):
 
             first_item = rated_items[0]
             need_vectorizer = False
-            if self.get_item_field() not in first_item.get_field_list():
+            if self.item_field not in first_item.field_dict:
                 raise ValueError("The field name specified could not be found!")
             else:
                 try:
-                    representation = first_item.get_field(self.get_item_field()).get_representation(
-                        self.get_item_field_representation())
+                    representation = first_item.get_field(self.item_field).get_representation(
+                        self.item_field_representation)
                 except KeyError:
                     raise ValueError("The given representation id wasn't found for the specified field")
 
@@ -137,7 +137,7 @@ class CentroidVector(RankingAlgorithm):
                     raise ValueError("The given representation must be an embedding or a tf-idf vector")
 
                 if isinstance(representation, EmbeddingField):
-                    if len(representation.get_value().shape) != 1:
+                    if len(representation.value.shape) != 1:
                         raise ValueError("The specified representation is not a document embedding, so the centroid"
                                          " can not be calculated")
 
@@ -153,9 +153,9 @@ class CentroidVector(RankingAlgorithm):
                 logger.info("Computing similarities")
 
                 for item in unrated_items:
-                    item_id = item.get_content_id()
-                    item_field_representation = item.get_field(self.get_item_field()).get_representation(
-                        self.get_item_field_representation()).get_value()
+                    item_id = item.content_id
+                    item_field_representation = item.get_field(self.item_field).get_representation(
+                        self.item_field_representation).value
                     logger.info("Computing similarity with %s" % item_id)
                     similarity = self.__similarity.perform(DenseVector(centroid), DenseVector(item_field_representation))
                     scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],
@@ -166,7 +166,7 @@ class CentroidVector(RankingAlgorithm):
 
                 logger.info("Computing similarities")
                 for item, item_array in zip(unrated_items, unrated_matrix):
-                    item_id = item.get_content_id()
+                    item_id = item.content_id
                     logger.info("Computing similarity with %s" % item_id)
                     similarity = self.__similarity.perform(SparseVector(centroid), SparseVector(item_array))
                     scores = pd.concat([scores, pd.DataFrame.from_records([(item_id, similarity)], columns=columns)],

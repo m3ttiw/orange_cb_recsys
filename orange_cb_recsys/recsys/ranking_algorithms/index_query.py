@@ -130,7 +130,7 @@ class IndexQuery(RankingAlgorithm):
             item = load_content_instance(items_directory, item_id)
 
             if score > self.__positive_threshold:
-                rated_document_list.append(item.get_index_document_id())
+                rated_document_list.append(item.index_document_id)
                 scores.append(score)
 
         return self.__recs_query(rated_document_list,

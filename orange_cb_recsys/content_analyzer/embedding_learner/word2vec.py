@@ -122,8 +122,8 @@ class GensimWord2Vec(EmbeddingLearner):
 
     def __repr__(self):
         return "< GensimWord2Vec :" + \
-               "source = " + str(self.get_source()) + \
-               "preprocessor = " + str(self.get_preprocessor()) + " >"
+               "source = " + str(self.source) + \
+               "preprocessor = " + str(self.preprocessor) + " >"
 
     def fit(self):
         """
@@ -136,4 +136,4 @@ class GensimWord2Vec(EmbeddingLearner):
         model.train(sentences=data_to_train,
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)
-        self.set_model(model)
+        self.model = model

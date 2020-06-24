@@ -25,10 +25,12 @@ class FairnessMetric(Metric):
         self.__file_name = file_name
         self.__out_dir = out_dir
 
-    def get_file_name(self):
+    @property
+    def file_name(self):
         return self.__file_name
 
-    def get_output_directory(self):
+    @property
+    def output_directory(self):
         return self.__out_dir
 
     @abstractmethod
@@ -59,7 +61,8 @@ class GroupFairnessMetric(FairnessMetric):
         super().__init__(file_name, out_dir)
         self.__user_groups = user_groups
 
-    def get_user_groups(self):
+    @property
+    def user_groups(self):
         return self.__user_groups
 
     @abstractmethod
@@ -181,11 +184,11 @@ class PopRecsCorrelation(FairnessMetric):
                 at_least_one_zero = True
 
         build_plot(popularities, recommendations,
-                   self.get_file_name(), self.get_output_directory())
+                   self.file_name, self.output_directory)
 
         if at_least_one_zero:
             build_plot(popularities_no_zeros, recommendations_no_zeros,
-                       self.get_file_name() + '-no-zeros', self.get_output_directory())
+                       self.file_name + '-no-zeros', self.output_directory)
 
 
 class LongTailDistr(FairnessMetric):
@@ -216,12 +219,12 @@ class LongTailDistr(FairnessMetric):
             ordered_counts.append(item_count_pair[1])
 
         plt.plot(ordered_counts)
-        plt.title('{}'.format(self.get_file_name()))
+        plt.title('{}'.format(self.file_name))
         plt.ylabel('Num of recommendations')
         plt.xlabel('Recommended items')
 
-        plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(self.get_output_directory(),
-                                                            self.get_file_name()))
+        plt.savefig('{}/recs-long-tail-distr_{}.svg'.format(self.output_directory,
+                                                            self.file_name))
 
         plt.clf()
 
@@ -283,7 +286,7 @@ class DeltaGap(GroupFairnessMetric):
         """
 
         pop_items = popular_items(score_frame=truth)
-        user_groups = split_user_in_groups(score_frame=predictions, groups=self.get_user_groups(), pop_items=pop_items)
+        user_groups = split_user_in_groups(score_frame=predictions, groups=self.user_groups, pop_items=pop_items)
         items = predictions[['to_id']].values.flatten()
         logger.info("Computing pop by items")
         pop_by_items = Counter(items)
@@ -344,7 +347,7 @@ class PopRatioVsRecs(GroupFairnessMetric):
         pop_ratio_by_users = pop_ratio_by_user(score_frame=predictions, most_pop_items=most_popular_items)
 
         pop_items = popular_items(score_frame=truth)
-        user_groups = split_user_in_groups(score_frame=predictions, groups=self.get_user_groups(), pop_items=pop_items)
+        user_groups = split_user_in_groups(score_frame=predictions, groups=self.user_groups, pop_items=pop_items)
 
         truth = truth[['from_id', 'to_id']]
         score_frame = pd.DataFrame(columns=['user_group', 'profile_pop_ratio', 'recs_pop_ratio'])
@@ -360,8 +363,8 @@ class PopRatioVsRecs(GroupFairnessMetric):
             recs_data.append(recs_pop_ratios)
 
         if self.__store_frame:
-            score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.get_output_directory(),
-                                                                            self.get_file_name()))
+            score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.output_directory,
+                                                                            self.file_name))
 
         data_to_plot = [profile_data, recs_data]
         # Create a figure instance
@@ -404,10 +407,10 @@ class PopRatioVsRecs(GroupFairnessMetric):
         ax.get_xaxis().tick_bottom()
         ax.get_yaxis().tick_left()
 
-        plt.title('{}'.format(self.get_file_name()))
+        plt.title('{}'.format(self.file_name))
         plt.ylabel('Ratio of popular items')
-        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.get_output_directory(),
-                                                                 self.get_file_name()))
+        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.output_directory,
+                                                                 self.file_name))
 
         plt.clf()
 

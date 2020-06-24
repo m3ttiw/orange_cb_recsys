@@ -2,11 +2,13 @@ import lzma
 import os
 import pickle
 import re
+from typing import List
+
 from orange_cb_recsys.content_analyzer.content_representation.content import Content
 from orange_cb_recsys.utils.const import logger
 
 
-def load_content_instance(directory: str, content_id: str):
+def load_content_instance(directory: str, content_id: str) -> Content:
     """
     Loads a serialized content
     Args:
@@ -26,7 +28,7 @@ def load_content_instance(directory: str, content_id: str):
         return None
 
 
-def get_unrated_items(items_directory: str, ratings):
+def get_unrated_items(items_directory: str, ratings) -> List[Content]:
     """
     Gets the items that a user has not rated
 
@@ -57,7 +59,7 @@ def get_unrated_items(items_directory: str, ratings):
     return unrated_items
 
 
-def get_rated_items(items_directory, ratings):
+def get_rated_items(items_directory, ratings) -> List[Content]:
     """
     Gets the items that a user not rated
 
@@ -106,7 +108,5 @@ def remove_not_existent_items(ratings, items_directory: str):
 
     intersection = [x for x in rated_items_filename_list if x in directory_filename_list]
     ratings = ratings[ratings["to_id"].isin(intersection)]
-
-    print(ratings)
 
     return ratings

@@ -9,11 +9,13 @@ class InformationProcessor(ABC):
     def __init__(self):
         self.__lang = "EN"
 
-    def set_lang(self, lang: str):
-        self.__lang = lang
-
-    def get_lang(self):
+    @property
+    def lang(self):
         return self.__lang
+
+    @lang.setter
+    def lang(self, lang: str):
+        self.__lang = lang
 
     @abstractmethod
     def process(self, field_data):
@@ -74,40 +76,52 @@ class NLP(TextProcessor):
         self.__url_tagging: bool = url_tagging
         self.__named_entity_recognition: bool = named_entity_recognition
 
-    def get_stopwords_removal(self):
+    @property
+    def stopwords_removal(self):
         return self.__stopwords_removal
 
-    def get_stemming(self):
+    @property
+    def stemming(self):
         return self.__stemming
 
-    def get_lemmatization(self):
+    @property
+    def lemmatization(self):
         return self.__lemmatization
 
-    def get_strip_multiple_whitespaces(self):
+    @property
+    def strip_multiple_whitespaces(self):
         return self.__strip_multiple_whitespaces
 
-    def get_url_tagging(self):
+    @property
+    def url_tagging(self):
         return self.__url_tagging
 
-    def get_named_entity_recognition(self):
+    @property
+    def named_entity_recognition(self):
         return self.__named_entity_recognition
 
-    def set_stopwords_removal(self, stopwords_removal):
+    @stopwords_removal.setter
+    def stopwords_removal(self, stopwords_removal):
         self.__stopwords_removal = stopwords_removal
 
-    def set_stemming(self, stemming):
+    @stemming.setter
+    def stemming(self, stemming):
         self.__stemming = stemming
 
-    def set_lemmatization(self, lemmatization):
+    @lemmatization.setter
+    def lemmatization(self, lemmatization):
         self.__lemmatization = lemmatization
 
-    def set_strip_multiple_whitespaces(self, strip_multiple_whitespaces):
+    @strip_multiple_whitespaces.setter
+    def strip_multiple_whitespaces(self, strip_multiple_whitespaces):
         self.__strip_multiple_whitespaces = strip_multiple_whitespaces
 
-    def set_url_tagging(self, url_tagging):
+    @url_tagging.setter
+    def url_tagging(self, url_tagging):
         self.__url_tagging = url_tagging
 
-    def set_named_entity_recognition(self, named_entity_recognition: bool):
+    @named_entity_recognition.setter
+    def named_entity_recognition(self, named_entity_recognition: bool):
         self.__named_entity_recognition = named_entity_recognition
 
     @abstractmethod

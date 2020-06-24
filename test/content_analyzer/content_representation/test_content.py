@@ -38,4 +38,4 @@ class TestContent(TestCase):
         content_field2.append(str(0), content_field_repr)
         content2.append("test_field2", content_field2)
         content2.remove("test_field2")
-        self.assertTrue(content1.get_field_list(), content2.get_field_list())
+        self.assertTrue(content1.field_dict, content2.field_dict)

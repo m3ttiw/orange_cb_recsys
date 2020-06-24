@@ -16,14 +16,16 @@ class FieldRepresentation(ABC):
     def __init__(self, name: str):
         self.__name = name
 
-    def get_name(self) -> str:
+    @property
+    def name(self) -> str:
         return self.__name
 
     def __str__(self):
         raise NotImplementedError
 
+    @property
     @abstractmethod
-    def get_value(self):
+    def value(self):
         raise NotImplementedError
 
 
@@ -43,9 +45,15 @@ class FeaturesBagField(FieldRepresentation):
             features = {}
         self.__features: Dict[str, object] = features
 
-    def __str__(self):
-        representation_string = "Representation: " + self.get_name()
-        return "%s \n %s" % (representation_string, str(self.__features))
+    @property
+    def value(self) -> Dict[str, object]:
+        """
+        Get the features dict
+
+        Returns:
+            features (dict<str, object>): the features dict
+        """
+        return self.__features
 
     def append_feature(self, feature_key: str, feature_value):
         """
@@ -69,17 +77,12 @@ class FeaturesBagField(FieldRepresentation):
         """
         return self.__features[feature_key]
 
-    def get_value(self) -> Dict[str, object]:
-        """
-        Get the features dict
-
-        Returns:
-            features (dict<str, object>): the features dict
-        """
-        return self.__features
-
     def __eq__(self, other):
         return self.__features == other.__features
+
+    def __str__(self):
+        representation_string = "Representation: " + self.name
+        return "%s \n %s" % (representation_string, str(self.__features))
 
 
 class EmbeddingField(FieldRepresentation):
@@ -96,17 +99,19 @@ class EmbeddingField(FieldRepresentation):
         embedding_array (np.ndarray): embeddings array,
         it can be of different shapes according to the granularity of the technique
     """
+
     def __init__(self, name: str,
                  embedding_array: np.ndarray):
         super().__init__(name)
         self.__embedding_array: np.ndarray = embedding_array
 
-    def __str__(self):
-        representation_string = "Representation: " + self.get_name()
-        return "%s \n\n %s" % (representation_string, str(self.__embedding_array))
-
-    def get_value(self) -> np.ndarray:
+    @property
+    def value(self) -> np.ndarray:
         return self.__embedding_array
+
+    def __str__(self):
+        representation_string = "Representation: " + self.name
+        return "%s \n\n %s" % (representation_string, str(self.__embedding_array))
 
     def __eq__(self, other):
         return self.__embedding_array == other.__embedding_array
@@ -133,6 +138,16 @@ class ContentField:
         self.__field_name: str = field_name
         self.__representation_dict: Dict[str, object] = representation_dict
 
+    @property
+    def name(self) -> str:
+        return self.__field_name
+
+    def append(self, representation_id: str, representation: FieldRepresentation):
+        self.__representation_dict[representation_id] = representation
+
+    def get_representation(self, representation_id: str):
+        return self.__representation_dict[representation_id]
+
     def __eq__(self, other) -> bool:
         """
         override of the method __eq__ of object class,
@@ -144,19 +159,10 @@ class ContentField:
             bool: True if the names are equals
         """
         return self.__field_name == \
-               other.get_name() and self.__representation_dict == other.__representation_dict
+               other.name and self.__representation_dict == other.__representation_dict
 
     def __str__(self):
         field_string = "Field:" + self.__field_name
         rep_string = '\n\n'.join(str(rep) for rep in self.__representation_dict.values())
 
         return "%s \n\n %s ------------------------------------" % (field_string, rep_string)
-
-    def append(self, representation_id: str, representation: FieldRepresentation):
-        self.__representation_dict[representation_id] = representation
-
-    def get_representation(self, representation_id: str):
-        return self.__representation_dict[representation_id]
-
-    def get_name(self) -> str:
-        return self.__field_name

@@ -33,22 +33,28 @@ class Algorithm(ABC):
     def append_user_field(self, field: str, field_representation: str):
         self.__additional_user_fields[field] = field_representation
 
-    def get_additional_item_fields(self):
+    @property
+    def additional_item_fields(self):
         return self.__additional_item_fields
 
-    def get_additional_user_fields(self):
+    @property
+    def additional_user_fields(self):
         return self.__additional_user_fields
 
-    def get_item_field(self):
+    @property
+    def item_field(self):
         return self.__item_field
 
-    def get_item_field_representation(self):
+    @property
+    def item_field_representation(self):
         return self.__item_field_representation
 
-    def set_item_field(self, item_field: str):
+    @item_field.setter
+    def item_field(self, item_field: str):
         self.__item_field = item_field
 
-    def set_item_field_representation(self, item_field_representation: str):
+    @item_field_representation.setter
+    def item_field_representation(self, item_field_representation: str):
         self.__item_field_representation = item_field_representation
 
 

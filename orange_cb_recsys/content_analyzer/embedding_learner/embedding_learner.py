@@ -40,20 +40,25 @@ class EmbeddingLearner(ABC):
         """
         raise NotImplementedError
 
-    def get_source(self):
+    @property
+    def source(self):
         return self.__source
 
-    def get_preprocessor(self):
+    @property
+    def preprocessor(self):
         return self.__preprocessor
 
-    def get_field_list(self):
+    @property
+    def field_list(self):
         return self.__field_list
 
-    def set_model(self, model):
-        self.__model = model
-
-    def get_model(self):
+    @property
+    def model(self):
         return self.__model
+
+    @model.setter
+    def model(self, model):
+        self.__model = model
 
     def extract_corpus(self) -> list:
         """
@@ -64,12 +69,12 @@ class EmbeddingLearner(ABC):
         """
         corpus = []
         # iter the source
-        for doc in self.get_source():
+        for doc in self.source:
             doc_data = ""
-            for field_name in self.get_field_list():
+            for field_name in self.field_list:
                 # apply preprocessing and save the data in the list
                 doc_data += " " + doc[field_name].lower()
-            corpus.append(self.get_preprocessor().process(doc_data))
+            corpus.append(self.preprocessor.process(doc_data))
         return corpus
 
     def save(self):
