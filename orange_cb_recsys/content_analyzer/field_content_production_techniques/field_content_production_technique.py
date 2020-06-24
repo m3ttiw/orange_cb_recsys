@@ -23,11 +23,13 @@ class FieldContentProductionTechnique(ABC):
     def __init__(self):
         self.__lang = "EN"
 
-    def set_lang(self, lang: str):
-        self.__lang = lang
-
-    def get_lang(self):
+    @property
+    def lang(self):
         return self.__lang
+
+    @lang.setter
+    def lang(self, lang: str):
+        self.__lang = lang
 
 
 class SearchIndexing(FieldContentProductionTechnique):
@@ -64,23 +66,29 @@ class CollectionBasedTechnique(FieldContentProductionTechnique):
         self.__pipeline_need_refactor: str = None
         self.__processor_list: List[InformationProcessor] = None
 
-    def set_field_need_refactor(self, field_name: str):
-        self.__field_need_refactor = field_name
-
-    def set_pipeline_need_refactor(self, pipeline_id: str):
-        self.__pipeline_need_refactor = pipeline_id
-
-    def set_processor_list(self, processor_list: List[InformationProcessor]):
-        self.__processor_list = processor_list
-
-    def get_field_need_refactor(self):
+    @property
+    def field_need_refactor(self) -> str:
         return self.__field_need_refactor
 
-    def get_pipeline_need_refactor(self):
+    @property
+    def pipeline_need_refactor(self) -> str:
         return self.__pipeline_need_refactor
 
-    def get_processor_list(self):
+    @property
+    def processor_list(self) -> List[InformationProcessor]:
         return self.__processor_list
+
+    @field_need_refactor.setter
+    def field_need_refactor(self, field_name: str):
+        self.__field_need_refactor = field_name
+
+    @pipeline_need_refactor.setter
+    def pipeline_need_refactor(self, pipeline_id: str):
+        self.__pipeline_need_refactor = pipeline_id
+
+    @processor_list.setter
+    def processor_list(self, processor_list: List[InformationProcessor]):
+        self.__processor_list = processor_list
 
     @abstractmethod
     def produce_content(self, field_representation_name: str, content_id: str,
@@ -124,6 +132,7 @@ class SingleContentTechnique(FieldContentProductionTechnique):
             FieldRepresentation: an instance of FieldRepresentation,
                  the particular type of representation depends from the technique
         """
+        raise NotImplementedError
 
 
 class TfIdfTechnique(CollectionBasedTechnique):
@@ -201,6 +210,14 @@ class EmbeddingSource(ABC):
     def __init__(self):
         self.__model = None
 
+    @property
+    def model(self):
+        return self.__model
+
+    @model.setter
+    def model(self, model):
+        self.__model = model
+
     def load(self, text: List[str]) -> np.ndarray:
         """
         Function that extracts from the embeddings model
@@ -225,14 +242,8 @@ class EmbeddingSource(ABC):
 
         return embedding_matrix
 
-    def set_model(self, model):
-        self.__model = model
-
     def get_vector_size(self) -> int:
         return self.__model.vector_size
-
-    def get_model(self):
-        return self.__model
 
     def __str__(self):
         return "EmbeddingSource"

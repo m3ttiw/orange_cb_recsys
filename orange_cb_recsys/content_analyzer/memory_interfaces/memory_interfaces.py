@@ -14,6 +14,10 @@ class InformationInterface(ABC):
     def __init__(self, directory: str):
         self.__directory: str = directory
 
+    @property
+    def directory(self):
+        return self.__directory
+
     @abstractmethod
     def new_content(self):
         """
@@ -48,9 +52,6 @@ class InformationInterface(ABC):
         """
         Stop writing mode
         """
-
-    def get_directory(self):
-        return self.__directory
 
 
 class ImageInterface(InformationInterface):

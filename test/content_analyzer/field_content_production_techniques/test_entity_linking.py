@@ -8,10 +8,10 @@ class TestBabelPyEntityLinking(TestCase):
         str_ = "text to be babelfyed"
         babelfy_dict = {'bn:00076732n': 0.0}
         babel = BabelPyEntityLinking()
-        babel.set_lang('EN')
+        babel.lang = 'EN'
         content = babel.produce_content("provaEL", str_)
         if content is not None:
-            features = content.get_value()
+            features = content.value
             for key in features:
                 if key in babelfy_dict.keys():
                     self.assertEqual(features[key], babelfy_dict[key], "different global score")

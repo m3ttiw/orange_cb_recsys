@@ -7,7 +7,8 @@ class Vector(ABC):
     def __init__(self, value):
         self.__value = value
 
-    def get_value(self):
+    @property
+    def value(self):
         return self.__value
 
     @abstractmethod
@@ -17,12 +18,12 @@ class Vector(ABC):
 
 class DenseVector(Vector):
     def similarity(self, other):
-        return 1 - spatial.distance.cosine(self.get_value(), other.get_value())
+        return 1 - spatial.distance.cosine(self.value, other.value)
 
 
 class SparseVector(Vector):
     def similarity(self, other):
-        return cosine_similarity(self.get_value(), other.get_value())
+        return cosine_similarity(self.value, other.value)
 
 
 class Similarity(ABC):

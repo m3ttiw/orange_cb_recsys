@@ -36,19 +36,19 @@ class ContentAnalyzer:
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
 
-                technique = pipeline.get_content_technique()
+                technique = pipeline.content_technique
                 if isinstance(technique, CollectionBasedTechnique):
                     logger.info("Creating collection for technique: %s on field %s, "
                                 "representation: %s", technique, field_name, pipeline)
-                    technique.set_field_need_refactor(field_name)
-                    technique.set_pipeline_need_refactor(str(pipeline))
-                    technique.set_processor_list(pipeline.get_preprocessor_list())
+                    technique.field_need_refactor = field_name
+                    technique.pipeline_need_refactor = str(pipeline)
+                    technique.processor_list = pipeline.preprocessor_list
                     technique.dataset_refactor(
-                        self.__config.get_source(), self.__config.get_id_field_name_list())
+                        self.__config.source, self.__config.id_field_name_list)
 
     def __config_recap(self):
         recap_list = [("Field: %s; representation id: %s: technique: %s",
-                       field_name, str(pipeline), str(pipeline.get_content_technique()))
+                       field_name, str(pipeline), str(pipeline.content_technique))
                       for field_name in self.__config.get_field_name_list()
                       for pipeline in self.__config.get_pipeline_list(field_name)]
 
@@ -59,13 +59,13 @@ class ContentAnalyzer:
         Processes the creation of the contents and serializes the contents
         """
 
-        output_path = self.__config.get_output_directory()
+        output_path = self.__config.output_directory
         if not DEVELOPING:
-            output_path = os.path.join(home_path, 'contents', self.__config.get_output_directory())
+            output_path = os.path.join(home_path, 'contents', self.__config.output_directory)
         os.mkdir(output_path)
 
         indexer = None
-        if self.__config.get_search_index():
+        if self.__config.search_index:
             index_path = os.path.join(output_path, 'search_index')
             indexer = IndexInterface(index_path)
             indexer.init_writing()
@@ -80,13 +80,13 @@ class ContentAnalyzer:
         self.__dataset_refactor()
         contents_producer.set_indexer(indexer)
         i = 0
-        for raw_content in self.__config.get_source():
+        for raw_content in self.__config.source:
             logger.info("Processing item %d", i)
             content = contents_producer.create_content(raw_content)
             content.serialize(output_path)
             i += 1
 
-        if self.__config.get_search_index():
+        if self.__config.search_index:
             indexer.stop_writing()
 
         for interface in interfaces:
@@ -94,7 +94,7 @@ class ContentAnalyzer:
 
         for field_name in self.__config.get_field_name_list():
             for pipeline in self.__config.get_pipeline_list(field_name):
-                technique = pipeline.get_content_technique()
+                technique = pipeline.content_technique
                 if isinstance(technique, CollectionBasedTechnique):
                     technique.delete_refactored()
 
@@ -147,7 +147,7 @@ class ContentsProducer:
             the timestamp will be the one returned by the system.
         """
         timestamp = None
-        if self.__config.get_content_type() != "item":
+        if self.__config.content_type != "item":
             if "timestamp" in raw_content.keys():
                 timestamp = raw_content["timestamp"]
             else:
@@ -184,37 +184,37 @@ class ContentsProducer:
 
         for i, pipeline in enumerate(self.__config.get_pipeline_list(field_name)):
             logger.info("processing representation %d", i)
-            if isinstance(pipeline.get_content_technique(),
+            if isinstance(pipeline.content_technique,
                           CollectionBasedTechnique):
                 field.append(str(i),
                              self.__create_representation_CBT
                              (str(i), field_name, content_id, pipeline))
 
-            elif isinstance(pipeline.get_content_technique(), SingleContentTechnique):
+            elif isinstance(pipeline.content_technique, SingleContentTechnique):
                 field.append(str(i), self.__create_representation(str(i), field_data, pipeline))
-            elif isinstance(pipeline.get_content_technique(), SearchIndexing):
+            elif isinstance(pipeline.content_technique, SearchIndexing):
                 self.__invoke_indexing_technique(field_name, field_data, pipeline)
-            elif pipeline.get_content_technique() is None:
+            elif pipeline.content_technique is None:
                 field.append(str(i), field_data)
 
         return field
 
     def __invoke_indexing_technique(self, field_name: str, field_data: str,
                                     pipeline: FieldRepresentationPipeline):
-        preprocessor_list = pipeline.get_preprocessor_list()
+        preprocessor_list = pipeline.preprocessor_list
         processed_field_data = field_data
         for preprocessor in preprocessor_list:
             processed_field_data = preprocessor.process(processed_field_data)
 
-        pipeline.get_content_technique().produce_content(field_name,
-                                                         str(pipeline), processed_field_data,
-                                                         self.__indexer)
+        pipeline.content_technique.produce_content(field_name,
+                                                   str(pipeline), processed_field_data,
+                                                   self.__indexer)
 
     @staticmethod
     def __create_representation_CBT(field_representation_name: str,
                                     field_name: str, content_id: str,
                                     pipeline: FieldRepresentationPipeline):
-        return pipeline.get_content_technique(). \
+        return pipeline.content_technique. \
             produce_content(field_representation_name, content_id, field_name)
 
     @staticmethod
@@ -231,12 +231,12 @@ class ContentsProducer:
         Returns:
             (Content)
         """
-        preprocessor_list = pipeline.get_preprocessor_list()
+        preprocessor_list = pipeline.preprocessor_list
         processed_field_data = field_data
         for preprocessor in preprocessor_list:
             processed_field_data = preprocessor.process(processed_field_data)
 
-        return pipeline.get_content_technique(). \
+        return pipeline.content_technique. \
             produce_content(field_representation_name, processed_field_data)
 
     def create_content(self, raw_content: Dict):
@@ -262,10 +262,10 @@ class ContentsProducer:
         timestamp = self.__get_timestamp(raw_content)
 
         # construct id from the list of the fields that compound id
-        content_id = id_merger(raw_content, self.__config.get_id_field_name_list())
+        content_id = id_merger(raw_content, self.__config.id_field_name_list)
         content = Content(content_id)
 
-        for i, ex_retrieval in enumerate(self.__config.get_exogenous_properties_retrieval()):
+        for i, ex_retrieval in enumerate(self.__config.exogenous_properties_retrieval):
             lod_properties = ex_retrieval.get_properties(str(i), raw_content)
             content.append_exogenous_rep(str(i), lod_properties)
 
@@ -287,7 +287,7 @@ class ContentsProducer:
                            (raw_content, field_name, content_id, timestamp))
 
         if self.__indexer is not None:
-            content.set_index_document_id(self.__indexer.serialize_content())
+            content.index_document_id = self.__indexer.serialize_content()
 
         for interface in interfaces:
             interface.serialize_content()

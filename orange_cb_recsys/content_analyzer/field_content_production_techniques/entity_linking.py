@@ -3,7 +3,7 @@ from babelpy.babelfy import BabelfyClient
 from orange_cb_recsys.content_analyzer.content_representation.\
     content_field import FeaturesBagField
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
-    EntityLinking
+    EntityLinking, FieldContentProductionTechnique
 from orange_cb_recsys.utils.check_tokenization import check_not_tokenized
 
 
@@ -22,10 +22,11 @@ class BabelPyEntityLinking(EntityLinking):
         self.__api_key = api_key
         self.__babel_client = None
 
-    def set_lang(self, lang: str):
-        super().set_lang(lang)
+    @FieldContentProductionTechnique.lang.setter
+    def lang(self, lang: str):
+        FieldContentProductionTechnique.lang.fset(self, lang)
         params = dict()
-        params['lang'] = self.get_lang()
+        params['lang'] = self.lang
         self.__babel_client = BabelfyClient(self.__api_key, params)
 
     def __str__(self):

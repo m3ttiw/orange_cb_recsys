@@ -73,4 +73,4 @@ class GensimDoc2Vec(EmbeddingLearner):
             model.alpha -= 0.0002  # decrease the learning rate
             model.min_alpha = model.alpha  # fix the learning rate, no decay
 
-        self.set_model(model)
+        self.model = model

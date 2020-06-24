@@ -43,7 +43,7 @@ class IndexInterface(TextInterface):
         self.__field_type_frequency.setStoreTermVectorPositions(True)
         self.__field_type_frequency.\
             setIndexOptions(IndexOptions.DOCS_AND_FREQS_AND_POSITIONS_AND_OFFSETS)
-        fs_directory = SimpleFSDirectory(Paths.get(self.get_directory()))
+        fs_directory = SimpleFSDirectory(Paths.get(self.directory))
         self.__writer = IndexWriter(fs_directory, IndexWriterConfig())
 
     def new_content(self):
@@ -106,7 +106,7 @@ class IndexInterface(TextInterface):
              and the corresponding values are the tf-idf values.
         """
         searcher = IndexSearcher(
-            DirectoryReader.open(SimpleFSDirectory(Paths.get(self.get_directory()))))
+            DirectoryReader.open(SimpleFSDirectory(Paths.get(self.directory))))
         query = QueryParser(
             "testo_libero", KeywordAnalyzer()).parse("content_id:\"" + content_id + "\"")
         score_docs = searcher.search(query, 1).scoreDocs
@@ -131,4 +131,4 @@ class IndexInterface(TextInterface):
         return words_bag
 
     def delete_index(self):
-        shutil.rmtree(self.get_directory(), ignore_errors=True)
+        shutil.rmtree(self.directory, ignore_errors=True)

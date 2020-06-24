@@ -29,11 +29,11 @@ class BinaryFile(EmbeddingSource):
         self.__file_path: str = file_path
         embedding_type = embedding_type.lower()
         if embedding_type == "word2vec":
-            self.set_model(KeyedVectors.load_word2vec_format(self.__file_path, binary=True))
+            self.model = KeyedVectors.load_word2vec_format(self.__file_path, binary=True)
         elif embedding_type == "doc2vec":
-            self.set_model(Doc2Vec.load(self.__file_path))
+            self.model = Doc2Vec.load(self.__file_path)
         elif embedding_type == "fasttext":
-            self.set_model(fasttext.load_facebook_vectors(self.__file_path))
+            self.model = fasttext.load_facebook_vectors(self.__file_path)
         else:
             raise ValueError(
                 "Must specify a valid embedding model type for loading from binary file")
@@ -51,7 +51,7 @@ class GensimDownloader(EmbeddingSource):
     def __init__(self, name: str):
         super().__init__()
         self.__name: str = name
-        self.set_model(downloader.load(self.__name))
+        self.model = downloader.load(self.__name)
 
 
 class Wikipedia2VecDownloader(EmbeddingSource):
@@ -69,10 +69,10 @@ class Wikipedia2VecDownloader(EmbeddingSource):
         super().__init__()
         self.__path: str = path
 
-        self.set_model(Wikipedia2Vec.load(self.__path))
+        self.model = Wikipedia2Vec.load(self.__path)
 
     def get_vector_size(self) -> int:
-        return self.get_model().get_word_vector("a").shape[0]
+        return self.model.get_word_vector("a").shape[0]
 
     def load(self, text: List[str]) -> np.ndarray:
         """
@@ -92,7 +92,7 @@ class Wikipedia2VecDownloader(EmbeddingSource):
         for i, word in enumerate(text):
             word = word.lower()
             try:
-                embedding_matrix[i, :] = self.get_model().get_word_vector(word)
+                embedding_matrix[i, :] = self.model.get_word_vector(word)
             except KeyError:
                 embedding_matrix[i, :] = np.zeros(self.get_vector_size())
 

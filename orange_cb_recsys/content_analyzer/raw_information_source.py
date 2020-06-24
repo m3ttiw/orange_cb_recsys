@@ -122,45 +122,57 @@ class SQLDatabase(RawInformationSource):
         conn.commit()
         self.__conn = conn
 
-    def get_host(self) -> str:
+    @property
+    def host(self) -> str:
         return self.__host
 
-    def get_username(self) -> str:
+    @property
+    def username(self) -> str:
         return self.__username
 
-    def get_password(self) -> str:
+    @property
+    def password(self) -> str:
         return self.__password
 
-    def get_database_name(self) -> str:
+    @property
+    def database_name(self) -> str:
         return self.__database_name
 
-    def get_table_name(self) -> str:
+    @property
+    def table_name(self) -> str:
         return self.__table_name
 
-    def get_conn(self):
+    @property
+    def conn(self):
         return self.__conn
 
-    def set_host(self, host: str):
+    @host.setter
+    def host(self, host: str):
         self.__host = host
 
-    def set_username(self, username: str):
+    @username.setter
+    def username(self, username: str):
         self.__username = username
 
-    def set_password(self, password: str):
+    @password.setter
+    def password(self, password: str):
         self.__password = password
 
-    def set_database_name(self, database_name: str):
+    @database_name.setter
+    def database_name(self, database_name: str):
         self.__database_name = database_name
 
-    def set_table_name(self, table_name: str):
+    @table_name.setter
+    def table_name(self, table_name: str):
         self.__table_name = table_name
 
-    def set_conn(self, conn):
+    @conn.setter
+    def conn(self, conn):
         self.__conn = conn
 
     def __iter__(self) -> Dict:
-        cursor = self.get_conn().cursor(dictionary=True)
-        query = """SELECT * FROM """ + self.get_table_name() + """;"""
+        cursor = self.conn.cursor(dictionary=True)
+        query = """SELECT * FROM """ + self.table_name + """;"""
         cursor.execute(query)
         for result in cursor:
             yield result

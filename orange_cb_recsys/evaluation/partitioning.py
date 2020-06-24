@@ -13,11 +13,13 @@ class Partitioning(ABC):
     def __iter__(self):
         raise NotImplementedError
 
-    def set_dataframe(self, dataframe: pd.DataFrame):
-        self.__dataframe = dataframe
-
-    def get_dataframe(self):
+    @property
+    def dataframe(self):
         return self.__dataframe
+
+    @dataframe.setter
+    def dataframe(self, dataframe: pd.DataFrame):
+        self.__dataframe = dataframe
 
 
 class KFoldPartitioning(Partitioning):
@@ -36,11 +38,11 @@ class KFoldPartitioning(Partitioning):
     def set_dataframe(self, dataframe: pd.DataFrame):
         if len(dataframe) < self.__n_splits:
             raise ValueError("Number of splits larger than number of frame rows")
-        super().set_dataframe(dataframe)
+        self.dataframe = dataframe
 
     def __iter__(self):
         kf = KFold(n_splits=self.__n_splits, shuffle=True, random_state=self.__random_state)
-        split_result = kf.split(self.get_dataframe())
+        split_result = kf.split(self.dataframe)
 
         for result in split_result:
             yield result

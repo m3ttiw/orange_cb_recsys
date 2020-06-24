@@ -23,47 +23,47 @@ class TestNLTK(TestCase):
                 ["striped", "bats", "hanging", "feet", "best"])
 
         #Test for only stemming
-        nltka.set_stemming(True)
-        nltka.set_stopwords_removal(False)
+        nltka.stemming = True
+        nltka.stopwords_removal = False
         self.assertEqual(nltka.process(
                 "My name is Francesco and I am a student at the University of the city of Bari"),
                 ["my", "name", "is", "francesco", "and", "i", "am", "a", "student", "at", "the", "univers", "of", "the", "citi", "of", "bari"])
-        nltka.set_stemming(False)
+        nltka.stemming = False
 
         #Test for only lemmatization
-        nltka.set_lemmatization(True)
+        nltka.lemmatization  = True
         self.assertEqual(nltka.process(
                 "The striped bats are hanging on their feet for best"),
                 ["The", "strip", "bat", "be", "hang", "on", "their", "foot", "for", "best"])
 
         #Test for lemmatization with multiple whitespaces removal
-        nltka.set_strip_multiple_whitespaces(True)
+        nltka.strip_multiple_whitespaces = True
         self.assertEqual(nltka.process(
                 "The   striped  bats    are    hanging   on   their    feet   for  best"),
                 ["The", "strip", "bat", "be", "hang", "on", "their", "foot", "for", "best"])
 
         #Test for lemmatization with multiple whitespaces removal and URL tagging
-        nltka.set_url_tagging(True)
+        nltka.url_tagging = True
         self.assertEqual(nltka.process(
                 "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
                 ["The", "strip", "<URL>", "bat", "<URL>", "be", "<URL>", "hang", "on", "their", "foot", "for", "best", "<URL>"])
 
         # Test for lemmatization, multiple whitespaces removal, URL tagging and stemming
-        nltka.set_stemming(True)
+        nltka.stemming = True
         self.assertEqual(nltka.process(
             "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
             ["the", "strip", "<url>", "bat", "<url>", "be", "<url>", "hang", "on", "their", "foot", "for", "best", "<url>"])
 
         # Test for lemmatization, multiple whitespaces removal, URL tagging, stemming, stop words removal
-        nltka.set_stopwords_removal(True)
+        nltka.stopwords_removal = True
         self.assertEqual(nltka.process(
             "The   striped http://facebook.com bats https://github.com   are   http://facebook.com hanging   on   their    feet   for  best  http://twitter.it"),
             ["strip", "<url>", "bat", "<url>", "<url>", "hang", "foot", "best", "<url>"])
 
-        nltka.set_named_entity_recognition(True)
-        nltka.set_stopwords_removal(False)
-        nltka.set_stemming(False)
-        nltka.set_lemmatization(False)
+        nltka.named_entity_recognition = True
+        nltka.stopwords_removal = False
+        nltka.stemming = False
+        nltka.lemmatization = False
         result = nltka.process("Facebook was fined by Hewlett Packard for spending 100€ to buy Cristiano Ronaldo from Juventus")
 
         self.assertEqual(result,

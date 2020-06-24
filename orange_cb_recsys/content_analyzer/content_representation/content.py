@@ -1,6 +1,6 @@
 import lzma
 import os
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Dict
 import pickle
 import re
@@ -21,7 +21,13 @@ class ExogenousPropertiesRepresentation(ABC):
     def __init__(self, name: str):
         self.__name = name
 
-    def get_value(self):
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    @abstractmethod
+    def value(self):
         raise NotImplementedError
 
 
@@ -43,7 +49,8 @@ class PropertiesDict(ExogenousPropertiesRepresentation):
 
         self.__features: Dict[str, str] = features
 
-    def get_value(self):
+    @property
+    def value(self):
         """
 
         Returns: features dictionary
@@ -81,23 +88,30 @@ class Content:
         self.__content_id: str = content_id
         self.__field_dict: Dict[str, ContentField] = field_dict
 
-    def append_exogenous_rep(self, name: str, exogenous_properties: ExogenousPropertiesRepresentation):
-        self.__exogenous_rep_dict[name] = exogenous_properties
+    @property
+    def content_id(self):
+        return self.__content_id
 
-    def get_exogenous_rep(self, name):
-        return self.__exogenous_rep_dict[name]
+    @property
+    def index_document_id(self) -> int:
+        return self.__index_document_id
 
-    def set_index_document_id(self, index_document_id: int):
+    @index_document_id.setter
+    def index_document_id(self, index_document_id: int):
         self.__index_document_id = index_document_id
 
-    def get_field_list(self):
+    @property
+    def field_dict(self):
         return self.__field_dict
 
     def get_field(self, field_name: str):
         return self.__field_dict[field_name]
 
-    def get_index_document_id(self):
-        return self.__index_document_id
+    def append_exogenous_rep(self, name: str, exogenous_properties: ExogenousPropertiesRepresentation):
+        self.__exogenous_rep_dict[name] = exogenous_properties
+
+    def get_exogenous_rep(self, name):
+        return self.__exogenous_rep_dict[name]
 
     def append(self, field_name: str, field: ContentField):
         self.__field_dict[field_name] = field
@@ -131,9 +145,6 @@ class Content:
         field_string = '\n'.join(str(field) for field in self.__field_dict.values())
 
         return "%s \n\n %s ##############################" % (content_string, field_string)
-
-    def get_content_id(self):
-        return self.__content_id
 
     def __eq__(self, other):
         return self.__content_id == other.__content_id and self.__field_dict == other.__field_dict
