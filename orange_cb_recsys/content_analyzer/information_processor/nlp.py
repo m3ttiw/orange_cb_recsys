@@ -130,7 +130,7 @@ class NLTK(NLP):
         Returns:
             filtered_sentence (List<str>): list of words from the text, without the stopwords
         """
-        stop_words = set(stopwords.words(self.lang))
+        stop_words = set(stopwords.words(self.__full_lang_code))
 
         filtered_sentence = []
         for word_token in text:
@@ -149,7 +149,7 @@ class NLTK(NLP):
         Returns:
             stemmed_text (List<str>): List of the fords from the text, reduced to their stem version
         """
-        stemmer = SnowballStemmer(language=self.lang)
+        stemmer = SnowballStemmer(language=self.__full_lang_code)
 
         stemmed_text = []
         for word in text:
