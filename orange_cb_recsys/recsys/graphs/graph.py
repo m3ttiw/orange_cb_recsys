@@ -39,7 +39,7 @@ class Graph(ABC):
         Returns:
             float in the range [0.0, 1.0]
         """
-        return 1 - score / 2
+        return 1 - (score + 1) / 2
 
     @abstractmethod
     def create_graph(self):
