@@ -159,7 +159,7 @@ def rating_config_run(config_dict: Dict):
 
 if __name__ == "__main__":
     config_path = sys.argv[0]
-    if config_path is not None:
+    if config_path is None:
         config_path = DEFAULT_CONFIG_PATH
     if config_path.endswith('.yml'):
         config_list_dict = yaml.load(open(config_path), Loader=yaml.FullLoader)

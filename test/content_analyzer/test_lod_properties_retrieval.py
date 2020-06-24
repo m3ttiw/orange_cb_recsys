@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMappingTechnique
+from orange_cb_recsys.content_analyzer.exogenous_properties_retrieval import DBPediaMappingTechnique
 
 
 class TestDBPediaMappingTechnique(TestCase):

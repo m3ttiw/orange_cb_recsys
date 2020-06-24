@@ -11,4 +11,5 @@
       entity_type: 'Film'
       lang: 'EN'
       label_field: 'Title'
-  fields: []
+  fields:
+    -
