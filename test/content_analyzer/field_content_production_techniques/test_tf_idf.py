@@ -40,6 +40,6 @@ class TestSkLearnTfIDF(TestCase):
         technique.processor_list = [NLTK()]
         technique.dataset_refactor(JSONFile(file_path), ["imdbID"])
         features_bag_test = technique.produce_content("test", "tt0113497", "Plot")
-        features = features_bag_test.get_value()
+        features = features_bag_test.value
 
         self.assertLess(features['the'], 0.15)
