@@ -317,9 +317,9 @@ class PopRatioVsRecs(GroupFairnessMetric):
         file_name (str): name of the file that the metrics will serialize
         out_dir (str): directory in which the file will be serialized
         user_groups (dict<str, float>): specify how to divide user in groups, so
-            specify for each group specify:
-            - name
-            - percentage of users
+        specify for each group specify:
+        - name
+        - percentage of users
         store_frame (bool): True if you want to store the frame in a csv file, False otherwise
     """
 
@@ -351,67 +351,79 @@ class PopRatioVsRecs(GroupFairnessMetric):
 
         truth = truth[['from_id', 'to_id']]
         score_frame = pd.DataFrame(columns=['user_group', 'profile_pop_ratio', 'recs_pop_ratio'])
-        profile_data = []
-        recs_data = []
+        data_to_plot = []
+        labels = []
         for group_name in user_groups:
             profile_pop_ratios = get_profile_avg_pop_ratio(user_groups[group_name], pop_ratio_by_users)
             recs_pop_ratios = get_recs_avg_pop_ratio(user_groups[group_name], truth, most_popular_items)
             score_frame = score_frame.append(pd.DataFrame({'user_group': [group_name],
                                                            'profile_pop_ratio': [profile_pop_ratios],
                                                            'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
-            profile_data.append(profile_pop_ratios)
-            recs_data.append(recs_pop_ratios)
 
-        if self.__store_frame:
-            score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.output_directory,
-                                                                            self.file_name))
+            profile_data = np.array(profile_pop_ratios)
+            print(profile_data)
+            data_to_plot.append(profile_data)
+            labels.append('{}_pop'.format(group_name))
+            recs_data = np.array(recs_pop_ratios)
+            print(recs_data)
+            data_to_plot.append(recs_data)
+            labels.append('{}_recs'.format(group_name))
 
-        data_to_plot = [profile_data, recs_data]
+        # agg backend is used to create plot as a .png file
+        mpl.use('agg')
+
         # Create a figure instance
         fig = plt.figure(1, figsize=(9, 6))
 
         # Create an axes instance
         ax = fig.add_subplot(111)
 
-        ## to get fill color
+        # add patch_artist=True option to ax.boxplot()
+        # to get fill color
         bp = ax.boxplot(data_to_plot, patch_artist=True)
 
-        ## change outline color, fill color and linewidth of the boxes
+        first_color = '#7570b3'
+        second_color = '#b2df8a'
+        fill_color_pop = '#004e98'
+        fill_color_recs = '#ff6700'
+
+        # change outline color, fill color and linewidth of the boxes
         for i, box in enumerate(bp['boxes']):
             # change outline color
-            box.set(color='#7570b3', linewidth=2)
+            box.set(color=first_color, linewidth=2)
             # change fill color
-            box.set(facecolor='#fcba03')
-            if i == 0:
-                box.set(facecolor='#1b9e77')
+            if i % 2 == 0:
+                box.set(facecolor=fill_color_pop)
+            else:
+                box.set(facecolor=fill_color_recs)
 
-        ## change color and linewidth of the whiskers
+        # change color and linewidth of the whiskers
         for whisker in bp['whiskers']:
-            whisker.set(color='#7570b3', linewidth=2)
+            whisker.set(color=first_color, linewidth=2)
 
-        ## change color and linewidth of the caps
+        # change color and linewidth of the caps
         for cap in bp['caps']:
-            cap.set(color='#7570b3', linewidth=2)
+            cap.set(color=first_color, linewidth=2)
 
-        ## change color and linewidth of the medians
+        # change color and linewidth of the medians
         for median in bp['medians']:
-            median.set(color='#b2df8a', linewidth=2)
+            median.set(color=second_color, linewidth=2)
 
-        ## change the style of fliers and their fill
+        # change the style of fliers and their fill
         for flier in bp['fliers']:
             flier.set(marker='o', color='#e7298a', alpha=0.5)
 
-        ax.set_xticklabels([group_name for group_name in self.__user_groups])
+        # Custom x-axis labels
+        ax.set_xticklabels(labels)
 
-        ## Remove top axes and right axes ticks
+        # Remove top axes and right axes ticks
         ax.get_xaxis().tick_bottom()
         ax.get_yaxis().tick_left()
 
-        plt.title('{}'.format(self.file_name))
-        plt.ylabel('Ratio of popular items')
-        plt.savefig('{}/pop-ratio-profile-vs-recs_{}.svg'.format(self.output_directory,
-                                                                 self.file_name))
+        # Save the figure
+        fig.savefig('fig1.png', bbox_inches='tight')
 
-        plt.clf()
+        if self.__store_frame:
+            score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.output_directory, self.file_name))
 
         return score_frame
