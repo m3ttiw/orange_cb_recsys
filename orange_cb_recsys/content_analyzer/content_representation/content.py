@@ -38,7 +38,7 @@ class PropertiesDict(ExogenousPropertiesRepresentation):
 
     Args:
         name: string identifier of the exogenous
-        properties representation
+            properties representation
         features: properties in the specified format
     """
 
@@ -68,12 +68,12 @@ class Content:
     Args:
         content_id (str): identifier
         field_dict (dict[str, ContentField]): dictionary
-        containing the fields instances for the content,
-        and their name as dictionary key
+            containing the fields instances for the content,
+            and their name as dictionary key
         exogenous_rep_dict (Dict <str, ExogenousProperties>):
-        different representations of content obtained
-        using ExogenousPropertiesRetrieval, the dictionary key is
-        the representation name
+            different representations of content obtained
+            using ExogenousPropertiesRetrieval, the dictionary key is
+            the representation name
     """
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None,

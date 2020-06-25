@@ -29,11 +29,11 @@ class ClassifierRecommender(RankingAlgorithm):
            item_field (str): Name of the field that contains the content to use
            field_representation (str): Id of the field_representation content
            classifier(str): classifier that will be used
-           can be one of the following values:
-           random_forest, svm, log_regr,
-           knn, decision_tree, gaussian_process
-           threshold: ratings bigger than threshold will be
-           considered as positive
+               can be one of the following values:
+               random_forest, svm, log_regr,
+               knn, decision_tree, gaussian_process
+               threshold: ratings bigger than threshold will be
+               considered as positive
        """
     def __init__(self, item_field: str, field_representation: str, classifier: str, threshold=-1):
         super().__init__(item_field, field_representation)

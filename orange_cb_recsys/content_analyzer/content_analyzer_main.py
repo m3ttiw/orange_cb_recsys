@@ -144,7 +144,7 @@ class ContentsProducer:
     def __get_timestamp(self, raw_content: Dict) -> str:
         """
         Search for timestamp as dataset field. If there isn't a field called 'timestamp', than
-            the timestamp will be the one returned by the system.
+        the timestamp will be the one returned by the system.
         """
         timestamp = None
         if self.__config.content_type != "item":

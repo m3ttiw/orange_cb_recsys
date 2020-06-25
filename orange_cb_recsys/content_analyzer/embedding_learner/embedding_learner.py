@@ -6,7 +6,7 @@ from typing import List
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import TextProcessor
 from orange_cb_recsys.content_analyzer.information_processor.nlp import NLTK
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
-from orange_cb_recsys.utils.const import DEVELOPING, home_path
+from orange_cb_recsys.utils.const import DEVELOPING, home_path, logger
 
 
 class EmbeddingLearner(ABC):
@@ -69,12 +69,15 @@ class EmbeddingLearner(ABC):
         """
         corpus = []
         # iter the source
+        i = 0
         for doc in self.source:
+            logger.info("Document %d", i)
             doc_data = ""
             for field_name in self.field_list:
                 # apply preprocessing and save the data in the list
                 doc_data += " " + doc[field_name].lower()
             corpus.append(self.preprocessor.process(doc_data))
+            i += 1
         return corpus
 
     def save(self):

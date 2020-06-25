@@ -139,18 +139,17 @@ class ContentAnalyzerConfig:
         it's a list instead of single value for handling complex id
         composed of multiple fields
         field_config_dict (Dict<str, FieldConfig>):
-        store the config for each field_name
+            store the config for each field_name
         output_directory (str):
-        path of the results serialized content instance
+            path of the results serialized content instance
         search_index (bool):
-        True if in the technique a sarch indexing is specified
+            True if in the technique a sarch indexing is specified
         field_config_dict:
-        FieldConfig instance specified
-        for each field you want to produce
-        exogenous_properties_retrieval:
-        list of techniques that retrievas
-        exogenous properties that represent
-        the contents
+            FieldConfig instance specified
+            for each field you want to produce
+        exogenous_properties_retrieval: list of techniques that
+            retrieves exogenous properties
+            that represent the contents
     """
 
     def __init__(self, content_type: str,
