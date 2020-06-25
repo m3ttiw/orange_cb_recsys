@@ -91,7 +91,7 @@ def split_user_in_groups(score_frame: pd.DataFrame, groups: Dict[str, float], po
     return groups_dict
 
 
-def get_profile_avg_pop_ratio(users: Set[str], pop_ratio_by_users: pd.DataFrame) -> float:
+def get_profile_avg_pop_ratio(users: Set[str], pop_ratio_by_users: pd.DataFrame) -> np.ndarray:
     """
     Calculates the average profile popularity ratio
 
@@ -106,10 +106,10 @@ def get_profile_avg_pop_ratio(users: Set[str], pop_ratio_by_users: pd.DataFrame)
     for user in users:
         user_pop_ratio = pop_ratio_by_users.query('from_id == @user')[['popularity_ratio']].values.flatten()[0]
         profile_pop_ratios = np.append(profile_pop_ratios, user_pop_ratio)
-    return profile_pop_ratios.mean()  # potrebbe essere sbagliato
+    return profile_pop_ratios
 
 
-def get_recs_avg_pop_ratio(users: Set[str], recommendations: pd.DataFrame, most_popular_items: Set[str]) -> float:
+def get_recs_avg_pop_ratio(users: Set[str], recommendations: pd.DataFrame, most_popular_items: Set[str]) -> np.ndarray:
     """
     Calculates the popularity ratio
     Args:
@@ -131,4 +131,4 @@ def get_recs_avg_pop_ratio(users: Set[str], recommendations: pd.DataFrame, most_
                     pop_items_count += 1
 
             pop_ratios = np.append(pop_ratios, pop_items_count / len(recommended_items))
-    return pop_ratios.mean()  # potrebbe essere sbagliato
+    return pop_ratios
