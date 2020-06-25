@@ -202,7 +202,7 @@ class TripartiteGraph(Graph):
     def query_frame(self, key: str, column: str) -> List[Dict]:
         """returns list of rows"""
         results_ = []
-        rows = self.__source_frame.loc[self.__source_frame[column] == key]
+        rows = self.source_frame.loc[self.source_frame[column] == key]
         for row in rows.iterrows():
             results_.append(row)
         return results_

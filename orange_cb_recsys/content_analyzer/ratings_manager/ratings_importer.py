@@ -109,8 +109,8 @@ class RatingsImporter:
                         for preference in self.__rating_configs
                     },
                     **{
-                        "{}_score".format(preference.get_field_name().lower()):
-                            preference.get_processor().fit(raw_rating[preference.get_field_name()])
+                        "{}_score".format(preference.field_name.lower()):
+                            preference.processor.fit(raw_rating[preference.field_name])
                         for preference in self.__rating_configs
                     }
                 }
