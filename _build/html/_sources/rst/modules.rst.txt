@@ -1,7 +1,7 @@
-src
-===
+orange_cb_recsys
+================
 
 .. toctree::
    :maxdepth: 4
 
-   src
+   orange_cb_recsys
