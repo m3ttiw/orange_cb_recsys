@@ -5,6 +5,7 @@ import pandas as pd
 from orange_cb_recsys.evaluation.delta_gap import *
 from orange_cb_recsys.evaluation.metrics import Metric
 from orange_cb_recsys.evaluation.utils import *
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from orange_cb_recsys.utils.const import logger, DEVELOPING, home_path
