@@ -15,8 +15,8 @@ class GensimFastText(EmbeddingLearner):
     Args:
         source (RawInformationSource): Source where the content is stored.
         preprocessor (InformationProcessor): Instance of the class InformationProcessor,
-        specify how to process (can be None) the source data, before
-        use it for model computation
+            specify how to process (can be None) the source data, before
+            use it for model computation
         field_list (List<str>): Field name list.
     """
 

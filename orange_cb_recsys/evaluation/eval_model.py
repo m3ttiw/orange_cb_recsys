@@ -243,8 +243,8 @@ class ReportEvalModel(EvalModel):
 
         Returns:
             result_list: each element of this list is a metric
-            result that can be of different types,
-            according to the metric, for example a DataFrame or a float
+                result that can be of different types,
+                according to the metric, for example a DataFrame or a float
         """
         # initialize recommender to call for prediction computing
         recsys = RecSys(self.config)

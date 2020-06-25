@@ -13,8 +13,8 @@ class BabelPyEntityLinking(EntityLinking):
 
     Args:
         api_key: string obtained by registering to
-        babelfy website, with None babelpy key only few
-        queries can be executed
+            babelfy website, with None babelpy key only few
+            queries can be executed
     """
 
     def __init__(self, api_key: str = None):

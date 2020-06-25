@@ -105,8 +105,9 @@ class LuceneTfIdf(TfIdfTechnique):
         Save the processed data in a index that will be used for frequency calc
 
         Args:
-            information_source (RawInformationSource): data source from which extract the field data
-            to create the index for tf-idf computing
+            information_source (RawInformationSource): data source from
+                which extract the field data
+                to create the index for tf-idf computing
             id_field_names: names of the fields that compounds the id
         """
 

@@ -57,12 +57,12 @@ class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
         entity_type (str): domain of the items that you want to process
         lang (str): lang of the descriptions
         label_field: field ato be used as a filter,
-        DBPedia node that has label value equal to specified field value
-        will be retrieved
+            DBPedia node that has label value equal to specified field value
+            will be retrieved
         additional_filters: other fields to use as filters,
-        useful if label is not enough.
-        You need to specify the name of the filed in your dataset
-        and the name of the corresponding DBPedia property
+            useful if label is not enough.
+            You need to specify the name of the filed in your dataset
+            and the name of the corresponding DBPedia property
         mode: one in: 'all', 'all_retrieved', 'only_retrieved_evaluated', 'original_retrieved',
     """
 

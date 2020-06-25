@@ -35,9 +35,9 @@ class ClassificationMetric(Metric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set,
-              first n will be considered relevant,
-              with n equal to the number of relevant items in the test set
+                  it represents the ranking of all the items in the test set,
+                  first n will be considered relevant,
+                  with n equal to the number of relevant items in the test set
         """
         raise NotImplementedError
 
@@ -68,9 +68,9 @@ class Precision(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set,
-              first n will be considered relevant,
-              with n equal to the number of relevant items in the test set
+                  it represents the ranking of all the items in the test set,
+                  first n will be considered relevant,
+                  with n equal to the number of relevant items in the test set
 
         Returns:
             (float): precision
@@ -106,9 +106,9 @@ class Recall(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set,
-              first n will be considered relevant,
-              with n equal to the number of relevant items in the test set
+                  it represents the ranking of all the items in the test set,
+                  first n will be considered relevant,
+                  with n equal to the number of relevant items in the test set
 
         Returns:
             (float): recall
@@ -147,9 +147,9 @@ class MRR(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set,
-              first n will be considered relevant,
-              with n equal to the number of relevant items in the test set
+                  it represents the ranking of all the items in the test set,
+                  first n will be considered relevant,
+                  with n equal to the number of relevant items in the test set
 
         Returns:
             (float): the mrr value
@@ -198,9 +198,9 @@ class FNMeasure(ClassificationMetric):
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating
               predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
-              it represents the ranking of all the items in the test set,
-              first n will be considered relevant,
-              with n equal to the number of relevant items in the test set
+                  it represents the ranking of all the items in the test set,
+                  first n will be considered relevant,
+                  with n equal to the number of relevant items in the test set
 
         Returns:
             score (float): Fn value

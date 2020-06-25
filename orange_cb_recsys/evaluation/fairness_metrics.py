@@ -317,9 +317,9 @@ class PopRatioVsRecs(GroupFairnessMetric):
         file_name (str): name of the file that the metrics will serialize
         out_dir (str): directory in which the file will be serialized
         user_groups (dict<str, float>): specify how to divide user in groups, so
-        specify for each group specify:
-        - name
-        - percentage of users
+            specify for each group specify:
+            - name
+            - percentage of users
         store_frame (bool): True if you want to store the frame in a csv file, False otherwise
     """
 

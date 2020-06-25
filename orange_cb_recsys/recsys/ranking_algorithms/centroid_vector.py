@@ -22,7 +22,7 @@ class CentroidVector(RankingAlgorithm):
         field_representation: Id of the field_representation content of which compute the centroid
         similarity (Similarity): Kind of similarity to use
         threshold (int): Threshold for the ratings. If the rating is greater than the threshold, it will be considered
-        as positive
+            as positive
     """
 
     def __init__(self, item_field: str, field_representation: str, similarity: Similarity, threshold: int = 0):
@@ -42,7 +42,7 @@ class CentroidVector(RankingAlgorithm):
 
         Returns:
             centroid (sparse.csr_matrix): Sparse matrix that represents the centroid vector of the
-            given item representations
+                given item representations
         """
 
         dv = DictVectorizer(sparse=True)
@@ -71,7 +71,7 @@ class CentroidVector(RankingAlgorithm):
 
         Returns:
             centroid (np.array): numpy array that represents the centroid vector of the
-            given item representations
+                given item representations
         """
 
         arrays = []
@@ -101,7 +101,7 @@ class CentroidVector(RankingAlgorithm):
 
         Args:
             candidate_item_id_list: list of the items that can be recommended, if None
-            all unrated items will be used
+                all unrated items will be used
             user_id: user for which recommendations will be computed
             recs_number (list[Content]): How long the ranking will be
             ratings (pd.DataFrame): ratings of the user with id equal to user_id
@@ -109,7 +109,7 @@ class CentroidVector(RankingAlgorithm):
 
         Returns:
              scores (pd.DataFrame): DataFrame whose columns are the ids of the items (to_id), and the similarities between the
-              items and the centroid (rating)
+                  items and the centroid (rating)
         """
 
         try:
