@@ -1,3 +1,5 @@
+import os
+import time
 from typing import List
 
 from gensim.models import Word2Vec
@@ -6,6 +8,7 @@ from orange_cb_recsys.content_analyzer.embedding_learner.embedding_learner impor
 from orange_cb_recsys.content_analyzer.information_processor\
     .information_processor import TextProcessor
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
+from orange_cb_recsys.utils.const import DEVELOPING, home_path
 
 
 class GensimWord2Vec(EmbeddingLearner):
@@ -137,3 +140,9 @@ class GensimWord2Vec(EmbeddingLearner):
                     total_examples=model.corpus_count,
                     epochs=self.__epochs)
         self.model = model
+
+    def save(self):
+        embeddings_path = './'
+        if not DEVELOPING:
+            embeddings_path = os.path.join(home_path, 'embeddings')
+        self.model.wv.save_word2vec_format(embeddings_path + str(time.time()) + ".bin", binary=True)

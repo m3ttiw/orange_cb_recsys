@@ -1,7 +1,7 @@
 from typing import List
 
 import gensim.downloader as downloader
-from gensim.models import KeyedVectors, Doc2Vec, fasttext
+from gensim.models import KeyedVectors, Doc2Vec, fasttext, RpModel
 from wikipedia2vec import Wikipedia2Vec
 import numpy as np
 
@@ -20,7 +20,7 @@ class BinaryFile(EmbeddingSource):
         file_path (str): path for the binary file containing the embeddings
         embedding_type (str): Name of the technique used to learn
         the embedding that is being loaded
-        the possible values are: "word2vec", "doc2vec", "fasttext"
+        the possible values are: "word2vec", "doc2vec", "fasttext", "ri"
     """
 
     def __init__(self, file_path: str,
@@ -34,6 +34,8 @@ class BinaryFile(EmbeddingSource):
             self.model = Doc2Vec.load(self.__file_path)
         elif embedding_type == "fasttext":
             self.model = fasttext.load_facebook_vectors(self.__file_path)
+        elif embedding_type == "ri":
+            self.model = RpModel.load(self.__file_path)
         else:
             raise ValueError(
                 "Must specify a valid embedding model type for loading from binary file")
