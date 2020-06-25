@@ -135,7 +135,7 @@ class ContentAnalyzerConfig:
 
     Args:
         source (RawInformationSource): raw data source to iterate on for extracting the contents
-        id_field_name_list (str): list of the fields names containing the content's id,
+        id_field_name_list (List[str]): list of the fields names containing the content's id,
         it's a list instead of single value for handling complex id
         composed of multiple fields
         field_config_dict (Dict<str, FieldConfig>):
@@ -155,7 +155,7 @@ class ContentAnalyzerConfig:
 
     def __init__(self, content_type: str,
                  source: RawInformationSource,
-                 id_field_name_list,
+                 id_field_name_list: List[str],
                  output_directory: str,
                  search_index=False,
                  field_config_dict: Dict[str, FieldConfig] = None,
@@ -174,14 +174,13 @@ class ContentAnalyzerConfig:
         self.__content_type = content_type.lower()
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
-        self.__id_field_name_list: str = id_field_name_list
+        self.__id_field_name_list: List[str] = id_field_name_list
         self.__exogenous_properties_retrieval: \
             List[ExogenousPropertiesRetrieval] = exogenous_properties_retrieval
 
         FieldRepresentationPipeline.instance_counter = 0
 
-    def append_exogenous_properties_retrieval(self,
-                                              exogenous_properties_retrieval: List[ExogenousPropertiesRetrieval]):
+    def append_exogenous_properties_retrieval(self, exogenous_properties_retrieval: ExogenousPropertiesRetrieval):
         self.__exogenous_properties_retrieval.append(exogenous_properties_retrieval)
 
     @property

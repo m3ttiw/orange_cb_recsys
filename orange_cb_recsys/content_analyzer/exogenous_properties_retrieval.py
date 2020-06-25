@@ -1,9 +1,11 @@
+import os
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, List
 import pandas as pd
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 from orange_cb_recsys.content_analyzer.content_representation.content import PropertiesDict
+from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.string_cleaner import clean_with_unders, clean_no_unders
 
@@ -43,8 +45,30 @@ class ExogenousPropertiesRetrieval(ABC):
         self.__mode = self.__check_mode(mode)
 
     @abstractmethod
-    def get_properties(self, name, raw_content: Dict[str, object]) -> Dict[str, str]:
-        pass
+    def get_properties(self, name, raw_content: Dict[str, object]) -> PropertiesDict:
+        raise NotImplementedError
+
+
+class PropertiesFromDataset(ExogenousPropertiesRetrieval):
+    def __init__(self, mode: str = 'only_retrieved_evaluated', field_name_list: List[str] = None):
+        super().__init__(mode)
+        self.__field_name_list: List[str] = field_name_list
+
+    def get_properties(self, name: str, raw_content: Dict[str, object]) -> PropertiesDict:
+
+        logger.info("Extracting exogenous properties")
+        prop_dict = {}
+        for i, k in enumerate(raw_content.keys()):
+            field_name = k
+            if self.__field_name_list is not None:
+                field_name = self.__field_name_list[i]
+            prop_dict[field_name] = str(raw_content[k])
+            if self.mode == 'only_retrieved_evaluated' and raw_content[k] != '':
+                prop_dict.pop(k)
+            elif self.mode == 'all_retrieved' or self.mode == 'all' or self.mode == 'original_retrieved':
+                continue
+
+        return PropertiesDict(name, prop_dict)
 
 
 class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
@@ -264,7 +288,7 @@ class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
                 properties[property_label] = ""
         return properties
 
-    def get_properties(self, name: str, raw_content: Dict[str, object]) -> Dict[str, str]:
+    def get_properties(self, name: str, raw_content: Dict[str, object]) -> PropertiesDict:
         """
         Execute the properties couple retrieval
 
@@ -274,9 +298,9 @@ class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
                 is being processed
 
         Returns:
-
+            PropertiesDict
         """
-        logger.info("Extracting LOD properties")
+        logger.info("Extracting exogenous properties")
         prop_dict = {}
         if self.mode == 'only_retrieved_evaluated':
             prop_dict = self.__get_only_retrieved_evaluated(raw_content)

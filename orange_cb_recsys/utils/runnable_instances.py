@@ -1,5 +1,4 @@
 import lzma
-import os
 import pickle
 from typing import Dict
 
@@ -14,7 +13,7 @@ from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase, DATFile
-from orange_cb_recsys.utils.const import logger, home_path
+from orange_cb_recsys.utils.const import logger
 
 """ 
 Default dict for all implementation of the abstract classes, for different purpose, 
@@ -178,5 +177,3 @@ def show(categories: bool=False):
         r_i = get()
         for k in r_i.keys():
             logger.info('< %s : %s >', k, str(r_i[k]))
-
-

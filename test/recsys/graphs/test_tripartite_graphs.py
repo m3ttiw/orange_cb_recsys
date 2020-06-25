@@ -17,7 +17,7 @@ class TestNXTripartiteGraph(TestCase):
         g.get_predecessors('aaa')
         g.get_successors('000')
 
-        g = NXTripartiteGraph(df, 'contents/movielens_test1591885241.5520566')
+        g = NXTripartiteGraph(df, 'contents/movielens_test_exo_prop1593012430.4516225')
         g.add_node('000')
         g.add_edge('000', 'aaa', 0.5)
         g.get_adj('aaa')

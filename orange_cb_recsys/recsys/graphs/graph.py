@@ -12,8 +12,13 @@ class Graph(ABC):
     """
     Abstract class that generalize the concept of a Graph
     """
-    def __init__(self):
-        pass
+    def __init__(self, source_frame: pd.DataFrame):
+        self.__source_frame: pd.DataFrame = source_frame
+        self.__graph = None
+
+    @property
+    def graph(self):
+        return self.__graph
 
     @staticmethod
     def check_columns(df: pd.DataFrame):
@@ -40,6 +45,16 @@ class Graph(ABC):
             float in the range [0.0, 1.0]
         """
         return 1 - (score + 1) / 2
+
+    @property
+    def source_frame(self):
+        return self.__source_frame
+
+    def get_from_nodes(self) -> List[str]:
+        return list(self.__source_frame.from_id)
+
+    def get_to_nodes(self) -> List[str]:
+        return list(self.__source_frame.to_id)
 
     @abstractmethod
     def create_graph(self):
@@ -80,7 +95,7 @@ class BipartiteGraph(Graph):
             generated from this DataFrame
     """
     def __init__(self, source_frame: pd.DataFrame):
-        super().__init__()
+        super().__init__(source_frame)
         self.__graph = None
         if self.check_columns(source_frame):
             self.create_graph()
@@ -138,14 +153,13 @@ class TripartiteGraph(Graph):
             self.__exogenous_properties: List[str] = []
 
         self.__contents_dir: str = contents_dir
-        super().__init__()
-        self.__source_frame = source_frame
+        super().__init__(source_frame)
         self.__graph = None
 
         if self.check_columns(source_frame):
             self.create_graph()
 
-            for idx, row in source_frame.iterrows():
+            for idx, row in self.source_frame.iterrows():
                 self.add_edge(row['from_id'], row['to_id'], self.normalize_score(row['score']),
                               label=self.__default_score_label)
                 content = self.load_content(row['to_id'])

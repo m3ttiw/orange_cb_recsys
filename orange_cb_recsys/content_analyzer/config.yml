@@ -1,15 +1,14 @@
 ---
 - content_type: "ITEM"
-  output_directory: "movielens_test"
+  output_directory: "../../contents/movielens_test_exo_prop"
   raw_source_path: "../../datasets/movies_info_reduced.json"
   source_type: "json"
   id_field_name:
   - "imdbID"
-  get_lod_properties:
+  get_exogenous_properties:
     - class: 'dbpedia_mapping'
       mode: 'only_retrieved_evaluated'
       entity_type: 'Film'
       lang: 'EN'
       label_field: 'Title'
-  fields:
-    -
+  fields: []
