@@ -9,7 +9,7 @@ class Serendipity(Metric):
     Serendipity
         .. math::
         \\begin{align*}
-        \\mathrm{Unexpected \; recommendations}&  = |recommendations \; from  \; tested \; algorithm| - |recommendations \; from \;  obvious \;  algorithm|
+        \\mathrm{SER}(k) & = \\sum_{u in U} \\sum_{j=1}^{k} \\frac{nonpop(i_{j}, u)}{k}  \\frac{1}{|U|} 
         \\end{align*}
     """
     def __init__(self, num_of_recs: int):
