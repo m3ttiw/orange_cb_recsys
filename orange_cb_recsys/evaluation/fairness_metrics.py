@@ -362,11 +362,9 @@ class PopRatioVsRecs(GroupFairnessMetric):
                                                            'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
 
             profile_data = np.array(profile_pop_ratios)
-            print(profile_data)
             data_to_plot.append(profile_data)
             labels.append('{}_pop'.format(group_name))
             recs_data = np.array(recs_pop_ratios)
-            print(recs_data)
             data_to_plot.append(recs_data)
             labels.append('{}_recs'.format(group_name))
 
@@ -422,7 +420,8 @@ class PopRatioVsRecs(GroupFairnessMetric):
         ax.get_yaxis().tick_left()
 
         # Save the figure
-        fig.savefig('fig1.png', bbox_inches='tight')
+        fig.savefig('{}/pop_ratio_profile_vs_recs_{}.svg'.format(self.output_directory, self.file_name),
+                    bbox_inches='tight')
 
         if self.__store_frame:
             score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.output_directory, self.file_name))
