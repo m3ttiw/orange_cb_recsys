@@ -144,7 +144,9 @@
            <div itemprop="articleBody">
             
   <h1>Source code for orange_cb_recsys.content_analyzer.embedding_learner.word2vec</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
 
@@ -152,6 +154,7 @@
 <span class="kn">from</span> <span class="nn">orange_cb_recsys.content_analyzer.information_processor</span>\
     <span class="o">.</span><span class="n">information_processor</span> <span class="kn">import</span> <span class="nn">TextProcessor</span>
 <span class="kn">from</span> <span class="nn">orange_cb_recsys.content_analyzer.raw_information_source</span> <span class="kn">import</span> <span class="n">RawInformationSource</span>
+<span class="kn">from</span> <span class="nn">orange_cb_recsys.utils.const</span> <span class="kn">import</span> <span class="n">DEVELOPING</span><span class="p">,</span> <span class="n">home_path</span>
 
 
 <div class="viewcode-block" id="GensimWord2Vec"><a class="viewcode-back" href="../../../../rst/orange_cb_recsys.content_analyzer.embedding_learner.html#orange_cb_recsys.content_analyzer.embedding_learner.word2vec.GensimWord2Vec">[docs]</a><span class="k">class</span> <span class="nc">GensimWord2Vec</span><span class="p">(</span><span class="n">EmbeddingLearner</span><span class="p">):</span>
@@ -162,8 +165,8 @@
 <span class="sd">    Args:</span>
 <span class="sd">        source (RawInformationSource): Source where the content is stored.</span>
 <span class="sd">        preprocessor (InformationProcessor): Instance of the class InformationProcessor,</span>
-<span class="sd">        specify how to process (can be None) the source data, before</span>
-<span class="sd">        use it for model computation</span>
+<span class="sd">            specify how to process (can be None) the source data, before</span>
+<span class="sd">            use it for model computation</span>
 <span class="sd">        field_list (List&lt;str&gt;): Field name list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -282,7 +285,13 @@
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">sentences</span><span class="o">=</span><span class="n">data_to_train</span><span class="p">,</span>
                     <span class="n">total_examples</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">corpus_count</span><span class="p">,</span>
                     <span class="n">epochs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__epochs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span></div>
+
+<div class="viewcode-block" id="GensimWord2Vec.save"><a class="viewcode-back" href="../../../../rst/orange_cb_recsys.content_analyzer.embedding_learner.html#orange_cb_recsys.content_analyzer.embedding_learner.word2vec.GensimWord2Vec.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">embeddings_path</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">DEVELOPING</span><span class="p">:</span>
+            <span class="n">embeddings_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home_path</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">save_word2vec_format</span><span class="p">(</span><span class="n">embeddings_path</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;.bin&quot;</span><span class="p">,</span> <span class="n">binary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

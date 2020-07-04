@@ -237,7 +237,7 @@
     <span class="k">return</span> <span class="n">groups_dict</span></div>
 
 
-<div class="viewcode-block" id="get_profile_avg_pop_ratio"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.utils.get_profile_avg_pop_ratio">[docs]</a><span class="k">def</span> <span class="nf">get_profile_avg_pop_ratio</span><span class="p">(</span><span class="n">users</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">pop_ratio_by_users</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="get_profile_avg_pop_ratio"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.utils.get_profile_avg_pop_ratio">[docs]</a><span class="k">def</span> <span class="nf">get_profile_avg_pop_ratio</span><span class="p">(</span><span class="n">users</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">pop_ratio_by_users</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the average profile popularity ratio</span>
 
@@ -252,10 +252,10 @@
     <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
         <span class="n">user_pop_ratio</span> <span class="o">=</span> <span class="n">pop_ratio_by_users</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;from_id == @user&#39;</span><span class="p">)[[</span><span class="s1">&#39;popularity_ratio&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">profile_pop_ratios</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">profile_pop_ratios</span><span class="p">,</span> <span class="n">user_pop_ratio</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">profile_pop_ratios</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>  <span class="c1"># potrebbe essere sbagliato</span></div>
+    <span class="k">return</span> <span class="n">profile_pop_ratios</span></div>
 
 
-<div class="viewcode-block" id="get_recs_avg_pop_ratio"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.utils.get_recs_avg_pop_ratio">[docs]</a><span class="k">def</span> <span class="nf">get_recs_avg_pop_ratio</span><span class="p">(</span><span class="n">users</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">recommendations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">most_popular_items</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<div class="viewcode-block" id="get_recs_avg_pop_ratio"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.utils.get_recs_avg_pop_ratio">[docs]</a><span class="k">def</span> <span class="nf">get_recs_avg_pop_ratio</span><span class="p">(</span><span class="n">users</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">recommendations</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">most_popular_items</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the popularity ratio</span>
 <span class="sd">    Args:</span>
@@ -277,7 +277,7 @@
                     <span class="n">pop_items_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
             <span class="n">pop_ratios</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pop_ratios</span><span class="p">,</span> <span class="n">pop_items_count</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">recommended_items</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">pop_ratios</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>  <span class="c1"># potrebbe essere sbagliato</span></div>
+    <span class="k">return</span> <span class="n">pop_ratios</span></div>
 </pre></div>
 
            </div>

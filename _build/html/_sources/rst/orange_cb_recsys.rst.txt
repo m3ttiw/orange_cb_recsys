@@ -12,18 +12,6 @@ Subpackages
    orange_cb_recsys.recsys
    orange_cb_recsys.utils
 
-Submodules
-----------
-
-orange\_cb\_recsys.setup module
--------------------------------
-
-.. automodule:: orange_cb_recsys.setup
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Module contents
 ---------------
 

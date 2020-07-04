@@ -169,21 +169,27 @@
 
 <div class="viewcode-block" id="RankingMetric.perform"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.ranking_metrics.RankingMetric.perform">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the metric value</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">              truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
+<span class="sd">              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
+<span class="sd">                  it represents the ranking of all the items in the test set</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
 
 <div class="viewcode-block" id="NDCG"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.ranking_metrics.NDCG">[docs]</a><span class="k">class</span> <span class="nc">NDCG</span><span class="p">(</span><span class="n">RankingMetric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Normalized discounted cumulative gain</span>
-<span class="sd">    .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{DCG}(L,u) &amp; = \\sum_{i=1}^{|L|} \\frac{r_{ui}}{d(i)}</span>
-<span class="sd">        \\end{align*}</span>
+<span class="sd">    Discounted cumulative gain</span>
+<span class="sd">    .. image:: metrics_img/dcg.png</span>
+<span class="sd">    \n\n</span>
 <span class="sd">    This is then normalized as follows:</span>
-<span class="sd">    .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{nDCG}(L, u) &amp; = \\frac{\\mathrm{DCG}(L,u)}{\\mathrm{DCG}(L_{\\mathrm{ideal}}, u)}</span>
-<span class="sd">        \\end{align*}</span>
+<span class="sd">    .. image:: metrics_img/ndcg.png</span>
+<span class="sd">    \n\n</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">relevance_split</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">relevance_split</span><span class="p">)</span>
@@ -216,6 +222,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Normalized DCG measure using Truth rank as ideal DCG</span>
 <span class="sd">        Args:</span>
+<span class="sd">              truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
+<span class="sd">              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
+<span class="sd">                  it represents the ranking of all the items in the test set</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ndcg (List[float]): array of ndcg</span>
@@ -275,6 +284,9 @@
 <span class="sd">        Compute the correlation between the two ranks</span>
 
 <span class="sd">        Args:</span>
+<span class="sd">            truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
+<span class="sd">            predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
+<span class="sd">                it represents the ranking of all the items in the test set</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): value of the specified correlation metric</span>

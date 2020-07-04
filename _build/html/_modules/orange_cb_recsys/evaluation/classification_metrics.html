@@ -181,9 +181,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">              truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
 <span class="sd">              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
-<span class="sd">              it represents the ranking of all the items in the test set,</span>
-<span class="sd">              first n will be considered relevant,</span>
-<span class="sd">              with n equal to the number of relevant items in the test set</span>
+<span class="sd">                  it represents the ranking of all the items in the test set,</span>
+<span class="sd">                  first n will be considered relevant,</span>
+<span class="sd">                  with n equal to the number of relevant items in the test set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
 
@@ -191,11 +191,9 @@
 <div class="viewcode-block" id="Precision"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.classification_metrics.Precision">[docs]</a><span class="k">class</span> <span class="nc">Precision</span><span class="p">(</span><span class="n">ClassificationMetric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Precision</span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{Precision}&amp; = #relevant recommended items \over #recommended items</span>
-<span class="sd">        \\end{align*}</span>
 
+<span class="sd">    .. image:: metrics_img/precision.png</span>
+<span class="sd">    \n\n</span>
 <span class="sd">    Args:</span>
 <span class="sd">        relevant_threshold: specify the minimum value to consider</span>
 <span class="sd">            a truth frame row as relevant</span>
@@ -214,9 +212,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">              truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
 <span class="sd">              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
-<span class="sd">              it represents the ranking of all the items in the test set,</span>
-<span class="sd">              first n will be considered relevant,</span>
-<span class="sd">              with n equal to the number of relevant items in the test set</span>
+<span class="sd">                  it represents the ranking of all the items in the test set,</span>
+<span class="sd">                  first n will be considered relevant,</span>
+<span class="sd">                  with n equal to the number of relevant items in the test set</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): precision</span>
@@ -229,11 +227,9 @@
 <div class="viewcode-block" id="Recall"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.classification_metrics.Recall">[docs]</a><span class="k">class</span> <span class="nc">Recall</span><span class="p">(</span><span class="n">ClassificationMetric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Recall</span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{Precision}&amp; = #relevant recommended items \over #tested relevant items</span>
-<span class="sd">        \\end{align*}</span>
 
+<span class="sd">    .. image:: metrics_img/recall.png</span>
+<span class="sd">    \n\n</span>
 <span class="sd">    Args:</span>
 <span class="sd">        relevant_threshold: specify the minimum value to consider</span>
 <span class="sd">            a truth frame row as relevant</span>
@@ -252,9 +248,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">              truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
 <span class="sd">              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
-<span class="sd">              it represents the ranking of all the items in the test set,</span>
-<span class="sd">              first n will be considered relevant,</span>
-<span class="sd">              with n equal to the number of relevant items in the test set</span>
+<span class="sd">                  it represents the ranking of all the items in the test set,</span>
+<span class="sd">                  first n will be considered relevant,</span>
+<span class="sd">                  with n equal to the number of relevant items in the test set</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): recall</span>
@@ -268,6 +264,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MRR</span>
 
+<span class="sd">    .. image:: metrics_img/mrr.png</span>
+<span class="sd">    \n\n</span>
 <span class="sd">    Args:</span>
 <span class="sd">        relevant_threshold: specify the minimum value to consider</span>
 <span class="sd">            a truth frame row as relevant</span>
@@ -282,10 +280,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Mean Reciprocal Rank metric</span>
 <span class="sd">        </span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\\mathrm{MRR}&amp; = \[\frac{\sum_{i=1}^{\mid Q \mid} \frac{1}{rank(i)}}{|Q|}\]</span>
-<span class="sd">        \\end{align*}</span>
+
 <span class="sd">        Where:</span>
 <span class="sd">            • Q is the set of recommendation lists</span>
 <span class="sd">            • rank(i) is the position of the first relevant item in the i-th recommendation list</span>
@@ -293,9 +288,9 @@
 <span class="sd">        Args:</span>
 <span class="sd">              truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
 <span class="sd">              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
-<span class="sd">              it represents the ranking of all the items in the test set,</span>
-<span class="sd">              first n will be considered relevant,</span>
-<span class="sd">              with n equal to the number of relevant items in the test set</span>
+<span class="sd">                  it represents the ranking of all the items in the test set,</span>
+<span class="sd">                  first n will be considered relevant,</span>
+<span class="sd">                  with n equal to the number of relevant items in the test set</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (float): the mrr value</span>
@@ -319,6 +314,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FnMeasure</span>
 
+<span class="sd">    .. image:: metrics_img/fn.png</span>
+<span class="sd">    \n\n</span>
 <span class="sd">    Args:</span>
 <span class="sd">        n (int): multiplier</span>
 <span class="sd">        relevant_threshold: specify the minimum value to consider</span>
@@ -335,18 +332,13 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the Fn measure of the given ranking (predictions)</span>
 <span class="sd">        based on the truth ranking</span>
-<span class="sd">        </span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{Fn-Measure}&amp; = (1 + n^2) \times \frac{precision \times recall}{n^2 \times precision + recall}</span>
-<span class="sd">        \\end{align*}</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">              truth (pd.DataFrame): dataframe whose columns are: to_id, rating</span>
 <span class="sd">              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;</span>
-<span class="sd">              it represents the ranking of all the items in the test set,</span>
-<span class="sd">              first n will be considered relevant,</span>
-<span class="sd">              with n equal to the number of relevant items in the test set</span>
+<span class="sd">                  it represents the ranking of all the items in the test set,</span>
+<span class="sd">                  first n will be considered relevant,</span>
+<span class="sd">                  with n equal to the number of relevant items in the test set</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            score (float): Fn value</span>

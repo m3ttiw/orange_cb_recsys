@@ -155,14 +155,17 @@
 <div class="viewcode-block" id="Novelty"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.novelty.Novelty">[docs]</a><span class="k">class</span> <span class="nc">Novelty</span><span class="p">(</span><span class="n">Metric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Novelty</span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{Novelty}&amp; = \frac{\sum_{{i} \in hits} log_2(1/popularity_i)}{|hits|}</span>
-<span class="sd">        \\end{align*}</span>
 
-<span class="sd">        where:</span>
-<span class="sd">        - hits is a set of predicted items</span>
-<span class="sd">        - Popularity(i) = % users who rated item i</span>
+<span class="sd">    .. image:: metrics_img/novelty.png</span>
+<span class="sd">    \n\n</span>
+<span class="sd">    where:</span>
+<span class="sd">    - hits is a set of predicted items</span>
+<span class="sd">    - Popularity(i) = % users who rated item i</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_of_recs: number of recommendation</span>
+<span class="sd">            produced for each user</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_of_recs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__num_of_recs</span> <span class="o">=</span> <span class="n">num_of_recs</span>

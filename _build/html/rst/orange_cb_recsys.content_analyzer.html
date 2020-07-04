@@ -241,22 +241,17 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>source</strong> (<a class="reference internal" href="#orange_cb_recsys.content_analyzer.raw_information_source.RawInformationSource" title="orange_cb_recsys.content_analyzer.raw_information_source.RawInformationSource"><em>RawInformationSource</em></a>) – raw data source to iterate on for extracting the contents</p></li>
-<li><p><strong>id_field_name_list</strong> (<em>str</em>) – list of the fields names containing the content’s id,</p></li>
-<li><p><strong>a list instead of single value for handling complex id</strong> (<em>it's</em>) – </p></li>
-<li><p><strong>of multiple fields</strong> (<em>composed</em>) – </p></li>
-<li><p><strong>field_config_dict</strong> (<em>Dict&lt;str</em><em>, </em><em>FieldConfig&gt;</em>) – </p></li>
-<li><p><strong>the config for each field_name</strong> (<em>store</em>) – </p></li>
-<li><p><strong>output_directory</strong> (<em>str</em>) – </p></li>
-<li><p><strong>of the results serialized content instance</strong> (<em>path</em>) – </p></li>
-<li><p><strong>search_index</strong> (<em>bool</em>) – </p></li>
-<li><p><strong>if in the technique a sarch indexing is specified</strong> (<em>True</em>) – </p></li>
-<li><p><strong>field_config_dict</strong> – </p></li>
-<li><p><strong>instance specified</strong> (<a class="reference internal" href="#orange_cb_recsys.content_analyzer.config.FieldConfig" title="orange_cb_recsys.content_analyzer.config.FieldConfig"><em>FieldConfig</em></a>) – </p></li>
-<li><p><strong>each field you want to produce</strong> (<em>for</em>) – </p></li>
-<li><p><strong>exogenous_properties_retrieval</strong> – </p></li>
-<li><p><strong>of techniques that retrievas</strong> (<em>list</em>) – </p></li>
-<li><p><strong>properties that represent</strong> (<em>exogenous</em>) – </p></li>
-<li><p><strong>contents</strong> (<em>the</em>) – </p></li>
+<li><p><strong>id_field_name_list</strong> (<em>str</em>) – list of the fields names containing the content’s id,
+it’s a list instead of single value for handling complex id
+composed of multiple fields</p></li>
+<li><p><strong>field_config_dict</strong> (<em>Dict&lt;str</em><em>, </em><em>FieldConfig&gt;</em>) – store the config for each field_name</p></li>
+<li><p><strong>output_directory</strong> (<em>str</em>) – path of the results serialized content instance</p></li>
+<li><p><strong>search_index</strong> (<em>bool</em>) – True if in the technique a sarch indexing is specified</p></li>
+<li><p><strong>field_config_dict</strong> – FieldConfig instance specified
+for each field you want to produce</p></li>
+<li><p><strong>exogenous_properties_retrieval</strong> – list of techniques that
+retrieves exogenous properties
+that represent the contents</p></li>
 </ul>
 </dd>
 </dl>
@@ -533,13 +528,13 @@ This method is iteratively invoked by the fit method.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>entity_type</strong> (<em>str</em>) – domain of the items that you want to process</p></li>
 <li><p><strong>lang</strong> (<em>str</em>) – lang of the descriptions</p></li>
-<li><p><strong>label_field</strong> – field ato be used as a filter,</p></li>
-<li><p><strong>node that has label value equal to specified field value</strong> (<em>DBPedia</em>) – </p></li>
-<li><p><strong>be retrieved</strong> (<em>will</em>) – </p></li>
-<li><p><strong>additional_filters</strong> – other fields to use as filters,</p></li>
-<li><p><strong>if label is not enough.</strong> (<em>useful</em>) – </p></li>
-<li><p><strong>need to specify the name of the filed in your dataset</strong> (<em>You</em>) – </p></li>
-<li><p><strong>the name of the corresponding DBPedia property</strong> (<em>and</em>) – </p></li>
+<li><p><strong>label_field</strong> – field ato be used as a filter,
+DBPedia node that has label value equal to specified field value
+will be retrieved</p></li>
+<li><p><strong>additional_filters</strong> – other fields to use as filters,
+useful if label is not enough.
+You need to specify the name of the filed in your dataset
+and the name of the corresponding DBPedia property</p></li>
 <li><p><strong>mode</strong> – one in: ‘all’, ‘all_retrieved’, ‘only_retrieved_evaluated’, ‘original_retrieved’,</p></li>
 </ul>
 </dd>

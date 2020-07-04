@@ -45,11 +45,9 @@ class ClassificationMetric(Metric):
 class Precision(ClassificationMetric):
     """
     Precision
-        .. math::
-        \\begin{align*}
-        \\mathrm{Precision}& = #relevant recommended items \over #recommended items
-        \\end{align*}
 
+    .. image:: metrics_img/precision.png
+    \n\n
     Args:
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
@@ -83,11 +81,9 @@ class Precision(ClassificationMetric):
 class Recall(ClassificationMetric):
     """
     Recall
-        .. math::
-        \\begin{align*}
-        \\mathrm{Precision}& = #relevant recommended items \over #tested relevant items
-        \\end{align*}
 
+    .. image:: metrics_img/recall.png
+    \n\n
     Args:
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
@@ -122,6 +118,8 @@ class MRR(ClassificationMetric):
     """
     MRR
 
+    .. image:: metrics_img/mrr.png
+    \n\n
     Args:
         relevant_threshold: specify the minimum value to consider
             a truth frame row as relevant
@@ -136,10 +134,7 @@ class MRR(ClassificationMetric):
         """
         Compute the Mean Reciprocal Rank metric
         
-        .. math::
-        \\begin{align*}
-        \\\mathrm{MRR}& = \[\frac{\sum_{i=1}^{\mid Q \mid} \frac{1}{rank(i)}}{|Q|}\]
-        \\end{align*}
+
         Where:
             • Q is the set of recommendation lists
             • rank(i) is the position of the first relevant item in the i-th recommendation list
@@ -173,6 +168,8 @@ class FNMeasure(ClassificationMetric):
     """
     FnMeasure
 
+    .. image:: metrics_img/fn.png
+    \n\n
     Args:
         n (int): multiplier
         relevant_threshold: specify the minimum value to consider
@@ -189,11 +186,6 @@ class FNMeasure(ClassificationMetric):
         """
         Compute the Fn measure of the given ranking (predictions)
         based on the truth ranking
-        
-        .. math::
-        \\begin{align*}
-        \\mathrm{Fn-Measure}& = (1 + n^2) \times \frac{precision \times recall}{n^2 \times precision + recall}
-        \\end{align*}
 
         Args:
               truth (pd.DataFrame): dataframe whose columns are: to_id, rating

@@ -1,10 +1,10 @@
-.. Orange framework documentation master file, created by
-   sphinx-quickstart on Thu Jun 25 09:01:28 2020.
+.. Orange documentation master file, created by
+   sphinx-quickstart on Sat Jul  4 16:04:32 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Orange framework's documentation!
-============================================
+Welcome to Orange's documentation!
+==================================
 
 .. toctree::
    :maxdepth: 2

@@ -166,11 +166,9 @@
 <div class="viewcode-block" id="RMSE"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.prediction_metrics.RMSE">[docs]</a><span class="k">class</span> <span class="nc">RMSE</span><span class="p">(</span><span class="n">PredictionMetric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RMSE</span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{RMSE}&amp; = \\sqrt{\frac{\sum_{{u, i} \in T} ({r_{ui} - r&#39;_{ui}})^2}{|T|}}</span>
-<span class="sd">        \\end{align*}</span>
-<span class="sd">        Where T is the test set and r&#39; is the actual score give by user u to item i</span>
+<span class="sd">    .. image:: metrics_img/rmse.png</span>
+<span class="sd">    \n\n</span>
+<span class="sd">    Where T is the test set and r&#39; is the actual score give by user u to item i</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="RMSE.perform"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.prediction_metrics.RMSE.perform">[docs]</a>    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -198,11 +196,7 @@
 <div class="viewcode-block" id="MAE"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.prediction_metrics.MAE">[docs]</a><span class="k">class</span> <span class="nc">MAE</span><span class="p">(</span><span class="n">PredictionMetric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MAE</span>
-<span class="sd">        ..math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{MAE}&amp; = \\sum_{{u, i} \in T} \abs{{r_{ui} - r&#39;_{ui}}} \over |T|</span>
-<span class="sd">        \\end{align*}</span>
-<span class="sd">        Where T is the test set and r&#39; is the actual score give by user u to item i</span>
+<span class="sd">    .. image:: metrics_img/mae.png</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="MAE.perform"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.prediction_metrics.MAE.perform">[docs]</a>    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>

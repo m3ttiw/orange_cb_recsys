@@ -75,14 +75,11 @@ class GiniIndex(FairnessMetric):
     """
     Gini index
     
-        .. math::
-        \\begin{align*}
-        \\mathrm{Gini\; index }& = \frac{\sum_{i = 0}^{n} (2i - n - 1)}{n \sum_{i = 0}^{n} elem_i }
-        \\end{align*}
-
-        Where:
-        - n is the size of the user or item set
-        - elem(i) is the user or the item in the i-th position in the sorted frame by user or item
+    .. image:: metrics_img/gini.png
+    \n\n
+    Where:
+    - n is the size of the user or item set
+    - elem(i) is the user or the item in the i-th position in the sorted frame by user or item
     """
     def __init__(self, item: bool = False):
         super().__init__(None, None)
@@ -234,6 +231,8 @@ class CatalogCoverage(FairnessMetric):
     """
     CatalogCoverage
 
+    .. image:: metrics_img/cat_coverage.png
+    \n\n
     """
     def __init__(self):
         super().__init__(None, None)
@@ -241,11 +240,6 @@ class CatalogCoverage(FairnessMetric):
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Calculates the catalog coverage
-
-        .. math::
-        \\begin{align*}
-        \\mathrm{Catalogue\; coverage}& = \frac{|covered\; items|}{|items|} * 100
-        \\end{align*}
 
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config
@@ -266,6 +260,10 @@ class CatalogCoverage(FairnessMetric):
 class DeltaGap(GroupFairnessMetric):
     """
     DeltaGap
+
+    .. image:: metrics_img/d_gap.png
+    \n\n
+    Args:
         user_groups (dict<str, float>): specify how to divide user in groups, so
             specify for each group:
             - name

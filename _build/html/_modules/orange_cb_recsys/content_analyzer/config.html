@@ -282,21 +282,20 @@
 <span class="sd">    Args:</span>
 <span class="sd">        source (RawInformationSource): raw data source to iterate on for extracting the contents</span>
 <span class="sd">        id_field_name_list (str): list of the fields names containing the content&#39;s id,</span>
-<span class="sd">        it&#39;s a list instead of single value for handling complex id</span>
-<span class="sd">        composed of multiple fields</span>
+<span class="sd">            it&#39;s a list instead of single value for handling complex id</span>
+<span class="sd">            composed of multiple fields</span>
 <span class="sd">        field_config_dict (Dict&lt;str, FieldConfig&gt;):</span>
-<span class="sd">        store the config for each field_name</span>
+<span class="sd">            store the config for each field_name</span>
 <span class="sd">        output_directory (str):</span>
-<span class="sd">        path of the results serialized content instance</span>
+<span class="sd">            path of the results serialized content instance</span>
 <span class="sd">        search_index (bool):</span>
-<span class="sd">        True if in the technique a sarch indexing is specified</span>
+<span class="sd">            True if in the technique a sarch indexing is specified</span>
 <span class="sd">        field_config_dict:</span>
-<span class="sd">        FieldConfig instance specified</span>
-<span class="sd">        for each field you want to produce</span>
-<span class="sd">        exogenous_properties_retrieval:</span>
-<span class="sd">        list of techniques that retrievas</span>
-<span class="sd">        exogenous properties that represent</span>
-<span class="sd">        the contents</span>
+<span class="sd">            FieldConfig instance specified</span>
+<span class="sd">            for each field you want to produce</span>
+<span class="sd">        exogenous_properties_retrieval: list of techniques that</span>
+<span class="sd">            retrieves exogenous properties</span>
+<span class="sd">            that represent the contents</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>

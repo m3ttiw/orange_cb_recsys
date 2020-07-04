@@ -210,11 +210,10 @@
 <div class="viewcode-block" id="calculate_gap"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.delta_gap.calculate_gap">[docs]</a><span class="k">def</span> <span class="nf">calculate_gap</span><span class="p">(</span><span class="n">group</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">avg_pop_by_users</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the GAP (Group Average Popularity) formula</span>
-<span class="sd">    </span>
-<span class="sd">    .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{GAP(u)}&amp; = \[ \frac{\sum_{u\in G} \frac{\sum_{i \in iu} pop_i }{|iu|}}{|G|} \]</span>
-<span class="sd">        \\end{align*}</span>
+
+
+<span class="sd">    .. image:: metrics_img/gap.png</span>
+
 
 <span class="sd">    Where:</span>
 <span class="sd">      • G is the set of users</span>
@@ -240,11 +239,6 @@
 <div class="viewcode-block" id="calculate_delta_gap"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.delta_gap.calculate_delta_gap">[docs]</a><span class="k">def</span> <span class="nf">calculate_delta_gap</span><span class="p">(</span><span class="n">recs_gap</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">profile_gap</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute the ratio between the recommendation gap and the user profiles gap</span>
-
-<span class="sd">    .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{\Delta GAP}&amp; = \frac{recs_{GAP} - profile_{GAP}}{profile_{GAP}}</span>
-<span class="sd">        \\end{align*}</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        recs_gap (float): recommendation gap</span>

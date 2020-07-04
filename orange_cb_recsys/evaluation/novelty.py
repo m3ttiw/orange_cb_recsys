@@ -9,14 +9,17 @@ from orange_cb_recsys.evaluation.metrics import Metric
 class Novelty(Metric):
     """
     Novelty
-        .. math::
-        \\begin{align*}
-        \\mathrm{Novelty}& = \frac{\sum_{{i} \in hits} log_2(1/popularity_i)}{|hits|}
-        \\end{align*}
 
-        where:
-        - hits is a set of predicted items
-        - Popularity(i) = % users who rated item i
+    .. image:: metrics_img/novelty.png
+    \n\n
+    where:
+    - hits is a set of predicted items
+    - Popularity(i) = % users who rated item i
+
+
+    Args:
+        num_of_recs: number of recommendation
+            produced for each user
     """
     def __init__(self, num_of_recs):
         self.__num_of_recs = num_of_recs
