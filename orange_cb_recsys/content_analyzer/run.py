@@ -1,22 +1,21 @@
+from typing import List, Dict
+import orange_cb_recsys.utils.runnable_instances as r_i
 
 import json
 import sys
-from typing import Dict, List
-
 import yaml
 
-from orange_cb_recsys.utils import runnable_instances as r_i
-
-from orange_cb_recsys.content_analyzer import ContentAnalyzerConfig, FieldConfig, FieldRepresentationPipeline, \
-    ContentAnalyzer
-
-from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsFieldConfig, RatingsImporter
+from orange_cb_recsys.content_analyzer.config import ContentAnalyzerConfig, FieldConfig, \
+    FieldRepresentationPipeline
+from orange_cb_recsys.content_analyzer.content_analyzer_main import ContentAnalyzer
+from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import \
+    RatingsImporter, RatingsFieldConfig
 
 import lucene
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "content_analyzer/config_prova2.json"
+DEFAULT_CONFIG_PATH = "config_prova.json"
 
 implemented_preprocessing = r_i.get_cat('preprocessor')
 
