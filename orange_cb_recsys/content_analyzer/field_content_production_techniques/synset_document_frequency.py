@@ -21,6 +21,9 @@ from collections import Counter
 
 
 class SynsetDocumentFrequency(SingleContentTechnique):
+    """
+    Pywsd word sense disambiguation
+    """
     def __init__(self):
         super().__init__()
 
