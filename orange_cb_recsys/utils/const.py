@@ -2,7 +2,7 @@ from pathlib import Path
 import logging
 
 home_path = str(Path.home())
-DEVELOPING = True
+DEVELOPING = False
 
 logging.basicConfig(level=logging.INFO)
 
