@@ -16,11 +16,6 @@ from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase, DATFile
 from orange_cb_recsys.utils.const import logger, home_path
 
-import pathlib
-current_path = pathlib.Path(__file__).parent.absolute()
-
-print(current_path)
-
 """ 
 Default dict for all implementation of the abstract classes, for different purpose, 
 with an 'alias' as key and the 'class name' as value
@@ -72,7 +67,7 @@ categories = {
 def __serialize(r_i: Dict[str, object], label: str):
     logger.info("Serializing runnable_instances in utils dir",)
 
-    path = '../{}.xz'.format(label)
+    path = '../../contents/{}.xz'.format(label)
     try:
         with lzma.open(path, "rb") as f:
             pass
@@ -87,7 +82,7 @@ def get(alias: str = None):
     logger.info("Loading runnable_instances")
     r_i = {}
     try:
-        path = '../runnable_instances.xz'
+        path = '../../contents/runnable_instances.xz'
         try:
             with lzma.open(path, "rb") as f:
                 pass
@@ -113,7 +108,7 @@ def get_cat(category: str = None, alias: str = None):
     logger.info("Loading runnable_instances")
     cat = {}
     try:
-        path = '../categories.xz'
+        path = '../../contents/categories.xz'
         try:
             with lzma.open(path, "rb") as f:
                 pass
