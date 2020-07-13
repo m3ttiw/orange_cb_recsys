@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from orange_cb_recsys.content_analyzer.run import content_config_run, check_for_available, rating_config_run
+from orange_cb_recsys.__main__ import content_config_run, check_for_available, rating_config_run
 
 content_config_dict = '[{"content_type": "ITEM", ' \
                       '"output_directory": "movielens_test", ' \
