@@ -14,12 +14,10 @@ from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase, DATFile
-from orange_cb_recsys.utils.const import logger, home_path
+from orange_cb_recsys.utils.const import logger
 
 import pathlib
-current_path = pathlib.Path(__file__).parent.absolute()
-
-print(current_path)
+current_path = os.path.dirname(pathlib.Path(__file__).parent.absolute())
 
 """ 
 Default dict for all implementation of the abstract classes, for different purpose, 
@@ -72,7 +70,7 @@ categories = {
 def __serialize(r_i: Dict[str, object], label: str):
     logger.info("Serializing runnable_instances in utils dir",)
 
-    path = '../{}.xz'.format(label)
+    path = '{}/{}.xz'.format(current_path, label)
     try:
         with lzma.open(path, "rb") as f:
             pass
@@ -87,7 +85,7 @@ def get(alias: str = None):
     logger.info("Loading runnable_instances")
     r_i = {}
     try:
-        path = '../runnable_instances.xz'
+        path = '{}/runnable_instances.xz'.format(current_path)
         try:
             with lzma.open(path, "rb") as f:
                 pass
@@ -113,7 +111,7 @@ def get_cat(category: str = None, alias: str = None):
     logger.info("Loading runnable_instances")
     cat = {}
     try:
-        path = '../categories.xz'
+        path = '{}/categories.xz'.format(current_path)
         try:
             with lzma.open(path, "rb") as f:
                 pass
