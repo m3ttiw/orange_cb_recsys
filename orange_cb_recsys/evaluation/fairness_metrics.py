@@ -22,7 +22,8 @@ class FairnessMetric(Metric):
 
     def __init__(self, file_name: str, out_dir: str):
         if not DEVELOPING:
-            out_dir = os.path.join(home_path, out_dir)
+            if out_dir is not None:
+                out_dir = os.path.join(home_path, out_dir)
         self.__file_name = file_name
         self.__out_dir = out_dir
 
