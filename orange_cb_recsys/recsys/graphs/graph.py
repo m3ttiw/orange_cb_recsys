@@ -53,8 +53,14 @@ class Graph(ABC):
     def get_from_nodes(self) -> List[str]:
         return list(self.__source_frame.from_id)
 
+    def is_from_node(self, node) -> bool:
+        return node in self.get_from_nodes()
+
     def get_to_nodes(self) -> List[str]:
         return list(self.__source_frame.to_id)
+
+    def is_to_node(self, node) -> bool:
+        return node in self.get_to_nodes()
 
     @abstractmethod
     def create_graph(self):
@@ -189,6 +195,9 @@ class TripartiteGraph(Graph):
         if ls in preferences_dict.keys():
             return preferences_dict[ls]
         return self.__not_rated_value
+
+    def is_exogenous_property(self, node) -> bool:
+        return not self.is_from_node(node) and not self.is_to_node(node)
 
     @staticmethod
     def load_content(file_name: str) -> Content:
