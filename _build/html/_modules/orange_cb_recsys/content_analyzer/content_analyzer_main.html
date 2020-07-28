@@ -290,7 +290,7 @@
     <span class="k">def</span> <span class="nf">__get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_content</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Search for timestamp as dataset field. If there isn&#39;t a field called &#39;timestamp&#39;, than</span>
-<span class="sd">            the timestamp will be the one returned by the system.</span>
+<span class="sd">        the timestamp will be the one returned by the system.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__config</span><span class="o">.</span><span class="n">content_type</span> <span class="o">!=</span> <span class="s2">&quot;item&quot;</span><span class="p">:</span>

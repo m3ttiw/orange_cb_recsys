@@ -23,21 +23,27 @@ class RankingMetric(Metric):
 
     @abstractmethod
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame):
+        """
+        Calculates the metric value
+
+        Args:
+              truth (pd.DataFrame): dataframe whose columns are: to_id, rating
+              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
+                  it represents the ranking of all the items in the test set
+
+
+        """
         raise NotImplementedError
 
 
 class NDCG(RankingMetric):
     """
-    Normalized discounted cumulative gain
-    .. math::
-        \\begin{align*}
-        \\mathrm{DCG}(L,u) & = \\sum_{i=1}^{|L|} \\frac{r_{ui}}{d(i)}
-        \\end{align*}
+    Discounted cumulative gain
+    .. image:: metrics_img/dcg.png
+    \n\n
     This is then normalized as follows:
-    .. math::
-        \\begin{align*}
-        \\mathrm{nDCG}(L, u) & = \\frac{\\mathrm{DCG}(L,u)}{\\mathrm{DCG}(L_{\\mathrm{ideal}}, u)}
-        \\end{align*}
+    .. image:: metrics_img/ndcg.png
+    \n\n
     """
     def __init__(self, relevance_split: Dict[int, Tuple[float, float]] = None):
         super().__init__(relevance_split)
@@ -70,6 +76,9 @@ class NDCG(RankingMetric):
         """
         Compute the Normalized DCG measure using Truth rank as ideal DCG
         Args:
+              truth (pd.DataFrame): dataframe whose columns are: to_id, rating
+              predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
+                  it represents the ranking of all the items in the test set
 
         Returns:
             ndcg (List[float]): array of ndcg
@@ -129,6 +138,9 @@ class Correlation(RankingMetric):
         Compute the correlation between the two ranks
 
         Args:
+            truth (pd.DataFrame): dataframe whose columns are: to_id, rating
+            predictions (pd.DataFrame): dataframe whose columns are: to_id, rating;
+                it represents the ranking of all the items in the test set
 
         Returns:
             (float): value of the specified correlation metric

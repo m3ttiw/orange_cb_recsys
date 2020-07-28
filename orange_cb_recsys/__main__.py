@@ -15,7 +15,7 @@ import lucene
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "config.yml"
+DEFAULT_CONFIG_PATH = "content_analyzer/config_prova2.json"
 
 implemented_preprocessing = r_i.get_cat('preprocessor')
 
@@ -77,13 +77,14 @@ def content_config_run(config_list: List[Dict]):
 
         content_analyzer_config = ContentAnalyzerConfig(
             content_config["content_type"],
-            runnable_instances[content_config['source_type']](file_path=content_config["raw_source_path"]),
+            runnable_instances[content_config['source_type']]
+            (file_path=content_config["raw_source_path"]),
             content_config['id_field_name'],
             content_config['output_directory'],
             search_index)
 
-        if 'get_exogenous_properties' in content_config.keys():
-            for ex_retrieval in content_config['get_exogenous_properties']:
+        if 'get_lod_properties' in content_config.keys():
+            for ex_retrieval in content_config['get_lod_properties']:
                 class_name = ex_retrieval.pop('class')
                 args = dict_detector(ex_retrieval)
                 content_analyzer_config.append_exogenous_properties_retrieval(runnable_instances[class_name](**args))
@@ -155,8 +156,9 @@ def rating_config_run(config_dict: Dict):
 
 
 if __name__ == "__main__":
-    config_path = sys.argv[0]
-    if not config_path.endswith('.yml') or not config_path.endswith('.json'):
+    try:
+        config_path = sys.argv[1]
+    except IndexError:
         config_path = DEFAULT_CONFIG_PATH
     if config_path.endswith('.yml'):
         config_list_dict = yaml.load(open(config_path), Loader=yaml.FullLoader)

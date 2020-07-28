@@ -12,6 +12,8 @@ pip install orange-cb-recsys
 
 [PyLucene](https://lucene.apache.org/pylucene/) is required and will not be installed like other dependencies, you will need to install it personally.
 
+You also need to manualy copy in the installing directory the files runnable_instances.xz e categories.xz that you can find in source directory
+
 Usage
 =====
 There are two types of use for this framework

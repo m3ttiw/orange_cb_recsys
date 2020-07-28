@@ -7,8 +7,10 @@ import lucene
 
 from orange_cb_recsys.recsys import IndexQuery, RecSysConfig, RecSys
 
+
 class TestIndexQuery(TestCase):
     def test_predict(self):
+
         ratings = pd.DataFrame.from_records([
             ("A000", "tt0112281", "sdfgd", 0.99, "54654675"),
             ("A000", "tt0112453", "sdfgd", 0, "54654675"),

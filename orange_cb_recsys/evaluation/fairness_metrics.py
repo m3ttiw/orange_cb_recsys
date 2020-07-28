@@ -22,7 +22,8 @@ class FairnessMetric(Metric):
 
     def __init__(self, file_name: str, out_dir: str):
         if not DEVELOPING:
-            out_dir = os.path.join(home_path, out_dir)
+            if out_dir is not None:
+                out_dir = os.path.join(home_path, out_dir)
         self.__file_name = file_name
         self.__out_dir = out_dir
 
@@ -75,14 +76,11 @@ class GiniIndex(FairnessMetric):
     """
     Gini index
     
-        .. math::
-        \\begin{align*}
-        \\mathrm{Gini\; index }& = \frac{\sum_{i = 0}^{n} (2i - n - 1)}{n \sum_{i = 0}^{n} elem_i }
-        \\end{align*}
-
-        Where:
-        - n is the size of the user or item set
-        - elem(i) is the user or the item in the i-th position in the sorted frame by user or item
+    .. image:: metrics_img/gini.png
+    \n\n
+    Where:
+    - n is the size of the user or item set
+    - elem(i) is the user or the item in the i-th position in the sorted frame by user or item
     """
     def __init__(self, item: bool = False):
         super().__init__(None, None)
@@ -234,6 +232,8 @@ class CatalogCoverage(FairnessMetric):
     """
     CatalogCoverage
 
+    .. image:: metrics_img/cat_coverage.png
+    \n\n
     """
     def __init__(self):
         super().__init__(None, None)
@@ -241,11 +241,6 @@ class CatalogCoverage(FairnessMetric):
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
         Calculates the catalog coverage
-
-        .. math::
-        \\begin{align*}
-        \\mathrm{Catalogue\; coverage}& = \frac{|covered\; items|}{|items|} * 100
-        \\end{align*}
 
         Args:
               truth (pd.DataFrame): original rating frame used for recsys config
@@ -266,6 +261,10 @@ class CatalogCoverage(FairnessMetric):
 class DeltaGap(GroupFairnessMetric):
     """
     DeltaGap
+
+    .. image:: metrics_img/d_gap.png
+    \n\n
+    Args:
         user_groups (dict<str, float>): specify how to divide user in groups, so
             specify for each group:
             - name
@@ -362,11 +361,9 @@ class PopRatioVsRecs(GroupFairnessMetric):
                                                            'recs_pop_ratio': [recs_pop_ratios]}), ignore_index=True)
 
             profile_data = np.array(profile_pop_ratios)
-            print(profile_data)
             data_to_plot.append(profile_data)
             labels.append('{}_pop'.format(group_name))
             recs_data = np.array(recs_pop_ratios)
-            print(recs_data)
             data_to_plot.append(recs_data)
             labels.append('{}_recs'.format(group_name))
 
@@ -422,7 +419,8 @@ class PopRatioVsRecs(GroupFairnessMetric):
         ax.get_yaxis().tick_left()
 
         # Save the figure
-        fig.savefig('fig1.png', bbox_inches='tight')
+        fig.savefig('{}/pop_ratio_profile_vs_recs_{}.svg'.format(self.output_directory, self.file_name),
+                    bbox_inches='tight')
 
         if self.__store_frame:
             score_frame.to_csv('{}/pop_ratio_profile_vs_recs_{}.csv'.format(self.output_directory, self.file_name))

@@ -175,11 +175,11 @@
 <span class="sd">           item_field (str): Name of the field that contains the content to use</span>
 <span class="sd">           field_representation (str): Id of the field_representation content</span>
 <span class="sd">           classifier(str): classifier that will be used</span>
-<span class="sd">           can be one of the following values:</span>
-<span class="sd">           random_forest, svm, log_regr,</span>
-<span class="sd">           knn, decision_tree, gaussian_process</span>
-<span class="sd">           threshold: ratings bigger than threshold will be</span>
-<span class="sd">           considered as positive</span>
+<span class="sd">               can be one of the following values:</span>
+<span class="sd">               random_forest, svm, log_regr,</span>
+<span class="sd">               knn, decision_tree, gaussian_process</span>
+<span class="sd">               threshold: ratings bigger than threshold will be</span>
+<span class="sd">               considered as positive</span>
 <span class="sd">       &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_representation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">classifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">item_field</span><span class="p">,</span> <span class="n">field_representation</span><span class="p">)</span>

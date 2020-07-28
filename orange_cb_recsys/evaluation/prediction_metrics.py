@@ -20,11 +20,9 @@ class PredictionMetric(Metric):
 class RMSE(PredictionMetric):
     """
     RMSE
-        .. math::
-        \\begin{align*}
-        \\mathrm{RMSE}& = \\sqrt{\frac{\sum_{{u, i} \in T} ({r_{ui} - r'_{ui}})^2}{|T|}}
-        \\end{align*}
-        Where T is the test set and r' is the actual score give by user u to item i
+    .. image:: metrics_img/rmse.png
+    \n\n
+    Where T is the test set and r' is the actual score give by user u to item i
     """
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """
@@ -52,11 +50,7 @@ class RMSE(PredictionMetric):
 class MAE(PredictionMetric):
     """
     MAE
-        ..math::
-        \\begin{align*}
-        \\mathrm{MAE}& = \\sum_{{u, i} \in T} \abs{{r_{ui} - r'_{ui}}} \over |T|
-        \\end{align*}
-        Where T is the test set and r' is the actual score give by user u to item i
+    .. image:: metrics_img/mae.png
     """
     def perform(self, predictions: pd.DataFrame, truth: pd.DataFrame) -> float:
         """

@@ -153,10 +153,13 @@
 <div class="viewcode-block" id="Serendipity"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.serendipity.Serendipity">[docs]</a><span class="k">class</span> <span class="nc">Serendipity</span><span class="p">(</span><span class="n">Metric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Serendipity</span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{Unexpected \; recommendations}&amp;  = |recommendations \; from  \; tested \; algorithm| - |recommendations \; from \;  obvious \;  algorithm|</span>
-<span class="sd">        \\end{align*}</span>
+
+<span class="sd">    .. image:: metrics_img/serendipity.png</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        num_of_recs: number of recommendation</span>
+<span class="sd">            produced for each user</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_of_recs</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__num_of_recs</span> <span class="o">=</span> <span class="n">num_of_recs</span>

@@ -151,6 +151,7 @@
 <span class="kn">from</span> <span class="nn">orange_cb_recsys.evaluation.delta_gap</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">orange_cb_recsys.evaluation.metrics</span> <span class="kn">import</span> <span class="n">Metric</span>
 <span class="kn">from</span> <span class="nn">orange_cb_recsys.evaluation.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="kn">from</span> <span class="nn">orange_cb_recsys.utils.const</span> <span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">DEVELOPING</span><span class="p">,</span> <span class="n">home_path</span>
@@ -220,14 +221,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gini index</span>
 <span class="sd">    </span>
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{Gini\; index }&amp; = \frac{\sum_{i = 0}^{n} (2i - n - 1)}{n \sum_{i = 0}^{n} elem_i }</span>
-<span class="sd">        \\end{align*}</span>
-
-<span class="sd">        Where:</span>
-<span class="sd">        - n is the size of the user or item set</span>
-<span class="sd">        - elem(i) is the user or the item in the i-th position in the sorted frame by user or item</span>
+<span class="sd">    .. image:: metrics_img/gini.png</span>
+<span class="sd">    \n\n</span>
+<span class="sd">    Where:</span>
+<span class="sd">    - n is the size of the user or item set</span>
+<span class="sd">    - elem(i) is the user or the item in the i-th position in the sorted frame by user or item</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -379,6 +377,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CatalogCoverage</span>
 
+<span class="sd">    .. image:: metrics_img/cat_coverage.png</span>
+<span class="sd">    \n\n</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -386,11 +386,6 @@
 <div class="viewcode-block" id="CatalogCoverage.perform"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.fairness_metrics.CatalogCoverage.perform">[docs]</a>    <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predictions</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">truth</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the catalog coverage</span>
-
-<span class="sd">        .. math::</span>
-<span class="sd">        \\begin{align*}</span>
-<span class="sd">        \\mathrm{Catalogue\; coverage}&amp; = \frac{|covered\; items|}{|items|} * 100</span>
-<span class="sd">        \\end{align*}</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">              truth (pd.DataFrame): original rating frame used for recsys config</span>
@@ -411,6 +406,10 @@
 <div class="viewcode-block" id="DeltaGap"><a class="viewcode-back" href="../../../rst/orange_cb_recsys.evaluation.html#orange_cb_recsys.evaluation.fairness_metrics.DeltaGap">[docs]</a><span class="k">class</span> <span class="nc">DeltaGap</span><span class="p">(</span><span class="n">GroupFairnessMetric</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DeltaGap</span>
+
+<span class="sd">    .. image:: metrics_img/d_gap.png</span>
+<span class="sd">    \n\n</span>
+<span class="sd">    Args:</span>
 <span class="sd">        user_groups (dict&lt;str, float&gt;): specify how to divide user in groups, so</span>
 <span class="sd">            specify for each group:</span>
 <span class="sd">            - name</span>
@@ -497,68 +496,79 @@
 
         <span class="n">truth</span> <span class="o">=</span> <span class="n">truth</span><span class="p">[[</span><span class="s1">&#39;from_id&#39;</span><span class="p">,</span> <span class="s1">&#39;to_id&#39;</span><span class="p">]]</span>
         <span class="n">score_frame</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;user_group&#39;</span><span class="p">,</span> <span class="s1">&#39;profile_pop_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;recs_pop_ratio&#39;</span><span class="p">])</span>
-        <span class="n">profile_data</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">recs_data</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data_to_plot</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="n">user_groups</span><span class="p">:</span>
             <span class="n">profile_pop_ratios</span> <span class="o">=</span> <span class="n">get_profile_avg_pop_ratio</span><span class="p">(</span><span class="n">user_groups</span><span class="p">[</span><span class="n">group_name</span><span class="p">],</span> <span class="n">pop_ratio_by_users</span><span class="p">)</span>
             <span class="n">recs_pop_ratios</span> <span class="o">=</span> <span class="n">get_recs_avg_pop_ratio</span><span class="p">(</span><span class="n">user_groups</span><span class="p">[</span><span class="n">group_name</span><span class="p">],</span> <span class="n">truth</span><span class="p">,</span> <span class="n">most_popular_items</span><span class="p">)</span>
             <span class="n">score_frame</span> <span class="o">=</span> <span class="n">score_frame</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;user_group&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">group_name</span><span class="p">],</span>
                                                            <span class="s1">&#39;profile_pop_ratio&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">profile_pop_ratios</span><span class="p">],</span>
                                                            <span class="s1">&#39;recs_pop_ratio&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">recs_pop_ratios</span><span class="p">]}),</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="n">profile_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">profile_pop_ratios</span><span class="p">)</span>
-            <span class="n">recs_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recs_pop_ratios</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__store_frame</span><span class="p">:</span>
-            <span class="n">score_frame</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/pop_ratio_profile_vs_recs_</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span>
-                                                                            <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">))</span>
+            <span class="n">profile_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">profile_pop_ratios</span><span class="p">)</span>
+            <span class="n">data_to_plot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">profile_data</span><span class="p">)</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_pop&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">))</span>
+            <span class="n">recs_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">recs_pop_ratios</span><span class="p">)</span>
+            <span class="n">data_to_plot</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">recs_data</span><span class="p">)</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_recs&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group_name</span><span class="p">))</span>
 
-        <span class="n">data_to_plot</span> <span class="o">=</span> <span class="p">[</span><span class="n">profile_data</span><span class="p">,</span> <span class="n">recs_data</span><span class="p">]</span>
+        <span class="c1"># agg backend is used to create plot as a .png file</span>
+        <span class="n">mpl</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;agg&#39;</span><span class="p">)</span>
+
         <span class="c1"># Create a figure instance</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 
         <span class="c1"># Create an axes instance</span>
         <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
-        <span class="c1">## to get fill color</span>
+        <span class="c1"># add patch_artist=True option to ax.boxplot()</span>
+        <span class="c1"># to get fill color</span>
         <span class="n">bp</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data_to_plot</span><span class="p">,</span> <span class="n">patch_artist</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="c1">## change outline color, fill color and linewidth of the boxes</span>
+        <span class="n">first_color</span> <span class="o">=</span> <span class="s1">&#39;#7570b3&#39;</span>
+        <span class="n">second_color</span> <span class="o">=</span> <span class="s1">&#39;#b2df8a&#39;</span>
+        <span class="n">fill_color_pop</span> <span class="o">=</span> <span class="s1">&#39;#004e98&#39;</span>
+        <span class="n">fill_color_recs</span> <span class="o">=</span> <span class="s1">&#39;#ff6700&#39;</span>
+
+        <span class="c1"># change outline color, fill color and linewidth of the boxes</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">box</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bp</span><span class="p">[</span><span class="s1">&#39;boxes&#39;</span><span class="p">]):</span>
             <span class="c1"># change outline color</span>
-            <span class="n">box</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7570b3&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">box</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">first_color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
             <span class="c1"># change fill color</span>
-            <span class="n">box</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#fcba03&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">box</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;#1b9e77&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">box</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="n">fill_color_pop</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">box</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="n">fill_color_recs</span><span class="p">)</span>
 
-        <span class="c1">## change color and linewidth of the whiskers</span>
+        <span class="c1"># change color and linewidth of the whiskers</span>
         <span class="k">for</span> <span class="n">whisker</span> <span class="ow">in</span> <span class="n">bp</span><span class="p">[</span><span class="s1">&#39;whiskers&#39;</span><span class="p">]:</span>
-            <span class="n">whisker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7570b3&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">whisker</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">first_color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-        <span class="c1">## change color and linewidth of the caps</span>
+        <span class="c1"># change color and linewidth of the caps</span>
         <span class="k">for</span> <span class="n">cap</span> <span class="ow">in</span> <span class="n">bp</span><span class="p">[</span><span class="s1">&#39;caps&#39;</span><span class="p">]:</span>
-            <span class="n">cap</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#7570b3&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">cap</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">first_color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-        <span class="c1">## change color and linewidth of the medians</span>
+        <span class="c1"># change color and linewidth of the medians</span>
         <span class="k">for</span> <span class="n">median</span> <span class="ow">in</span> <span class="n">bp</span><span class="p">[</span><span class="s1">&#39;medians&#39;</span><span class="p">]:</span>
-            <span class="n">median</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;#b2df8a&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">median</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">second_color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
-        <span class="c1">## change the style of fliers and their fill</span>
+        <span class="c1"># change the style of fliers and their fill</span>
         <span class="k">for</span> <span class="n">flier</span> <span class="ow">in</span> <span class="n">bp</span><span class="p">[</span><span class="s1">&#39;fliers&#39;</span><span class="p">]:</span>
             <span class="n">flier</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;#e7298a&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="n">group_name</span> <span class="k">for</span> <span class="n">group_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__user_groups</span><span class="p">])</span>
+        <span class="c1"># Custom x-axis labels</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
 
-        <span class="c1">## Remove top axes and right axes ticks</span>
+        <span class="c1"># Remove top axes and right axes ticks</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">tick_bottom</span><span class="p">()</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">tick_left</span><span class="p">()</span>
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">))</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Ratio of popular items&#39;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/pop-ratio-profile-vs-recs_</span><span class="si">{}</span><span class="s1">.svg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span>
-                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">))</span>
+        <span class="c1"># Save the figure</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/pop_ratio_profile_vs_recs_</span><span class="si">{}</span><span class="s1">.svg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">),</span>
+                    <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 
-        <span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__store_frame</span><span class="p">:</span>
+            <span class="n">score_frame</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/pop_ratio_profile_vs_recs_</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">score_frame</span></div></div>
 </pre></div>

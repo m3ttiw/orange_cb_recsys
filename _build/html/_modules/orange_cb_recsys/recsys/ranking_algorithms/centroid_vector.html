@@ -168,7 +168,7 @@
 <span class="sd">        field_representation: Id of the field_representation content of which compute the centroid</span>
 <span class="sd">        similarity (Similarity): Kind of similarity to use</span>
 <span class="sd">        threshold (int): Threshold for the ratings. If the rating is greater than the threshold, it will be considered</span>
-<span class="sd">        as positive</span>
+<span class="sd">            as positive</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_representation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">similarity</span><span class="p">:</span> <span class="n">Similarity</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
@@ -188,7 +188,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            centroid (sparse.csr_matrix): Sparse matrix that represents the centroid vector of the</span>
-<span class="sd">            given item representations</span>
+<span class="sd">                given item representations</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">dv</span> <span class="o">=</span> <span class="n">DictVectorizer</span><span class="p">(</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -217,7 +217,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            centroid (np.array): numpy array that represents the centroid vector of the</span>
-<span class="sd">            given item representations</span>
+<span class="sd">                given item representations</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">arrays</span> <span class="o">=</span> <span class="p">[]</span>
@@ -247,7 +247,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            candidate_item_id_list: list of the items that can be recommended, if None</span>
-<span class="sd">            all unrated items will be used</span>
+<span class="sd">                all unrated items will be used</span>
 <span class="sd">            user_id: user for which recommendations will be computed</span>
 <span class="sd">            recs_number (list[Content]): How long the ranking will be</span>
 <span class="sd">            ratings (pd.DataFrame): ratings of the user with id equal to user_id</span>
@@ -255,7 +255,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">             scores (pd.DataFrame): DataFrame whose columns are the ids of the items (to_id), and the similarities between the</span>
-<span class="sd">              items and the centroid (rating)</span>
+<span class="sd">                  items and the centroid (rating)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>

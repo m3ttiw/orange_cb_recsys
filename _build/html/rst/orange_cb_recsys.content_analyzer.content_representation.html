@@ -171,13 +171,12 @@ A content is identified by a string id and is composed by different fields</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>content_id</strong> (<em>str</em>) – identifier</p></li>
-<li><p><strong>field_dict</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#orange_cb_recsys.content_analyzer.content_representation.content_field.ContentField" title="orange_cb_recsys.content_analyzer.content_representation.content_field.ContentField"><em>ContentField</em></a><em>]</em>) – dictionary</p></li>
-<li><p><strong>the fields instances for the content</strong><strong>,</strong> (<em>containing</em>) – </p></li>
-<li><p><strong>their name as dictionary key</strong> (<em>and</em>) – </p></li>
-<li><p><strong>exogenous_rep_dict</strong> (<em>Dict &lt;str</em><em>, </em><em>ExogenousProperties&gt;</em>) – </p></li>
-<li><p><strong>representations of content obtained</strong> (<em>different</em>) – </p></li>
-<li><p><strong>ExogenousPropertiesRetrieval</strong><strong>, </strong><strong>the dictionary key is</strong> (<em>using</em>) – </p></li>
-<li><p><strong>representation name</strong> (<em>the</em>) – </p></li>
+<li><p><strong>field_dict</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="#orange_cb_recsys.content_analyzer.content_representation.content_field.ContentField" title="orange_cb_recsys.content_analyzer.content_representation.content_field.ContentField"><em>ContentField</em></a><em>]</em>) – dictionary
+containing the fields instances for the content,
+and their name as dictionary key</p></li>
+<li><p><strong>exogenous_rep_dict</strong> (<em>Dict &lt;str</em><em>, </em><em>ExogenousProperties&gt;</em>) – different representations of content obtained
+using ExogenousPropertiesRetrieval, the dictionary key is
+the representation name</p></li>
 </ul>
 </dd>
 </dl>
@@ -276,8 +275,8 @@ retrieved by DBPediaMappingTechnique</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> – string identifier of the exogenous</p></li>
-<li><p><strong>representation</strong> (<em>properties</em>) – </p></li>
+<li><p><strong>name</strong> – string identifier of the exogenous
+properties representation</p></li>
 <li><p><strong>features</strong> – properties in the specified format</p></li>
 </ul>
 </dd>
@@ -328,9 +327,9 @@ retrieved by DBPediaMappingTechnique</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>field_name</strong> (<em>str</em>) – the name of the field</p></li>
 <li><p><strong>timestamp</strong> (<em>str</em>) – string that represents the timestamp</p></li>
-<li><p><strong>representation_dict</strong> (<em>dict&lt;str</em><em>, </em><em>FieldRepresentation&gt;</em>) – Dictionary whose keys are the name</p></li>
-<li><p><strong>the various representations</strong><strong>, </strong><strong>and the values are the corresponding FieldRepresentation</strong> (<em>of</em>) – </p></li>
-<li><p><strong>instances.</strong> – </p></li>
+<li><p><strong>representation_dict</strong> (<em>dict&lt;str</em><em>, </em><em>FieldRepresentation&gt;</em>) – Dictionary whose keys are the name
+of the various representations, and the values are the corresponding FieldRepresentation
+instances.</p></li>
 </ul>
 </dd>
 </dl>
@@ -365,10 +364,8 @@ shape (2,2) = [[x,x],</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>embedding_array</strong> (<em>np.ndarray</em>) – embeddings array,</p></li>
-<li><p><strong>can be of different shapes according to the granularity of the technique</strong> (<em>it</em>) – </p></li>
-</ul>
+<dd class="field-odd"><p><strong>embedding_array</strong> (<em>np.ndarray</em>) – embeddings array,
+it can be of different shapes according to the granularity of the technique</p>
 </dd>
 </dl>
 <dl class="py method">

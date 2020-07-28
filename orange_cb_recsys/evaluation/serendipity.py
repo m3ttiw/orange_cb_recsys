@@ -7,10 +7,13 @@ from orange_cb_recsys.evaluation.utils import popular_items
 class Serendipity(Metric):
     """
     Serendipity
-        .. math::
-        \\begin{align*}
-        \\mathrm{Unexpected \; recommendations}&  = |recommendations \; from  \; tested \; algorithm| - |recommendations \; from \;  obvious \;  algorithm|
-        \\end{align*}
+
+    .. image:: metrics_img/serendipity.png
+
+
+    Args:
+        num_of_recs: number of recommendation
+            produced for each user
     """
     def __init__(self, num_of_recs: int):
         self.__num_of_recs = num_of_recs

@@ -1,4 +1,5 @@
 import lzma
+import os
 import pickle
 from typing import Dict
 
@@ -8,12 +9,15 @@ from orange_cb_recsys.content_analyzer.field_content_production_techniques.synse
     SynsetDocumentFrequency
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.tf_idf import SkLearnTfIdf
 from orange_cb_recsys.content_analyzer.information_processor import NLTK
-from orange_cb_recsys.content_analyzer.exogenous_properties_retrieval import DBPediaMappingTechnique
+from orange_cb_recsys.content_analyzer.lod_properties_retrieval import DBPediaMappingTechnique
 from orange_cb_recsys.content_analyzer.memory_interfaces import IndexInterface
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, CSVFile, SQLDatabase, DATFile
 from orange_cb_recsys.utils.const import logger
+
+import pathlib
+current_path = os.path.dirname(pathlib.Path(__file__).parent.absolute())
 
 """ 
 Default dict for all implementation of the abstract classes, for different purpose, 
@@ -66,7 +70,7 @@ categories = {
 def __serialize(r_i: Dict[str, object], label: str):
     logger.info("Serializing runnable_instances in utils dir",)
 
-    path = '../../contents/{}.xz'.format(label)
+    path = '{}/{}.xz'.format(current_path, label)
     try:
         with lzma.open(path, "rb") as f:
             pass
@@ -81,7 +85,7 @@ def get(alias: str = None):
     logger.info("Loading runnable_instances")
     r_i = {}
     try:
-        path = '../../contents/runnable_instances.xz'
+        path = '{}/runnable_instances.xz'.format(current_path)
         try:
             with lzma.open(path, "rb") as f:
                 pass
@@ -107,7 +111,7 @@ def get_cat(category: str = None, alias: str = None):
     logger.info("Loading runnable_instances")
     cat = {}
     try:
-        path = '../../contents/categories.xz'
+        path = '{}/categories.xz'.format(current_path)
         try:
             with lzma.open(path, "rb") as f:
                 pass
@@ -177,3 +181,5 @@ def show(categories: bool=False):
         r_i = get()
         for k in r_i.keys():
             logger.info('< %s : %s >', k, str(r_i[k]))
+
+

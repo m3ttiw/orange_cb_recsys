@@ -239,8 +239,8 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>candidate_item_id_list</strong> – list of the items that can be recommended, if None</p></li>
-<li><p><strong>unrated items will be used</strong> (<em>all</em>) – </p></li>
+<li><p><strong>candidate_item_id_list</strong> – list of the items that can be recommended, if None
+all unrated items will be used</p></li>
 <li><p><strong>user_id</strong> – user for which recommendations will be computed</p></li>
 <li><p><strong>recs_number</strong> (<em>list</em><em>[</em><a class="reference internal" href="orange_cb_recsys.content_analyzer.content_representation.html#orange_cb_recsys.content_analyzer.content_representation.content.Content" title="orange_cb_recsys.content_analyzer.content_representation.content.Content"><em>Content</em></a><em>]</em>) – How long the ranking will be</p></li>
 <li><p><strong>ratings</strong> (<em>pd.DataFrame</em>) – ratings of the user with id equal to user_id</p></li>
@@ -280,8 +280,10 @@
 :type score_prediction_algorithm: ScorePredictionAlgorithm
 :param ranking_algorithm: Ranking algorithm to use
 :type ranking_algorithm: RankingAlgorithm
-:param rating_frame: Can be the path to the directory in which the ratings .csv is stored, or a DataFrame
-:param that contains the ratings:</p>
+:param rating_frame: Can be the path to the directory in which the ratings .csv is stored, or a DataFrame</p>
+<blockquote>
+<div><p>that contains the ratings</p>
+</div></blockquote>
 <dl class="py method">
 <dt id="orange_cb_recsys.recsys.config.RecSysConfig.items_directory">
 <em class="property">property </em><code class="sig-name descname">items_directory</code><a class="headerlink" href="#orange_cb_recsys.recsys.config.RecSysConfig.items_directory" title="Permalink to this definition">¶</a></dt>
@@ -370,8 +372,8 @@ was chosen in the config</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>user_id</strong> – user for which calculate the predictions</p></li>
-<li><p><strong>item_to_predict_id_list</strong> – items for which the prediction will be computed,</p></li>
-<li><p><strong>None all unrated items will be used</strong> (<em>if</em>) – </p></li>
+<li><p><strong>item_to_predict_id_list</strong> – items for which the prediction will be computed,
+if None all unrated items will be used</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -395,11 +397,11 @@ was chosen in the config</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>candidate_item_id_list</strong> – list of items, in which search the recommendations,</p></li>
-<li><p><strong>None all unrated items will be used as candidates</strong> (<em>if</em>) – </p></li>
+<li><p><strong>candidate_item_id_list</strong> – list of items, in which search the recommendations,
+if None all unrated items will be used as candidates</p></li>
 <li><p><strong>user_id</strong> – user for which compute the ranking recommendation</p></li>
-<li><p><strong>recs_number</strong> – how many items should the returned ranking contain,</p></li>
-<li><p><strong>ranking length can be lower</strong> (<em>the</em>) – </p></li>
+<li><p><strong>recs_number</strong> – how many items should the returned ranking contain,
+the ranking length can be lower</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
