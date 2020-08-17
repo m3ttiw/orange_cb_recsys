@@ -39,6 +39,9 @@ class PageRank(RankingAlgorithm):
 
 class NXPageRank(PageRank):
 
+    def __init__(self):
+        super().__init__()
+
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int,
                 items_directory: str,                       # not used
                 candidate_item_id_list: List = None):       # not used
