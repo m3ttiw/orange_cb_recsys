@@ -51,7 +51,9 @@ class PageRankAlg(RankingAlgorithm):
 
     def extract_profile(self, user_id: str) -> Dict:
         adj = self.__graph.get_adj(user_id)
-        logger.info('unpack %s', str(adj))
+        #logger.info('unpack %s', str(adj))
+        for a in adj:
+            logger.info('unpack %s', str(a))
         return {t: w for (f, t, w) in adj}
 
 
