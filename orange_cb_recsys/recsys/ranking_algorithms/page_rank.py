@@ -80,5 +80,7 @@ class NXPageRank(PageRankAlg):
             scores = nx.pagerank(self.trigraph.graph)
         # clean the results removing user nodes, selected user profile and eventually properties
         scores = self.clean_rank(scores, user_id)
-        scores = scores[:recs_number]
-        return scores
+        ks = scores.keys()
+        ks = ks[:recs_number]
+        new_scores = {k: scores[k] for k in scores.keys() if k in ks}
+        return new_scores
