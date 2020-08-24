@@ -14,14 +14,14 @@ class PageRankAlg(RankingAlgorithm):
     def __init__(self, personalized: bool = True):
         super().__init__('', '')
         self.__personalized = personalized
-        self.__graph: NXTripartiteGraph = None
+        self.__trigraph: NXTripartiteGraph = None
 
     @property
-    def graph(self):
-        return self.__graph
+    def trigraph(self):
+        return self.__trigraph
 
-    def set_graph(self, graph):
-        self.__graph = graph
+    def set_trigraph(self, graph):
+        self.__trigraph = graph
 
     @property
     def personalized(self):
@@ -41,21 +41,21 @@ class PageRankAlg(RankingAlgorithm):
                         remove_properties: bool = True) -> Dict:
         extracted_profile = self.extract_profile(user_id)
         for k in rank.keys():
-            if remove_from_nodes and self.__graph.is_from_node(k):
+            if remove_from_nodes and self.__trigraph.is_from_node(k):
                 rank.pop(k)
-            if remove_profile and self.__graph.is_to_node(k) and k in extracted_profile.keys():
+            if remove_profile and self.__trigraph.is_to_node(k) and k in extracted_profile.keys():
                 rank.pop(k)
-            if remove_properties and not self.__graph.is_to_node(k) and not self.__graph.is_from_node(k):
+            if remove_properties and not self.__trigraph.is_to_node(k) and not self.__trigraph.is_from_node(k):
                 rank.pop(k)
         return rank
 
     def extract_profile(self, user_id: str) -> Dict:
-        adj = self.__graph.get_adj(user_id)
+        adj = self.__trigraph.get_adj(user_id)
         profile = {}
         #logger.info('unpack %s', str(adj))
         for a in adj:
             #logger.info('unpack %s', str(a))
-            edge_data = self.__graph.get_edge_data(user_id, a)
+            edge_data = self.__trigraph.get_edge_data(user_id, a)
             profile[a] = edge_data['weight']
             logger.info('unpack %s, %s', str(a), str(profile[a]))
         return profile #{t: w for (f, t, w) in adj}
@@ -69,14 +69,14 @@ class NXPageRank(PageRankAlg):
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int,
                 items_directory: str,                       # not used
                 candidate_item_id_list: List = None):       # not used
-        self.set_graph(NXTripartiteGraph(ratings))
+        self.set_trigraph(NXTripartiteGraph(ratings))
         # feature selection (TO DO)
         # run the pageRank
         if self.personalized:
             profile = self.extract_profile(user_id)
-            scores = nx.pagerank(self.graph.graph, personalization=profile)
+            scores = nx.pagerank(self.trigraph.graph, personalization=profile)
         else:
-            scores = nx.pagerank(self.graph.graph)
+            scores = nx.pagerank(self.trigraph.graph)
         # clean the results removing user nodes, selected user profile and eventually properties
         scores = self.clean_rank(scores, user_id)
         scores = scores[:recs_number]
