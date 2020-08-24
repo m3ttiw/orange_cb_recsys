@@ -49,7 +49,7 @@ class PageRankAlg(RankingAlgorithm):
         return rank
 
     def extract_profile(self, user_id: str) -> Dict:
-        adj = self.graph.get_adj(user_id)
+        adj = self.__graph.get_adj(user_id)
         return {t: w for f, t, w in adj}
 
 
