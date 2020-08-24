@@ -24,10 +24,10 @@ class PageRankAlg(RankingAlgorithm):
 
     @property
     def personalized(self):
-        return self.__graph
+        return self.__personalized
 
-    def set_personalized(self, graph):
-        self.__graph = graph
+    def set_personalized(self, personalized):
+        self.__personalized = personalized
 
     @abstractmethod
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str,
@@ -35,10 +35,10 @@ class PageRankAlg(RankingAlgorithm):
         raise NotImplemented
 
     def clean_rank(self, rank: Dict, user_id: str,
-                     remove_from_nodes: bool = True,
-                     remove_profile: bool = True,
-                     remove_properties: bool = True) -> Dict:
-        extracted_profile = self.__extract_profile(user_id)
+                        remove_from_nodes: bool = True,
+                        remove_profile: bool = True,
+                        remove_properties: bool = True) -> Dict:
+        extracted_profile = self.extract_profile(user_id)
         for k in rank.keys():
             if remove_from_nodes and self.__graph.is_from_node(k):
                 rank.pop(k)
@@ -49,7 +49,7 @@ class PageRankAlg(RankingAlgorithm):
         return rank
 
     def extract_profile(self, user_id: str) -> Dict:
-        adj = self.__graph.get_adj(user_id)
+        adj = self.graph.get_adj(user_id)
         return {t: w for f, t, w in adj}
 
 
