@@ -76,9 +76,9 @@ class NXPageRank(PageRankAlg):
         # run the pageRank
         if self.personalized:
             profile = self.extract_profile(user_id)
-            scores = nx.pagerank(self.graph, personalization=profile)
+            scores = nx.pagerank(self.graph.graph, personalization=profile)
         else:
-            scores = nx.pagerank(self.graph)
+            scores = nx.pagerank(self.graph.graph)
         # clean the results removing user nodes, selected user profile and eventually properties
         scores = self.clean_rank(scores, user_id)
         scores = scores[:recs_number]
