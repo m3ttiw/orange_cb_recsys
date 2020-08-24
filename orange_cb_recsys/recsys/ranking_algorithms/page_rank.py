@@ -52,7 +52,7 @@ class PageRankAlg(RankingAlgorithm):
     def extract_profile(self, user_id: str) -> Dict:
         adj = self.__graph.get_adj(user_id)
         logger.info('unpack %s', str(adj))
-        return {t: w for f, t, w in adj}
+        return {t: w for (f, t, w) in adj}
 
 
 class NXPageRank(PageRankAlg):
