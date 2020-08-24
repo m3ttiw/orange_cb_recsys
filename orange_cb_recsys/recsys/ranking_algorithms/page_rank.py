@@ -7,6 +7,7 @@ from abc import abstractmethod
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.graphs import Graph
 from orange_cb_recsys.recsys.graphs.tripartite_graphs import NXTripartiteGraph
+from orange_cb_recsys.utils.const import logger
 
 
 class PageRankAlg(RankingAlgorithm):
@@ -50,7 +51,7 @@ class PageRankAlg(RankingAlgorithm):
 
     def extract_profile(self, user_id: str) -> Dict:
         adj = self.__graph.get_adj(user_id)
-        print(adj)
+        logger.info('unpack %s', str(adj))
         return {t: w for f, t, w in adj}
 
 
