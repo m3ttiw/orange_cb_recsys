@@ -2,4 +2,4 @@ from .similarities import CosineSimilarity, Vector, SparseVector, DenseVector, S
 from .centroid_vector import CentroidVector
 from .index_query import IndexQuery
 from .classifier import ClassifierRecommender
-from .page_rank import NXPageRank, NXPersonalizedPageRank
+from .page_rank import NXPageRank
