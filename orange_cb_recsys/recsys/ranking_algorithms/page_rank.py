@@ -40,14 +40,15 @@ class PageRankAlg(RankingAlgorithm):
                         remove_profile: bool = True,
                         remove_properties: bool = True) -> Dict:
         extracted_profile = self.extract_profile(user_id)
+        new_rank = rank
         for k in rank.keys():
             if remove_from_nodes and self.__trigraph.is_from_node(k):
-                rank.pop(k)
+                new_rank.pop(k)
             if remove_profile and self.__trigraph.is_to_node(k) and k in extracted_profile.keys():
-                rank.pop(k)
+                new_rank.pop(k)
             if remove_properties and not self.__trigraph.is_to_node(k) and not self.__trigraph.is_from_node(k):
-                rank.pop(k)
-        return rank
+                new_rank.pop(k)
+        return new_rank
 
     def extract_profile(self, user_id: str) -> Dict:
         adj = self.__trigraph.get_adj(user_id)
