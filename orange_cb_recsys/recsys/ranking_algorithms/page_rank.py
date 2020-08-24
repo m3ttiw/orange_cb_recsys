@@ -83,4 +83,5 @@ class NXPageRank(PageRankAlg):
         ks = scores.keys()
         ks = ks[:recs_number]
         new_scores = {k: scores[k] for k in scores.keys() if k in ks}
+
         return new_scores
