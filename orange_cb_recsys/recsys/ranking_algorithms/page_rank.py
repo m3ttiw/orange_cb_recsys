@@ -6,13 +6,14 @@ from abc import abstractmethod
 
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.graphs import Graph
+from orange_cb_recsys.recsys.graphs.tripartite_graphs import NXTripartiteGraph
 
 
 class PageRank(RankingAlgorithm):
-    def __init__(self, personalized: bool = True):
+    def __init__(self, graph: Graph, personalized: bool = True):
         super().__init__('', '')
         self.__personalized = personalized
-        self.__graph: Graph = None
+        self.__graph: Graph = graph
 
     @property
     def graph(self):
@@ -48,14 +49,14 @@ class PageRank(RankingAlgorithm):
 class NXPageRank(PageRank):
 
     def __init__(self):
-        super().__init__()
+        super().__init__(NXTripartiteGraph)
 
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int,
                 items_directory: str,                       # not used
                 candidate_item_id_list: List = None):       # not used
         # create the graph
         if self.graph is None:
-            self.set_graph(Graph(ratings))
+            self.set_graph(NXTripartiteGraph(ratings))
         # feature selection (TO DO)
         # run the pageRank
         if self.__personalized:
