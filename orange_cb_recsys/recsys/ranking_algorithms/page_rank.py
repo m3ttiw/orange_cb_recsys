@@ -10,10 +10,10 @@ from orange_cb_recsys.recsys.graphs.tripartite_graphs import NXTripartiteGraph
 
 
 class PageRankAlg(RankingAlgorithm):
-    def __init__(self, graph: Graph, personalized: bool = True):
+    def __init__(self, personalized: bool = True):
         super().__init__('', '')
         self.__personalized = personalized
-        self.__graph: Graph = graph
+        self.__graph: NXTripartiteGraph = None
 
     @property
     def graph(self):
@@ -56,7 +56,7 @@ class PageRankAlg(RankingAlgorithm):
 class NXPageRank(PageRankAlg):
 
     def __init__(self):
-        super().__init__(NXTripartiteGraph)
+        super().__init__()
 
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int,
                 items_directory: str,                       # not used
