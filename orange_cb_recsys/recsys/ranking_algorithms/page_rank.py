@@ -3,7 +3,9 @@ import networkx as nx
 import pandas as pd
 import numpy as np
 from abc import abstractmethod
-from orange_cb_recsys.recsys import RankingAlgorithm, Graph
+
+from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
+from orange_cb_recsys.recsys.graphs import Graph
 
 
 class PageRank(RankingAlgorithm):
