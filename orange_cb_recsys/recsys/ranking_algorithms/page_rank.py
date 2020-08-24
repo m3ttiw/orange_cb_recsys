@@ -40,7 +40,7 @@ class PageRankAlg(RankingAlgorithm):
                         remove_profile: bool = True,
                         remove_properties: bool = True) -> Dict:
         extracted_profile = self.extract_profile(user_id)
-        new_rank = rank
+        new_rank = {k: rank[k] for k in rank.keys()}
         for k in rank.keys():
             if remove_from_nodes and self.__trigraph.is_from_node(k):
                 new_rank.pop(k)
