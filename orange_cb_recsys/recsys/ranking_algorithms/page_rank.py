@@ -69,9 +69,7 @@ class NXPageRank(PageRankAlg):
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int,
                 items_directory: str,                       # not used
                 candidate_item_id_list: List = None):       # not used
-        # create the graph
-        if self.graph is None:
-            self.set_graph(NXTripartiteGraph(ratings))
+        self.set_graph(NXTripartiteGraph(ratings))
         # feature selection (TO DO)
         # run the pageRank
         if self.personalized:
