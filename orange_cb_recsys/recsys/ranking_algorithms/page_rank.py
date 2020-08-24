@@ -9,7 +9,7 @@ from orange_cb_recsys.recsys.graphs import Graph
 from orange_cb_recsys.recsys.graphs.tripartite_graphs import NXTripartiteGraph
 
 
-class PageRank(RankingAlgorithm):
+class PageRankAlg(RankingAlgorithm):
     def __init__(self, graph: Graph, personalized: bool = True):
         super().__init__('', '')
         self.__personalized = personalized
@@ -34,7 +34,7 @@ class PageRank(RankingAlgorithm):
                 candidate_item_id_list: List = None):
         raise NotImplemented
 
-    def __clean_rank(self, rank: Dict, user_id: str,
+    def clean_rank(self, rank: Dict, user_id: str,
                      remove_from_nodes: bool = True,
                      remove_profile: bool = True,
                      remove_properties: bool = True) -> Dict:
@@ -48,12 +48,12 @@ class PageRank(RankingAlgorithm):
                 rank.pop(k)
         return rank
 
-    def __extract_profile(self, user_id: str) -> Dict:
+    def extract_profile(self, user_id: str) -> Dict:
         adj = self.__graph.get_adj(user_id)
         return {t: w for f, t, w in adj}
 
 
-class NXPageRank(PageRank):
+class NXPageRank(PageRankAlg):
 
     def __init__(self):
         super().__init__(NXTripartiteGraph)
@@ -67,11 +67,11 @@ class NXPageRank(PageRank):
         # feature selection (TO DO)
         # run the pageRank
         if self.personalized:
-            profile = self.__extract_profile(user_id)
+            profile = self.extract_profile(user_id)
             scores = nx.pagerank(self.__graph, personalization=profile)
         else:
             scores = nx.pagerank(self.__graph)
         # clean the results removing user nodes, selected user profile and eventually properties
-        scores = self.__clean_rank(scores, user_id)
+        scores = self.clean_rank(scores, user_id)
         scores = scores[:recs_number]
         return scores
