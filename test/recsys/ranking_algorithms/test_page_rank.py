@@ -4,6 +4,7 @@ import pandas as pd
 from unittest import TestCase
 
 from orange_cb_recsys.recsys import NXPageRank
+from orange_cb_recsys.utils.const import logger
 
 
 class TestNXPageRank(TestCase):
@@ -28,4 +29,7 @@ class TestNXPageRank(TestCase):
         except FileNotFoundError:
             path = "contents/movielens_test1591885241.5520566"
 
-        alg.predict('A000', ratings, 1, path, ['tt0114576'])
+        rank = alg.predict('A000', ratings, 1, path, ['tt0114576'])
+        logger.info('pg_rk results')
+        for r in rank.keys():
+            logger.info('%s %s', str(r), str(rank[r]))
