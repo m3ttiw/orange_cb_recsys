@@ -12,6 +12,10 @@ class NXTripartiteGraph(TripartiteGraph):
     def create_graph(self):
         self.__graph = nx.DiGraph()
 
+    @property
+    def graph(self):
+        return self.__graph
+
     def add_node(self, node: object):
         self.__graph.add_node(node)
 
