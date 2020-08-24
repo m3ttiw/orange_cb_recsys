@@ -22,6 +22,13 @@ class PageRank(RankingAlgorithm):
     def set_graph(self, graph):
         self.__graph = graph
 
+    @property
+    def personalized(self):
+        return self.__graph
+
+    def set_personalized(self, graph):
+        self.__graph = graph
+
     @abstractmethod
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str,
                 candidate_item_id_list: List = None):
@@ -59,7 +66,7 @@ class NXPageRank(PageRank):
             self.set_graph(NXTripartiteGraph(ratings))
         # feature selection (TO DO)
         # run the pageRank
-        if self.__personalized:
+        if self.personalized:
             profile = self.__extract_profile(user_id)
             scores = nx.pagerank(self.__graph, personalization=profile)
         else:
