@@ -51,10 +51,14 @@ class PageRankAlg(RankingAlgorithm):
 
     def extract_profile(self, user_id: str) -> Dict:
         adj = self.__graph.get_adj(user_id)
+        profile = {}
         #logger.info('unpack %s', str(adj))
         for a in adj:
-            logger.info('unpack %s', str(a))
-        return {t: w for (f, t, w) in adj}
+            #logger.info('unpack %s', str(a))
+            edge_data = self.__graph.get_edge_data(user_id, a)
+            profile[a] = edge_data['weight']
+            logger.info('unpack %s, %s', str(a), str(profile[a]))
+        return profile #{t: w for (f, t, w) in adj}
 
 
 class NXPageRank(PageRankAlg):
