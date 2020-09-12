@@ -12,10 +12,10 @@ from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidV
 
 import pandas as pd
 
-movies_filename = '../datasets/movies_info_reduced.json'
-ratings_filename = '../datasets/ratings_example.json'
+movies_filename = '../../../datasets/movies_info_reduced.json'
+ratings_filename = '../../../datasets/ratings_example.json'
 
-output_dir = '../contents/test_1m_easy'
+output_dir = '../../../contents/test_1m_easy'
 
 
 movies_ca_config = ContentAnalyzerConfig(

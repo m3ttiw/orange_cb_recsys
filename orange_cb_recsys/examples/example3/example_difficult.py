@@ -8,19 +8,21 @@ from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import N
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsFieldConfig
 from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
-from orange_cb_recsys.recsys import ClassifierRecommender
-from orange_cb_recsys.recsys.recsys import RecSys, RecSysConfig
+from orange_cb_recsys.evaluation import RankingAlgEvalModel, KFoldPartitioning, Correlation, NDCG
+from orange_cb_recsys.recsys import CosineSimilarity, ClassifierRecommender
+from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector
+from orange_cb_recsys.recsys.recsys import RecSysConfig
 
-movies_filename = '../datasets/movies_info_reduced.json'
-user_filename = '../datasets/users_info_.json'
-ratings_filename = '../datasets/ratings_example.json'
+movies_filename = '../../../datasets/movies_info_reduced.json'
+user_filename = '../../../datasets/users_info_.json'
+ratings_filename = '../../../datasets/ratings_example.json'
 
-output_dir = '../contents/test_1m_medium'
+output_dir = '../../../contents/test_1m_difficult'
 
 movies_ca_config = ContentAnalyzerConfig(
     content_type='Item',
     source=JSONFile(movies_filename),
-    id_field_name_list=['imdbID', 'Title'],
+    id_field_name_list=['imdbID'],
     output_directory=output_dir,
     search_index=True
 )
@@ -101,11 +103,30 @@ classifier_recsys_config = RecSysConfig(
     rating_frame=ratings_frame
 )
 
-classifier_recommender = RecSys(
-    config=classifier_recsys_config
+centroid_config = CentroidVector(
+    item_field='Plot',
+    field_representation='1',
+    similarity=CosineSimilarity()
 )
 
-classifier_recommender.fit_ranking(
-    user_id='1',
-    recs_number=10
+centroid_recsys_config = RecSysConfig(
+    users_directory=output_dir,
+    items_directory=output_dir,
+    ranking_algorithm=centroid_config,
+    rating_frame=ratings_frame
 )
+
+evaluation_classifier = RankingAlgEvalModel(
+    config=classifier_recsys_config,
+    partitioning=KFoldPartitioning(),
+    metric_list=[NDCG(), Correlation(method='spearman')]
+)
+
+evaluation_centroid = RankingAlgEvalModel(
+    config=centroid_recsys_config,
+    partitioning=KFoldPartitioning(),
+    metric_list=[NDCG(), Correlation(method='spearman')]
+)
+
+eval_frame_classifier = evaluation_classifier.fit()
+eval_frame_centroid = evaluation_centroid.fit()
