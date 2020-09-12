@@ -102,7 +102,7 @@ centroid_recommender = RecSys(
     config=centroid_recsys_config
 )
 
-centroid_recommender.fit_ranking(
+ranking = centroid_recommender.fit_ranking(
     user_id='01',
     recs_number=2
 )
