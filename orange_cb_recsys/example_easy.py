@@ -2,7 +2,7 @@ from orange_cb_recsys.content_analyzer import ContentAnalyzer, ContentAnalyzerCo
 from orange_cb_recsys.content_analyzer.ratings_manager import RatingsImporter
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsFieldConfig
-from orange_cb_recsys.content_analyzer.raw_information_source import DATFile, JSONFile
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 from orange_cb_recsys.content_analyzer.config import FieldConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.synset_document_frequency import \
     SynsetDocumentFrequency
@@ -12,10 +12,10 @@ from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidV
 
 import pandas as pd
 
-movies_filename = '../../datasets/movies_info_reduced.json'
-ratings_filename = '../../datasets/test_import_ratings.json'
+movies_filename = '../datasets/movies_info_reduced.json'
+ratings_filename = '../datasets/ratings_example.json'
 
-output_dir = '../../contents/test_1m_'
+output_dir = '../contents/test_1m_easy'
 
 
 movies_ca_config = ContentAnalyzerConfig(
@@ -54,6 +54,8 @@ ratings_importer = RatingsImporter(
 
 ratings_frame = ratings_importer.import_ratings()
 
+print(ratings_frame)
+
 
 centroid_config = CentroidVector(
     item_field='Director',
@@ -75,6 +77,30 @@ centroid_recommender = RecSys(
 )
 
 centroid_recommender.fit_ranking(
-    user_id='1',
-    recs_number=10
+    user_id='01',
+    recs_number=2
 )
+"""
+
+classifier_config = ClassifierRecommender(
+    item_field='Director',
+    field_representation='0',
+    classifier='random_forest'
+)
+
+classifier_recsys_config = RecSysConfig(
+    users_directory=output_dir,
+    items_directory=output_dir,
+    ranking_algorithm=classifier_config,
+    rating_frame=ratings_frame
+)
+
+classifier_recommender = RecSys(
+    config=classifier_recsys_config
+)
+
+classifier_recommender.fit_ranking(
+    user_id='01',
+    recs_number=2
+)
+"""

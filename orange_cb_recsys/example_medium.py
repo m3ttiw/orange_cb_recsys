@@ -1,26 +1,21 @@
 from orange_cb_recsys.content_analyzer import ContentAnalyzer, ContentAnalyzerConfig
+from orange_cb_recsys.content_analyzer.config import FieldConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.field_content_production_techniques import SearchIndexing, LuceneTfIdf, \
     BabelPyEntityLinking
 from orange_cb_recsys.content_analyzer.information_processor import NLTK
 from orange_cb_recsys.content_analyzer.ratings_manager import RatingsImporter
-from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer, SentimentAnalysis
+from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsFieldConfig
 from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
-from orange_cb_recsys.content_analyzer.raw_information_source import DATFile, JSONFile
-from orange_cb_recsys.content_analyzer.config import FieldConfig, FieldRepresentationPipeline
-from orange_cb_recsys.content_analyzer.field_content_production_techniques.synset_document_frequency import \
-    SynsetDocumentFrequency
-from orange_cb_recsys.recsys import CosineSimilarity, ClassifierRecommender
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
+from orange_cb_recsys.recsys import ClassifierRecommender
 from orange_cb_recsys.recsys.recsys import RecSys, RecSysConfig
-from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector
 
-import pandas as pd
+movies_filename = '../datasets/movies_info_reduced.json'
+user_filename = '../datasets/users_info_.json'
+ratings_filename = '../datasets/ratings_example.json'
 
-movies_filename = '../../datasets/movies_info_reduced.json'
-user_filename = '../../datasets/users_info.json'
-ratings_filename = '../../datasets/test_import_ratings.json'
-
-output_dir = '../../contents/test_1m_'
+output_dir = '../contents/test_1m_medium'
 
 movies_ca_config = ContentAnalyzerConfig(
     content_type='Item',
