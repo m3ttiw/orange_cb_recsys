@@ -3,7 +3,7 @@
 In this package you can observe a lot of framework's features at work, by simple but effective examples
 
 ### Example 1
-The simple one, basic features of the framework, simple COntent Analyzer configuration and a ready-to-go Centroid Vector recommender.
+The simple one, basic features of the framework, simple Content Analyzer configuration and a ready-to-go Centroid Vector recommender.
 
 ### Example 2
 More complex features, like rating score combiner, search index activation and tf-idf computation.
