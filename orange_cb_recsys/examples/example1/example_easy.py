@@ -76,10 +76,12 @@ centroid_recommender = RecSys(
     config=centroid_recsys_config
 )
 
-centroid_recommender.fit_ranking(
+rank = centroid_recommender.fit_ranking(
     user_id='01',
     recs_number=2
 )
+
+print(rank)
 """
 
 classifier_config = ClassifierRecommender(
@@ -99,8 +101,10 @@ classifier_recommender = RecSys(
     config=classifier_recsys_config
 )
 
-classifier_recommender.fit_ranking(
+rank = classifier_recommender.fit_ranking(
     user_id='01',
     recs_number=2
 )
+
+print(rank)
 """
