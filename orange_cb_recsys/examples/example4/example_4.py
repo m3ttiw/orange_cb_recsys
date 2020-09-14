@@ -1,4 +1,3 @@
-# CONTENT ANALYZER
 from orange_cb_recsys.content_analyzer import ContentAnalyzer, ContentAnalyzerConfig
 from orange_cb_recsys.content_analyzer.ratings_manager import RatingsImporter
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
@@ -9,10 +8,10 @@ from orange_cb_recsys.content_analyzer.exogenous_properties_retrieval import DBP
 
 from orange_cb_recsys.recsys.graphs.full_graphs import NXFullGraph
 from orange_cb_recsys.recsys.ranking_algorithms import NXPageRank
+from orange_cb_recsys.utils.feature_selection import NXFSPageRank
 
 from orange_cb_recsys.evaluation.graph_metrics import nx_degree_centrality, nx_dispersion
 
-from orange_cb_recsys.utils.feature_selection import NXFSPageRank
 
 movies_filename = '/home/Mattia/Documents/ml-1m/movies.dat'
 user_filename = '/home/Mattia/Documents/ml-1m/users.dat'
@@ -27,6 +26,7 @@ movies_ca_config = ContentAnalyzerConfig(
     output_directory=output_dir
 )
 
+
 movies_ca_config.append_exogenous_properties_retrieval(
     DBPediaMappingTechnique(
         entity_type='Film',
@@ -35,7 +35,9 @@ movies_ca_config.append_exogenous_properties_retrieval(
     )
 )
 
+
 content_analyzer = ContentAnalyzer(movies_ca_config).fit()
+
 
 users_ca_config = ContentAnalyzerConfig(
     content_type='User',
@@ -44,11 +46,13 @@ users_ca_config = ContentAnalyzerConfig(
     output_directory=output_dir
 )
 
+
 users_ca_config.append_exogenous_properties_retrieval(
     PropertiesFromDataset()
 )
 
 content_analyzer.set_config(users_ca_config).fit()
+
 
 ratings_import = RatingsImporter(
     source=DATFile(ratings_filename),
@@ -74,6 +78,6 @@ rank = NXPageRank(graph=full_graph).predict(
     feature_selection_algorithm=NXFSPageRank()
 )
 
+
 print(nx_dispersion(full_graph))
 print(nx_degree_centrality(full_graph))
-

@@ -6,16 +6,18 @@ from abc import abstractmethod
 
 from orange_cb_recsys.recsys.algorithm import RankingAlgorithm
 from orange_cb_recsys.recsys.graphs import Graph
+from orange_cb_recsys.recsys.graphs.full_graphs import NXFullGraph
+from orange_cb_recsys.recsys.graphs.graph import FullGraph
 from orange_cb_recsys.recsys.graphs.tripartite_graphs import NXTripartiteGraph
 from orange_cb_recsys.utils.const import logger
 from orange_cb_recsys.utils.feature_selection import FeatureSelection
 
 
 class PageRankAlg(RankingAlgorithm):
-    def __init__(self, personalized: bool = True):
+    def __init__(self, graph: FullGraph = None, personalized: bool = True):
         super().__init__('', '')
         self.__personalized = personalized
-        self.__fullgraph: NXTripartiteGraph = None
+        self.__fullgraph: FullGraph = graph
 
     @property
     def fullgraph(self):
@@ -65,14 +67,16 @@ class PageRankAlg(RankingAlgorithm):
 
 class NXPageRank(PageRankAlg):
 
-    def __init__(self):
+    def __init__(self, graph: NXFullGraph = None):
         super().__init__()
 
-    def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int,
-                items_directory: str,                       # not used
+    def predict(self, user_id: str,
+                ratings: pd.DataFrame,                      # not used
+                recs_number: int,
                 candidate_item_id_list: List = None,        # not used
                 feature_selection_algorithm: FeatureSelection = None):
-        self.set_fullgraph(NXTripartiteGraph(ratings))
+        if self.fullgraph is None:
+            return {}
         if feature_selection_algorithm is not None:
             self.set_fullgraph(feature_selection_algorithm.perform(self.fullgraph))
         # run the pageRank
