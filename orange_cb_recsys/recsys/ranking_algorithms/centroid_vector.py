@@ -48,13 +48,13 @@ class CentroidVector(RankingAlgorithm):
         dv = DictVectorizer(sparse=True)
 
         positive_rated_items = [
-            item.get_field(self.item_field).get_representation(self.item_field_representation).get_value()
+            item.get_field(self.item_field).get_representation(self.item_field_representation).value
             for item in rated_items
-            if float(ratings[ratings['to_id'] == item.get_content_id()].score) >= self.__threshold]
+            if float(ratings[ratings['to_id'] == item.content_id].score) >= self.__threshold]
 
         dicts = positive_rated_items + \
                 [item.get_field(self.item_field).get_representation(
-                    self.item_field_representation).get_value() for item in unrated_items]
+                    self.item_field_representation).value for item in unrated_items]
 
         matrix = dv.fit_transform(dicts)
         return sparse.csr_matrix(matrix.mean(axis=0).getA()), matrix[
