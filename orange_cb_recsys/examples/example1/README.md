@@ -108,4 +108,6 @@ ranking = centroid_recommender.fit_ranking(
     user_id='01',
     recs_number=2
 )
+
+print(ranking)
 ```
