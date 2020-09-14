@@ -6,7 +6,7 @@ from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 from orange_cb_recsys.content_analyzer.config import FieldConfig, FieldRepresentationPipeline
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.synset_document_frequency import \
     SynsetDocumentFrequency
-from orange_cb_recsys.recsys import CosineSimilarity
+from orange_cb_recsys.recsys import CosineSimilarity, ClassifierRecommender
 from orange_cb_recsys.recsys.recsys import RecSys, RecSysConfig
 from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector
 
@@ -15,9 +15,9 @@ import pandas as pd
 movies_filename = '../datasets/movies_info_reduced.json'
 ratings_filename = '../datasets/ratings_example.json'
 
-output_dir = '../contents/test_1m_easy'
+output_dir = '../contents/test_1m_easy/dir'
 
-
+"""
 movies_ca_config = ContentAnalyzerConfig(
     content_type='Item',
     source=JSONFile(movies_filename),
@@ -41,7 +41,7 @@ content_analyzer_movies = ContentAnalyzer(
 
 content_analyzer_movies.fit()
 
-
+"""
 ratings_importer = RatingsImporter(
     source=JSONFile(ratings_filename),
     rating_configs=[RatingsFieldConfig(
@@ -56,7 +56,7 @@ ratings_frame = ratings_importer.import_ratings()
 
 print(ratings_frame)
 
-
+"""
 centroid_config = CentroidVector(
     item_field='Director',
     field_representation='0',
@@ -89,8 +89,8 @@ classifier_config = ClassifierRecommender(
 )
 
 classifier_recsys_config = RecSysConfig(
-    users_directory=output_dir,
-    items_directory=output_dir,
+    users_directory='../contents/test_1m_easy/dir1600074336.5165632',
+    items_directory='../contents/test_1m_easy/dir1600074336.5165632',
     ranking_algorithm=classifier_config,
     rating_frame=ratings_frame
 )
@@ -103,4 +103,3 @@ classifier_recommender.fit_ranking(
     user_id='01',
     recs_number=2
 )
-"""
