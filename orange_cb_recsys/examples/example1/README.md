@@ -28,6 +28,8 @@ ratings_filename = '../../../datasets/ratings_example.json'
 output_dir = '../../../contents/test_1m_easy'
 ```
 
+## Part 1: content analyzer
+The example is splitted in 2 parts: content analyzer and recommender. For the second part of the example you need to know how the system as called the directory which contains the output of the content analyzer because this sistem append a timestamp to the output_dir specified.
 We instantiate the Config of the Content Analyzer, defining the variables necessary for the framework to work correctly. In this example, a movie dataset was chosen as ITEM (JSON file); the id_field_name_list field coincides with a list of one or more names that will represent the id of the content.
 Finally, the output_dir directory created previously is chosen as output_directory.
 ```
@@ -58,7 +60,7 @@ content_analyzer_movies = ContentAnalyzer(
 
 content_analyzer_movies.fit()
 ```
-
+## Part 2: recommender
 Let's move on to the ratings part: in the next image you import the ratings from a dataset (always JSON file), applying the "NumberNormalizer" technique on the "stars" field.
 The "RatingsImporter" object is instantiated, to which the dataset containing the ratings will be passed (via the 'source' parameter), the field name (in this case 'stars') on which to apply the representation technique (quest 'last will be specified in the' processor 'parameter); as mentioned above, in this example we choose the 'NumberNormalizer' technique, which normalizes the score of a rating to a value between -1 and 1. The parameters passed to the 'Number Normalizer' object, that is' min 'and' max ', represent respectively the minimum and maximum value of the score of the selected field (in this case, from 1 to 5 stars).
 The 'from_field_name' and 'to_field_name' parameters represent the 'direction' of the ratings, or respectively Who made a rating and on What.
@@ -89,8 +91,8 @@ centroid_config = CentroidVector(
 The image shows how the "RecSysConfig" object is instantiated, to which the imported ratings will be passed, the "CentroidVector" object created in the previous image and the 'output_dir' directory.
 ```
 centroid_recsys_config = RecSysConfig(
-    users_directory=output_dir,
-    items_directory=output_dir,
+    users_directory='contents_dir',             # change with the current dir
+    items_directory='contents_dir',             # change with the current dir
     ranking_algorithm=centroid_config,
     rating_frame=ratings_frame
 )
@@ -106,4 +108,6 @@ ranking = centroid_recommender.fit_ranking(
     user_id='01',
     recs_number=2
 )
+
+print(ranking)
 ```

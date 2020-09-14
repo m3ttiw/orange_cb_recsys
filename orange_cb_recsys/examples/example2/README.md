@@ -27,6 +27,8 @@ ratings_filename = '../../../datasets/ratings_example.json'
 output_dir = '../../../contents/test_1m_medium'
 ```
 
+## Part 1: content analyzer
+
 We instantiate a ContentAnalyzerConfig object as seen above. The "search_index" flag is validated to start the search index that will be needed later.
 ```
 movies_ca_config = ContentAnalyzerConfig(
@@ -100,6 +102,8 @@ content_analyzer_movies.fit()
 content_analyzer_users.fit()
 ```
 
+## Part 2: recommender
+
 Let's move on to the ratings part: We instantiate two RatingsFieldConfig, one that carries out the Sentiment Analysis on the title field of the review and the other on the rating (stars) as in the previous example.
 ```
 title_review_config = RatingsFieldConfig(
@@ -137,8 +141,8 @@ classifier_config = ClassifierRecommender(
 The newly created config is then passed to the RecSysConfig.
 ```
 classifier_recsys_config = RecSysConfig(
-    users_directory=output_dir,
-    items_directory=output_dir,
+    users_directory='contents_dir',                 # change with the current dir
+    items_directory='contents_dir',                 # change with the current dir 
     ranking_algorithm=classifier_config,
     rating_frame=ratings_frame
 )
@@ -150,9 +154,11 @@ classifier_recommender = RecSys(
     config=classifier_recsys_config
 )
 
-classifier_recommender.fit_ranking(
+rank = classifier_recommender.fit_ranking(
     user_id='01',
     recs_number=10
 )
+
+print(rank)
 ```
 
