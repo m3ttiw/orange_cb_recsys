@@ -91,8 +91,8 @@ centroid_config = CentroidVector(
 The image shows how the "RecSysConfig" object is instantiated, to which the imported ratings will be passed, the "CentroidVector" object created in the previous image and the 'output_dir' directory.
 ```
 centroid_recsys_config = RecSysConfig(
-    users_directory=output_dir,
-    items_directory=output_dir,
+    users_directory='contents_dir',             # change with the current dir
+    items_directory='contents_dir',             # change with the current dir
     ranking_algorithm=centroid_config,
     rating_frame=ratings_frame
 )
