@@ -56,7 +56,7 @@ ratings_frame = ratings_importer.import_ratings()
 
 print(ratings_frame)
 
-"""
+
 centroid_config = CentroidVector(
     item_field='Director',
     field_representation='0',
@@ -65,8 +65,8 @@ centroid_config = CentroidVector(
 
 
 centroid_recsys_config = RecSysConfig(
-    users_directory=output_dir,
-    items_directory=output_dir,
+    users_directory='../contents/test_1m_easy/dir1600074336.5165632',
+    items_directory='../contents/test_1m_easy/dir1600074336.5165632',
     ranking_algorithm=centroid_config,
     rating_frame=ratings_frame
 )
@@ -103,3 +103,4 @@ classifier_recommender.fit_ranking(
     user_id='01',
     recs_number=2
 )
+"""
