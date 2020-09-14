@@ -154,9 +154,11 @@ classifier_recommender = RecSys(
     config=classifier_recsys_config
 )
 
-classifier_recommender.fit_ranking(
+rank = classifier_recommender.fit_ranking(
     user_id='01',
     recs_number=10
 )
+
+print(rank)
 ```
 
