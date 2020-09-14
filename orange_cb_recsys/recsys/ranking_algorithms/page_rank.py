@@ -67,8 +67,8 @@ class PageRankAlg(RankingAlgorithm):
 
 class NXPageRank(PageRankAlg):
 
-    def __init__(self, graph: NXFullGraph = None):
-        super().__init__()
+    def __init__(self, graph: NXFullGraph = None, personalized: bool = False):
+        super().__init__(graph=graph, personalized=personalized)
 
     def predict(self, user_id: str,
                 ratings: pd.DataFrame,                      # not used
@@ -78,7 +78,9 @@ class NXPageRank(PageRankAlg):
         if self.fullgraph is None:
             return {}
         if feature_selection_algorithm is not None:
-            self.set_fullgraph(feature_selection_algorithm.perform(self.fullgraph))
+            self.set_fullgraph(feature_selection_algorithm.perform(self.fullgraph.graph))
+
+        print(self.fullgraph.graph)
         # run the pageRank
         if self.personalized:
             profile = self.extract_profile(user_id)
