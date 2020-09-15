@@ -2,7 +2,7 @@ from orange_cb_recsys.content_analyzer.ratings_manager import RatingsImporter
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsFieldConfig
 from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
-from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile, DATFile
+from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 from orange_cb_recsys.evaluation import RankingAlgEvalModel, KFoldPartitioning, Correlation, NDCG
 from orange_cb_recsys.recsys import CosineSimilarity, ClassifierRecommender
 from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector
