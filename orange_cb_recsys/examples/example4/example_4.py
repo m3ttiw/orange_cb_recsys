@@ -82,5 +82,4 @@ rank = NXPageRank(graph=full_graph).predict(
 
 print(rank)
 
-#print(nx_dispersion(full_graph))
-#print(nx_degree_centrality(full_graph))
+print(nx_degree_centrality(full_graph))

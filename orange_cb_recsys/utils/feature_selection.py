@@ -17,10 +17,12 @@ class NXFSPageRank(FeatureSelection):
         new_ratings = pd.DataFrame()
         for rk in rank.keys():
             to_append = pd.DataFrame()
-            if rk in ratings.from_id:
-                to_append = ratings[ratings.from_id == rk]
-            elif rk in ratings.to_id:
-                to_append = ratings[ratings.from_id == rk]
+            if rk in ratings[['from_id']].values:
+                to_append = ratings[ratings['from_id'] == rk]
+            elif rk in ratings[['to_id']].values:
+                to_append = ratings[ratings['to_id'] == rk]
             new_ratings = new_ratings.append(to_append)
+        if new_ratings.empty:
+            return graph
         new_graph = NXFullGraph(new_ratings)
         return new_graph

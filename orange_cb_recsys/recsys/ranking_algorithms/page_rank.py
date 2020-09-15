@@ -78,7 +78,7 @@ class NXPageRank(PageRankAlg):
         if self.fullgraph is None:
             return {}
         if feature_selection_algorithm is not None:
-            self.set_fullgraph(feature_selection_algorithm.perform(self.fullgraph.graph))
+            self.set_fullgraph(feature_selection_algorithm.perform(self.fullgraph.graph, ratings=ratings))
 
         print(self.fullgraph.graph)
         # run the pageRank
