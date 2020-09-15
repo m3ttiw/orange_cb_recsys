@@ -6,11 +6,11 @@ import pandas as pd
 
 
 class NXFullGraph(FullGraph):
-    def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None,
+    def __init__(self, source_frame: pd.DataFrame, user_contents_dir: str = None, item_contents_dir: str = None,
                  user_exogenous_properties: List[str] = None,
                  item_exogenous_properties: List[str] = None,
                  **options):
-        super().__init__(source_frame=source_frame, contents_dir=contents_dir,
+        super().__init__(source_frame=source_frame, user_contents_dir=user_contents_dir, item_contents_dir=item_contents_dir,
                          user_exogenous_properties=user_exogenous_properties,
                          item_exogenous_properties=item_exogenous_properties,
                          **options)

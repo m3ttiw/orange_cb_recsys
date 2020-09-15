@@ -143,7 +143,7 @@ class BipartiteGraph(Graph):
 
 class FullGraph(Graph):
     """ rating su più fields -> più archi (import di RatingsProcessor)"""
-    def __init__(self, source_frame: pd.DataFrame, contents_dir: str = None,
+    def __init__(self, source_frame: pd.DataFrame, user_contents_dir: str = None, item_contents_dir: str = None,
                  user_exogenous_properties: List[str] = None, item_exogenous_properties: List[str] = None,
                  **options):
 
@@ -163,7 +163,8 @@ class FullGraph(Graph):
         if item_exogenous_properties is None:
             self.__item_exogenous_properties: List[str] = []
 
-        self.__contents_dir: str = contents_dir
+        self.__item_contents_dir: str = item_contents_dir
+        self.__user_contents_dir: str = user_contents_dir
         super().__init__(source_frame)
         self.__graph = None
 
@@ -206,8 +207,11 @@ class FullGraph(Graph):
     def get_default_score_label(self):
         return self.__default_score_label
 
-    def get_contents_dir(self) -> str:
-        return self.__contents_dir
+    def get_item_contents_dir(self) -> str:
+        return self.__item_contents_dir
+
+    def get_user_contents_dir(self) -> str:
+        return self.__user_contents_dir
 
     def get_preference(self, label: str, preferences_dict) -> float:
         ls = '{}_score'.format(label.lower())
@@ -218,13 +222,16 @@ class FullGraph(Graph):
     def is_exogenous_property(self, node) -> bool:
         return not self.is_from_node(node) and not self.is_to_node(node)
 
-    @staticmethod
-    def load_content(file_name: str) -> Content:
+    def load_content(self, file_name: str) -> Content:
         try:
-            with lzma.open('{}.xz'.format(file_name), 'r') as file:
+            with lzma.open('{}/{}.xz'.format(self.__item_contents_dir, file_name), 'r') as file:
                 content = pickle.load(file)
         except FileNotFoundError:
-            content = None
+            try:
+                with lzma.open('{}/{}.xz'.format(self.__user_contents_dir, file_name), 'r') as file:
+                    content = pickle.load(file)
+            except FileNotFoundError:
+                content = None
         return content
 
     def query_frame(self, key: str, column: str) -> List[Dict]:
