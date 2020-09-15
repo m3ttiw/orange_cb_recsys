@@ -1,4 +1,4 @@
-## Esempio 2
+## Example 2
 
 We can evolve the previous example by increasing its complexity. We also test users with different techniques, also using field preprocessors. As for the ratings we will see how the score combiner works on fields of a different nature. In the recommending phase we will use a random forest classifier.
 
