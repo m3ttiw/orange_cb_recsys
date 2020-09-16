@@ -105,6 +105,6 @@ classifier_recommender = RecSys(
 
 rank =classifier_recommender.fit_ranking(
     user_id='01',
-    recs_number=10
+    recs_number=5
 )
 print(rank)
