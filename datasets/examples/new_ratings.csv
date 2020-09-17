@@ -1,4 +1,4 @@
-user_id,item_id,score,timestamp
+user_id,item_id,points,timestamp
 1,tt0073486,5,978300760
 1,tt0116683,3,978302109
 1,tt0058385,3,978301968
