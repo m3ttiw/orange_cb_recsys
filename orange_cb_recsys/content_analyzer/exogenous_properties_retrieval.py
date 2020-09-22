@@ -314,4 +314,6 @@ class DBPediaMappingTechnique(ExogenousPropertiesRetrieval):
         if self.mode == 'all':
             prop_dict = self.__get_all_properties(raw_content)
 
+        print(prop_dict)
+
         return PropertiesDict(name, prop_dict)

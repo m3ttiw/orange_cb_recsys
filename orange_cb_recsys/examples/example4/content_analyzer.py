@@ -2,9 +2,9 @@ from orange_cb_recsys.content_analyzer import ContentAnalyzerConfig, ContentAnal
 from orange_cb_recsys.content_analyzer.exogenous_properties_retrieval import DBPediaMappingTechnique
 from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
 
-movies_filename = '../../../datasets/movies_info_reduced.json'
+movies_filename = '../../../datasets/examples/movies_info_reduced.json'
 
-output_dir_movies = '../../../contents/examples/ex_4/movies_'
+output_dir_movies = '../../../contents/examples/ex_3/movies_'
 
 movies_ca_config = ContentAnalyzerConfig(
     content_type='Item',

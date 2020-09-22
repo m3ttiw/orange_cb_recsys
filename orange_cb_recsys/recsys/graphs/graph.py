@@ -177,7 +177,10 @@ class FullGraph(Graph):
                 content = self.load_content(row['to_id'])
                 if content is not None:
                     for prop_name in self.__item_exogenous_properties:
-                        properties: dict = content.get_exogenous_rep(prop_name)
+                        try:
+                            properties: dict = content.get_exogenous_rep(prop_name)
+                        except KeyError:
+                            properties = None
 
                         if properties is not None:
 
@@ -188,7 +191,10 @@ class FullGraph(Graph):
                 content = self.load_content(row['from_id'])
                 if content is not None:
                     for prop_name in self.__user_exogenous_properties:
-                        properties: dict = content.get_exogenous_rep(prop_name)
+                        try:
+                            properties: dict = content.get_exogenous_rep(prop_name)
+                        except KeyError:
+                            properties = None
 
                         if properties is not None:
 

@@ -38,10 +38,13 @@ class RMSE(PredictionMetric):
         logger.info("Computing RMSE")
 
         predictions = pd.Series(predictions['rating'].values, name="rating", dtype=float)
-        truth = pd.Series(truth['score'].values, name="rating", dtype=float)
+        truth = pd.Series(truth['rating'].values, name="rating", dtype=float)
 
         if len(predictions) != len(truth):
-            raise Exception
+            if len(predictions) > len(truth):
+                predictions = predictions[0:len(truth)]
+            else:
+                truth = truth[0:len(predictions)]
         diff = predictions - truth
         sq = np.square(diff)
         return np.sqrt(np.mean(sq))
@@ -66,9 +69,12 @@ class MAE(PredictionMetric):
         logger.info("Computing MAE")
 
         predictions = pd.Series(predictions['rating'].values, name="rating", dtype=float)
-        truth = pd.Series(truth['score'].values, name="rating", dtype=float)
+        truth = pd.Series(truth['rating'].values, name="rating", dtype=float)
 
         if len(predictions) != len(truth):
-            raise Exception
+            if len(predictions) > len(truth):
+                predictions = predictions[0:len(truth)]
+            else:
+                truth = truth[0:len(predictions)]
         abs_diff = (predictions - truth).apply(abs)
         return np.mean(abs_diff)
