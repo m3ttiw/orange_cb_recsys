@@ -44,8 +44,8 @@ class TestEvalModel(TestCase):
 
         t_ratings = pd.DataFrame.from_records(record_list, columns=['from_id', 'to_id', 'score'])
         recsys_config = RecSysConfig(
-            users_directory='contents/users_test1591814865.8959296',
-            items_directory='contents/movielens_test1591885241.5520566',
+            users_directory='contents/examples/ex_1/users_1600355755.1935306',
+            items_directory='contents//examples/ex_1/movies_1600355972.49884',
             score_prediction_algorithm=None,
             ranking_algorithm=CentroidVector(
                 item_field='Plot',

@@ -6,6 +6,7 @@ from orange_cb_recsys.evaluation import RankingAlgEvalModel, KFoldPartitioning, 
     Correlation, Precision, Recall
 from orange_cb_recsys.evaluation.prediction_metrics import MAE
 from orange_cb_recsys.recsys import CentroidVector, CosineSimilarity, RecSysConfig, RecSys
+import pandas as pd
 
 ratings_filename = '../../../datasets/examples/new_ratings.csv'
 
@@ -47,14 +48,14 @@ centroid_recommender = RecSys(
     config=centroid_recsys_config
 )
 
-rank = centroid_recommender.fit_ranking(
+rank: pd.DataFrame = centroid_recommender.fit_ranking(
     user_id='1',
     recs_number=5
 )
 
 print(rank)
 
-# fa vedere come salvare il rank su un file csv
+rank.to_csv('out_ex_1.csv', index=False)
 
 evaluation_centroid = RankingAlgEvalModel(
     config=centroid_recsys_config,

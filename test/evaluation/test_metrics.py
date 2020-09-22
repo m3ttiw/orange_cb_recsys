@@ -105,13 +105,13 @@ class Test(TestCase):
         predictions = pd.DataFrame.from_dict({'to_id': ["bbb", "eee", "aaa", "ddd", "ccc", "fff", "hhh"],
                                               'rating': [5, 5, 4, 3, 3, 2, 1]})
         truth = pd.DataFrame.from_dict({'to_id': ["aaa", "bbb", "ccc", "ddd", "eee", "fff", "ggg"],
-                                        'score': [5, 4, 3, 3, 1, 2, 1]})
+                                        'rating': [5, 4, 3, 3, 1, 2, 1]})
 
         self.assertEqual(RMSE().perform(predictions, truth), 0.9258200997725514)
         self.assertEqual(MAE().perform(predictions, truth), 0.5714285714285714)
 
         truth = pd.DataFrame.from_dict({'to_id': ["aaa", "bbb", "ccc", "ddd", "eee", "fff"],
-                                        'score': [5, 4, 3, 3, 1, 2]})
+                                        'scores': [5, 4, 3, 3, 1, 2]})
 
         with self.assertRaises(Exception):
             RMSE().perform(predictions, truth)
