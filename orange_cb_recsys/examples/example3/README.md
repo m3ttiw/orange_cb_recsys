@@ -1,121 +1,119 @@
-## Example 3
+# Example 4
+In this example we will see how to use the exogenous properties retrieval module and a graph based recommender using 'Page Rank with priors' as algorithm for both recommendation and feature selection on the graph.
+NB: The exogenous retrieval module can be used also without a graph based recommender. In this case we will use the properties founded in DBPedia to enrich the graph.
+The example is splitted in two parts,in the first half we will see how manage the content analyzer module with the DBPedia Mapping technique to find (exogenous) properties; in the second half, to create the recommender, we need the directory in which the contents processed by the content analyzer module are stored.
+NB: local timestamp is added to the output dir specified for the content analizer
 
-In this example we will focus our attention on the recommendation phase and the creation of a valid evaluation model. For example, I need to compare the performance of a random forest classifier recommender and a centroid vector recommender. We will use the contents already created in the two previus examples.
-
-So first we need to import some framework parts:
-
+First of all we need these modules:
 ```
+from orange_cb_recsys.content_analyzer import ContentAnalyzer, ContentAnalyzerConfig
 from orange_cb_recsys.content_analyzer.ratings_manager import RatingsImporter
 from orange_cb_recsys.content_analyzer.ratings_manager.rating_processor import NumberNormalizer
 from orange_cb_recsys.content_analyzer.ratings_manager.ratings_importer import RatingsFieldConfig
-from orange_cb_recsys.content_analyzer.ratings_manager.sentiment_analysis import TextBlobSentimentAnalysis
-from orange_cb_recsys.content_analyzer.raw_information_source import JSONFile
-from orange_cb_recsys.evaluation import RankingAlgEvalModel, KFoldPartitioning, Correlation, NDCG
-from orange_cb_recsys.recsys import CosineSimilarity, ClassifierRecommender
-from orange_cb_recsys.recsys.ranking_algorithms.centroid_vector import CentroidVector
-from orange_cb_recsys.recsys.recsys import RecSysConfig
+from orange_cb_recsys.content_analyzer.raw_information_source import DATFile, JSONFile
+from orange_cb_recsys.content_analyzer.exogenous_properties_retrieval import DBPediaMappingTechnique, \
+    PropertiesFromDataset
+
+from orange_cb_recsys.recsys.graphs.full_graphs import NXFullGraph
+from orange_cb_recsys.recsys.ranking_algorithms import NXPageRank
+from orange_cb_recsys.utils.feature_selection import NXFSPageRank
+
+from orange_cb_recsys.evaluation.graph_metrics import nx_degree_centrality, nx_dispersion
 ```
 
-Next we define the dir constants, for this example we will use some pre-created contents from the two previus example as we can see in the code:
+## Part 1: content analyzer and exogenous content retrieval
+
+So we can define the input and output dir of content analyzer
 ```
-movies_filename = 'items_dir'           # change this with your directory
-user_filename = 'users_dir'             # change this with your directory
+movies_filename = '../../../datasets/movies_info_reduced.json'
+user_filename = '../../../datasets/users_info_.json'
 ratings_filename = '../../../datasets/ratings_example.json'
 
+
+output_dir_movies = '../../../contents/test_1m_ex_4/movies_'
+output_dir_users = '../../../contents/test_1m_ex_4/users_'
 ```
 
-Let's move on to the ratings part: We instantiate two RatingsFieldConfig, one that carries out the Sentiment Analysis on the title field of the review and the other on the rating (stars) as in the previous example:
-
+and define a config for the films, same of the previus examples:
 ```
-title_review_config = RatingsFieldConfig(
-    field_name='review_title',
-    processor=TextBlobSentimentAnalysis()
+movies_ca_config = ContentAnalyzerConfig(
+    content_type='Item',
+    source=JSONFile(movies_filename),
+    id_field_name_list=['imdbID'],
+    output_directory=output_dir_movies
+)
+```
+
+but now we introduce the exogenous properties retrieval module: we will use the DBPediaMappingTechnique to find some properties in DBPedia. Entity type is the type of information that we want to find, in this case movies or film; lang is the language of the contents that are already in the our datasets and represent also the language of the (eventually) retrieved properties; Label field is the field used as 'search key' in the DBPedia cloud, in this case Title should be good enough. If we want to specify other filters we can add a list of label_field in "additional_filters". Also we can specify the mode used to retrieve the properties:
+
+- only_retrieved_evaluated (default): only the retrieved properties that have a value are added to the item.
+- all: all properties, contains retrieved evaluated and non-evaluated. Also contains the properties in the original dict.
+- all_retrieved: only properties retrieved, evaluated and non-evaluated.
+- original_retrieved: filter the retrieved properties with the keys already in the dataset.
+```
+movies_ca_config.append_exogenous_properties_retrieval(
+    DBPediaMappingTechnique(
+        entity_type='Film',
+        lang='EN',
+        label_field='Title'
+    )
 )
 
-starts_review_config = RatingsFieldConfig(
-    field_name='stars',
-    processor=NumberNormalizer(min_=1, max_=5))
+content_analyzer = ContentAnalyzer(movies_ca_config).fit()
 ```
 
-We then instantiate the ratings Importer which returns the ratings frame using the "import_ratings ()" method:
+Let's move on the configuration of the users, in this case we don't want to use external properties for enrich th graph, but we add the properties aready in the Dataset.
 
 ```
-ratings_importer = RatingsImporter(
+users_ca_config = ContentAnalyzerConfig(
+    content_type='User',
+    source=JSONFile(user_filename),
+    id_field_name_list=['user_id'],
+    output_directory=output_dir_users
+)
+
+users_ca_config.append_exogenous_properties_retrieval(
+    PropertiesFromDataset()
+)
+
+content_analyzer = ContentAnalyzer(users_ca_config).fit()
+```
+
+## Part 2: Page rank recommender 
+Now, let's create ratings dataframe for the graph creation
+```
+ratings_import = RatingsImporter(
     source=JSONFile(ratings_filename),
-    rating_configs=[title_review_config, starts_review_config],
+    rating_configs=[RatingsFieldConfig(field_name='stars', processor=NumberNormalizer(min_=1, max_=5))],
     from_field_name='user_id',
     to_field_name='item_id',
-    timestamp_field_name='timestamp',
+    timestamp_field_name='timestamp'
+).import_ratings()
+```
+
+We define the graph with these properties, as we can see only the drector, protagonist and producer properties, which are all items properties, are added to the graph. We can use this graph to do some topological analysis stuff, like analizing the centrality degree:
+```
+full_graph = NXFullGraph(
+    source_frame=ratings_import,
+    user_content_dir = '',        # to change
+    item_content_dir = '',        # to change
+    user_exogenous_properties=None,
+    item_exogenous_properties=['director', 'protagonist', 'producer']
 )
 
-ratings_frame = ratings_importer.import_ratings()
+print(nx_degree_centrality(full_graph))
 ```
 
-Now let's move on to the recommending part: we instantiate a classifier with the random forest technique, as in the previous example:
-
+Now we can finally call the Page rank algorithm on the user '01'. We can use also a Feature selection algorithm, in this case the same page rank algorithm is used to "thin out" the graph.
 ```
-classifier_config = ClassifierRecommender(
-    item_field='Plot',
-    field_representation='0',
-    classifier='random_forest'
+rank = NXPageRank(graph=full_graph).predict(
+    user_id='01',
+    ratings=ratings_import,
+    recs_number=10,
+    feature_selection_algorithm=NXFSPageRank()
 )
 ```
-
-The newly created config is then passed to the RecSysConfig:
-
+You can show the dict rank by simply printing it:
 ```
-classifier_recsys_config = RecSysConfig(
-    users_directory=users_filename,
-    items_directory=movies_filename,
-    ranking_algorithm=classifier_config,
-    rating_frame=ratings_frame
-)
-```
-
-We instantiate a "CentroidVector" object, to which the following parameters will be passed, as in example 1:
-
-```
-centroid_config = CentroidVector(
-    item_field='Director',
-    field_representation='0',
-    similarity=CosineSimilarity()
-)
-```
-
-The newly created config is passed to a new RecSysConfig object:
-
-```
-centroid_recsys_config = RecSysConfig(
-    users_directory=users_filename,
-    items_directory=movies_filename,
-    ranking_algorithm=centroid_config,
-    rating_frame=ratings_frame
-)
-```
-
-Let's move on to the Evaluation part, creating a "RankingAlvEvalModel" object, to which the previously instantiated classifier config will be passed, the "KFoldPartitioning" object to the "partitioning" parameter (which allows to use the KFold cross validation technique), and a list of metrics to use (in this case the Spearman Correlation Coefficient and the Discounted Cumulative Gain):
-
-```
-evaluation_classifier = RankingAlgEvalModel(
-    config=classifier_recsys_config,
-    partitioning=KFoldPartitioning(),
-    metric_list=[NDCG(), Correlation(method='spearman')]
-)
-```
-
-Same thing as the previous image, in this case passing the "CentroidVector" config created previously:
-
-```
-evaluation_centroid = RankingAlgEvalModel(
-    config=centroid_recsys_config,
-    partitioning=KFoldPartitioning(),
-    metric_list=[NDCG(), Correlation(method='spearman')]
-)
-```
-
-Finally we train the two "RankingAlgEvalModel" objects just created using the "fit ()" method:
-
-```
-eval_frame_classifier = evaluation_classifier.fit()
-eval_frame_centroid = evaluation_centroid.fit()
+print(rank)
 ```
