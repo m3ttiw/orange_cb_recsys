@@ -39,6 +39,7 @@ class ClassifierRecommender(RankingAlgorithm):
         super().__init__(item_field, field_representation)
         self.__classifier: str = classifier
         self.__threshold = threshold
+        # aggiungi opzioni
 
     def predict(self, user_id: str, ratings: pd.DataFrame, recs_number: int, items_directory: str, candidate_item_id_list: List = None) -> pd.DataFrame:
         """

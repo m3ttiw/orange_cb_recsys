@@ -35,8 +35,6 @@
     "source_type": "json",
     "id_field_name": ["user_id"],
     "search_index": "False",
-    "start_from": "0",
-    "end_up_at": "all",
     "fields": [
     {
       "field_name": "name",

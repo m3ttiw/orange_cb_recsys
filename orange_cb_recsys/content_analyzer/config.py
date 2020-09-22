@@ -4,7 +4,7 @@ from typing import List, Dict, Set
 from orange_cb_recsys.content_analyzer.field_content_production_techniques.field_content_production_technique import \
     FieldContentProductionTechnique, CollectionBasedTechnique
 from orange_cb_recsys.content_analyzer.information_processor.information_processor import InformationProcessor
-from orange_cb_recsys.content_analyzer.lod_properties_retrieval import ExogenousPropertiesRetrieval
+from orange_cb_recsys.content_analyzer.exogenous_properties_retrieval import ExogenousPropertiesRetrieval
 from orange_cb_recsys.content_analyzer.memory_interfaces.memory_interfaces import InformationInterface
 from orange_cb_recsys.content_analyzer.raw_information_source import RawInformationSource
 
@@ -135,9 +135,9 @@ class ContentAnalyzerConfig:
 
     Args:
         source (RawInformationSource): raw data source to iterate on for extracting the contents
-        id_field_name_list (str): list of the fields names containing the content's id,
-            it's a list instead of single value for handling complex id
-            composed of multiple fields
+        id_field_name_list (List[str]): list of the fields names containing the content's id,
+        it's a list instead of single value for handling complex id
+        composed of multiple fields
         field_config_dict (Dict<str, FieldConfig>):
             store the config for each field_name
         output_directory (str):
@@ -154,7 +154,7 @@ class ContentAnalyzerConfig:
 
     def __init__(self, content_type: str,
                  source: RawInformationSource,
-                 id_field_name_list,
+                 id_field_name_list: List[str],
                  output_directory: str,
                  search_index=False,
                  field_config_dict: Dict[str, FieldConfig] = None,
@@ -173,14 +173,13 @@ class ContentAnalyzerConfig:
         self.__content_type = content_type.lower()
         self.__field_config_dict: Dict[str, FieldConfig] = field_config_dict
         self.__source: RawInformationSource = source
-        self.__id_field_name_list: str = id_field_name_list
+        self.__id_field_name_list: List[str] = id_field_name_list
         self.__exogenous_properties_retrieval: \
             List[ExogenousPropertiesRetrieval] = exogenous_properties_retrieval
 
         FieldRepresentationPipeline.instance_counter = 0
 
-    def append_exogenous_properties_retrieval(self,
-                                              exogenous_properties_retrieval: List[ExogenousPropertiesRetrieval]):
+    def append_exogenous_properties_retrieval(self, exogenous_properties_retrieval: ExogenousPropertiesRetrieval):
         self.__exogenous_properties_retrieval.append(exogenous_properties_retrieval)
 
     @property

@@ -77,7 +77,7 @@ class Content:
     """
     def __init__(self, content_id: str,
                  field_dict: Dict[str, ContentField] = None,
-                 exogenous_rep_dict: Dict[str, str] = None):
+                 exogenous_rep_dict: Dict[str, ExogenousPropertiesRepresentation] = None):
         if field_dict is None:
             field_dict = {}       # list o dict
         if exogenous_rep_dict is None:
