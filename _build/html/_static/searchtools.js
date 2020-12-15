@@ -65,7 +65,7 @@ var Search = {
       docContent = $(htmlElement).find('[role=main]')[0];
       if(docContent === undefined) {
           console.warn("Content block not found. Sphinx search tries to obtain it " +
-                       "via '[role=main]'. Could you check your theme or template.");
+                       "via '[role=main]'. Could you check your theme or templates.");
           return "";
       }
       return docContent.textContent || docContent.innerText;

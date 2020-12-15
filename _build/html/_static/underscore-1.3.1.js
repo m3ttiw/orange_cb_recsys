@@ -884,8 +884,8 @@
     return prefix ? prefix + id : id;
   };
 
-  // By default, Underscore uses ERB-style template delimiters, change the
-  // following template settings to use alternative delimiters.
+  // By default, Underscore uses ERB-style templates delimiters, change the
+  // following templates settings to use alternative delimiters.
   _.templateSettings = {
     evaluate    : /<%([\s\S]+?)%>/g,
     interpolate : /<%=([\s\S]+?)%>/g,

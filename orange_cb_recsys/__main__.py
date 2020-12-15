@@ -15,7 +15,7 @@ import lucene
 
 lucene.initVM(vmargs=['-Djava.awt.headless=true'])
 
-DEFAULT_CONFIG_PATH = "content_analyzer/config_prova2.json"
+DEFAULT_CONFIG_PATH = "web_GUI/app/configuration_files/config.json"  # "content_analyzer/config_prova2.json"
 
 implemented_preprocessing = r_i.get_cat('preprocessor')
 
@@ -31,14 +31,14 @@ def check_for_available(content_config: Dict):
     # check runnable_instances
     if content_config['source_type'] not in ['json', 'csv', 'sql', 'dat']:
         return False
-    if content_config['content_type'].lower() == 'ratings':
-        if "from" not in content_config.keys() \
-                or "to" not in content_config.keys() \
-                or "timestamp" not in content_config.keys() \
+    if content_config['content_type'].lower() == 'rating':
+        if "from_field_name" not in content_config.keys() \
+                or "to_field_name" not in content_config.keys() \
+                or "timestamp_field_name" not in content_config.keys() \
                 or "output_directory" not in content_config.keys():
             return False
         for field in content_config['fields']:
-            if field['rating_processor']['class'] not in implemented_rating_proc:
+            if field['processor']['class'] not in implemented_rating_proc:
                 return False
         return True
     for field_dict in content_config['fields']:
@@ -138,7 +138,7 @@ def rating_config_run(config_dict: Dict):
         class_name = field['processor'].pop('class')
         class_dict = dict_detector(field["processor"])
         rating_configs.append(
-            RatingsFieldConfig(field_name=field["preference_field_name"],
+            RatingsFieldConfig(field_name=field["field_name"],
                                processor=runnable_instances[class_name](**class_dict))
         )
         args = {}
