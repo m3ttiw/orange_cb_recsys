@@ -55,7 +55,7 @@ rank = classifier_recommender.fit_ranking(
     recs_number=5
 )
 
-print(rank) # non salvare
+print(rank)  # non salvare
 
 evaluation_classifier = RankingAlgEvalModel(
     config=classifier_recsys_config,
